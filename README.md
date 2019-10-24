@@ -1,3 +1,22 @@
+<!-- 
+Copyright 2019 Ole Kliemann, Malte Kliemann
+
+This file is part of DrMock.
+
+DrMock is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+DrMock is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
+-->
+
 # DrMock
 
 **DrMock** is a testing and mocking framework for C++ designed for usage
@@ -50,4 +69,5 @@ greatly from P. Arias'
 [It's Time To Do CMake Right](https://pabloariasal.github.io/2018/02/19/its-time-to-do-cmake-right/) 
 and D. Berner's 
 [Cmake line by line - creating a header-only library](http://dominikberner.ch/cmake-interface-lib/).
+
 
