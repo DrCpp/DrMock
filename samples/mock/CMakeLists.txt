@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.10)
 # Project data.
 #######################################
 
-project(DrMockMockingSample)
+project(DrMockSampleMock)
 set(CMAKE_CXX_STANDARD 17)
 
 #######################################
