@@ -652,9 +652,9 @@ object onto which `Behavior`s may be pushed using `push`.  Here, the
 mock object is instructed to expect the call `remove("foo", 2)` _exactly
 once_ (call `times` with parameter 1), and then to return `true`. 
 
-**Note.** The `push` method returns a reference to the stack of
-behaviors, thus allowing the user to concatenate the `push` calls as
-above.
+**Note.** The `push` method, as well as `expects`, `times`, etc. returns
+a reference to the pushed behavior, thus allowing the user to
+concatenate the calls as above.
 
 Now that the behavior of `warehouse` is defined, the order for two units
 of foo is filled from the warehouse. Judging from the implementation of
@@ -673,6 +673,10 @@ correct value:
 ```cpp
 DRTEST_COMPARE(order.filled(), true);
 ```
+
+**Note.** When verifying the mock object, the `Behaviors` are expected
+to occur in the order in which they were pushed. See also: [Ignore order
+of behavior](#ignore-order-of-behavior).
 
 The second test runs along the same lines. Once again, the customer
 places an order for two units of foo, but this time the call will fail:
@@ -697,6 +701,48 @@ Do `make` to run the tests. The following should occur:
 
 Total Test time (real) =   0.01 sec
 ```
+
+### Behaviors
+
+Recall that a call like `warehouse->mock.remove()` returns a `Method`
+object that owns a queue (called the `BehaviorStack`) onto which
+`Behavior`s may be pushed using `Method::push`. 
+
+Everytime the underlying `Method` is called, the 
+This section briefly describes how `Behavior`
+instances may be configured.
+
+#### `times`
+
+Every `Behavior` _persists_ for a number of calls made to the underlying
+`Method` before it expires. Using `times(unsigned int)`, this number of
+calls is set. The default value is `1`.
+
+See also: [persists](#`persists`).
+
+#### `persists`
+
+Every `Behavior` _persists_ for a number of calls made to the underlying
+`Method` before it expires. Using `persists` makes the `Behavior`
+immortal - it will never expire, no matter how many calls are made.
+
+See also: [times](#`times`).
+
+#### `expects`
+
+Use `expects(Args... args)` to instruct the `Behavior` to expect the
+underlying method to be called with `args...` as arguments. 
+
+#### `returns`
+
+Use `returns(T&& result)` to instruct the `Behavior` to return `result`
+on every method call that triggers it. Here `T` is the underlying
+`Method`'s return value type.
+
+#### `throws`
+
+Use `throws(E&& exception)` to instruct the `Behavior` to throw
+`exception` on every method call that triggers it.
 
 ### Details
 
@@ -777,9 +823,10 @@ Then, use `polymorphic` to register `Derived`:
 ```cpp
 auto foo = std::make_shared<FooMock>();
 foo->mock.func().polymorphic<std::shared_ptr<Derived>, std::shared_ptr<Derived>>();
-foo->mock.func()
-    .expects(std::make_shared<Derived>(/* ... */), std::make_shared<Derived>(/* ... */))
-    .times(3);
+foo->mock.func().expects(
+    std::make_shared<Derived>(/* ... */), 
+    std::make_shared<Derived>(/* ... */)
+  );
 ```
 
 #### Operators
@@ -788,15 +835,11 @@ Mocking an operator declared in an interface is not much different from
 mocking any other method, only the way in which the mocked method is
 accessed from the mock object changes. Instead of doing
 ```cpp
-foo->mock.operator*()
-    .expects(3.141f)
-    .times(1);
+foo->mock.operator*().expects(/* ... */);
 ```
 (which is illegal), you must do
 ```cpp
-foo->mock.operatorAst()
-    .expects(3.141f)
-    .times(1);
+foo->mock.operatorAst().expects(/* ... */);
 ```
 What's this? The illegal tokens are replaced with a designator
 describing the operators symbol. The designators for C++'s overloadable
@@ -865,6 +908,18 @@ DrMockModule(
     # ...
 )
 ```
+
+#### Ignore order of behaviors
+
+Recall that `Behavior`s are expected to occur in the order in which they
+are pushed onto the `Method`'s `BehaviorStack`. This can be disabled by
+calling `Method::enfore_order` as follows:
+```cpp
+warehouse->mock.remove().enforce_order(false);
+```
+If `enforce_order` is disabled, and the mocked method is called, the
+first `Behavior` on the `BehaviorStack` that matches the method call is
+triggered.
 
 ### Caveats
 
