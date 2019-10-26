@@ -28,15 +28,19 @@ Release 0.1.0 is now available.
 
 ### Getting started
 
-A guide to building **DrMock** may be found [here](docs/build.md).
+* A guide to building **DrMock** may be found [here](docs/build.md).
+* **DrMock** sample projects and tutorials are found
+  [here](docs/tutorial.md).
 
-## Features
+### Features
 
 * Unit test framework
 * Automated mock object generation
 * Can mock Qt5/QObject's
 
-## Platforms
+## Requirements
+
+### Supported platforms
 
 **DrMock** is current supported on the following platforms:
 
@@ -62,12 +66,10 @@ The following Python3 packages are automatically installed during build:
 
 * [python3-setuptools](https://pypi.org/project/setuptools) (at least 41.4.0)
 
-### Acknowledgments
+## Acknowledgments
 
 During the configuration of **DrMock**'s build system, we have profited
 greatly from P. Arias' 
 [It's Time To Do CMake Right](https://pabloariasal.github.io/2018/02/19/its-time-to-do-cmake-right/) 
 and D. Berner's 
 [Cmake line by line - creating a header-only library](http://dominikberner.ch/cmake-interface-lib/).
-
-
