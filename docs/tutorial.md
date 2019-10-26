@@ -286,7 +286,7 @@ individual tests.
 
 Do `make`. This should yield the following:
 
-```console
+```
     Start 1: basicTest
 1/1 Test #1: basicTest ........................***Failed    0.00 sec
 TEST   someTest
@@ -318,7 +318,7 @@ make: *** [default] Error 8
 ```
 
 In the test source `basicTest.cpp`, all tests passed except one:
-```console
+```
 TEST   someTestWithTable, This test fails
 *FAIL  someTestWithTable, This test fails (109):
     (lhs + rhs) 4
@@ -333,7 +333,7 @@ along with their variable name.
 Change the test table so that the test check if `2 + 2 == 4` instead of
 `2 + 2 == 5` and run `make` again:
 
-```console
+```
     Start 1: basicTest
 1/1 Test #1: basicTest ........................   Passed    0.00 sec
 
@@ -347,7 +347,7 @@ Total Test time (real) =   0.01 sec
 #### Commas in macro arguments
 
 The error
-```console
+```
 error: too many arguments provided to function-like macro invocation
 ```
 can be caused by not properly isolating commas occuring in macro
@@ -693,7 +693,7 @@ expected to return `false`.
 ### Running the tests
 
 Do `make` to run the tests. The following should occur:
-```console
+```
     Start 1: OrderTest
 1/1 Test #1: OrderTest ........................   Passed    0.00 sec
 
@@ -718,7 +718,7 @@ Every `Behavior` _persists_ for a number of calls made to the underlying
 `Method` before it expires. Using `times(unsigned int)`, this number of
 calls is set. The default value is `1`.
 
-See also: [persists](#`persists`).
+See also: [persists](#persists).
 
 #### `persists`
 
@@ -726,7 +726,7 @@ Every `Behavior` _persists_ for a number of calls made to the underlying
 `Method` before it expires. Using `persists` makes the `Behavior`
 immortal - it will never expire, no matter how many calls are made.
 
-See also: [times](#`times`).
+See also: [times](#times).
 
 #### `expects`
 
@@ -1066,7 +1066,7 @@ DRMOCK_ASSERT(foo2->mock.verify());
 ### Running the tests
 
 Do `make`. If everything checks out, this should return
-```console
+```
 Test project /Users/malte/DrMock/samples/qt/build
     Start 1: FooTest
 1/1 Test #1: FooTest ..........................   Passed    0.02 sec
