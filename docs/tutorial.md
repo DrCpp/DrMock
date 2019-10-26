@@ -25,6 +25,9 @@ This tutorial will take you through all of them step-by-step.
 * [samples/basic](#samplesbasic) 
   Learn **DrMock**'s basic testing features.
 
+* [samples/mock](#samplesmock) 
+  Learn how to create and use **DrMock**'s mock objects.
+
 * [samples/qt](#samplesqt) 
   Learn how to mock `Qt5/QObject`s.
 
@@ -383,6 +386,506 @@ drtest::addRow(
 ```
 will raise such an error, as the fourth column's type is defined as
 `std::string`, yet a null-terminated C string was passed as argument.
+
+## samples/mock
+
+This sample demonstrates the basics of **DrMock**'s mock features.
+
+```
+samples/mock
+│   CMakeLists.txt
+│   Makefile
+│
+└───src
+│   │   CMakeLists.txt
+│   │   IWarehouse.h
+│   │   Order.cpp
+│   │   Order.h
+│   │   Warehouse.cpp
+│   │   Warehouse.h
+│   
+└───tests
+    │   CMakeLists.txt
+    │   OrderTest.cpp
+```
+
+Note that this samples uses the typical CMake project structure with
+three `CMakeLists.txt`. `src/CMakeLists.txt` manages the source files
+and `tests/CMakeLists.txt` the tests.
+
+### Introduction
+
+**DrMock** generates source code of mock objects from _interfaces_. The
+definition of the notion of _interface_ is given [below](#interface).
+Let's introduce the concept with an example from Martin Fowler's 
+[Mocks Arent' Stubs](https://martinfowler.com/articles/mocksArentStubs.html).
+
+At an online shop, customers fill out an `Order` with the commodity
+they'd like to order and the order quantity. The `Order` may be filled
+from a `Warehouse` using `fill`. But `fill` will fail if the `Warehouse`
+doesn't hold the commodity in at least the quantity requrested by the
+customer. We want to test this interaction between `Order` and
+`Warehouse`, and, assuming that the unit `Warehouse` has already been
+tested, will use a mock of `Warehouse` for this purpose.
+
+That means that we must specify an interface `IWarehouse` that
+`Warehouse` will then implement:
+```
+// IWarehouse.h
+
+// ...
+
+class IWarehouse
+{
+public:
+  virtual ~IWarehouse() = default;
+
+  virtual void add(std::string commodity, std::size_t quantity) = 0;
+  virtual bool remove(const std::string& commodity, std::size_t quantity) = 0;
+};
+```
+
+The basic requirement of **DrMock** is that the interface is _abstract_
+(contains only pure virtual methods). Obviously, this is satisfied. In
+particular, interfaces are polymorphic.
+
+The example interface declares two pure virtual methods `add` and
+`remove`, which the _implementation_ must then define.  Note that
+`remove` returns a `bool`. If removing fail due to too large a quantity
+being requested, this should be `false`. Otherwise, `true`.  Although it
+is irrelevant here, the reader is invited to look at the sample
+implementation found in `Warehouse.h` and `Warehouse.cpp`.
+
+Let's take a short peek at the header of `Order` for a moment. 
+```
+// Order.h
+
+// ...
+
+class Order
+{
+public:
+  Order(std::string commodity, std::size_t quantity);
+
+  void fill(const std::shared_ptr<IWarehouse>&);
+  bool filled() const;
+
+private:
+  bool filled_;
+  std::string commodity_;
+  std::size_t quantity_;
+};
+```
+Note that the parameter of `fill` is an `std::shared_ptr` to allow the
+use of polymorphism. You could use virtually any type of (smart) pointer
+in place of `std::shared_ptr`. 
+
+Here's the straightforward implementation of the `fill` method:
+```
+void 
+Order::fill(const std::shared_ptr<IWarehouse& wh)
+{
+  filled_ = wh->remove(commodity_, quantity_);
+}
+```
+Thus, the order will attempt to remove the requested amount of units of
+the commodity from the warehouse and set `filled_` accordingly.
+
+### Setup
+
+To use **DrMock** to create source code for a mock of `IWarehouse`, the
+macro `DrMockModule` is used. 
+```
+# src/CMakeLists.txt
+
+add_library(DrMockSampleMock SHARED
+  Order.cpp
+  Warehouse.cpp
+)
+
+file(TO_CMAKE_PATH
+  ${CMAKE_SOURCE_DIR}/../../python/DrMockGenerator
+  pathToMocker
+)
+DrMockModule(
+  TARGET DrMockSampleMockMocked
+  GENERATOR ${pathToMocker}
+  HEADERS
+    IWarehouse.h
+)
+```
+Under `HEADER`, **DrMock** expects the headers of the interfaces that
+must be mocked. For each argument under `HEADER`, **DrMock** will
+generate the source code of respective mock object and compile them into
+a library, `DrMockSampleMockMocked` (if you think that's silly, then by
+all means, change the libraries name using the `TARGET` parameter).
+
+What's the `GENERATOR` parameter for? Per default, `DrMockModule`
+expects the `DrMockGenerator` python script to be installed somewhere in
+`PATH`. If that is not the case, the path to the script must be
+specified by the user. If you've already installed `DrMockGenerator`,
+try removing the `GENERATOR` argument.
+
+A detailed documentation may be found at the end of the
+subsection.
+
+Let's now see how mock objects are used in tests. First, take a look at
+`tests/CMakeLists.txt`. 
+```
+DrMockTest(
+  LIBS
+    DrMockSampleMock
+    DrMockSampleMockMocked
+  TESTS
+    OrderTest.cpp
+)
+```
+The call of `DrMockTest` has changed as we've added the parameter
+`LIBS`. This parameter tells **DrMock** which libraries to link the
+tests (i.e. the executables compiled from `TESTS`) against. In this
+case, the test `OrderTest.cpp` requires the class `Order` from
+`DrMockMockingSample` and, of course, the mock of `IWarehouse` from
+`DrMockMockingSampleMocked`.
+
+<details><summary>DrMockModule documentation</summary>
+<p>
+
+```
+DrMockModule(
+  TARGET 
+  HEADERS header1 [header2 [header3 ...]]
+  [IFILE]
+  [MOCKFILE]
+  [ICLASS]
+  [MOCKCLASS]
+  [GENERATOR]
+  [LIBS lib1 [lib2 [lib3 ...]]]
+  [QT]
+  [INCLUDE include1 [include2 [include3 ...]]]
+  [FRAMEWORKS framework1 [framework2 [framework3 ...]]]
+)
+```
+#### `TARGET`
+  The name of the library that is created.
+
+#### `HEADERS`
+  A list of header files. Every header file must match the regex
+  provided via the `IFILE` argument.
+
+#### `IFILE`
+  A regex that describes the pattern that matches the project's
+  interface header filenames. The regex must contain exactly one
+  capture group that captures the unadorned filename. The default
+  value is ``I([a-zA-Z0-9].*)"`.
+
+#### `MOCKFILE`
+  A string that describes the pattern that the project's mock object
+  header filenames match. The string must contain exactly one
+  subexpression character `"\\1"`. The default value is `"\\1Mock"`.
+
+#### `ICLASS`
+  A regex that describes the pattern that matches the project's
+  interface class names. The regex must contain exactly one capture
+  group that captures the unadorned class name. Each of the specified
+  header files must contain exactly one class that matches this regex.
+  The default value is `IFILE`.
+
+#### `MOCKCLASS`
+  A string that describes the pattern that the project's mock object
+  class names match. The regex must contain exactly one subexpression
+  character `"\\1"`. The default value is `MOCKFILE`.
+
+#### `GENERATOR` 
+  A path to the generator script of DrMock. Default value is the
+  current path.
+
+#### `LIBS`
+  A list of libraries that `TARGET` is linked against. Default value
+  is an empty list.
+
+#### `QT`
+  If `QT` is set, the `HEADERS` will be added to the sources of
+  `TARGET`, thus allowing the interfaces that are Q_OBJECT to be
+  mocked. Default value is `OFF`.
+  
+#### `INCLUDE`
+  A list of include path's that are required to parse the `HEADERS`.
+  Default value is an empty list.
+
+#### `FRAMEWORKS`
+  A list of macOS framework path's that are required to parse the
+  `HEADERS`. Default value is an empty list.
+</p>
+</details>
+
+### Using the mock object
+
+So, what's going on in `OrderTest.cpp`? First, note the includes:
+```
+#include "mock/WarehouseMock.h"
+```
+For every file under `HEADER`, say `path/to/IFoo.h`, **DrMock**
+generates header and source files `FooMock.h` and `FooMock.cpp`, which
+may be included using the path `mock/path/to/IFoo.h`. In these files,
+the mock class `FooMock` is defined. You must strictly follow this
+template: The class and filename of every interface must begin with an
+`I`, and the mock object will be named accordingly.  (You can change
+these nomenclature templates, but more of that later) The path is
+_relative to the current CMake source dir_. Thus, calling `DrMockModule`
+from anywhere but `src/CMakeLists.txt` is bound to result in odd include
+paths.
+
+Let's go through the first test. The following call makes a shared
+`WarehouseMock` object and sets some of its properties.  Note that the
+mock of `IWarehouse` is placed in the same namespace as its interface.
+```
+auto warehouse = std::make_shared<drmock::samples::WarehouseMock>();
+warehouse->mock.remove().push()
+    .expects("foo", 2)
+    .times(1)
+    .return(true);
+```
+By calling the `mock` method of `WarehouseMock`, you can define the
+behavior of the mock object. For instance, to define the behavior of
+`remove`, you call `warehouse->mock.remove()`. This returns a `Method`
+object onto which `Behavior`s may be pushed using `push`.  Here, the
+mock object is instructed to expect the call `remove("foo", 2)` _exactly
+once_ (call `times` with parameter 1), and then to return `true`. 
+
+**Note.** The `push` method returns a reference to the stack of
+behaviors, thus allowing the user to concatenate the `push` calls as
+above.
+
+Now that the behavior of `warehouse` is defined, the order for two units
+of foo is filled from the warehouse. Judging from the implementation of
+`fill`, this should call `warehouse->remove("foo", 2)`. And, ss defined
+earlier, removing two units of foo will succeed. Whether the defined
+behavior occured of not may be verified using the following call:
+```
+DRTEST_ASSERT(warehouse->mock.verify());
+```
+Or, if you prefer:
+```
+DRTEST_VERIFY_MOCK(warehouse->mock);
+```
+After verifying the mock, we check that the `filled` method returns the
+correct value:
+```
+DRTEST_COMPARE(order.filled(), true);
+```
+
+The second test runs along the same lines. Once again, the customer
+places an order for two units of foo, but this time the call will fail:
+```
+auto warehouse = std::make_shared<drmock::samples::WarehouseMock>();
+warehouse->mock.remove().push()
+    .expects("foo", 2)
+    .times(1)
+    .return(false);
+```
+Once again, `warehouse->mock` is verified, and `order.filled()` is now
+expected to return `false`.
+
+### Running the tests
+
+Do `make` to run the tests. The following should occur:
+```
+    Start 1: OrderTest
+1/1 Test #1: OrderTest ........................   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.01 sec
+```
+
+### Details
+
+#### Interface methods
+
+When declaring a method in an interface, all type references occuring in
+the declaration of the parameters and return values must be declared
+with their full enclosing namespace.
+
+In other words, this is wrong (although it will compile):
+```
+namespace drmock { namespace samples {
+
+class Foo {};
+class Bar {};
+
+class IBaz
+{
+public:
+  virtual ~IBaz() = default;
+
+  Bar func(Foo) const = 0;
+};
+
+}} // namespace drmock::samples
+```
+
+Instead, the declaration of `func` must be:
+```
+drmock::samples::Bar func(drmock::samples::Foo) const = 0;
+```
+
+**DrMock** also requires that parameters of interface method be
+_comparable_. Thus, they must implement `operator==`, with the following
+exceptions: 
+
+(1) `std::shared_ptr<T>` and `std::unique_ptr<T>` are comparable if `T`
+is comparable. They are compared by comparing their pointees.  If the
+pointee type `T` is abstract, polymorphism must be specified, see below.
+
+(2) `std::tuple<Ts...>` is comparable if all
+elements of `Ts...` are comparable. 
+
+#### Polymorphism
+
+If an interface's method accepts or returns an `std::shared_ptr<B>` or
+`std::unique_ptr<B>` with abstract pointee type `B`, then the `Method`
+object must be informed informed which derived type to expect using the
+`polymorphic` method.
+
+For example,
+```
+class Base 
+{
+  // ...
+};
+
+class Derived : public Base 
+{
+  // Make `Derived` comparable.
+  bool operator==(const Derived&) const { /* ... */ }
+
+  // ...
+};
+
+// IFoo.h
+
+class IFoo 
+{
+public:
+  ~IFoo() = default;
+
+  void func(std::shared_ptr<Base>, std::shared_ptr<Base>) = 0;
+};
+```
+
+Then, use `polymorphic` to register `Derived`:
+```
+auto foo = std::make_shared<FooMock>();
+foo->mock.func().polymorphic<std::shared_ptr<Derived>, std::shared_ptr<Derived>>();
+foo->mock.func()
+    .expects(std::make_shared<Derived>(/* ... */), std::make_shared<Derived>(/* ... */))
+    .times(3);
+```
+
+#### Operators
+
+Mocking an operator declared in an interface is not much different from
+mocking any other method, only the way in which the mocked method is
+accessed from the mock object changes. Instead of doing
+```
+foo->mock.operator*()
+    .expects(3.141f)
+    .times(1);
+```
+(which is illegal), you must do
+```
+foo->mock.operatorAst()
+    .expects(3.141f)
+    .times(1);
+```
+What's this? The illegal tokens are replaced with a designator
+describing the operators symbol. The designators for C++'s overloadable
+operators are found in the table below.
+
+| Symbol | Designator     | Symbol     | Designator          |
+| :----- | :------------- | :--------- | :------------------ |
+| `+`    | `Plus`         | `\|=`      | `PipeAssign`        |
+| `-`    | `Minus`        | `<<`       | `StreamLeft`        |
+| `*`    | `Ast`          | `>>`       | `StreamRight`       |
+| `/`    | `Div`          | `>>=`      | `StreamRightAssign` |
+| `%`    | `Modulo`       | `<<=`      | `StreamLeftAssign`  |
+| `^`    | `Caret`        | `==`       | `Equal`             |
+| `&`    | `Amp`          | `!=`       | `NotEqual`          |
+| `\|`   | `Pipe`         | `<=`       | `LesserOrEqual`     |
+| `~`    | `Tilde`        | `>=`       | `GreaterOrEqual`    |
+| `!`    | `Not`          | `<=>`      | `SpaceShip`         |
+| `=`    | `Assign`       | `&&`       | `And`               |
+| `<`    | `Lesser`       | `\|\|`     | `Or`                |
+| `>`    | `Greater`      | `++`       | `Increment`         |
+| `+=`   | `PlusAssign`   | `--`       | `Decrement`         |
+| `-=`   | `MinusAssign`  | `,`        | `Comma`             |
+| `*=`   | `AstAssign`    | `->*`      | `PointerToMember`   |
+| `/=`   | `DivAssig`     | `->`       | `Arrow`             |
+| `%=`   | `ModuloAssign` | `()`       | `Call`              |
+| `^=`   | `CaretAssign`  | `[]`       | `Brackets`          |
+| `&=`   | `AmpAssign`    | `co_await` | `CoAwait`           |
+
+Thus, `operator+` gets the handle `operatorPlus`, `operator%=` gets
+`operatorModuloAssign`, etc.
+
+#### Changing nomenclature templates
+
+**DrMock** uses the following template for identifying interfaces and
+their mocks: Interfaces begin with `I`, followed by the class name
+prefered for the implementation, such as `IVector` for the class
+`Vector`. The associated mock object is designated by the implementation
+name followed by `Mock`. For example, `VectorMock`. The same template is
+applied to the header and source filenames.
+
+If you don't wish to follow this template, you must change the call to
+`DrMockModule`. The arguments of `IFILE` and `ICLASS` must be regular
+expression with exactly one capture group, those of `MOCKFILE` and
+`MOCKCLASS` must contain a single subexpression `\1` (beware the CMake
+excape rules!). 
+
+The capture groups gather the implementation file and class name and
+replace said subexpressions to compute the mock file and class name. For
+example, the following configures **DrMock** to expect interfaces of the
+form `interface_vector`, etc. and to return mock objects called
+`vector_mock`, etc.:
+```
+DrMockModule(
+  TARGET MyLibMocked
+  IFILE
+    "interface_([a-zA-Z0-9].*)"
+  MOCKFILE
+    "\\1_mock"
+  ICLASS
+    "interface_([a-zA-Z0-9].*)"
+  MOCKCLASS
+    "\\1_mock"
+  HEADERS
+    interface_vector.h
+    interface_matrix.h
+    # ...
+)
+```
+
+### Caveats
+
+#### Raw pointers as parameters
+
+While technically not prohibited, the use of raw pointers as parameters
+or return values of interface methods will most likely lead to undesired
+results: Raw pointers are comparable (cf. [Interface methods](#interface-methods)),
+but they are compared directly. Thus, the following will fail:
+```
+int* x = new int{0};
+int* y = new int{0};  // *x == *y
+object->mock.func().expects(x);
+object->func(y);  // x != y
+DRTEST_ASSERT(object->mock.verify());  // Expected `x`, but received `y`.
+```
+
+### Fine print: Interface
+
+Here's the definition of the notion of _interface_ in the context of a
+call of `DrMockModule`:
 
 ## samples/qt
 
