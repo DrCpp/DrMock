@@ -48,13 +48,13 @@ Recall that **DrMock** requires you to configure your project with
 CMake. The `CMakeLists.txt` is faily simple. To fullfil **DrMock**'s
 requirement for C++17, do
 
-```
+```cmake
 set(CMAKE_CXX_STANDARD 17)
 ```
 
 Next, find the package `DrMock::Core`.
 
-```
+```cmake
 find_package(DrMock COMPONENTS Core REQUIRED)
 ```
 
@@ -66,7 +66,7 @@ Finding the **DrMock** package
 automatically import the macro `DrMockTest`, which may be used to
 register tests.
 
-```
+```cmake
 enable_testing()
 DrMockTest(TESTS
   basicTest.cpp
@@ -76,7 +76,7 @@ DrMockTest(TESTS
 You could add further tests by providing addition arguments to the
 macro, like so:
 
-```
+```cmake
 DrMockTest(TESTS
   test0.cpp
   test1.cpp
@@ -86,7 +86,7 @@ DrMockTest(TESTS
 
 Now lets take a look at the `Makefile`:
 
-```
+```makefile
 default:
   mkdir -p build && cd build && cmake .. -DCMAKE_PREFIX_PATH=../../prefix && make -j10 && ctest --output-on-failure
 
@@ -106,7 +106,7 @@ Time to look at some test code. Open `basicTest.cpp`!
 
 `DrMock/Test.h` contains **DrMock**'s test macros and must be included
 in every test source file. To open a new test, do
-```
+```cpp
 DRTEST_TEST(someTest)
 {
   // ...
@@ -117,7 +117,7 @@ A source file name hold an arbitrary number of `DRTEST_TEST(...)` calls.
 #### Assertion and comparison
 
 Use `DRTEST_ASSERT` to check if an expression is `true`:
-```
+```cpp
 DRTEST_TEST(someTest)
 {
   DRTEST_ASSERT(true);
@@ -129,7 +129,7 @@ To check equality of objects of some type `T`, the `DRTEST_COMPARE`
 macro may be used if `T` implements
 `std::ostream& operator<<(ostream& os, const T&)`,
 as done in the next test.
-```
+```cpp
 DRTEST_TEST(anotherTest)
 {
   DRTEST_COMPARE(3 + 4, 7);
@@ -143,13 +143,13 @@ If the compare type `T` doesn't provide a streaming operator, use
 #### Catching exceptions
 
 To check for exceptions, use 
-```
+```cpp
 DRTEST_ASSERT_THROW(statement, exceptionType);
 ```
 which executes `statement` and checks if an exception of type
 `exceptionType` is thrown:
 
-```
+```cpp
 DRTEST_TEST(exceptionTest)
 {
   DRTEST_ASSERT_THROW(
@@ -161,7 +161,7 @@ DRTEST_TEST(exceptionTest)
 }
 ```
 If you wish, you can check multiple statements at once:
-```
+```cpp
 DRTEST_ASSERT_THROW(
     std::string str = "foo";
     throw std::runtime_error{str};
@@ -172,7 +172,7 @@ DRTEST_ASSERT_THROW(
 Observe that the statements are seperated by semicolons.
 
 To check for any throw, use `DRTEST_ASSERT_FAIL`:
-```
+```cpp
 DRTEST_ASSERT_FAIL(throw std::runtime_error{"foo!"});
 ```
 
@@ -180,18 +180,18 @@ DRTEST_ASSERT_FAIL(throw std::runtime_error{"foo!"});
 
 Test data is organised in _test tables_.
 To initialize a test table for the test `someTestWithTable`, use
-```
+```cpp
 DRTEST_DATA(someTestWithTable)
 {
   // ...
 }
 ```
 Columns and rows can be pushed to the table by using
-```
+```cpp
 drtest::addColumn<Type>("column_name");
 ```
 For instance,
-```
+```cpp
 DRTEST_DATA(someTestWithTable)
 {
   drtest::addColumn<int>("lhs");
@@ -209,7 +209,7 @@ all C++ variable names.
 
 After adding the columns, the `drtest::addRow` function may then be used
 to populate the table:
-```
+```cpp
 drtest::addRows(
     "row description", 
     1stColumnEntry,
@@ -218,7 +218,7 @@ drtest::addRows(
   );
 ```
 For example:
-```
+```cpp
 DRTEST_DATA(someTestWithTable)
 {
   // ...
@@ -249,13 +249,13 @@ DRTEST_DATA(someTestWithTable)
 
 Thus, the test table for `someTestWithTable` is initialized and
 populated. To access the table in the test, use
-```
+```cpp
 DRTEST(Type, column_name)
 ```
 Note the lack of double quote in `column_name`!
 
 Thus, to get the test data from above, do
-```
+```cpp
 DRTEST_TEST(someTestWithTable)
 {
   DRTEST_FETCH(int, lhs);
@@ -269,7 +269,7 @@ DRTEST_TEST(someTestWithTable)
 Now you can use `lhs`, `rhs`, etc. as though they were C++ variables,
 and **DrMock** will execute all statements involving these for every row
 of the test table.  For example,
-```
+```cpp
 DRTEST_TEST(someTestWithTable)
 {
   // ...
@@ -286,7 +286,7 @@ individual tests.
 
 Do `make`. This should yield the following:
 
-```
+```console
     Start 1: basicTest
 1/1 Test #1: basicTest ........................***Failed    0.00 sec
 TEST   someTest
@@ -318,7 +318,7 @@ make: *** [default] Error 8
 ```
 
 In the test source `basicTest.cpp`, all tests passed except one:
-```
+```console
 TEST   someTestWithTable, This test fails
 *FAIL  someTestWithTable, This test fails (109):
     (lhs + rhs) 4
@@ -333,7 +333,7 @@ along with their variable name.
 Change the test table so that the test check if `2 + 2 == 4` instead of
 `2 + 2 == 5` and run `make` again:
 
-```
+```console
     Start 1: basicTest
 1/1 Test #1: basicTest ........................   Passed    0.00 sec
 
@@ -347,12 +347,12 @@ Total Test time (real) =   0.01 sec
 #### Commas in macro arguments
 
 The error
-```
+```console
 error: too many arguments provided to function-like macro invocation
 ```
 can be caused by not properly isolating commas occuring in macro
 arguments. For example,
-```
+```cpp
 DRTEST_ASSERT(
     std::vector<int>{0, 1, 2} 
     == 
@@ -362,7 +362,7 @@ DRTEST_ASSERT(
 will throw this error. The macro will think it is called with the
 arguments `std::vector<int>{0`, `1`, `2} == std::vector<int>{3`, etc...
 To solve this, use parens `()` to encapsulate these commas:
-```
+```cpp
 DRTEST_ASSERT(
     (std::vector<int>{0, 1, 2}) 
     == 
@@ -375,7 +375,7 @@ DRTEST_ASSERT(
 Implicit conversion doesn't work when adding rows to test tables.
 Attempting implicit conversion when calling `drtest::addRow` will result
 in a `type mismatch` error. For example,
-```
+```cpp
 drtest::addRow(
     "Small numbers",
     3,
@@ -430,7 +430,7 @@ tested, will use a mock of `Warehouse` for this purpose.
 
 That means that we must specify an interface `IWarehouse` that
 `Warehouse` will then implement:
-```
+```cpp
 // IWarehouse.h
 
 // ...
@@ -457,7 +457,7 @@ is irrelevant here, the reader is invited to look at the sample
 implementation found in `Warehouse.h` and `Warehouse.cpp`.
 
 Let's take a short peek at the header of `Order` for a moment. 
-```
+```cpp
 // Order.h
 
 // ...
@@ -481,7 +481,7 @@ use of polymorphism. You could use virtually any type of (smart) pointer
 in place of `std::shared_ptr`. 
 
 Here's the straightforward implementation of the `fill` method:
-```
+```cpp
 void 
 Order::fill(const std::shared_ptr<IWarehouse& wh)
 {
@@ -495,7 +495,7 @@ the commodity from the warehouse and set `filled_` accordingly.
 
 To use **DrMock** to create source code for a mock of `IWarehouse`, the
 macro `DrMockModule` is used. 
-```
+```cmake
 # src/CMakeLists.txt
 
 add_library(DrMockSampleMock SHARED
@@ -531,7 +531,7 @@ subsection.
 
 Let's now see how mock objects are used in tests. First, take a look at
 `tests/CMakeLists.txt`. 
-```
+```cmake
 DrMockTest(
   LIBS
     DrMockSampleMock
@@ -550,7 +550,7 @@ case, the test `OrderTest.cpp` requires the class `Order` from
 <details><summary>DrMockModule documentation</summary>
 <p>
 
-```
+```cmake
 DrMockModule(
   TARGET 
   HEADERS header1 [header2 [header3 ...]]
@@ -621,7 +621,7 @@ DrMockModule(
 ### Using the mock object
 
 So, what's going on in `OrderTest.cpp`? First, note the includes:
-```
+```cpp
 #include "mock/WarehouseMock.h"
 ```
 For every file under `HEADER`, say `path/to/IFoo.h`, **DrMock**
@@ -638,7 +638,7 @@ paths.
 Let's go through the first test. The following call makes a shared
 `WarehouseMock` object and sets some of its properties.  Note that the
 mock of `IWarehouse` is placed in the same namespace as its interface.
-```
+```cpp
 auto warehouse = std::make_shared<drmock::samples::WarehouseMock>();
 warehouse->mock.remove().push()
     .expects("foo", 2)
@@ -661,22 +661,22 @@ of foo is filled from the warehouse. Judging from the implementation of
 `fill`, this should call `warehouse->remove("foo", 2)`. And, ss defined
 earlier, removing two units of foo will succeed. Whether the defined
 behavior occured of not may be verified using the following call:
-```
+```cpp
 DRTEST_ASSERT(warehouse->mock.verify());
 ```
 Or, if you prefer:
-```
+```cpp
 DRTEST_VERIFY_MOCK(warehouse->mock);
 ```
 After verifying the mock, we check that the `filled` method returns the
 correct value:
-```
+```cpp
 DRTEST_COMPARE(order.filled(), true);
 ```
 
 The second test runs along the same lines. Once again, the customer
 places an order for two units of foo, but this time the call will fail:
-```
+```cpp
 auto warehouse = std::make_shared<drmock::samples::WarehouseMock>();
 warehouse->mock.remove().push()
     .expects("foo", 2)
@@ -689,7 +689,7 @@ expected to return `false`.
 ### Running the tests
 
 Do `make` to run the tests. The following should occur:
-```
+```console
     Start 1: OrderTest
 1/1 Test #1: OrderTest ........................   Passed    0.00 sec
 
@@ -707,7 +707,7 @@ the declaration of the parameters and return values must be declared
 with their full enclosing namespace.
 
 In other words, this is wrong (although it will compile):
-```
+```cpp
 namespace drmock { namespace samples {
 
 class Foo {};
@@ -725,7 +725,7 @@ public:
 ```
 
 Instead, the declaration of `func` must be:
-```
+```cpp
 drmock::samples::Bar func(drmock::samples::Foo) const = 0;
 ```
 
@@ -748,7 +748,7 @@ object must be informed informed which derived type to expect using the
 `polymorphic` method.
 
 For example,
-```
+```cpp
 class Base 
 {
   // ...
@@ -774,7 +774,7 @@ public:
 ```
 
 Then, use `polymorphic` to register `Derived`:
-```
+```cpp
 auto foo = std::make_shared<FooMock>();
 foo->mock.func().polymorphic<std::shared_ptr<Derived>, std::shared_ptr<Derived>>();
 foo->mock.func()
@@ -787,13 +787,13 @@ foo->mock.func()
 Mocking an operator declared in an interface is not much different from
 mocking any other method, only the way in which the mocked method is
 accessed from the mock object changes. Instead of doing
-```
+```cpp
 foo->mock.operator*()
     .expects(3.141f)
     .times(1);
 ```
 (which is illegal), you must do
-```
+```cpp
 foo->mock.operatorAst()
     .expects(3.141f)
     .times(1);
@@ -848,7 +848,7 @@ replace said subexpressions to compute the mock file and class name. For
 example, the following configures **DrMock** to expect interfaces of the
 form `interface_vector`, etc. and to return mock objects called
 `vector_mock`, etc.:
-```
+```cmake
 DrMockModule(
   TARGET MyLibMocked
   IFILE
@@ -874,7 +874,7 @@ While technically not prohibited, the use of raw pointers as parameters
 or return values of interface methods will most likely lead to undesired
 results: Raw pointers are comparable (cf. [Interface methods](#interface-methods)),
 but they are compared directly. Thus, the following will fail:
-```
+```cpp
 int* x = new int{0};
 int* y = new int{0};  // *x == *y
 object->mock.func().expects(x);
@@ -910,7 +910,7 @@ This sample demonstrates how to use **DrMock** to mock an interface
 
 Let's take a look at the changes make to `CMakeLists.txt`. 
 
-```
+```cmake
 # samples/qt/CMakeLists.txt
 
 # ...
@@ -931,7 +931,7 @@ When calling `DrMockModule`, the required Qt5 modules must now
 bespecified using the keyword `QTMODULES`, as follows.  **DrMock** will
 automatically link `TARGET` to the required libraries.
 
-```
+```cmake
 DrMockModule(
   TARGET DrMockSampleQtMocked
   generator ${pathToMocker}
@@ -972,7 +972,7 @@ following rules:
 The interface `IFoo` inhertis from `QWidget`, has a pure virtual slot
 and a signal.
 
-```
+```cpp
 class IFoo : public QWidget
 {
   Q_OBJECT
@@ -991,7 +991,7 @@ signals:
 To demonstrate the mock object, two instances of `FooMock` are made
 and `someSignal` of `foo1` connected to the slot of `foo2`.
 
-```
+```cpp
 QObject::connect(
     foo1.get(), &IFoo::someSignal,
     foo2.get(), &IFoo::someSlot
@@ -1002,7 +1002,7 @@ Before that, `foo2` is instructed to expect a call of `someSlot` with
 the argument `"foo"`. After `foo1` emits `someSignal`, this may be
 verified by `foo2`:
 
-```
+```cpp
 emit foo1->someSignal("foo");
 
 DRMOCK_ASSERT(foo2->mock.verify());
@@ -1011,7 +1011,7 @@ DRMOCK_ASSERT(foo2->mock.verify());
 ### Running the tests
 
 Do `make`. If everything checks out, this should return
-```
+```console
 Test project /Users/malte/DrMock/samples/qt/build
     Start 1: FooTest
 1/1 Test #1: FooTest ..........................   Passed    0.02 sec
