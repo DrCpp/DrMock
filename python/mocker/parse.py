@@ -185,9 +185,9 @@ class Overload:
             # Polymorphic method object.
             value_type = "Method" + str(template_args)
             shared_ptr = MemberVariable(
-                name = "DRMOCK_" + f.mangled_name() + "_" + str(i),
+                name = "METHODS_DRMOCK_" + f.mangled_name() + "_" + str(i),
                 type = Type.from_spelling("std::shared_ptr<" + value_type + ">"),
-                constructor_args = ["std::make_shared<" + value_type + ">()"]
+                constructor_args = ["std::make_shared<" + value_type + '>("", STATEOBJECT_DRMOCK_)']
             )
             # Append to the private members of `mo` and to the list of identifiers
             # later to be used to initialize the `MethodCollection` object.    
@@ -240,7 +240,7 @@ class Overload:
                 Type.from_spelling("TypeContainer" + str(template))
             ]
             dispatch.body = MethodBody(
-                "return *" + "DRMOCK_" + f.mangled_name() + "_" + str(i) + ";"
+                "return *" + "METHODS_DRMOCK_" + f.mangled_name() + "_" + str(i) + ";"
             )
             result.append(dispatch)
             i += 1
@@ -1210,7 +1210,17 @@ class Class:
         mo.public.extend([
             overload.make_getter() for overload in overloads
         ])
-        # For every overload add the shared_ptr's. 
+
+        # Create the shared StateObject.
+        mo.private.append(
+            MemberVariable(
+                name = "STATEOBJECT_DRMOCK_",
+                type = Type.from_spelling("std::shared_ptr<StateObject>"),
+                constructor_args = ["std::make_shared<StateObject>()"]
+            )
+        )
+
+        # For every overload add the shared_ptr's to the Method objects. 
         pointers = []
         for overload in overloads:
             # Make the pointers, push them to identifiers.

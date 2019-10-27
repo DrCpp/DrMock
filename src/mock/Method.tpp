@@ -33,6 +33,12 @@ Method<Result, Args...>::Method(std::string name)
 {}
 
 template<typename Result, typename... Args>
+Method<Result, Args...>::Method(std::shared_ptr<StateObject> state_object)
+:
+  Method{"", std::move(state_object)}
+{}
+
+template<typename Result, typename... Args>
 Method<Result, Args...>::Method(std::string name, std::shared_ptr<StateObject> state_object)
 :
   name_{std::move(name)},
