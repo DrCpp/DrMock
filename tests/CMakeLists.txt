@@ -86,6 +86,7 @@ DrMockModule(
     mocker/IMultipleClasses.h
     mocker/IDerived.h
     mocker/ISharedState.h
+    mocker/IVerifyState.h
     IExample.h
   INSTALLFLAG ON
   INCLUDE
@@ -113,6 +114,7 @@ DrMockTest(
     mocker/MultipleClassesTest.cpp
     mocker/DerivedTest.cpp
     mocker/SharedStateTest.cpp
+    mocker/VerifyStateTest.cpp
     ExampleMockTest.cpp
 )
 

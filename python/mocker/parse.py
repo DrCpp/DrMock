@@ -1220,6 +1220,31 @@ class Class:
             )
         )
 
+        # Create the verifyState methods.
+        mo.public.append(
+            Method(
+                name = "verifyState",
+                return_type = Type.from_spelling("bool"),
+                parameters = [Parameter("state", Type.from_spelling("const std::string&"))],
+                body = MethodBody(
+                    "return STATEOBJECT_DRMOCK_->get() == state;"
+                )
+            )
+        )
+        mo.public.append(
+            Method(
+                name = "verifyState",
+                return_type = Type.from_spelling("bool"),
+                parameters = [
+                    Parameter("slot", Type.from_spelling("const std::string&")),
+                    Parameter("state", Type.from_spelling("const std::string&"))
+                ],
+                body = MethodBody(
+                    "return STATEOBJECT_DRMOCK_->get(slot) == state;"
+                )
+            )
+        )
+
         # For every overload add the shared_ptr's to the Method objects. 
         pointers = []
         for overload in overloads:
