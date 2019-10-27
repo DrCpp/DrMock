@@ -645,11 +645,16 @@ warehouse->mock.remove().push()
     .times(1)
     .return(true);
 ```
-By calling the `mock` method of `WarehouseMock`, you can define the
-behavior of the mock object. For instance, to define the behavior of
-`remove`, you call `warehouse->mock.remove()`. This returns a `Method`
-object onto which `Behavior`s may be pushed using `push`.  Here, the
-mock object is instructed to expect the call `remove("foo", 2)` _exactly
+So, what's this? Every mock, contains a public instance of type
+`DRMOCK_Object_Warehouse` (or whatever the implementation's name is),
+whose source code is generated alongside that of `WarehouseMock`. This
+_mock object_ lets the user control the expected behavior of the mock
+obejct.
+
+For instance, to define the behavior of `remove`, you call
+`warehouse->mock.remove()`. This returns a `Method` object onto which
+`Behavior`s may be pushed using `push` (detail below). Here, the mock
+object is instructed to expect the call `remove("foo", 2)` _exactly
 once_ (call `times` with parameter 1), and then to return `true`. 
 
 **Note.** The `push` method, as well as `expects`, `times`, etc. returns
