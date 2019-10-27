@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
-
 cmake_minimum_required(VERSION 3.10)
 
 #######################################
