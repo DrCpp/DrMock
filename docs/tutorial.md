@@ -947,6 +947,55 @@ DRTEST_ASSERT(object->mock.verify());  // Expected `x`, but received `y`.
 Here's the definition of the notion of _interface_ in the context of a
 call of `DrMockModule`:
 
+* The file's name with its file extension<sup>[1]</sup> removed shall
+  match `IFILE`.
+
+* The file shall contain exactly one class declaration whose name
+  matches `ICLASS`.
+
+[1]: By *file extension* we mean the substring spanning from the first
+  `.` until the string's end (i.e., the substring that matches
+  `\.[^.]*$`).  For instance, the file extension of `file.tar.gz` is
+  `.tar.gz`.
+
+The *interface* is the unique class discovered determined by `ICLASS` as
+described above and must satisfy the following conditions:
+
+* The only declarations in the interface shall be public methods and
+  type alias (template) declarations.<sup>[2]</sup>
+
+* All methods shall be declared pure virtual.<sup>[2]</sup>
+
+* The interface shall only derive from non-abstract classes.
+
+* The interface shall not contain any conversion functions.
+
+* If an operator is defined in the interface, the interface shall not
+  have a method called `operator[SYMBOL]`, where `[SYMBOL]` is
+  determined by the operator's symbol according to the table in
+  [Operators](#operators).
+
+* None of the interface's method shall be a volatile qualified method
+  or a method with volatile qualified parameters.
+
+* All type references occuring in the declarations of the parameters and
+  return values of interface's methods shall be declared with their full
+  enclosing namespace.
+
+* Every parameter or return value `Foo` of the interface's methods shall
+  satisfy one of the following conditions:
+
+  (1) `Foo` is not abstract and implements 
+    `bool operator==(const Foo&) const`.
+
+  (2) It is an `std::shared_ptr` or an `std::unique_ptr` to a type that
+    satisfies (1), (2) or (3) or is an abstract class.
+
+  (3) It is an `std::tuple` of types that satisfy (1), (2) or (3).
+
+[2]: QObjects are exceptions to these rule, see [samples/qt](samples/qt)
+  below.
+
 ## samples/qt
 
 ```
