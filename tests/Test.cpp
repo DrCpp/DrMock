@@ -51,23 +51,23 @@ DRTEST_TEST(testWithoutData)
   DRTEST_ASSERT_TEST_FAIL(DRTEST_FETCH(std::string, col1));
 }*/
 
-DRTEST_TEST(test1)
+DRTEST_TEST(assert_throw)
 {
+  DRTEST_LOG_INFO(__PRETTY_FUNCTION__);
   DRTEST_ASSERT_THROW(throw std::runtime_error{""}, std::runtime_error);
   DRTEST_ASSERT_TEST_FAIL(
       DRTEST_ASSERT_THROW(int i = 1; (void)i, std::runtime_error)
     );
-  DRTEST_LOG_INFO(__PRETTY_FUNCTION__);
 }
 
-DRTEST_TEST(test2)
+DRTEST_TEST(assert_test_fail)
 {
   DRTEST_LOG_INFO(__PRETTY_FUNCTION__);
   DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT(false));
   DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT(true)));
 }
 
-DRTEST_DATA(test3)
+DRTEST_DATA(test_with_data_1)
 {
   drtest::addColumn<std::string>("col1");
   drtest::addColumn<int>("col2");
@@ -95,7 +95,7 @@ DRTEST_DATA(test3)
     );
 }
 
-DRTEST_TEST(test3)
+DRTEST_TEST(test_with_data_1)
 {
   DRTEST_LOG_INFO(__PRETTY_FUNCTION__);
   DRTEST_FETCH(std::string, col1);
@@ -123,7 +123,7 @@ DRTEST_TEST(test3)
   (void) col3;
 }
 
-DRTEST_DATA(test5)
+DRTEST_DATA(test_with_data_2)
 {
   drtest::addColumn<int>("summand1");
   drtest::addColumn<int>("summand2");
@@ -151,7 +151,7 @@ DRTEST_DATA(test5)
     );
 }
 
-DRTEST_TEST(test5)
+DRTEST_TEST(test_with_data_2)
 {
   DRTEST_FETCH(int, summand1);
   DRTEST_FETCH(int, summand2);
