@@ -394,7 +394,12 @@ DRTEST_TEST(wildcardAsTargetState)
 }
 
 DRTEST_TEST(pushingMultipleWildcardTransitions)
-
 {
-
+  auto so = std::make_shared<StateObject>();
+  StateBehavior<int, int> b{so};
+  b.transition("*", "state1", 0);
+  DRTEST_ASSERT_THROW(
+      b.transition("*", "state1", 0),
+      std::runtime_error
+    );
 }
