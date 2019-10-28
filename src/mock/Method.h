@@ -39,6 +39,7 @@ class Method final : public IMethod
 public:
   Method();
   Method(std::string);
+  Method(std::shared_ptr<StateObject>);
   Method(std::string, std::shared_ptr<StateObject>);
   template<typename... Deriveds> void polymorphic();
 
