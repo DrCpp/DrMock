@@ -68,6 +68,26 @@ DRTEST_TEST(returns)
   DRTEST_ASSERT(std::holds_alternative<std::monostate>(result));
 }
 
+DRTEST_TEST(transitionConflictButDifferentInput)
+{
+  auto so = std::make_shared<StateObject>();
+  StateBehavior<int, int> b{so};
+  // None of the following should throw.
+  b.transition("", "state1", 1);
+  b.transition("", "state2", 2);
+  b.transition("", "state3", 3);
+}
+
+DRTEST_TEST(transitionWildcard)
+{
+  auto so = std::make_shared<StateObject>();
+  StateBehavior<int, int> b{so};
+  // None of the following should throw.
+  b.transition("", "state1", 0);
+  b.transition("*", "state2", 0);
+  b.transition("abc", "state3", 0);
+}
+
 DRTEST_TEST(multipleArguments)
 {
   auto so = std::make_shared<StateObject>();
@@ -341,8 +361,34 @@ DRTEST_TEST(transitionFailure)
       (b.transition("", "state2", 0)),
       std::runtime_error
     );
+}
+
+DRTEST_TEST(wildcardExceptions)
+{
+  auto so = std::make_shared<StateObject>();
+  StateBehavior<int, int> b{so};
+  b.transition("*", "state2", 0);
+  b.transition("", "state1", 0);
+  b.returns("state1", 1);
+  b.returns("state2", 2);
+
+  auto result = b.call(0);
+  DRTEST_ASSERT(std::holds_alternative<std::shared_ptr<int>>(result));
+  auto cast = std::get<std::shared_ptr<int>>(result);
+  DRTEST_COMPARE(*cast, 1);
+
+  result = b.call(0);
+  DRTEST_ASSERT(std::holds_alternative<std::shared_ptr<int>>(result));
+  cast = std::get<std::shared_ptr<int>>(result);
+  DRTEST_COMPARE(*cast, 2);
+}
+
+DRTEST_TEST(wildcardAsTargetState)
+{
+  auto so = std::make_shared<StateObject>();
+  StateBehavior<int, int> b{so};
   DRTEST_ASSERT_THROW(
-      (b.transition("*", "state2", 0)),
+      b.transition("", "*", 0),
       std::runtime_error
     );
 }
