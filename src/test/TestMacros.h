@@ -59,13 +59,13 @@ do { \
   throw drtest::detail::TestFailure{__LINE__, "no exception thrown: " #p}; \
 } while (false)
 
-#define DRTEST_ASSERT_FAIL(p) \
+#define DRTEST_ASSERT_TEST_FAIL(p) \
 do { \
   try \
   { \
     p; \
   } \
-  catch(const std::exception& e) \
+  catch(const drtest::detail::TestFailure& e) \
   { \
     break; \
   } \

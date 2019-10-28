@@ -48,13 +48,13 @@ DRTEST_TEST(cleanup)
 
 DRTEST_TEST(testWithoutData)
 {
-  DRTEST_ASSERT_FAIL(DRTEST_FETCH(std::string, col1));
+  DRTEST_ASSERT_TEST_FAIL(DRTEST_FETCH(std::string, col1));
 }*/
 
 DRTEST_TEST(test1)
 {
   DRTEST_ASSERT_THROW(throw std::runtime_error{""}, std::runtime_error);
-  DRTEST_ASSERT_FAIL(
+  DRTEST_ASSERT_TEST_FAIL(
       DRTEST_ASSERT_THROW(int i = 1; (void)i, std::runtime_error)
     );
   DRTEST_LOG_INFO(__PRETTY_FUNCTION__);
@@ -63,8 +63,8 @@ DRTEST_TEST(test1)
 DRTEST_TEST(test2)
 {
   DRTEST_LOG_INFO(__PRETTY_FUNCTION__);
-  DRTEST_ASSERT_FAIL(DRTEST_ASSERT(false));
-  DRTEST_ASSERT_FAIL(DRTEST_ASSERT_FAIL(DRTEST_ASSERT(true)));
+  DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT(false));
+  DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT(true)));
 }
 
 DRTEST_DATA(test3)
@@ -108,7 +108,7 @@ DRTEST_TEST(test3)
   }
   else
   {
-    DRTEST_ASSERT_FAIL(DRTEST_ASSERT(col2 == 2));
+    DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT(col2 == 2));
   }
 
   if (col2 == 1)
@@ -117,16 +117,10 @@ DRTEST_TEST(test3)
   }
   else
   {
-    DRTEST_ASSERT_FAIL(DRTEST_COMPARE(col2, 1));
+    DRTEST_ASSERT_TEST_FAIL(DRTEST_COMPARE(col2, 1));
   }
 
   (void) col3;
-}
-
-DRTEST_TEST(test4)
-{
-  DRTEST_LOG_INFO(__PRETTY_FUNCTION__);
-  DRTEST_ASSERT_FAIL(throw std::runtime_error{"foo"});
 }
 
 DRTEST_DATA(test5)
@@ -165,7 +159,7 @@ DRTEST_TEST(test5)
 
   if (summand1 == 2)
   {
-    DRTEST_ASSERT_FAIL(DRTEST_COMPARE(summand1 + summand2, summe));
+    DRTEST_ASSERT_TEST_FAIL(DRTEST_COMPARE(summand1 + summand2, summe));
   }
   else
   {
