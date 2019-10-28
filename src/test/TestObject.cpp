@@ -127,7 +127,7 @@ TestObject::runTest(bool verbose_logging)
   failed_rows_.clear();
   if (data_rows_.size() > 0)
   {
-    for (auto& row : data_rows_)
+    for (const auto& row : data_rows_)
     {
       current_row_ = row;
       runOneTest(row, verbose_logging);

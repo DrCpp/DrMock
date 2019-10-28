@@ -40,17 +40,6 @@ DRTEST_TEST(cleanup)
   DRTEST_LOG_INFO("cleanup");
 }
 
-/*DRTEST_DATA(dataWithoutTest)
-{
-  drtest::addColumn<std::string>("col1");
-  drtest::addRow("row 1", std::string{"1"});
-}
-
-DRTEST_TEST(testWithoutData)
-{
-  DRTEST_ASSERT_TEST_FAIL(DRTEST_FETCH(std::string, col1));
-}*/
-
 DRTEST_TEST(assert_throw)
 {
   DRTEST_LOG_INFO(__PRETTY_FUNCTION__);
@@ -165,4 +154,9 @@ DRTEST_TEST(test_with_data_2)
   {
     DRTEST_COMPARE(summand1 + summand2, summe);
   }
+}
+
+DRTEST_TEST(test_without_data)
+{
+  DRTEST_ASSERT_THROW(DRTEST_FETCH(std::string, col1), std::logic_error);
 }
