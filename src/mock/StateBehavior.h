@@ -48,7 +48,7 @@ public:
       Args... input
     );
   StateBehavior& transition(
-      const std::string slot,
+      const std::string& slot,
       std::string current_state,
       std::string new_state,
       Args... input
@@ -57,16 +57,16 @@ public:
   template<typename T = Result> StateBehavior& returns(
       const std::string& state,
       const std::enable_if_t<not std::is_same_v<Result, void>, T>& value
-    );  // On `state`, default slot returns `value`.
+    );
   template<typename T = Result> StateBehavior& returns(
       const std::string& state,
       std::enable_if_t<not std::is_same_v<Result, void>, T>&& value
-    );  // Same for rvlaue ref
+    );
   template<typename T = Result> StateBehavior& returns(
       const std::string& slot,
       const std::string& state,
       const std::enable_if_t<not std::is_same_v<Result, void>, T>&
-    );  // One `state`, `slot` returns `value`
+    );
   template<typename T = Result> StateBehavior& returns(
       const std::string& slot,
       const std::string& state,
@@ -76,12 +76,12 @@ public:
   template<typename E> StateBehavior& throws(
       const std::string& state,
       E&& excp
-    );  // On `state`, default throws
+    );
   template<typename E> StateBehavior& throws(
       const std::string& slot,
       const std::string& state,
       E&& excp
-    );  // On `state`, `slot` throws exception
+    );
 
   template<typename... Deriveds> StateBehavior& polymorphic();
   void setIsEqual(std::shared_ptr<detail::IIsTuplePackEqual<Args...>>) override;

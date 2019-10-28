@@ -68,39 +68,52 @@ StateBehavior<Result, Args...>::transition(
 template<typename Result, typename... Args>
 StateBehavior<Result, Args...>&
 StateBehavior<Result, Args...>::transition(
-    const std::string slot,
+    const std::string& slot,
     std::string current_state,
     std::string new_state,
     Args... input
   )
 {
+  // Throw if the new_state is the wildcard symbol `"*"`.
+  if (new_state == "*")
+  {
+    throw std::runtime_error{"* not allowed as target state."};
+  }
   // Register the slot in the `StateObject`.
   state_object_->get(slot);
   // Get the transitions for this slot.
   auto& map = transitions_[slot];
-  // Check if a (wildcard) transition matching the key exists.
-  auto key = std::make_tuple(current_state, std::make_tuple(input...));
-  if (current_state != "*")
+  // Make key.
+  auto key = std::make_tuple(
+      current_state, 
+      std::make_tuple(input...)
+    );
+  // Check for conflicts...
+  if (current_state == "*")
   {
-    auto wildkey = std::make_tuple("*", std::make_tuple(std::move(input)...));
-    if (map.find(key) != map.end() or map.find(wildkey) != map.end())
+    // If two wildcard transitions with the same input are found, throw.
+    if (map.find(key) != map.end())
     {
       throw std::runtime_error{"Transition conflict."};
     }
   }
   else
   {
-    // Check *all* transitions and compare their input to `input`.
-    for (const auto& v : map)
+    // Check for non-wildcard conflicts.
+    for (const auto& w : map)
     {
-      if ((*is_tuple_pack_equal_)(std::get<1>(v.first), input...))
+      auto k = w.first;
+      if (
+              std::get<0>(k) == current_state
+          and (*is_tuple_pack_equal_)(std::get<1>(k), input...)
+        )
       {
-        throw std::runtime_error{"Transition conflict."};
+        throw std::runtime_error{"Transition conflict."}; 
       }
     }
   }
   // If all checks out, add the transition.
-  map[key] = std::move(new_state);
+  map[std::move(key)] = std::move(new_state);
   return *this;
 }
 
@@ -110,9 +123,9 @@ StateBehavior<Result, Args...>&
 StateBehavior<Result, Args...>::polymorphic()
 {
   is_tuple_pack_equal_ = std::make_shared<detail::IsTuplePackEqual<
-    std::tuple<Args...>,
-    std::tuple<Deriveds...>
-  >>();
+      std::tuple<Args...>,
+      std::tuple<Deriveds...>
+    >>();
   return *this;
 }
 
@@ -222,20 +235,34 @@ StateBehavior<Result, Args...>::call(const Args&... args)
   {
     std::string slot = v.first;
     auto& map = v.second;
+    bool found_match{false};
+    std::string new_state;
     // Find the first transition that matches the arguments.
     for (const auto& w : map)
     {
       std::string current_state = state_object_->get(slot);
       auto& key = w.first;
-      if (
-              (std::get<0>(key) == current_state or std::get<0>(key) == "*")
-          and (*is_tuple_pack_equal_)(std::get<1>(key), args...)
-      )
+      if ((*is_tuple_pack_equal_)(std::get<1>(key), args...))
       {
-        std::string new_state = w.second;
-        state_object_->set(slot, new_state);
-        break;
+        // Check for wildcard transition. If it's a non-wildcard
+        // transition, break immediately.
+        if (std::get<0>(key) == current_state)
+        {
+          new_state = w.second;
+          found_match = true;
+          break;
+        }
+        else if (std::get<0>(key) == "*") // Wildcard match.
+        {
+          new_state = w.second;
+          found_match = true;
+        }
       }
+    }
+    // Execute the transition.
+    if (found_match)
+    {
+      state_object_->set(slot, new_state);
     }
   }
   // Get the slot's state.
