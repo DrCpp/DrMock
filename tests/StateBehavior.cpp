@@ -363,7 +363,7 @@ DRTEST_TEST(transitionFailure)
     );
 }
 
-DRTEST_TEST(wildcardExceptions)
+DRTEST_TEST(wildcardOverride)
 {
   auto so = std::make_shared<StateObject>();
   StateBehavior<int, int> b{so};
@@ -391,4 +391,10 @@ DRTEST_TEST(wildcardAsTargetState)
       b.transition("", "*", 0),
       std::runtime_error
     );
+}
+
+DRTEST_TEST(pushingMultipleWildcardTransitions)
+
+{
+
 }
