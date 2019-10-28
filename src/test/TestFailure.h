@@ -31,6 +31,7 @@ public:
   TestFailure(int line, std::string expr);
   template<typename LhsType, typename RhsType> TestFailure(
       int line,
+      std::string op,
       std::string lhs_expr,
       std::string rhs_expr,
       const LhsType& lhs,
@@ -48,6 +49,7 @@ private:
 template<typename LhsType, typename RhsType>
 TestFailure::TestFailure(
     int line,
+    std::string op,
     std::string lhs_expr,
     std::string rhs_expr,
     const LhsType& lhs,
@@ -58,8 +60,10 @@ TestFailure::TestFailure(
 {
   std::stringstream s{};
   s << std::endl;
-  s << "    (" << std::move(lhs_expr) << ") " << lhs << std::endl;
-  s << "    (" << std::move(rhs_expr) << ") " << rhs;
+  s << "    (" << std::move(lhs_expr) << ") " << std::endl;
+  s << "      " << lhs << std::endl;
+  s << "    (expected " << op << ")" << std::endl;
+  s << "      " << rhs << std::endl;
   what_ = s.str();
 }
 

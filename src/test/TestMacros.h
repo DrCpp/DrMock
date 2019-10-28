@@ -41,10 +41,27 @@ FunctionInvoker name##_test_pusher{[] () { Singleton<Global>::get()->addTestFunc
 void name()
 
 #define DRTEST_ASSERT(p) \
-if (not (p)) throw drtest::detail::TestFailure{__LINE__, #p}
+do { if (not (p)) throw drtest::detail::TestFailure{__LINE__, #p}; } while (false)
 
-#define DRTEST_COMPARE(lhs, rhs) \
-if (not (lhs == rhs)) throw drtest::detail::TestFailure{__LINE__, #lhs, #rhs, lhs, rhs};
+#define DRTEST_ASSERT_EQ(lhs, rhs) \
+do { if (not (lhs == rhs)) throw drtest::detail::TestFailure{__LINE__, "==", #lhs, #rhs, lhs, rhs}; } while (false)
+
+#define DRTEST_COMPARE(lhs, rhs) DRTEST_ASSERT_EQ(lhs, rhs)
+
+#define DRTEST_ASSERT_NE(lhs, rhs) \
+do { if (not (lhs != rhs)) throw drtest::detail::TestFailure{__LINE__, "!=", #lhs, #rhs, lhs, rhs}; } while (false)
+
+#define DRTEST_ASSERT_LE(lhs, rhs) \
+do { if (not (lhs <= rhs)) throw drtest::detail::TestFailure{__LINE__, "<=", #lhs, #rhs, lhs, rhs}; } while (false)
+
+#define DRTEST_ASSERT_LT(lhs, rhs) \
+do { if (not (lhs < rhs)) throw drtest::detail::TestFailure{__LINE__, "<", #lhs, #rhs, lhs, rhs}; } while (false)
+
+#define DRTEST_ASSERT_GE(lhs, rhs) \
+do { if (not (lhs >= rhs)) throw drtest::detail::TestFailure{__LINE__, ">=", #lhs, #rhs, lhs, rhs}; } while (false)
+
+#define DRTEST_ASSERT_GT(lhs, rhs) \
+do { if (not (lhs > rhs)) throw drtest::detail::TestFailure{__LINE__, ">", #lhs, #rhs, lhs, rhs}; } while (false)
 
 #define DRTEST_ASSERT_THROW(p, E) \
 do { \
