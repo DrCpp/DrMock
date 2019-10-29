@@ -26,15 +26,23 @@ DRTEST_TEST(someTest)
   DRTEST_ASSERT(3 + 4 == 7);
 }
 
-// Note: `DRTEST_COMPARE` requires an 
+// Note: `DRTEST_ASSERT_EQ`, etc. require an 
 // ```
 // std::ostream& operator<<(ostream& os, const T&)
 // ```
-// in order to use `DRTEST_COMPARE`. Use `DRMOCK_ASSERT(x == y)` if the
-// class admits no such operator.
+// Use `DRMOCK_ASSERT(x == y)` if the class admits no such operator.
 DRTEST_TEST(anotherTest)
 {
-  DRTEST_COMPARE(3 + 4, 7);
+  // 3 + 4 == 7
+  DRTEST_ASSERT_EQ(3 + 4, 7);
+  // 7 > 6
+  DRTEST_ASSERT_GT(7, 6);
+  // 8 + 5 >= 13
+  DRTEST_ASSERT_GE(8 + 5, 13);
+  // -3 < 0
+  DRTEST_ASSERT_LT(-3, 0);
+  // 9 <= 10
+  DRTEST_ASSERT_LE(9, 10);
 }
 
 DRTEST_TEST(exceptionTest)
@@ -55,10 +63,10 @@ DRTEST_TEST(exceptionTest)
       std::runtime_error
     );
 
-  // If you're not particular about which exception is thrown, you can
-  // just use the following macro, which catches any exception derived
-  // from `std::exception`.
-  DRTEST_ASSERT_FAIL(throw std::runtime_error{"foo"});
+  // Assert the following tests to fail.
+  DRTEST_ASSERT_TEST_FAIL(
+      DRTEST_ASSERT(2 + 2 == 5)
+    );
 }
 
 DRTEST_DATA(someTestWithTable)
@@ -106,6 +114,6 @@ DRTEST_TEST(someTestWithTable)
   DRTEST_FETCH(std::string, randomStuff);
 
   // Run some tests with the fetched variables.
-  DRTEST_COMPARE(lhs + rhs, expected);
+  DRTEST_ASSERT_EQ(lhs + rhs, expected);
   DRTEST_ASSERT(randomStuff.size() > 2);
 }

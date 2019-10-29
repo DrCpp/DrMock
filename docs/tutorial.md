@@ -129,20 +129,29 @@ DRTEST_TEST(someTest)
 }
 ```
 
-To check equality of objects of some type `T`, the `DRTEST_COMPARE`
-macro may be used if `T` implements
-`std::ostream& operator<<(ostream& os, const T&)`,
+To compare objects of some type `T`, the following `DRTEST_ASSERT_[...]`
+macros may be used if `T` implements 
+`std::ostream& operator<<(ostream& os, const T&)`, 
 as done in the next test.
 ```cpp
 DRTEST_TEST(anotherTest)
 {
-  DRTEST_COMPARE(3 + 4, 7);
+  // 3 + 4 == 7
+  DRTEST_ASSERT_EQ(3 + 4, 7);
+  // 7 > 6
+  DRTEST_ASSERT_GT(7, 6);
+  // 8 + 5 == 13
+  DRTEST_ASSERT_GE(8 + 5, 13);
+  // - 3 < 0
+  DRTEST_ASSERT_LT(-3, 0);
+  // 9 <= 10
+  DRTEST_ASSERT_LE(9, 10);
 }
 ```
-The `DRTEST_COMPARE` macro will print the left- and right-hand side of
-the comparison in case of failure.
-If the compare type `T` doesn't provide a streaming operator, use
-`DR_TEST(lhs == rhs)` instead.
+These macros will print the left- and right-hand side of the comparison
+in case of failure.
+If the compared type `T` doesn't provide a streaming operator, use
+`DRTEST_ASSERT(lhs > rhs)`, etc. instead.
 
 #### Catching exceptions
 
@@ -173,12 +182,25 @@ DRTEST_ASSERT_THROW(
     std::runtime_error
   );
 ```
-Observe that the statements are seperated by semicolons.
+Observe that the statements are seperated by semicolons. The last
+statement of the first argument of `DRTEST_ASSERT_THROW` may or may not
+end with a `;`.
 
-To check for any throw, use `DRTEST_ASSERT_FAIL`:
+To assert that certain tests fail, use `DRTEST_ASSERT_TEST_FAIL`:
 ```cpp
-DRTEST_ASSERT_FAIL(throw std::runtime_error{"foo!"});
+DRTEST_ASSERT_TEST_FAIL(
+    DRTEST_ASSERT(2 + 2 == 5);
+  );
 ```
+This macro may also be applied to multiple statements at once, using the
+same syntax as `DRTEST_ASSERT_THROW`.
+
+**Note.**
+```
+DRTEST_ASSERT_TEST_FAIL(throw std::runtime_error{"foo"});
+```
+(throwing an exception not "caught" by a `DRTEST` macro)
+will cause the test to fail.
 
 #### Test tables
 
@@ -278,7 +300,7 @@ DRTEST_TEST(someTestWithTable)
 {
   // ...
 
-  DRTEST_COMPARE(lhs + rhs, expected);
+  DRTEST_ASSERT_EQ(lhs + rhs, expected);
   DRTEST_ASSERT(randomStuff.size() > 2);
 }
 ```
@@ -304,9 +326,12 @@ PASS   someTestWithTable, Small numbers
 TEST   someTestWithTable, Large numbers
 PASS   someTestWithTable, Large numbers
 TEST   someTestWithTable, This test fails
-*FAIL  someTestWithTable, This test fails (109):
-    (lhs + rhs) 4
-    (expected) 5
+*FAIL  someTestWithTable, This test fails (117):
+    (lhs + rhs)
+      4
+    (expected ==)
+      5
+
 ****************
 1 FAILED
 
@@ -324,14 +349,16 @@ make: *** [default] Error 8
 In the test source `basicTest.cpp`, all tests passed except one:
 ```
 TEST   someTestWithTable, This test fails
-*FAIL  someTestWithTable, This test fails (109):
-    (lhs + rhs) 4
-    (expected) 5
+*FAIL  someTestWithTable, This test fails (117):
+    (lhs + rhs)
+      4
+    (expected ==)
+      5
 ```
 **DrMock** prints the failed test's name (`someTestWithTable`), the row
 of the failed subtest (`This test will fail`, if the test uses test
-tables), and the offending line (`89`). Furthermore, as the test used
-`DRTEST_COMPARE`, the objects that failed the comparison are printed,
+tables), and the offending line (`117`). Furthermore, as the test used
+`DRTEST_ASSERT_EQ`, the objects that failed the comparison are printed,
 along with their variable name.
 
 Change the test table so that the test check if `2 + 2 == 4` instead of
@@ -680,7 +707,7 @@ DRTEST_VERIFY_MOCK(warehouse->mock);
 After verifying the mock, we check that the `filled` method returns the
 correct value:
 ```cpp
-DRTEST_COMPARE(order.filled(), true);
+DRTEST_ASSERT_EQ(order.filled(), true);
 ```
 
 **Note.** When verifying the mock object, the `Behaviors` are expected
@@ -1518,6 +1545,8 @@ Test project /Users/malte/DrMock/samples/qt/build
 
 Total Test time (real) =   0.02 sec
 ```
+
+### Common problems
 
 ## Bibliography
 
