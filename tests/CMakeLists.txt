@@ -130,14 +130,8 @@ if (${Qt5_FOUND})
       mocker/IQObject.h
       mocker/ISlots.h
       mocker/ISignals.h
-    # LIBS
-    #   Qt5::Core
     QTMODULES
-      Qt5::Core
-    # INCLUDE
-    #   ${Qt5Core_INCLUDE_DIRS}
-    # FRAMEWORKS
-    #   ${frameworkPath}
+      Qt5::Core 
     INSTALLFLAG ON
   )
 
