@@ -53,11 +53,13 @@ configure_file(
 )
 
 # If enabled, find Qt.
-find_package(Qt5 COMPONENTS Core)
-if (${Qt5_FOUND})
-  # Set CMP0071 to NEW so that generated files are automoc'ed.
-  cmake_policy(SET CMP0071 NEW)
-  set(CMAKE_AUTOMOC ON)
+if (DEFINED ENV{DRMOCK_QT_PATH})
+  find_package(Qt5 COMPONENTS Core)
+  if (${Qt5_FOUND})
+    # Set CMP0071 to NEW so that generated files are automoc'ed.
+    cmake_policy(SET CMP0071 NEW)
+    set(CMAKE_AUTOMOC ON)
+  endif()
 endif()
 
 #######################################
