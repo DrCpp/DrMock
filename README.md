@@ -47,7 +47,7 @@ A guide to building **DrMock** may be found [here](docs/build.md).
 
 The basic requirements for building and running **DrMock** are:
 
-* [CMake](https://cmake.org) (at least 3.10)
+* [CMake](https://cmake.org) (at least 3.13)
 
 * A C++17-standard-compliant compiler
 
@@ -61,6 +61,8 @@ The following Python3 packages are automatically installed during build:
   (at least 6.0.0)
 
 * [python3-setuptools](https://pypi.org/project/setuptools) (at least 41.4.0)
+
+* [wheel](https://pythonwheels.com) (at least 0.32.3)
 
 ### Acknowledgments
 
