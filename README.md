@@ -41,24 +41,30 @@ Release 0.1.0 is now available.
 
 Testing with **DrMock** looks like this:
 ```cpp
-DRTEST_TEST(success)
+DRTEST_TEST(launch)
 {
-  drmock::samples::Order order{"foo", 2};
+  auto rocket = std::make_shared<drmock::samples::RocketMock>();
 
-  auto warehouse = std::make_shared<drmock::samples::WarehouseMock>();
-  // Inform `warehouse` that it should expect an order of two units of
-  // `"foo"` and should return `true` (indicating that those units are
-  // available).
-  warehouse->mock.remove().push()
-      .expects("foo", 2)  // Expected arguments.
-      .times(1)  // Expect **one** call only.
-      .returns(true);  // Return value.
+  // Define rocket's state behavior.
+  rocket->mock.toggleLeftThruster().state()
+      .transition("", "leftThrusterOn", true)
+      .transition("leftThrusterOn", "", false)
+      .transition("rightThrusterOn", "allThrustersOn", true)
+      .transition("allThrustersOn", "rightThrusterOn", false);
+  rocket->mock.toggleRightThruster().state()
+      .transition("", "rightThrusterOn", true)
+      .transition("rightThrusterOn", "", false)
+      .transition("leftThrusterOn", "allThrustersOn", true)
+      .transition("allThrusterOn", "rightThrusterOn", false);
+  rocket->mock.launch().state()
+      .transition("", "failure")
+      .transition("*", "liftOff")
+    ;
 
-  order.fill(warehouse);
-  // Check that `remove` was called with the correct arguments.
-  DRTEST_ASSERT(warehouse->mock.verify());
-  // Check that the return value of `filled` is correct.
-  DRTEST_COMPARE(order.filled(), true);
+  // Run the test.
+  drmock::samples::LaunchPad launch_pad{rocket};
+  launch_pad.launch();
+  DRTEST_ASSERT(rocket->mock.verifyState("liftOff"));
 }
 ```
 For details, see [here](docs/tutorial.md).
