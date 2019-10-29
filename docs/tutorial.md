@@ -1214,8 +1214,7 @@ Liftoff can only succeed if at least one thruster is on.
       .transition("allThrusterOn", "rightThrusterOn", false);
   rocket->mock.launch().state()
       .transition("", "failure")
-      .transition("*", "liftOff")
-    ;
+      .transition("*", "liftOff");
 ```
 Recall that the state of every new slot is the default state `""`,
 which, in this example, is used to model the `"allThrustersOff"` state.

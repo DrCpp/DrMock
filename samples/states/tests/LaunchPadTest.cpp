@@ -37,8 +37,7 @@ DRTEST_TEST(launch)
       .transition("allThrusterOn", "rightThrusterOn", false);
   rocket->mock.launch().state()
       .transition("", "failure")
-      .transition("*", "liftOff")
-    ;
+      .transition("*", "liftOff");
 
   // Run the test.
   drmock::samples::LaunchPad launch_pad{rocket};
