@@ -1699,6 +1699,7 @@ def translate(source):
             "-x", 
             "c++", 
             "-std=" + Static.std, 
+            "-fPIC",
         ] \
             + Static.compiler_flags,
         unsaved_files = [
