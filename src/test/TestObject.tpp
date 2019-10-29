@@ -82,6 +82,11 @@ template<typename T>
 T
 TestObject::fetchData(const std::string& column) const
 {
+  if (current_row_.empty())
+  {
+    throw std::logic_error{"no data provided for test: " + name_};
+  }
+
   auto row_it = data_sets_.find(current_row_);
   if (row_it == data_sets_.end())
   {
