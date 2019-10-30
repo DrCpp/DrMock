@@ -143,7 +143,7 @@ DRTEST_TEST(anotherTest)
   DRTEST_ASSERT_EQ(3 + 4, 7);
   // 7 > 6
   DRTEST_ASSERT_GT(7, 6);
-  // 8 + 5 == 13
+  // 8 + 5 >= 13
   DRTEST_ASSERT_GE(8 + 5, 13);
   // - 3 < 0
   DRTEST_ASSERT_LT(-3, 0);
