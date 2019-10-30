@@ -19,6 +19,9 @@ along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 # samples/qt
 
+This sample demonstrates how to use **DrMock** to mock an interface
+`IFoo` that inherits from `QObject` and uses the `Q_OBJECT` macro. 
+
 ### Table of contents
 
 * [Setup](#setup)
@@ -41,8 +44,12 @@ samples/qt
     │   FooTest.cpp
 ```
 
-This sample demonstrates how to use **DrMock** to mock an interface
-`IFoo` that inherits from `QObject` and uses the `Q_OBJECT` macro. 
+### Requirements
+
+This project requires an installation of **DrMock** in `prefix/` or the
+`CMAKE_PREFIX_PATH`. If your installation of **DrMock** is located
+elsewhere, you must change the `-DCMAKE_PREFIX_PATH=...` flag in
+`Makefile`.
 
 ## Setup
 

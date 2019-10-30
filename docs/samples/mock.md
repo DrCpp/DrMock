@@ -67,6 +67,13 @@ Note that this samples uses the typical CMake project structure with
 three `CMakeLists.txt`. `src/CMakeLists.txt` manages the source files
 and `tests/CMakeLists.txt` the tests.
 
+### Requirements
+
+This project requires an installation of **DrMock** in `prefix/` or the
+`CMAKE_PREFIX_PATH`. If your installation of **DrMock** is located
+elsewhere, you must change the `-DCMAKE_PREFIX_PATH=...` flag in
+`Makefile`.
+
 ## Introduction
 
 **DrMock** generates source code of mock objects from _interfaces_. The

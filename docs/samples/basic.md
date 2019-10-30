@@ -42,6 +42,13 @@ samples/basic
 │   basicTest.cpp
 ```
 
+### Requirements
+
+This project requires an installation of **DrMock** in `prefix/` or the
+`CMAKE_PREFIX_PATH`. If your installation of **DrMock** is located
+elsewhere, you must change the `-DCMAKE_PREFIX_PATH=...` flag in
+`Makefile` (for details, see below).
+
 ## Setup
 
 Recall that **DrMock** requires you to configure your project with
@@ -195,7 +202,6 @@ same syntax as `DRTEST_ASSERT_THROW`.
 ```
 DRTEST_ASSERT_TEST_FAIL(throw std::runtime_error{"foo"});
 ```
-(throwing an exception not "caught" by a `DRTEST` macro)
 will cause the test to fail.
 
 ### Test tables

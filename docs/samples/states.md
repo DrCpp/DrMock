@@ -54,6 +54,13 @@ samples/states
     │   LaunchPad.cpp
 ```
 
+### Requirements
+
+This project requires an installation of **DrMock** in `prefix/` or the
+`CMAKE_PREFIX_PATH`. If your installation of **DrMock** is located
+elsewhere, you must change the `-DCMAKE_PREFIX_PATH=...` flag in
+`Makefile`.
+
 ## Introduction
 
 Mocks are usually used to test objects against their implementation. For
