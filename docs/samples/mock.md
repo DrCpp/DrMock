@@ -38,6 +38,7 @@ This sample demonstrates the basics of **DrMock**'s mock features.
   + [Operators](#operators)
   + [Changing nomenclature templates](#changing-nomenclature-templates)
   + [Ignore order of behaviors](#ignore-order-of-behaviors)
+  + [DrMockModule documentation](#drmockmodule-documentation)
 * [Caveats](#caveats)
   + [Raw pointers as parameters](#raw-pointers-as-parameters)
 * [Fine print: Interface](#fine-print-interface)
@@ -187,8 +188,7 @@ expects the `DrMockGenerator` python script to be installed somewhere in
 specified by the user. If you've already installed `DrMockGenerator`,
 try removing the `GENERATOR` argument.
 
-A detailed documentation may be found at the end of the
-subsection.
+A detailed documentation may be found in [DrMockModule documentation](#drmockmodule-documentation).
 
 Let's now see how mock objects are used in tests. First, take a look at
 `tests/CMakeLists.txt`. 
@@ -207,77 +207,6 @@ tests (i.e. the executables compiled from `TESTS`) against. In this
 case, the test `OrderTest.cpp` requires the class `Order` from
 `DrMockMockingSample` and, of course, the mock of `IWarehouse` from
 `DrMockMockingSampleMocked`.
-
-<details><summary>DrMockModule documentation</summary>
-<p>
-
-```cmake
-DrMockModule(
-  TARGET 
-  HEADERS header1 [header2 [header3 ...]]
-  [IFILE]
-  [MOCKFILE]
-  [ICLASS]
-  [MOCKCLASS]
-  [GENERATOR]
-  [LIBS lib1 [lib2 [lib3 ...]]]
-  [QT]
-  [INCLUDE include1 [include2 [include3 ...]]]
-  [FRAMEWORKS framework1 [framework2 [framework3 ...]]]
-)
-```
-#### `TARGET`
-  The name of the library that is created.
-
-#### `HEADERS`
-  A list of header files. Every header file must match the regex
-  provided via the `IFILE` argument.
-
-#### `IFILE`
-  A regex that describes the pattern that matches the project's
-  interface header filenames. The regex must contain exactly one
-  capture group that captures the unadorned filename. The default
-  value is ``I([a-zA-Z0-9].*)"`.
-
-#### `MOCKFILE`
-  A string that describes the pattern that the project's mock object
-  header filenames match. The string must contain exactly one
-  subexpression character `"\\1"`. The default value is `"\\1Mock"`.
-
-#### `ICLASS`
-  A regex that describes the pattern that matches the project's
-  interface class names. The regex must contain exactly one capture
-  group that captures the unadorned class name. Each of the specified
-  header files must contain exactly one class that matches this regex.
-  The default value is `IFILE`.
-
-#### `MOCKCLASS`
-  A string that describes the pattern that the project's mock object
-  class names match. The regex must contain exactly one subexpression
-  character `"\\1"`. The default value is `MOCKFILE`.
-
-#### `GENERATOR` 
-  A path to the generator script of DrMock. Default value is the
-  current path.
-
-#### `LIBS`
-  A list of libraries that `TARGET` is linked against. Default value
-  is an empty list.
-
-#### `QT`
-  If `QT` is set, the `HEADERS` will be added to the sources of
-  `TARGET`, thus allowing the interfaces that are Q_OBJECT to be
-  mocked. Default value is `OFF`.
-  
-#### `INCLUDE`
-  A list of include path's that are required to parse the `HEADERS`.
-  Default value is an empty list.
-
-#### `FRAMEWORKS`
-  A list of macOS framework path's that are required to parse the
-  `HEADERS`. Default value is an empty list.
-</p>
-</details>
 
 ## Using the mock object
 
@@ -586,6 +515,74 @@ warehouse->mock.remove().enforce_order(false);
 If `enforce_order` is disabled, and the mocked method is called, the
 first `Behavior` on the `BehaviorStack` that matches the method call is
 triggered.
+
+### DrMockModule documentation
+```cmake
+DrMockModule(
+  TARGET 
+  HEADERS header1 [header2 [header3 ...]]
+  [IFILE]
+  [MOCKFILE]
+  [ICLASS]
+  [MOCKCLASS]
+  [GENERATOR]
+  [LIBS lib1 [lib2 [lib3 ...]]]
+  [QT]
+  [INCLUDE include1 [include2 [include3 ...]]]
+  [FRAMEWORKS framework1 [framework2 [framework3 ...]]]
+)
+```
+
+##### TARGET
+  The name of the library that is created.
+
+##### HEADERS
+  A list of header files. Every header file must match the regex
+  provided via the `IFILE` argument.
+
+##### IFILE
+  A regex that describes the pattern that matches the project's
+  interface header filenames. The regex must contain exactly one
+  capture group that captures the unadorned filename. The default
+  value is ``I([a-zA-Z0-9].*)"`.
+
+##### MOCKFILE
+  A string that describes the pattern that the project's mock object
+  header filenames match. The string must contain exactly one
+  subexpression character `"\\1"`. The default value is `"\\1Mock"`.
+
+##### ICLASS
+  A regex that describes the pattern that matches the project's
+  interface class names. The regex must contain exactly one capture
+  group that captures the unadorned class name. Each of the specified
+  header files must contain exactly one class that matches this regex.
+  The default value is `IFILE`.
+
+##### MOCKCLASS
+  A string that describes the pattern that the project's mock object
+  class names match. The regex must contain exactly one subexpression
+  character `"\\1"`. The default value is `MOCKFILE`.
+
+##### GENERATOR 
+  A path to the generator script of DrMock. Default value is the
+  current path.
+
+##### LIBS
+  A list of libraries that `TARGET` is linked against. Default value
+  is an empty list.
+
+##### QT
+  If `QT` is set, the `HEADERS` will be added to the sources of
+  `TARGET`, thus allowing the interfaces that are Q_OBJECT to be
+  mocked. Default value is `OFF`.
+  
+##### INCLUDE
+  A list of include path's that are required to parse the `HEADERS`.
+  Default value is an empty list.
+
+##### FRAMEWORKS
+  A list of macOS framework path's that are required to parse the
+  `HEADERS`. Default value is an empty list.
 
 ## Caveats
 
