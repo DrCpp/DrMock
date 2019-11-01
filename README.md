@@ -96,7 +96,6 @@ The following Python3 packages are automatically installed during build:
 
 * [python3-setuptools](https://pypi.org/project/setuptools) (at least 41.4.0)
 
-<<<<<<< HEAD
 * [wheel](https://pythonwheels.com) (at least 0.32.3)
 
 ## Acknowledgments
