@@ -28,15 +28,49 @@ Release 0.1.0 is now available.
 
 ### Getting started
 
-A guide to building **DrMock** may be found [here](docs/build.md).
+* A guide to building **DrMock** may be found [here](docs/build.md).
+* **DrMock** sample projects and tutorials are found
+  [here](docs/tutorial.md).
 
-## Features
+### Features
 
 * Unit test framework
-* Automated mock object generation
-* Can mock Qt5/QObject's
+* Automated mock object source code generation
+* State-based mock object behavior
+* Qt5/QObject support 
 
-## Platforms
+Testing with **DrMock** looks like this:
+```cpp
+DRTEST_TEST(launch)
+{
+  auto rocket = std::make_shared<drmock::samples::RocketMock>();
+
+  // Define rocket's state behavior.
+  rocket->mock.toggleLeftThruster().state()
+      .transition("", "leftThrusterOn", true)
+      .transition("leftThrusterOn", "", false)
+      .transition("rightThrusterOn", "allThrustersOn", true)
+      .transition("allThrustersOn", "rightThrusterOn", false);
+  rocket->mock.toggleRightThruster().state()
+      .transition("", "rightThrusterOn", true)
+      .transition("rightThrusterOn", "", false)
+      .transition("leftThrusterOn", "allThrustersOn", true)
+      .transition("allThrusterOn", "rightThrusterOn", false);
+  rocket->mock.launch().state()
+      .transition("", "failure")
+      .transition("*", "liftOff");
+
+  // Run the test.
+  drmock::samples::LaunchPad launch_pad{rocket};
+  launch_pad.launch();
+  DRTEST_ASSERT(rocket->mock.verifyState("liftOff"));
+}
+```
+For details, see [here](docs/tutorial.md).
+
+## Requirements
+
+### Supported platforms
 
 **DrMock** is current supported on the following platforms:
 
@@ -62,14 +96,13 @@ The following Python3 packages are automatically installed during build:
 
 * [python3-setuptools](https://pypi.org/project/setuptools) (at least 41.4.0)
 
+<<<<<<< HEAD
 * [wheel](https://pythonwheels.com) (at least 0.32.3)
 
-### Acknowledgments
+## Acknowledgments
 
 During the configuration of **DrMock**'s build system, we have profited
 greatly from P. Arias' 
 [It's Time To Do CMake Right](https://pabloariasal.github.io/2018/02/19/its-time-to-do-cmake-right/) 
 and D. Berner's 
 [Cmake line by line - creating a header-only library](http://dominikberner.ch/cmake-interface-lib/).
-
-

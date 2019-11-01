@@ -35,7 +35,7 @@ pip3 install python/dist/DrMockGenerator-[version]-py3-none-any.whl
 where `TARGET` is the target directory for the installation, or by
 copying the contents of `python/build` to a convenient location.
 
-### Building with support for Qt
+## Building with support for Qt
 
 If you wish to mock Qt5's `Q_OBJECT`s, set the environment variable
 `$DRMOCK_QT_PATH` equal to the location of the Qt library before
@@ -43,4 +43,19 @@ following the steps above. Example:
 
 ```
 export DRMOCK_QT_PATH="$HOME/Qt/5.13.1/clang_64"
+```
+
+## Troubleshooting
+
+#### `libgl` missing
+
+You might encounter the following on Linux when linking against
+`Qt5::Widgets`:
+```
+${DRMOCK_QT_PATH}/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:9 (message):
+  Failed to find "GL/gl.h" in "/usr/include/libdrm".
+```
+The solution is to install `libgl-dev`:
+```
+sudo apt-get install libgl-dev
 ```
