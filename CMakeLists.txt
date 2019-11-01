@@ -63,6 +63,11 @@ if (DEFINED ENV{DRMOCK_QT_PATH})
     # Set CMP0071 to NEW so that generated files are automoc'ed.
     cmake_policy(SET CMP0071 NEW)
     set(CMAKE_AUTOMOC ON)
+  else()
+    message(
+      FATAL_ERROR 
+      "DRMOCK_QT_PATH environment variable is set, but Qt5 was not found."
+    )
   endif()
 endif()
 
