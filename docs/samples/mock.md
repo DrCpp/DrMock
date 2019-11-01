@@ -266,12 +266,12 @@ DRTEST_VERIFY_MOCK(warehouse->mock);
 After verifying the mock, we check that the `filled` method returns the
 correct value:
 ```cpp
-DRTEST_ASSERT_EQ(order.filled(), true);
+DRTEST_ASSERT(order.filled());
 ```
 
 **Note.** When verifying the mock object, the `Behavior`s are expected
 to occur in the order in which they were pushed. See also: [Ignore order
-of behavior](#ignore-order-of-behavior).
+of behaviors](#ignore-order-of-behaviors).
 
 The second test runs along the same lines. Once again, the customer
 places an order for two units of foo, but this time the call will fail:

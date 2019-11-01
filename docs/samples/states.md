@@ -73,7 +73,7 @@ warehouse->mock.remove().push()
 ```
 only makes sense if `remove` is used in the implementation of `Order`.
 This type of testing is called _behavior verification_ and is dependent
-on the implementation of the system under testing.
+on the implementation of the system under test [1].
 
 To make tests less dependent on the implementation, **DrMock**'s state
 calculus may be used. Consider the interface `IRocket`:
@@ -355,8 +355,8 @@ See also: [Polymorphism](#polymorphism).
 ## State verification
 
 Access to the mock object (except during configuration) can be entirely
-eliminated in many cases, making the test entirely independent of the
-implementation of the system under testing.
+eliminated in many cases, thus freeing the programmer to have any
+knowledge of the implementation of the system under test. 
 
 Consider the following example: 
 ```
@@ -385,9 +385,30 @@ private:
   std::shared_ptr<ILever> lever_;
 };
 ```
-This can be tested as follows:
+
+Usually, verifying correctness of `TrapDoor` would look something like
+this:
 ```
-DRTEST_TEST(open)
+DRTEST_TEST(toggle)
+{
+  // Configure mock.
+  auto lever = std::make_shared<LeverMock>();
+  lever->mock.toggle().expect(true);
+
+  // Configure SUT.
+  TrapDoor trap_door{lever};
+
+  // Run the test.
+  trap_door.toggle(true);
+  DRTEST_VERIFY_MOCK(lever->mock);
+}
+```
+In other words: Call `trap_door.toggle(...)` and verify that `lever`
+behaves as expected. This is good old behavior verification.
+
+But you can also do this:
+```
+DRTEST_TEST(interactionOpenToggle)
 {
   // Configure mock.
   auto lever = std::make_shared<LeverMock>();
@@ -398,18 +419,25 @@ DRTEST_TEST(open)
       .returns("", false)
       .returns("on", true);
 
-  // Run the test.
+  // Configure SUT.
   TrapDoor trap_door{lever};
+
+  // Run the test.
   trap_door.toggle(true);
   DRTEST_ASSERT(trap_door.open());
 }
 ```
-
 Note that although the lever's behavior was configured prior to the
-test, it was not verified after calling `toggle`. Only the trap door's
-_state_ is verified using `DRTEST_ASSERT(trap_door.open());`. Thus,
-`LeverMock` really served as a _stub_, using M. Fowler's terminology
-[1].
+test, it was not verified after calling `toggle`. Instead of testing the
+behavior of each method of `TrapDoor` using mocks, the _interaction_
+between `TrapDoor`'s methods is tested (the door is `open()` after
+`toggle(true)`, etc.). Only the trap door's _state_ is verified using
+`DRTEST_ASSERT(trap_door.open());`. This requires no knowledge of the
+implementation, only the implementation. This is essentially what's
+called _state verification_, and in this context `lever` would be
+refered to as a _stub_, not a mock.
+
+For more on mocks and stubs, see [1].
 
 ## Bibliography
 
