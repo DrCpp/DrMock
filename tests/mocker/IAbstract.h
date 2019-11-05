@@ -21,7 +21,7 @@
 
 #include <memory>
 
-#include "IFoo.h"
+#include "subdir/IFoo.h"
 
 namespace outer { namespace inner {
 
