@@ -1650,7 +1650,7 @@ def get_class(
     if undef:
         source = undef_macros(source)
     # Parse the source and create a translation unit.
-    tu = translate(source)
+    tu = translate(filename, source)
     # Read the header file from the translation unit.
     hdr = CppFile.from_unit(tu) 
     # Find a matching class.
@@ -1685,14 +1685,14 @@ def undef_macros(source: str) -> str:
         undef(macro)
     return source
 
-def translate(source):
+def translate(filename: str, source: str) -> clang.cindex.TranslationUnit:
     """ Parse `source` and create a translation unit.
 
     :raises RuntimeError: if the translation unit's diagnostics contains
         an error.
     """
     index = cindex.Index.create()
-    Static.filename = "DRMOCK-" + str(uuid.uuid4())
+    Static.filename = "DRMOCK-" + filename
     tu = index.parse(
         Static.filename, 
         [

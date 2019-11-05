@@ -40,4 +40,4 @@ class TestFailure(unittest.TestCase):
                 with open("resources/" + filename, "r") as file:
                     source = file.read()
                 with self.assertRaises(RuntimeError):
-                    parse.translate(source)
+                    parse.translate(filename, source)

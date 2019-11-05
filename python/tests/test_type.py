@@ -40,7 +40,7 @@ class TestType(unittest.TestCase):
         return_types = dict()
         with open("resources/TestType.h", "r") as file:
             source = file.read()
-        tu = parse.translate(source)
+        tu = parse.translate("resources/TestType.h", source)
         hf = parse.CppFile.from_unit(tu)
         cls = hf.get_class("IExample")
         funcs = [f for f in cls.public]
