@@ -56,7 +56,7 @@ endfunction()
 #   [MOCKCLASS]
 #   [GENERATOR]
 #   [LIBS lib1 [lib2 [lib3 ...]]]
-#   [QT]
+#   [QTMODULES module1 [module2 [module3 ...]]]
 #   [INCLUDE include1 [include2 [include3 ...]]]
 #   [FRAMEWORKS framework1 [framework2 [framework3 ...]]]
 # )
@@ -78,49 +78,55 @@ endfunction()
 #   A list of header files. Every header file must match the regex
 #   provided via the `IFILE` argument.
 #
-# IFILE (optional)
+# IFILE 
 #   A regex that describes the pattern that matches the project's
 #   interface header filenames. The regex must contain exactly one
 #   capture group that captures the unadorned filename. The default
 #   value is ``I([a-zA-Z0-9].*)"`.
 #
-# MOCKFILE (optional)
+# MOCKFILE 
 #   A string that describes the pattern that the project's mock object
 #   header filenames match. The string must contain exactly one
 #   subexpression character `"\\1"`. The default value is `"\\1Mock"`.
 #
-# ICLASS (optional)
+# ICLASS 
 #   A regex that describes the pattern that matches the project's
 #   interface class names. The regex must contain exactly one capture
 #   group that captures the unadorned class name. Each of the specified
 #   header files must contain exactly one class that matches this regex.
 #   The default value is `IFILE`.
 #
-# MOCKCLASS (optional)
+# MOCKCLASS 
 #   A string that describes the pattern that the project's mock object
 #   class names match. The regex must contain exactly one subexpression
 #   character `"\\1"`. The default value is `MOCKFILE`.
 # 
-# GENERATOR (optional)
+# GENERATOR 
 #   A path to the generator script of DrMock. Default value is the
 #   current path.
 #
-# LIBS (optional)
+# LIBS 
 #   A list of libraries that `TARGET` is linked against. Default value
-#   is an empty list.
+#   is undefined (treated as empty list).
 #
-# QT (optional)
-#   If `QT` is set, the `HEADERS` will be added to the sources of
-#   `TARGET`, thus allowing the interfaces that are Q_OBJECT to be
-#   mocked. Default value is `OFF`.
+# QTMODULES
+#   A list of Qt5 modules that `TARGET` is linked against. If
+#   `QTMODULES` is defined (even if it's empty), the `HEADERS` will be
+#   added to the sources of `TARGET`, thus allowing the interfaces that
+#   are Q_OBJECT to be mocked. Default value is undefined.
 #   
-# INCLUDE [include1 [include2 [include3 ...]]] (optional)
+# INCLUDE 
 #   A list of include path's that are required to parse the `HEADERS`.
-#   Default value is an empty list.
+#   The include paths of Qt5 modules passed in the `QTMODULES` parameter
+#   are automatically added to this list.  
+
+#   The default value contains ${CMAKE_CURRENT_SOURCE_DIR} (the
+#   directory that `DrMockModule` is called from) and the current
+#   directory's include path.
 #
-# FRAMEWORKS [framework1 [framework2 [framework3 ...]]] 
+# FRAMEWORKS 
 #   A list of macOS framework path's that are required to parse the
-#   `HEADERS`. Default value is an empty list.
+#   `HEADERS`. Default value is undefined (treated as empty list).
 function(DrMockModule)
   cmake_parse_arguments(
     PARSED_ARGS

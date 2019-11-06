@@ -527,7 +527,7 @@ DrMockModule(
   [MOCKCLASS]
   [GENERATOR]
   [LIBS lib1 [lib2 [lib3 ...]]]
-  [QT]
+  [QTMODULES module1 [module2 [module3 ...]]]
   [INCLUDE include1 [include2 [include3 ...]]]
   [FRAMEWORKS framework1 [framework2 [framework3 ...]]]
 )
@@ -569,20 +569,28 @@ DrMockModule(
 
 ##### LIBS
   A list of libraries that `TARGET` is linked against. Default value
-  is an empty list.
+  is equivalent to passing an empty list.
 
-##### QT
-  If `QT` is set, the `HEADERS` will be added to the sources of
-  `TARGET`, thus allowing the interfaces that are Q_OBJECT to be
-  mocked. Default value is `OFF`.
+##### QTMODULES
+  A list of Qt5 modules that `TARGET` is linked against. If
+  `QTMODULES` is defined (even if it's empty), the `HEADERS` will be
+  added to the sources of `TARGET`, thus allowing the interfaces that
+  are Q_OBJECT to be mocked. Default value is undefined.
   
 ##### INCLUDE
   A list of include path's that are required to parse the `HEADERS`.
-  Default value is an empty list.
+  The include paths of Qt5 modules passed in the `QTMODULES` parameter
+  are automatically added to this list.  
+
+  The default value contains ${CMAKE_CURRENT_SOURCE_DIR} (the
+  directory that `DrMockModule` is called from) and the current
+  directory's include path.
 
 ##### FRAMEWORKS
   A list of macOS framework path's that are required to parse the
-  `HEADERS`. Default value is an empty list.
+  `HEADERS`. The Qt5 framework path is automatically added to this list
+  if `QTMODULES` is used. Default value is equivalent to passing an
+  empty list.
 
 ## Caveats
 
