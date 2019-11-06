@@ -17,7 +17,7 @@
 */
 
 #include "test/Test.h"
-#include "mock/mocker/FuncOverloadMock.h"
+#include "mock/FuncOverloadMock.h"
 
 using namespace outer::inner;
 

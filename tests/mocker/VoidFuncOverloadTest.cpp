@@ -17,7 +17,7 @@
 */
 
 #include "test/Test.h"
-#include "mock/mocker/VoidFuncOverloadMock.h"
+#include "mock/VoidFuncOverloadMock.h"
 
 using namespace outer::inner;
 

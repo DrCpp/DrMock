@@ -17,7 +17,7 @@
 */
 
 #include "test/Test.h"
-#include "mock/mocker/SignalsMock.h"
+#include "mock/SignalsMock.h"
 
 using namespace outer::inner;
 

@@ -16,36 +16,22 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "test/Test.h"
-#include "mock/VoidFuncMock.h"
+#ifndef DRMOCK_TESTS_MOCKER_IINCLUDE_H
+#define DRMOCK_TESTS_MOCKER_IINCLUDE_H
 
-using namespace outer::inner;
+#include "subdir/Bar.h"
+#include "Bar.h"
 
-DRTEST_TEST(fails)
+namespace outer { namespace inner {
+
+class IInclude
 {
-  {
-    VoidFuncMock mock{};
-    DRTEST_ASSERT(mock.mock.verify());
-  }
+public:
+  virtual ~IInclude() = default;
 
-  {
-    VoidFuncMock mock{};
-    DRTEST_ASSERT(mock.mock.f().verify());
-    mock.f();
-    DRTEST_ASSERT(not mock.mock.verify());
-    DRTEST_ASSERT(not mock.mock.f().verify());
-  }
-}
+  virtual void f() = 0;
+};
 
-DRTEST_TEST(succeeds)
-{
-  VoidFuncMock mock{};
-  DRTEST_ASSERT(mock.mock.verify());
+}} // namespace outer::inner
 
-  mock.mock.f().push()
-      .expects()
-      .times(1);
-  mock.f();
-  DRTEST_ASSERT(mock.mock.verify());
-  DRTEST_ASSERT(mock.mock.f().verify());
-}
+#endif /* DRMOCK_TESTS_MOCKER_IINCLUDE_H */

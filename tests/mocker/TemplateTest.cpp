@@ -17,7 +17,7 @@
 */
 
 #include "test/Test.h"
-#include "mock/mocker/TemplateMock.h"
+#include "mock/TemplateMock.h"
 
 using namespace outer::inner;
 

@@ -17,7 +17,7 @@
 */
 
 #include "test/Test.h"
-#include "mock/mocker/AbstractMock.h"
+#include "mock/AbstractMock.h"
 
 namespace outer { namespace inner {
 

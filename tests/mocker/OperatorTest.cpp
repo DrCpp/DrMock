@@ -17,7 +17,7 @@
 */
 
 #include "test/Test.h"
-#include "mock/mocker/OperatorMock.h"
+#include "mock/OperatorMock.h"
 
 using namespace outer::inner;
 

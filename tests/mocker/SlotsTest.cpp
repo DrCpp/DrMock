@@ -17,7 +17,7 @@
 */
 
 #include "test/Test.h"
-#include "mock/mocker/SlotsMock.h"
+#include "mock/SlotsMock.h"
 
 using namespace outer::inner;
 

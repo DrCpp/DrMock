@@ -16,36 +16,4 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "test/Test.h"
-#include "mock/VoidFuncMock.h"
-
-using namespace outer::inner;
-
-DRTEST_TEST(fails)
-{
-  {
-    VoidFuncMock mock{};
-    DRTEST_ASSERT(mock.mock.verify());
-  }
-
-  {
-    VoidFuncMock mock{};
-    DRTEST_ASSERT(mock.mock.f().verify());
-    mock.f();
-    DRTEST_ASSERT(not mock.mock.verify());
-    DRTEST_ASSERT(not mock.mock.f().verify());
-  }
-}
-
-DRTEST_TEST(succeeds)
-{
-  VoidFuncMock mock{};
-  DRTEST_ASSERT(mock.mock.verify());
-
-  mock.mock.f().push()
-      .expects()
-      .times(1);
-  mock.f();
-  DRTEST_ASSERT(mock.mock.verify());
-  DRTEST_ASSERT(mock.mock.f().verify());
-}
+class SubDirIncBar {};

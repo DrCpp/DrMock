@@ -17,7 +17,7 @@
 */
 
 #include "test/Test.h"
-#include "mock/mocker/SharedStateMock.h"
+#include "mock/SharedStateMock.h"
 
 using namespace outer::inner;
 

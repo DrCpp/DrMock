@@ -17,7 +17,7 @@
 */
 
 #include "test/Test.h"
-#include "mock/mocker/MultipleClassesMock.h"
+#include "mock/MultipleClassesMock.h"
 
 using namespace outer::inner;
 

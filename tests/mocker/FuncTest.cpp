@@ -17,7 +17,7 @@
 */
 
 #include "test/Test.h"
-#include "mock/mocker/FuncMock.h"
+#include "mock/FuncMock.h"
 
 using namespace outer::inner;
 

@@ -17,7 +17,7 @@
 */
 
 #include "test/Test.h"
-#include "mock/mocker/QualifierMock.h"
+#include "mock/QualifierMock.h"
 
 using namespace outer::inner;
 

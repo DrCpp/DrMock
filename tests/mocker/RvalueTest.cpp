@@ -17,7 +17,7 @@
 */
 
 #include "test/Test.h"
-#include "mock/mocker/RvalueMock.h"
+#include "mock/RvalueMock.h"
 
 using namespace outer::inner;
 

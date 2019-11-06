@@ -17,7 +17,7 @@
 */
 
 #include "test/Test.h"
-#include "mock/mocker/DerivedMock.h"
+#include "mock/DerivedMock.h"
 
 using namespace outer::inner;
 

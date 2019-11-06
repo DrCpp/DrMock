@@ -17,7 +17,7 @@
 */
 
 #include "test/Test.h"
-#include "mock/mocker/CurioMock.h"
+#include "mock/CurioMock.h"
 
 using namespace outer::inner;
 

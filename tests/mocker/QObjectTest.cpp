@@ -17,7 +17,7 @@
 */
 
 #include "test/Test.h"
-#include "mock/mocker/QObjectMock.h"
+#include "mock/QObjectMock.h"
 
 using namespace outer::inner;
 

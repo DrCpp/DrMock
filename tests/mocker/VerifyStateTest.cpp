@@ -17,7 +17,7 @@
 */
 
 #include "test/Test.h"
-#include "mock/mocker/VerifyStateMock.h"
+#include "mock/VerifyStateMock.h"
 
 using namespace outer::inner;
 

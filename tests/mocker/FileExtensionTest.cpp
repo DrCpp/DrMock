@@ -17,7 +17,7 @@
 */
 
 #include "test/Test.h"
-#include "mock/mocker/FileExtensionMock.hpp"
+#include "mock/FileExtensionMock.hpp"
 
 using namespace outer::inner;
 

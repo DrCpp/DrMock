@@ -17,19 +17,26 @@
 */
 
 #include "test/Test.h"
-#include "mock/VoidFuncMock.h"
+#include "mock/IncludeMock.h"
 
 using namespace outer::inner;
+
+DRTEST_TEST(include)
+{
+  // Check if the dummy classes are properly included.
+  (void)SubDirBar{};
+  (void)SubDirIncBar{};
+}
 
 DRTEST_TEST(fails)
 {
   {
-    VoidFuncMock mock{};
+    IncludeMock mock{};
     DRTEST_ASSERT(mock.mock.verify());
   }
 
   {
-    VoidFuncMock mock{};
+    IncludeMock mock{};
     DRTEST_ASSERT(mock.mock.f().verify());
     mock.f();
     DRTEST_ASSERT(not mock.mock.verify());
@@ -39,7 +46,7 @@ DRTEST_TEST(fails)
 
 DRTEST_TEST(succeeds)
 {
-  VoidFuncMock mock{};
+  IncludeMock mock{};
   DRTEST_ASSERT(mock.mock.verify());
 
   mock.mock.f().push()

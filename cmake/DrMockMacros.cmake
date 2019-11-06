@@ -195,6 +195,15 @@ function(DrMockModule)
     set(PARSED_ARGS_LIBS ${PARSED_ARGS_LIBS} ${module})
   endforeach()
 
+  # Append the current CMake include path to the include path of the
+  # mocker. Also, add CMAKE_CURRENT_SOURCE_DIR to this list.
+  get_property(includeDirs 
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    PROPERTY INCLUDE_DIRECTORIES
+  )
+  list(APPEND PARSED_ARGS_INCLUDE ${includeDirs})
+  set(PARSED_ARGS_INCLUDE ${PARSED_ARGS_INCLUDE} ${CMAKE_CURRENT_SOURCE_DIR})
+
   foreach (header ${PARSED_ARGS_HEADERS})
     ###################################
     # Path computations.
