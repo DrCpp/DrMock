@@ -22,15 +22,11 @@
 include(${CMAKE_SOURCE_DIR}/cmake/DrMockMacros.cmake)
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
-set (CMAKE_CXX_FLAGS 
-  "-Wall -Werror -g -fPIC -pedantic -O0"
-)
-
 # Path to the generator script.
 file(TO_CMAKE_PATH 
-    ${CMAKE_SOURCE_DIR}/python/DrMockGenerator 
-    pathToMocker
-  )
+  ${CMAKE_SOURCE_DIR}/python/DrMockGenerator 
+  pathToMocker
+)
 
 #######################################
 # Test Core.
@@ -54,4 +50,3 @@ DrMockTest(TESTS
 #######################################
 
 add_subdirectory(mocker)
-

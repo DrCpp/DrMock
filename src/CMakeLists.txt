@@ -15,10 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
-set (CMAKE_CXX_FLAGS 
-  "-Wall -Werror -g -fPIC -pedantic -O2 -fdiagnostics-color=always"
-)
-
 add_library(${PROJECT_NAME} SHARED
   mock/MethodCollection.cpp
   mock/StateObject.cpp
@@ -40,4 +36,8 @@ target_include_directories(${PROJECT_NAME}
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
   PRIVATE
     ${CMAKE_SOURCE_DIR}/src
+)
+
+target_compile_options(${PROJECT_NAME} PRIVATE
+  -Wall -Werror -g -fPIC -pedantic -O2 -fdiagnostics-color=always
 )

@@ -23,16 +23,21 @@ endmacro()
 # DrMockTest(
 #   TESTS test1 [test2 [test3 ...]]
 #   [LIBS lib1 [lib2 [lib3 ...]]]
+#   [FLAGS opt1 [opt2 [opt3 ...]]]
 # )
 #
-# Create a test from every element of TESTS and link it against all
-# element of LIBS.
+# Create a test executable from every element of TESTS and link it
+# against all element of LIBS.  
+# 
+# Each executable is build with compile options FLAGS; if FLAGS is
+# undefined, then the following options are used: `-Wall`, `-Werror`,
+# `-g`, `-fPIC`, `-pedantic`, `-O0`.
 function(DrMockTest)
   cmake_parse_arguments(
     PARSED_ARGS
     "" 
     ""
-    "LIBS;TESTS" 
+    "LIBS;TESTS;FLAGS" 
     ${ARGN} 
   )
   foreach (path ${PARSED_ARGS_TESTS})
@@ -44,6 +49,15 @@ function(DrMockTest)
       ${PARSED_ARGS_LIBS}
     )
     add_test(NAME "${name}" COMMAND "${name}")
+    if (NOT PARSED_ARGS_FLAGS)
+      target_compile_options("${name}" PRIVATE
+        -Wall -Werror -g -fPIC -pedantic -O0
+      )
+    else()
+      target_compile_options("${name}" PRIVATE
+        ${PARSED_ARGS_FLAGS}
+      )
+    endif()
   endforeach()
 endfunction()
 

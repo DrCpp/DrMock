@@ -28,7 +28,7 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/subdirInc)
 
 DrMockModule(
-  TARGET DrMockMock
+  TARGET ${PROJECT_NAME}Mock
   GENERATOR ${pathToMocker}
   HEADERS 
     IVoidFunc.h 
@@ -54,10 +54,13 @@ DrMockModule(
     subdir/IBar.h
   INSTALLFLAG ON
 )
+target_compile_options(${PROJECT_NAME}Mock PRIVATE
+  -Wall -Werror -g -fPIC -pedantic -O0
+)
 
 DrMockTest(
   LIBS
-    DrMockMock 
+    ${PROJECT_NAME}Mock 
   TESTS 
     VoidFuncTest.cpp
     FuncTest.cpp
@@ -88,7 +91,7 @@ DrMockTest(
 
 if (${Qt5_FOUND})
   DrMockModule(
-    TARGET DrMockQtTests
+    TARGET ${PROJECT_NAME}QtMock
     GENERATOR ${pathToMocker}
     HEADERS 
       IQObject.h
@@ -98,10 +101,13 @@ if (${Qt5_FOUND})
       Qt5::Core 
     INSTALLFLAG ON
   )
+  target_compile_options(${PROJECT_NAME}QtMock PRIVATE
+    -Wall -Werror -g -fPIC -pedantic -O0
+  )
 
   DrMockTest(
     LIBS
-      DrMockQtTests 
+      ${PROJECT_NAME}QtMock
     TESTS
       QObjectTest.cpp
       SlotsTest.cpp
