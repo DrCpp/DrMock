@@ -419,3 +419,35 @@ drtest::addRow(
 ```
 will raise such an error, as the fourth column's type is defined as
 `std::string`, yet a null-terminated C string was passed as argument.
+
+### Compile options and linking test executables
+
+You may set the compile options of the test executables using the
+`OPTIONS` parameter of `DrMockTest`. If `OPTIONS` is left undefined, the
+following default options are used: `-Wall`, `-Werror`, `-g`, `-fPIC`,
+`-pedantic`, `-O0`. For example, to compile only with `-Wall` and
+`-Werror`, do
+```cmake
+DrMockTest(
+  TESTS
+    test.cpp
+  OPTIONS
+    -Wall 
+    -Werror
+)
+```
+
+To link the test executables against any number of target library, use
+the `LIBS` parameter (also described in the [next section](mock.md)).
+For example, to link the test above against `pthread`, do
+```
+DrMockTest(
+  TESTS
+    test.cpp
+  LIBS
+    pthread
+  OPTIONS
+    -Wall
+    -Werror
+)
+```

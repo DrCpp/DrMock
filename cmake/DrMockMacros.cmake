@@ -23,7 +23,7 @@ endmacro()
 # DrMockTest(
 #   TESTS test1 [test2 [test3 ...]]
 #   [LIBS lib1 [lib2 [lib3 ...]]]
-#   [FLAGS opt1 [opt2 [opt3 ...]]]
+#   [OPTIONS opt1 [opt2 [opt3 ...]]]
 # )
 #
 # Create a test executable from every element of TESTS and link it
@@ -37,7 +37,7 @@ function(DrMockTest)
     PARSED_ARGS
     "" 
     ""
-    "LIBS;TESTS;FLAGS" 
+    "LIBS;TESTS;OPTIONS" 
     ${ARGN} 
   )
   foreach (path ${PARSED_ARGS_TESTS})
@@ -49,13 +49,13 @@ function(DrMockTest)
       ${PARSED_ARGS_LIBS}
     )
     add_test(NAME "${name}" COMMAND "${name}")
-    if (NOT PARSED_ARGS_FLAGS)
+    if (NOT PARSED_ARGS_OPTIONS)
       target_compile_options("${name}" PRIVATE
         -Wall -Werror -g -fPIC -pedantic -O0
       )
     else()
       target_compile_options("${name}" PRIVATE
-        ${PARSED_ARGS_FLAGS}
+        ${PARSED_ARGS_OPTIONS}
       )
     endif()
   endforeach()
