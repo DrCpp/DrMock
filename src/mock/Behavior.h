@@ -47,6 +47,7 @@ public:
   template<typename... Deriveds> Behavior& polymorphic();
 
   bool is_persistent() const;
+  bool is_exhausted() const;
   bool match(const Args&...) const;
   std::variant<
       std::shared_ptr<typename std::decay<Result>::type>,
@@ -59,6 +60,7 @@ private:
   std::shared_ptr<typename std::decay<Result>::type> result_{};
   std::exception_ptr exception_{};
   unsigned int times_ = 1;
+  unsigned int num_calls_ = 0;
   bool persists_ = false;
   std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal_{};
 };

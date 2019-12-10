@@ -129,4 +129,16 @@ BehaviorStack<Result, Args...>::call(const Args&... args)
   }
 }
 
+template<typename Result, typename... Args>
+bool
+BehaviorStack<Result, Args...>::is_exhausted() const
+{
+  bool value = true;
+  for (const auto& b : behaviors_)
+  {
+    value = value and b.is_exhausted();
+  }
+  return value;
+}
+
 } // namespace drmock

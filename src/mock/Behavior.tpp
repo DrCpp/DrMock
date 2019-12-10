@@ -16,6 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include <iostream>  // TODO Remove this!
+
 #include "detail/IsTuplePackEqual.h"
 
 namespace drmock {
@@ -103,7 +105,14 @@ template<typename Result, typename... Args>
 bool
 Behavior<Result, Args...>::is_persistent() const
 {
-  return persists_ or (times_ > 0);
+  return persists_ or (num_calls_ < times_);
+}
+
+template<typename Result, typename... Args>
+bool
+Behavior<Result, Args...>::is_exhausted() const
+{
+  return persists_ or (num_calls_ == times_);
 }
 
 template<typename Result, typename... Args>
@@ -139,9 +148,9 @@ std::variant<
   >
 Behavior<Result, Args...>::produce()
 {
-  if (times_ > 0)
+  if (num_calls_ < times_)
   {
-    --times_;
+    ++num_calls_;
   }
 
   if (exception_)
