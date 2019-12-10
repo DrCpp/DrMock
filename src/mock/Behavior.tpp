@@ -16,8 +16,6 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <iostream>  // TODO Remove this!
-
 #include "detail/IsTuplePackEqual.h"
 
 namespace drmock {
@@ -73,7 +71,18 @@ Behavior<Result, Args...>::throws(E&& exception)
 
 template<typename Result, typename... Args>
 Behavior<Result, Args...>&
-Behavior<Result, Args...>::times(unsigned int times)
+Behavior<Result, Args...>::times(unsigned int t)
+{
+  times(t, t);
+  return *this;
+}
+
+template<typename Result, typename... Args>
+Behavior<Result, Args...>&
+Behavior<Result, Args...>::times(
+    unsigned int times_min, 
+    unsigned int times_max
+  )
 {
   static_assert(
       std::is_reference_v<Result>
@@ -82,7 +91,12 @@ Behavior<Result, Args...>::times(unsigned int times)
         or std::is_same_v<Result, void>,
       "result type must be reference, pointer or copy-constructible to set times()"
     );
-  times_ = times;
+  if (times_min > times_max)
+  {
+    throw std::runtime_error{"minimum number of expected calls must be less or equal to maximum number of expected calls"};
+  }
+  times_min_ = times_min;
+  times_max_ = times_max;
   return *this;
 }
 
@@ -105,14 +119,14 @@ template<typename Result, typename... Args>
 bool
 Behavior<Result, Args...>::is_persistent() const
 {
-  return persists_ or (num_calls_ < times_);
+  return persists_ or (num_calls_ < times_max_);
 }
 
 template<typename Result, typename... Args>
 bool
 Behavior<Result, Args...>::is_exhausted() const
 {
-  return persists_ or (num_calls_ == times_);
+  return persists_ or ((times_min_ <= num_calls_) and (num_calls_ <= times_max_));
 }
 
 template<typename Result, typename... Args>
@@ -148,7 +162,7 @@ std::variant<
   >
 Behavior<Result, Args...>::produce()
 {
-  if (num_calls_ < times_)
+  if (num_calls_ < times_max_)
   {
     ++num_calls_;
   }

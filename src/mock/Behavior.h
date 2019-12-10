@@ -43,6 +43,7 @@ public:
   template<typename T> Behavior& returns(T&&);
   template<typename E> Behavior& throws(E&&);
   Behavior& times(unsigned int);
+  Behavior& times(unsigned int, unsigned int);
   Behavior& persists();
   template<typename... Deriveds> Behavior& polymorphic();
 
@@ -59,7 +60,8 @@ private:
   std::optional<std::tuple<Args...>> expect_{};
   std::shared_ptr<typename std::decay<Result>::type> result_{};
   std::exception_ptr exception_{};
-  unsigned int times_ = 1;
+  unsigned int times_min_ = 1;
+  unsigned int times_max_ = 1;
   unsigned int num_calls_ = 0;
   bool persists_ = false;
   std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal_{};
