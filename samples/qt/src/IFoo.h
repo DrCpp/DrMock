@@ -32,10 +32,10 @@ public:
   virtual ~IFoo() = default;
 
 public slots:
-  virtual void someSlot(const std::string&) = 0;
+  virtual void theSlot(const std::string&) = 0;
 
 signals:
-  void someSignal(const std::string&);
+  void theSignal(const std::string&);
 };
 
 }} // namespace drmock::samples

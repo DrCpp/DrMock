@@ -18,7 +18,6 @@ along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
 # samples/qt
-
 This sample demonstrates how to use **DrMock** to mock an interface
 `IFoo` that inherits from `QObject` and uses the `Q_OBJECT` macro. 
 
@@ -126,31 +125,31 @@ public:
   virtual ~IFoo() = default;
 
 public slots:
-  virtual void someSlot(const std::string&) = 0;
+  virtual void theSlot(const std::string&) = 0;
 
 signals:
-  void someSignal(const std::string&);
+  void theSignal(const std::string&);
 };
 ```
 
 To demonstrate the mock object, two instances of `FooMock` are made
-and `someSignal` of `foo1` connected to the slot of `foo2`.
+and `theSignal` of `foo` connected to the slot of `bar`.
 
 ```cpp
 QObject::connect(
-    foo1.get(), &IFoo::someSignal,
-    foo2.get(), &IFoo::someSlot
+    foo.get(), &IFoo::theSignal,
+    bar.get(), &IFoo::theSlot
   );
 ```
 
-Before that, `foo2` is instructed to expect a call of `someSlot` with
-the argument `"foo"`. After `foo1` emits `someSignal`, this may be
-verified by `foo2`:
+Before that, `bar` is instructed to expect a call of `theSlot` with
+the argument `"foo"`. After `foo` emits `theSignal`, this may be
+verified by `bar`:
 
 ```cpp
-emit foo1->someSignal("foo");
+emit foo->theSignal("foo");
 
-DRMOCK_ASSERT(foo2->mock.verify());
+DRMOCK_ASSERT(bar->mock.verify());
 ```
 
 ## Running the tests
@@ -164,3 +163,76 @@ Do `make`. If everything checks out, this should return
 
 Total Test time (real) =   0.02 sec
 ```
+
+## Event loops and the `DRTEST_USE_QT` macro
+
+Some `QObject`s, such as `QEventLoop` require a `QApplication` to run in
+the main thread of the program to function correctly. To run a
+`QApplication` in the main thread during a `DRTEST_TEST`, define the
+`DRTEST_USE_QT` macro before including `DrMock/Test.h`. 
+
+Let's take a look at the previous example, but this time, connect the
+two `FooMock` instances via `Qt::QueuedConnection`:
+
+```cpp
+DRTEST_TEST(useQt)
+{
+  auto foo = std::make_shared<FooMock>();
+  auto bar = std::make_shared<FooMock>();
+  
+  QObject::connect(
+      foo.get(), &IFoo::someSignal,
+      bar.get(), &IFoo::someSlot,
+      Qt::QueuedConnection  // Connect via event loop.
+    );
+
+  bar->mock.someSlot().push().times(1);
+  emit foo->someSignal();
+
+  // ...
+}
+```
+
+To process the emitted signal, we must use an event loop, something like
+this:
+
+```cpp
+DRTEST_TEST(useQt)
+{
+  // ...
+
+  QEventLoop event_loop{}; 
+  event_loop.processEvents();
+
+  DRTEST_ASSERT(bar->mock.verify());
+}
+```
+
+If you run this application (don't forget to include `<QEventLoop>`),
+you will receive the following error:
+
+```
+    Start 1: FooTest
+1/1 Test #1: FooTest ..........................***Failed    0.02 sec
+TEST   signalsAndSlots
+*FAIL  signalsAndSlots (45): bar->mock.verify()
+****************
+1 FAILED
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.02 sec
+
+The following tests FAILED:
+	  1 - FooTest (Failed)
+Errors while running CTest
+make: *** [default] Error 8
+```
+
+Due to the missing `QAppliation` in the main thread, the `QEventLoop`
+fails to process `theSignal`, so `theSlot` never gets called the
+expected number of times and `bar->mock.verify()` rightfully returns
+`false`.
+
+Now add `#define DRTEST_USE_QT` before `#include "DrMock/Test.h"` and
+run the test again. The test should now succeed.
