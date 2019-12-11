@@ -201,14 +201,13 @@ DRTEST_TEST(useQt)
 {
   // ...
 
-  QEventLoop event_loop{}; 
-  event_loop.processEvents();
+  QCoreApplication::processEvents();
 
   DRTEST_ASSERT(bar->mock.verify());
 }
 ```
 
-If you run this application (don't forget to include `<QEventLoop>`),
+If you run this application (don't forget to include `<QCoreApplication>`),
 you will receive the following error:
 
 ```
@@ -229,10 +228,10 @@ Errors while running CTest
 make: *** [default] Error 8
 ```
 
-Due to the missing `QAppliation` in the main thread, the `QEventLoop`
-fails to process `theSignal`, so `theSlot` never gets called the
-expected number of times and `bar->mock.verify()` rightfully returns
-`false`.
+Due to the missing `QCoreApplication` in the main thread,
+`processEvents()` fails to process `theSignal`, so `theSlot` never gets
+called the expected number of times and `bar->mock.verify()` rightfully
+returns `false`.
 
 Now add `#define DRTEST_USE_QT` before `#include "DrMock/Test.h"` and
 run the test again. The test should now succeed.
