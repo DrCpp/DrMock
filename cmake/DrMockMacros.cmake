@@ -152,8 +152,21 @@ function(DrMockModule)
 
   # Check for missing arguments.
   if (NOT PARSED_ARGS_TARGET)
-    message(FATAL_ERROR "mock_module error: TARGET missing")
-  endif (NOT PARSED_ARGS_TARGET)
+    message(FATAL_ERROR "DrMockModule error: TARGET parameter missing")
+  endif()
+
+  # Check if HEADERS is non-empty.
+  if (NOT PARSED_ARGS_HEADERS)
+    message(FATAL_ERROR "DrMockModule error: HEADER parameter missing or empty")
+  endif()
+
+  # Check that all HEADERS exist.
+  foreach(filename ${PARSED_ARGS_HEADERS})
+    get_filename_component(absolutePathToFilename ${filename} ABSOLUTE)
+    if (NOT EXISTS ${absolutePathToFilename})
+      message(FATAL_ERROR "DrMockModule error: file ${filename} not found")
+    endif()
+  endforeach()
   
   # Optional arguments.
   if (NOT PARSED_ARGS_ICLASS)
