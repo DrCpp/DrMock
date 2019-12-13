@@ -23,21 +23,21 @@ using namespace drmock::samples;
 
 DRTEST_TEST(signalsAndSlots)
 {
-  auto foo1 = std::make_shared<FooMock>();
-  auto foo2 = std::make_shared<FooMock>();
+  auto foo = std::make_shared<FooMock>();
+  auto bar = std::make_shared<FooMock>();
 
-  // Instruct `foo2` to expect exactly one call of `someSlot` with
+  // Instruct `bar` to expect exactly one call of `theSlot` with
   // `"foo"` as argument.
-  foo2->mock.someSlot().push()
+  bar->mock.theSlot().push()
       .expects("foo")
       .times(1);
 
   QObject::connect(
-      foo1.get(), &IFoo::someSignal,
-      foo2.get(), &IFoo::someSlot
+      foo.get(), &IFoo::theSignal,
+      bar.get(), &IFoo::theSlot
     );
 
-  emit foo1->someSignal("foo");
+  emit foo->theSignal("foo");
 
-  DRTEST_ASSERT(foo2->mock.verify());
+  DRTEST_ASSERT(bar->mock.verify());
 }

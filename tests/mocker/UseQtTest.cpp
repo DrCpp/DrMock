@@ -16,28 +16,30 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SAMPLES_QT_SRC_IFOO_H
-#define DRMOCK_SAMPLES_QT_SRC_IFOO_H
+#define DRTEST_USE_QT
+#include "test/Test.h"
+#include "mock/UseQtMock.h"
 
-#include <QObject>
-#include <QWidget>
+#include <QEventLoop>
 
-namespace drmock { namespace samples {
+using namespace outer::inner;
 
-class IFoo : public QObject
+DRTEST_TEST(eventLoop)
 {
-  Q_OBJECT
+  auto foo = std::make_shared<UseQtMock>();
+  auto bar = std::make_shared<UseQtMock>();
+  
+  QObject::connect(
+      foo.get(), &IUseQt::theSignal,
+      bar.get(), &IUseQt::theSlot,
+      Qt::QueuedConnection  // Connect via event loop.
+    );
 
-public:
-  virtual ~IFoo() = default;
+  bar->mock.theSlot().push().times(1);
+  emit foo->theSignal();
 
-public slots:
-  virtual void theSlot(const std::string&) = 0;
+  QEventLoop event_loop{}; 
+  event_loop.processEvents();
 
-signals:
-  void theSignal(const std::string&);
-};
-
-}} // namespace drmock::samples
-
-#endif /* DRMOCK_SAMPLES_QT_SRC_IFOO_H */
+  DRTEST_ASSERT(bar->mock.verify());
+}

@@ -97,6 +97,7 @@ if (${Qt5_FOUND})
       IQObject.h
       ISlots.h
       ISignals.h
+      IUseQt.h
     QTMODULES
       Qt5::Core 
     INSTALLFLAG ON
@@ -112,5 +113,6 @@ if (${Qt5_FOUND})
       QObjectTest.cpp
       SlotsTest.cpp
       SignalsTest.cpp
+      UseQtTest.cpp
   )
 endif()

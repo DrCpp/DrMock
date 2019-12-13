@@ -16,28 +16,27 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SAMPLES_QT_SRC_IFOO_H
-#define DRMOCK_SAMPLES_QT_SRC_IFOO_H
+#ifndef DRMOCK_TESTS_MOCKER_IUSEQT_H
+#define DRMOCK_TESTS_MOCKER_IUSEQT_H
 
 #include <QObject>
-#include <QWidget>
 
-namespace drmock { namespace samples {
+namespace outer { namespace inner {
 
-class IFoo : public QObject
+class IUseQt : public QObject
 {
   Q_OBJECT
 
 public:
-  virtual ~IFoo() = default;
+  virtual ~IUseQt() = default;
 
 public slots:
-  virtual void theSlot(const std::string&) = 0;
+  virtual void theSlot() = 0;
 
 signals:
-  void theSignal(const std::string&);
+  void theSignal();
 };
 
-}} // namespace drmock::samples
+}} // namespace outer::inner
 
-#endif /* DRMOCK_SAMPLES_QT_SRC_IFOO_H */
+#endif /* DRMOCK_TESTS_MOCKER_IUSEQT_H */
