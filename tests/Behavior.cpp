@@ -23,6 +23,47 @@
 
 using namespace drmock;
 
+DRTEST_TEST(exhausted)
+{
+  Behavior<void, int, std::string> b{};
+  b.expects(2, "foo").times(3);
+
+  DRTEST_ASSERT(not b.is_exhausted());
+  b.produce();  
+  DRTEST_ASSERT(not b.is_exhausted());
+  b.produce();  
+  DRTEST_ASSERT(not b.is_exhausted());
+  b.produce();  
+  DRTEST_ASSERT(b.is_exhausted());
+  b.produce();  
+  DRTEST_ASSERT(b.is_exhausted());
+}
+
+DRTEST_TEST(exhaustedMinMax)
+{
+  Behavior<void, int, std::string> b{};
+  b.expects(2, "foo").times(2, 5);
+
+  DRTEST_ASSERT(not b.is_exhausted());
+  b.produce();  
+  DRTEST_ASSERT(not b.is_exhausted());
+  b.produce();  
+  DRTEST_ASSERT(b.is_exhausted());
+  b.produce();  
+  DRTEST_ASSERT(b.is_exhausted());
+  b.produce();  
+  DRTEST_ASSERT(b.is_exhausted());
+  b.produce();  
+  DRTEST_ASSERT(b.is_exhausted());
+}
+
+DRTEST_TEST(persistentImpliesExhausted)
+{
+  Behavior<void, int, std::string> b{};
+  b.persists();
+  DRTEST_ASSERT(b.is_exhausted());
+}
+
 DRTEST_TEST(voidReturn)
 {
   Behavior<void, int, std::string> b{};

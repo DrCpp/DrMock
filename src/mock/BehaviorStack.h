@@ -51,6 +51,8 @@ public:
       std::exception_ptr
     > call(const Args&...) override;
 
+  bool is_exhausted() const;
+
 private:
   std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal_{};
   std::vector<Behavior<Result, Args...>> behaviors_{};

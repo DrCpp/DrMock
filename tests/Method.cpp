@@ -31,11 +31,12 @@ DRTEST_TEST(enforceOrderFail)
   m.push().expects(1, "foo").times(2);
   m.push().expects(2, "foo").times(1);
 
-  DRTEST_VERIFY_MOCK(m);
+  DRTEST_ASSERT(not m.verify());
+  m.call(1, "foo");
+  DRTEST_ASSERT(not m.verify());
   m.call(2, "foo");
   DRTEST_ASSERT(not m.verify());
-  m.call(3, "foo");
-  m.call(4, "foo");
+  m.call(1, "foo");
   DRTEST_ASSERT(not m.verify());
   DRTEST_LOG_INFO(m.makeFormatedErrorString());
 }
@@ -47,11 +48,11 @@ DRTEST_TEST(noEnforceOrder)
   m.push().expects(1, "foo").times(2);
   m.push().expects(2, "foo").times(1);
 
-  DRTEST_ASSERT(m.verify());
+  DRTEST_ASSERT(not m.verify());
   m.call(2, "foo");
-  DRTEST_ASSERT(m.verify());
+  DRTEST_ASSERT(not m.verify());
   m.call(1, "foo");
-  DRTEST_ASSERT(m.verify());
+  DRTEST_ASSERT(not m.verify());
   m.call(1, "foo");
   DRTEST_ASSERT(m.verify());
   m.call(1, "foo");
@@ -65,11 +66,11 @@ DRTEST_TEST(enforceOrderSuccess)
   m.push().expects(1, "foo").times(2);
   m.push().expects(2, "foo").times(1);
 
-  DRTEST_ASSERT(m.verify());
+  DRTEST_ASSERT(not m.verify());
   m.call(1, "foo");
-  DRTEST_ASSERT(m.verify());
+  DRTEST_ASSERT(not m.verify());
   m.call(1, "foo");
-  DRTEST_ASSERT(m.verify());
+  DRTEST_ASSERT(not m.verify());
   m.call(2, "foo");
   DRTEST_ASSERT(m.verify());
 }
@@ -85,8 +86,9 @@ DRTEST_TEST(nonVoid)
       .expects(2, "2")
       .returns(22);
 
+  DRTEST_ASSERT(not m.verify());
   std::shared_ptr<int> sp = m.call(1, "1");
-  DRTEST_ASSERT(m.verify());
+  DRTEST_ASSERT(not m.verify());
   DRTEST_COMPARE(*sp, 11);
 
   sp = m.call(2, "2");
@@ -106,8 +108,9 @@ DRTEST_TEST(nonCopyable)
       .expects(2, std::make_unique<int>(3))
       .returns(std::make_unique<int>(2));
 
+  DRTEST_ASSERT(not m.verify());
   std::shared_ptr<std::unique_ptr<int>> sp = m.call(1, std::make_unique<int>(2));
-  DRTEST_ASSERT(m.verify());
+  DRTEST_ASSERT(not m.verify());
   auto p = std::move(*sp);
   DRTEST_COMPARE(*p, 1);
 
@@ -261,7 +264,6 @@ DRTEST_TEST(polymorphicPureVirtual)
 
   m.polymorphic<std::shared_ptr<Implementation>, std::shared_ptr<Implementation>>();
   m.call(std::make_shared<Implementation>(1), std::make_shared<Implementation>(2));
-  DRTEST_ASSERT(m.verify());
   m.call(std::make_shared<Implementation>(2), std::make_shared<Implementation>(1));
   DRTEST_ASSERT(not m.verify());
 }

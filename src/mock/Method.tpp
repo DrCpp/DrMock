@@ -113,6 +113,12 @@ template<typename Result, typename... Args>
 bool
 Method<Result, Args...>::verify() const
 {
+  // If behavior_stack_ is used for verification, check if it's
+  // exhausted.
+  if (not state_behavior_)
+  {
+    return (not has_failed_) and behavior_stack_->is_exhausted();
+  }
   return not has_failed_;
 }
 
