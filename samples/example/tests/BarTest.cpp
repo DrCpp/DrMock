@@ -25,13 +25,17 @@ DRTEST_TEST(overload)
 {
   auto bar = std::make_shared<BarMock>();
   bar->mock.f<>().push()
-      .expects().returns(1);
+      .expects()
+      .returns(1);
   bar->mock.f<drmock::Const>().push()
-      .expects().returns(2);
+      .expects()
+      .returns(2);
   bar->mock.f<int>().push()
-      .expects(3).returns(3);
+      .expects(3)
+      .returns(3);
   bar->mock.f<float, std::vector<int>, drmock::Const>().push()
-      .expects(0.0f, {}).returns(4);
+      .expects(0.0f, {})
+      .returns(4);
 
   DRTEST_ASSERT_EQ(
       bar->f(), 
