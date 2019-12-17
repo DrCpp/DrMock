@@ -59,6 +59,16 @@ DRTEST_TEST(fails)
 
   {
     CurioTemplateMock<int, float, double> mock{};
+    DRTEST_ASSERT(mock.mock.funcVariadicParameter().verify());
+    const float* x = new float{1.0f};
+    const double* y = new double{1.0};
+    mock.funcVariadicParameter(std::move(x), std::move(y));
+    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.funcVariadicParameter().verify());
+  }
+
+  {
+    CurioTemplateMock<int, float, double> mock{};
     DRTEST_ASSERT(mock.mock.funcNonCopyableResult().verify());
     mock.funcNonCopyableResult();
     DRTEST_ASSERT(not mock.mock.verify());
@@ -129,6 +139,23 @@ DRTEST_TEST(success)
     mock.funcNonCopyableArg(std::move(a1));
     DRTEST_ASSERT(mock.mock.verify());
     DRTEST_ASSERT(mock.mock.funcNonCopyableArg().verify());
+  }
+
+  {
+    CurioTemplateMock<int, float, double> mock{};
+    DRTEST_ASSERT(mock.mock.funcVariadicParameter().verify());
+    const float* x = nullptr;
+    const double* y = nullptr;
+    x = new float{1.0f};
+    y = new double{1.0};
+    mock.mock.funcVariadicParameter().push()
+        .expects(std::move(x), std::move(y))
+        .times(1);
+    x = new float{1.0f};
+    y = new double{1.0};
+    mock.funcVariadicParameter(std::move(x), std::move(y));
+    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.funcVariadicParameter().verify());
   }
 
   {

@@ -50,6 +50,7 @@ public:
   virtual void funcOddParameters(const T* const) = 0;
   virtual void funcOddParameters(const T* const* const &&) = 0;
   virtual void funcNonCopyableArg(std::unique_ptr<int>) = 0;
+  virtual void funcVariadicParameter(const Ts* &&...) = 0;
   virtual std::unique_ptr<int> funcNonCopyableResult() = 0;
   virtual std::unique_ptr<int>& funcNonCopyableResultAsReference() = 0;
 };
