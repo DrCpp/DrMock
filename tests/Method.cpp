@@ -38,7 +38,7 @@ DRTEST_TEST(enforceOrderFail)
   DRTEST_ASSERT(not m.verify());
   m.call(1, "foo");
   DRTEST_ASSERT(not m.verify());
-  DRTEST_LOG_INFO(m.makeFormatedErrorString());
+  DRTEST_LOG_INFO(m.makeFormattedErrorString());
 }
 
 DRTEST_TEST(noEnforceOrder)

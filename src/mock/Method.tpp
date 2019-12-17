@@ -167,7 +167,7 @@ Method<Result, Args...>::call(const Args&... args)
 
 template<typename Result, typename... Args>
 std::string
-Method<Result, Args...>::makeFormatedErrorString() const
+Method<Result, Args...>::makeFormattedErrorString() const
 {
   std::stringstream s{};
   s << std::endl << "  Method \"" << name_ << "\" failed because" << std::endl;
