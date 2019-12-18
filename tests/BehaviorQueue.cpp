@@ -20,13 +20,13 @@
 #include <memory>
 
 #include "test/Test.h"
-#include "mock/BehaviorStack.h"
+#include "mock/BehaviorQueue.h"
 
 using namespace drmock;
 
 DRTEST_TEST(enforceOrderFail)
 {
-  BehaviorStack<void, int, std::string> m{};
+  BehaviorQueue<void, int, std::string> m{};
   m.enforce_order(true);
   m.push().expects(1, "foo").times(2);
   m.push().expects(2, "foo").times(1);
@@ -37,7 +37,7 @@ DRTEST_TEST(enforceOrderFail)
 
 DRTEST_TEST(noEnforceOrder)
 {
-  BehaviorStack<void, int, std::string> m{};
+  BehaviorQueue<void, int, std::string> m{};
   m.enforce_order(false);
   m.push().expects(1, "foo").times(2);
   m.push().expects(2, "foo").times(1);
@@ -54,7 +54,7 @@ DRTEST_TEST(noEnforceOrder)
 
 DRTEST_TEST(enforceOrderSuccess)
 {
-  BehaviorStack<void, int, std::string> m{};
+  BehaviorQueue<void, int, std::string> m{};
   m.enforce_order(true);
   m.push().expects(1, "foo").times(2);
   m.push().expects(2, "foo").times(1);
@@ -69,7 +69,7 @@ DRTEST_TEST(enforceOrderSuccess)
 
 DRTEST_TEST(nonVoid)
 {
-  BehaviorStack<int, int, std::string> m{};
+  BehaviorQueue<int, int, std::string> m{};
   m.enforce_order(true);
   m.push()
       .expects(1, "1")
@@ -89,7 +89,7 @@ DRTEST_TEST(nonVoid)
 
 DRTEST_TEST(nonCopyable)
 {
-  BehaviorStack<std::unique_ptr<int>, int, std::unique_ptr<int>> m{};
+  BehaviorQueue<std::unique_ptr<int>, int, std::unique_ptr<int>> m{};
   m.enforce_order(true);
   m.push()
       .expects(1, std::make_unique<int>(2))
@@ -133,7 +133,7 @@ private:
 DRTEST_TEST(polymorphic)
 {
   {
-    BehaviorStack<void, std::shared_ptr<Base>, std::shared_ptr<Base>> m{};
+    BehaviorQueue<void, std::shared_ptr<Base>, std::shared_ptr<Base>> m{};
     m.push()
         .expects(std::make_shared<Derived>(1, 2), std::make_shared<Derived>(2, 2));
     auto result = m.call(
@@ -144,7 +144,7 @@ DRTEST_TEST(polymorphic)
   }
 
   {
-    BehaviorStack<void, std::shared_ptr<Base>, std::shared_ptr<Base>> m{};
+    BehaviorQueue<void, std::shared_ptr<Base>, std::shared_ptr<Base>> m{};
     m.polymorphic<std::shared_ptr<Derived>, std::shared_ptr<Derived>>();
     m.push()
         .expects(std::make_shared<Derived>(1, 2), std::make_shared<Derived>(2, 2));

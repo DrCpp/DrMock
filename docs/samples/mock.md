@@ -380,18 +380,18 @@ get a feel for the design of the mock implementations.
 #### `Method` objects
 
 The return value of a `Method` object's `call` method is controlled
-using either it's `BehaviorStack`, or _state calculus_. We concentrate
-on the `BehaviorStack` here. You can read all about state calculus in a
+using either it's `BehaviorQueue`, or _state calculus_. We concentrate
+on the `BehaviorQueue` here. You can read all about state calculus in a
 later tutorial.
 
-A `Method`'s `BehaviorStack` is empty upon initialization, and may be
+A `Method`'s `BehaviorQueue` is empty upon initialization, and may be
 filled with `Behavior`'s using `Method::push`, which pushes a new
-`Behavior` onto the `BehaviorStack` and returns a reference to it. In
+`Behavior` onto the `BehaviorQueue` and returns a reference to it. In
 other words, when doing something like
 ```cpp
 warehouse->mock.remove().push(). // And so on...
 ```
-we're configuring an instance of `Behavior` on the `BehaviorStack` of
+we're configuring an instance of `Behavior` on the `BehaviorQueue` of
 `METHODS_DRMOCK_remove`.
 
 #### `Behavior` objects
@@ -422,7 +422,7 @@ warehouse->mock.remove().push()
     .times(1)
     .return(true);
 ```
-pushes a new `Behavior` onto the `BehaviorStack`, then configures that
+pushes a new `Behavior` onto the `BehaviorQueue`, then configures that
 `Behavior` to expect the input `("foo", 2)`, to persists for exactly one
 production, and to produce `true`.
 
@@ -433,7 +433,7 @@ the following call is made:
 ```cpp
 warehouse->add("foo", 2);  // warehouse->mock.add().call("foo", 2);
 ```
-The `Method` object then searches its `BehaviorStack` bottom to top for
+The `Method` object then searches its `BehaviorQueue` bottom to top for
 a _persistant_ (live) `Behavior` object that expects the provided input,
 `("foo", 2")`. If a matching `Behavior` is found, it's `produce()`
 method is called.
@@ -474,13 +474,13 @@ The `DRTEST_VERIFY_MOCK` macro calls `verify()` and prints
 
 **Note.** A failed execution is the result of _unexpected behavior_ or
 of the user's failure to properly configure the `Method` object's
-`BehaviorStack`.
+`BehaviorQueue`.
 
 ### `Behavior` configuration
 
-So, it's all about properly configuring the `BehaviorStack`. Recall that
+So, it's all about properly configuring the `BehaviorQueue`. Recall that
 the `Method` class has a `push()` method that pushes a new `Behavior`
-onto the `BehaviorStack` and returns the corresponding `Behavior&`.
+onto the `BehaviorQueue` and returns the corresponding `Behavior&`.
 
 The `Behavior`s are expected to occur in the order that are pushed,
 unless `enforce_order` is called (see [Ignore order of
@@ -918,13 +918,13 @@ DrMockModule(
 ### Ignore order of behaviors
 
 Recall that `Behavior`s are expected to occur in the order in which they
-are pushed onto the `Method`'s `BehaviorStack`. This can be disabled by
+are pushed onto the `Method`'s `BehaviorQueue`. This can be disabled by
 calling `Method::enfore_order` as follows:
 ```cpp
 warehouse->mock.remove().enforce_order(false);
 ```
 If `enforce_order` is disabled, and the mocked method is called, the
-first `Behavior` on the `BehaviorStack` that matches the method call is
+first `Behavior` on the `BehaviorQueue` that matches the method call is
 triggered.
 
 ### DrMockModule documentation

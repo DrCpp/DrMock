@@ -31,13 +31,13 @@
 namespace drmock {
 
 template<typename Result, typename... Args>
-class BehaviorStack final : public AbstractBehavior<Result, Args...>
+class BehaviorQueue final : public AbstractBehavior<Result, Args...>
 {
   using DecayedResult = typename std::decay<Result>::type;
 
 public:
-  BehaviorStack();
-  BehaviorStack(std::shared_ptr<detail::IIsTuplePackEqual<Args...>>);
+  BehaviorQueue();
+  BehaviorQueue(std::shared_ptr<detail::IIsTuplePackEqual<Args...>>);
 
   Behavior<Result, Args...>& push();
   Behavior<Result, Args...>& back();
@@ -61,6 +61,6 @@ private:
 
 } // namespace drmock
 
-#include "BehaviorStack.tpp"
+#include "BehaviorQueue.tpp"
 
 #endif /* DRMOCK_SRC_MOCK_BEHAVIORSTACK_H */
