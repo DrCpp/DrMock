@@ -510,7 +510,7 @@ All of these return `this`, allowing us to string multiple
 configurations together.
 
 * `expects(Args... args)`  
-  to expect a call with `args...` as arguments.
+  Expect a call with `args...` as arguments.
 
 * `returns(T&&)`  
   Produce the passed value on production.
