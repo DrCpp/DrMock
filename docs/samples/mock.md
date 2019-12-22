@@ -535,12 +535,12 @@ times is _exactly once_.
 The last method, `template<typename... Deriveds> Behavior& polymorphic()`, 
 is used to instruct the `Behavior` to expect 
 
-* std::shared_ptr<Args>... or
+* `std::shared_ptr<Args>...` or
 
-* std::unique_ptr<Args>...
+* `std::unique_ptr<Args>...`
 
-whose pointees are values of type `std::shared_ptr<Deriveds>...`, etc.
-For details, see [Polymorphism](polymorphism).
+whose pointees are values of type `Deriveds...`, etc.  For details, see
+[Polymorphism](polymorphism).
 
 ### Examples
 
