@@ -533,9 +533,11 @@ and maximum number of calls. For example, `times(2, 4)` configures the
 times is _exactly once_.
 
 The last method, `template<typename... Deriveds> Behavior& polymorphic()`, 
-is used to instruct the `Behavior` to expect 
+is used to instruct the `Behavior` to expect one of the following:
 
-* `std::shared_ptr<Args>...` or
+* `Args*...`
+
+* `std::shared_ptr<Args>...`
 
 * `std::unique_ptr<Args>...`
 
@@ -1002,22 +1004,6 @@ DrMockModule(
   `HEADERS`. The Qt5 framework path is automatically added to this list
   if `QTMODULES` is used. Default value is equivalent to passing an
   empty list.
-
-## Caveats
-
-### Raw pointers as parameters
-
-While technically not prohibited, the use of raw pointers as parameters
-or return values of interface methods will most likely lead to undesired
-results: Raw pointers are comparable (cf. [Interface methods](#interface-methods)),
-but they are compared directly. Thus, the following will fail:
-```cpp
-int* x = new int{0};
-int* y = new int{0};  // *x == *y
-object->mock.func().expects(x);
-object->func(y);  // x != y
-DRTEST_ASSERT(object->mock.verify());  // Expected `x`, but received `y`.
-```
 
 ## Fine print: Interface
 
