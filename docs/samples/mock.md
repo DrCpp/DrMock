@@ -39,8 +39,6 @@ This sample demonstrates the basics of **DrMock**'s mock features.
   + [Changing nomenclature templates](#changing-nomenclature-templates)
   + [Ignore order of behaviors](#ignore-order-of-behaviors)
   + [DrMockModule documentation](#drmockmodule-documentation)
-* [Caveats](#caveats)
-  + [Raw pointers as parameters](#raw-pointers-as-parameters)
 * [Fine print: Interface](#fine-print-interface)
 * [Bibliography](#bibliography)
 
