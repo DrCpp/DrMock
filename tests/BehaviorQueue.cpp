@@ -24,6 +24,26 @@
 
 using namespace drmock;
 
+DRTEST_TEST(isExhausted)
+{
+  // Empty queue is exhausted.
+  BehaviorQueue<void, int, std::string> m{};
+  DRTEST_ASSERT(m.is_exhausted());
+
+  // Push two behaviors that persist.
+  m.push().expects(1, "foo").times(1);
+  m.push().expects(2, "foo").times(1);
+  DRTEST_ASSERT(not m.is_exhausted());
+
+  // One behavior still persists.
+  m.call(1, "foo");
+  DRTEST_ASSERT(not m.is_exhausted());
+
+  // No behaviors persist.
+  m.call(2, "foo");
+  DRTEST_ASSERT(m.is_exhausted());
+}
+
 DRTEST_TEST(enforceOrderFail)
 {
   BehaviorQueue<void, int, std::string> m{};
