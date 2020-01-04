@@ -49,7 +49,7 @@ public:
     );
   StateBehavior& transition(
       const std::string& slot,
-      std::string current_state,
+      const std::string& current_state,
       std::string new_state,
       Args... input
     );
@@ -93,6 +93,14 @@ public:
     > call(const Args&...) override;
 
 private:
+  using Vector = std::vector<std::pair<std::tuple<Args...>, std::string>>;
+
+  void setResultSlot(const std::string& slot);
+  void throwOnConflict(
+      const std::string& slot,
+      const std::string& state
+    ) const;
+
   std::shared_ptr<StateObject> state_object_;
   std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal_{};
   std::string slot_{};
@@ -105,22 +113,8 @@ private:
           std::exception_ptr
         >
     > results_{};
-  template<typename... Ts>
-  using TupleMap = std::unordered_map<
-      std::tuple<Ts...>,
-      std::string,
-      detail::Hash<std::tuple<Ts...>>,
-      detail::IsEqual<std::tuple<Ts...>>
-    >;
-  std::map<
-      std::string,
-      TupleMap<std::string, std::tuple<Args...>>
-    > transitions_{};
-  void setResultSlot(const std::string& slot);
-  void throwOnConflict(
-      const std::string& slot,
-      const std::string& state
-    ) const;
+  std::map<std::string, std::map<std::string, Vector>> transitions_{}; 
+  // slot -> { state -> { (input, target) } }
 };
 
 } // namespace drmock

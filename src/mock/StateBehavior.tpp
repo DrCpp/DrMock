@@ -69,7 +69,7 @@ template<typename Result, typename... Args>
 StateBehavior<Result, Args...>&
 StateBehavior<Result, Args...>::transition(
     const std::string& slot,
-    std::string current_state,
+    const std::string& current_state,
     std::string new_state,
     Args... input
   )
@@ -79,41 +79,31 @@ StateBehavior<Result, Args...>::transition(
   {
     throw std::runtime_error{"* not allowed as target state."};
   }
+
   // Register the slot in the `StateObject`.
   state_object_->get(slot);
+
   // Get the transitions for this slot.
-  auto& map = transitions_[slot];
-  // Make key.
-  auto key = std::make_tuple(
-      current_state, 
-      std::make_tuple(input...)
-    );
-  // Check for conflicts...
-  if (current_state == "*")
+  auto& map = transitions_[slot];  // state -> { (input..., target ) }
+  auto& vec = map[current_state];  // { (input..., target) } 
+
+  // Check for conflicts... A conflict arises if there are two
+  // transitions that match the same (slot, current_state, input...).
+  for (const auto& q : vec)
   {
-    // If two wildcard transitions with the same input are found, throw.
-    if (map.find(key) != map.end())
+    if ( (*is_tuple_pack_equal_)(q.first, input...) )
     {
       throw std::runtime_error{"Transition conflict."};
     }
   }
-  else
-  {
-    // Check for non-wildcard conflicts.
-    for (const auto& w : map)
-    {
-      auto k = w.first;
-      if (
-              std::get<0>(k) == current_state
-          and (*is_tuple_pack_equal_)(std::get<1>(k), input...)
-        )
-      {
-        throw std::runtime_error{"Transition conflict."}; 
-      }
-    }
-  }
+
   // If all checks out, add the transition.
-  map[std::move(key)] = std::move(new_state);
+  vec.push_back(
+      std::make_pair(
+          std::make_tuple(std::move(input)...), 
+          std::move(new_state)
+        )
+    );
   return *this;
 }
 
@@ -233,50 +223,67 @@ StateBehavior<Result, Args...>::call(const Args&... args)
   // Transition all slots.
   for (const auto& v : transitions_)
   {
+    // Get current_state and transition table.
     std::string slot = v.first;
-    auto& map = v.second;
+    std::string current_state = state_object_->get(slot);
+    auto& map = v.second;  // state -> { (input..., target) }
+    
+    // Results.
     bool found_match{false};
     std::string new_state;
-    // Find the first transition that matches the arguments.
-    for (const auto& w : map)
+
+    // Find a match. Search the wildcard (fallthrough) transitions
+    // first, then look for a direct match.
+    if (map.find("*") != map.end())
     {
-      std::string current_state = state_object_->get(slot);
-      auto& key = w.first;
-      if ((*is_tuple_pack_equal_)(std::get<1>(key), args...))
+      auto& vec = map.at("*");  // { (input..., target) }
+      for (const auto& p : vec)
       {
-        // Check for wildcard transition. If it's a non-wildcard
-        // transition, break immediately.
-        if (std::get<0>(key) == current_state)
+        if ( (*is_tuple_pack_equal_)(p.first, args...) )
         {
-          new_state = w.second;
+          new_state = p.second;
           found_match = true;
           break;
         }
-        else if (std::get<0>(key) == "*") // Wildcard match.
+      }
+    }
+    if (map.find(current_state) != map.end())
+    {
+      auto& vec = map.at(current_state);  // { (input..., target) }
+      for (const auto& p : vec)
+      {
+        if ( (*is_tuple_pack_equal_)(p.first, args...) )
         {
-          new_state = w.second;
+          new_state = p.second;
           found_match = true;
+          break;
         }
       }
     }
+
     // Execute the transition.
     if (found_match)
     {
       state_object_->set(slot, new_state);
     }
   }
-  // Get the slot's state.
+
+  // Get the slot's new state.
   auto state = state_object_->get(slot_);
+
   // Return the result if possible.
   if (results_.find(state) != results_.end())
   {
     return results_[state];
   }
+
   // If no result was found, but the function is void, return void.
   if constexpr (std::is_same<typename std::decay<Result>::type, void>::value)
   {
     return std::shared_ptr<void>{};
   }
+
+  // Otherwise, return nothing.
   return std::monostate{};
 }
 
