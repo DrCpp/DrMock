@@ -34,7 +34,6 @@ file(TO_CMAKE_PATH
 
 DrMockTest(TESTS
   Behavior.cpp
-  Hash.cpp
   IsEqual.cpp
   Test.cpp
   Method.cpp

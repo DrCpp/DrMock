@@ -22,9 +22,7 @@
 #include <map>
 
 #include "AbstractBehavior.h"
-#include "detail/Hash.h"
 #include "detail/IsTuplePackEqual.h"
-#include "detail/IsEqual.h"
 #include "StateObject.h"
 
 namespace drmock {
