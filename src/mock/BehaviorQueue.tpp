@@ -20,13 +20,13 @@
 namespace drmock {
 
 template<typename Result, typename... Args>
-BehaviorStack<Result, Args...>::BehaviorStack()
+BehaviorQueue<Result, Args...>::BehaviorQueue()
 :
-  BehaviorStack{std::make_shared<detail::IsTuplePackEqual<std::tuple<Args...>>>()}
+  BehaviorQueue{std::make_shared<detail::IsTuplePackEqual<std::tuple<Args...>>>()}
 {}
 
 template<typename Result, typename... Args>
-BehaviorStack<Result, Args...>::BehaviorStack(
+BehaviorQueue<Result, Args...>::BehaviorQueue(
     std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal
   )
 :
@@ -35,7 +35,7 @@ BehaviorStack<Result, Args...>::BehaviorStack(
 
 template<typename Result, typename... Args>
 Behavior<Result, Args...>&
-BehaviorStack<Result, Args...>::push()
+BehaviorQueue<Result, Args...>::push()
 {
   behaviors_.emplace_back(is_tuple_pack_equal_);
   return behaviors_.back();
@@ -43,14 +43,14 @@ BehaviorStack<Result, Args...>::push()
 
 template<typename Result, typename... Args>
 Behavior<Result, Args...>&
-BehaviorStack<Result, Args...>::back()
+BehaviorQueue<Result, Args...>::back()
 {
   return behaviors_.back();
 }
 
 template<typename Result, typename... Args>
 void
-BehaviorStack<Result, Args...>::enforce_order(bool value)
+BehaviorQueue<Result, Args...>::enforce_order(bool value)
 {
   enforce_order_ = value;
 }
@@ -58,7 +58,7 @@ BehaviorStack<Result, Args...>::enforce_order(bool value)
 template<typename Result, typename... Args>
 template<typename... Deriveds>
 void
-BehaviorStack<Result, Args...>::polymorphic()
+BehaviorQueue<Result, Args...>::polymorphic()
 {
   setIsEqual(std::make_shared<detail::IsTuplePackEqual<
       std::tuple<Args...>,
@@ -68,7 +68,7 @@ BehaviorStack<Result, Args...>::polymorphic()
 
 template<typename Result, typename... Args>
 void
-BehaviorStack<Result, Args...>::setIsEqual(
+BehaviorQueue<Result, Args...>::setIsEqual(
     std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal
   )
 {
@@ -82,10 +82,10 @@ BehaviorStack<Result, Args...>::setIsEqual(
 template<typename Result, typename... Args>
 std::variant<
     std::monostate,
-    std::shared_ptr<typename BehaviorStack<Result, Args...>::DecayedResult>,
+    std::shared_ptr<typename BehaviorQueue<Result, Args...>::DecayedResult>,
     std::exception_ptr
   >
-BehaviorStack<Result, Args...>::call(const Args&... args)
+BehaviorQueue<Result, Args...>::call(const Args&... args)
 {
   auto match = behaviors_.end();
   auto begin = std::find_if(
@@ -131,7 +131,7 @@ BehaviorStack<Result, Args...>::call(const Args&... args)
 
 template<typename Result, typename... Args>
 bool
-BehaviorStack<Result, Args...>::is_exhausted() const
+BehaviorQueue<Result, Args...>::is_exhausted() const
 {
   bool value = true;
   for (const auto& b : behaviors_)

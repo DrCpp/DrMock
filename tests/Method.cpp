@@ -38,7 +38,7 @@ DRTEST_TEST(enforceOrderFail)
   DRTEST_ASSERT(not m.verify());
   m.call(1, "foo");
   DRTEST_ASSERT(not m.verify());
-  DRTEST_LOG_INFO(m.makeFormatedErrorString());
+  DRTEST_LOG_INFO(m.makeFormattedErrorString());
 }
 
 DRTEST_TEST(noEnforceOrder)
@@ -167,7 +167,7 @@ struct hash<Derived>
 DRTEST_TEST(polymorphicIo)
 {
   {
-    Method<void, std::shared_ptr<Base>, std::shared_ptr<Base>> m{"test"};  // ???
+    Method<void, std::shared_ptr<Base>, std::shared_ptr<Base>> m{"test"};
     m.push()
         .expects(std::make_shared<Derived>(1, 2), std::make_shared<Derived>(2, 2));
     m.call(std::make_shared<Derived>(10, 2), std::make_shared<Derived>(10, 2)); // fails
@@ -175,7 +175,7 @@ DRTEST_TEST(polymorphicIo)
   }
 
   {
-    Method<void, std::shared_ptr<Base>, std::shared_ptr<Base>> m{"test"};  // ???
+    Method<void, std::shared_ptr<Base>, std::shared_ptr<Base>> m{"test"};
     m.polymorphic<std::shared_ptr<Derived>, std::shared_ptr<Derived>>();
     m.push()
         .expects(std::make_shared<Derived>(1, 2), std::make_shared<Derived>(2, 2));
@@ -186,19 +186,19 @@ DRTEST_TEST(polymorphicIo)
 
 DRTEST_TEST(stateFail)
 {
-  Method<int, int> m{"test"};  //
+  Method<int, int> m{"test"};
   m.state().transition("", "state1", 1);  
-  m.state().returns("state1", 1);  //
+  m.state().returns("state1", 1);
   m.call(2);
   DRTEST_ASSERT(not m.verify());
 }
 
 DRTEST_TEST(stateSuccess)
 {
-  Method<int, int> m{"test"};  //
+  Method<int, int> m{"test"};
   m.state().transition("", "state1", 1);  
-  m.state().transition("state1", "state2", 2);  //
-  m.state().returns("state1", 1);  //
+  m.state().transition("state1", "state2", 2);
+  m.state().returns("state1", 1);
   m.call(1);
   DRTEST_ASSERT(m.verify());
   m.call(2);

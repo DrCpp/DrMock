@@ -25,7 +25,7 @@
 
 #include "IMethod.h"
 #include "Behavior.h"
-#include "BehaviorStack.h"
+#include "BehaviorQueue.h"
 #include "StateObject.h"
 #include "StateBehavior.h"
 
@@ -43,7 +43,7 @@ public:
   Method(std::string, std::shared_ptr<StateObject>);
   template<typename... Deriveds> void polymorphic();
 
-  BehaviorStack<Result, Args...>& io();
+  BehaviorQueue<Result, Args...>& io();
   Behavior<Result, Args...>& push();
   void enforce_order(bool);
 
@@ -51,7 +51,7 @@ public:
 
   bool verify() const override;
   const std::vector<std::vector<std::string>>& error_msgs() const;
-  std::string makeFormatedErrorString() const;
+  std::string makeFormattedErrorString() const;
 
   std::shared_ptr<DecayedResult> call(const Args&...);
 
@@ -60,7 +60,7 @@ private:
   std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal_{};
   std::shared_ptr<StateObject> state_object_{};
   std::shared_ptr<StateBehavior<Result, Args...>> state_behavior_{};
-  std::shared_ptr<BehaviorStack<Result, Args...>> behavior_stack_{};
+  std::shared_ptr<BehaviorQueue<Result, Args...>> behavior_stack_{};
   std::shared_ptr<AbstractBehavior<Result, Args...>> behavior_{};
   bool has_failed_ = false;
   std::vector<std::vector<std::string>> error_msgs_{};

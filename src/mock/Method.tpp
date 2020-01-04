@@ -45,17 +45,17 @@ Method<Result, Args...>::Method(std::string name, std::shared_ptr<StateObject> s
   is_tuple_pack_equal_{std::make_shared<detail::IsTuplePackEqual<std::tuple<Args...>>>()},
   state_object_{std::move(state_object)},
   state_behavior_{},
-  behavior_stack_{std::make_shared<BehaviorStack<Result, Args...>>(is_tuple_pack_equal_)},
+  behavior_stack_{std::make_shared<BehaviorQueue<Result, Args...>>(is_tuple_pack_equal_)},
   behavior_{behavior_stack_}
 {}
 
 template<typename Result, typename... Args>
-BehaviorStack<Result, Args...>&
+BehaviorQueue<Result, Args...>&
 Method<Result, Args...>::io()
 {
   if (not behavior_stack_)
   {
-    behavior_stack_ = std::make_shared<BehaviorStack<Result, Args...>>(is_tuple_pack_equal_);
+    behavior_stack_ = std::make_shared<BehaviorQueue<Result, Args...>>(is_tuple_pack_equal_);
   }
   behavior_ = behavior_stack_;
   return *behavior_stack_;
@@ -167,7 +167,7 @@ Method<Result, Args...>::call(const Args&... args)
 
 template<typename Result, typename... Args>
 std::string
-Method<Result, Args...>::makeFormatedErrorString() const
+Method<Result, Args...>::makeFormattedErrorString() const
 {
   std::stringstream s{};
   s << std::endl << "  Method \"" << name_ << "\" failed because" << std::endl;

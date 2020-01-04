@@ -90,6 +90,6 @@ do { \
 } while (false)
 
 #define DRTEST_VERIFY_MOCK(m) \
-if (not m.verify()) throw drtest::detail::TestFailure{__LINE__, m.makeFormatedErrorString()}
+if (not m.verify()) throw drtest::detail::TestFailure{__LINE__, m.makeFormattedErrorString()}
 
 #endif /* DRMOCK_SRC_TEST_TESTMACROS_H */

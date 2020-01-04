@@ -31,7 +31,7 @@ DRTEST_TEST(noSuchState)
   DRTEST_ASSERT(std::holds_alternative<std::monostate>(result));
 
   b.returns("state", 1);
-  result = b.call(1);
+  result = b.call(2);
   DRTEST_ASSERT(std::holds_alternative<std::monostate>(result));
 
   b.transition("", "state", 2);
@@ -72,6 +72,7 @@ DRTEST_TEST(transitionConflictButDifferentInput)
 {
   auto so = std::make_shared<StateObject>();
   StateBehavior<int, int> b{so};
+
   // None of the following should throw.
   b.transition("", "state1", 1);
   b.transition("", "state2", 2);
@@ -82,6 +83,7 @@ DRTEST_TEST(transitionWildcard)
 {
   auto so = std::make_shared<StateObject>();
   StateBehavior<int, int> b{so};
+
   // None of the following should throw.
   b.transition("", "state1", 0);
   b.transition("*", "state2", 0);

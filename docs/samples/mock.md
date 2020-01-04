@@ -26,21 +26,19 @@ This sample demonstrates the basics of **DrMock**'s mock features.
 * [Introduction](#introduction)
 * [Setup](#setup)
 * [Running the tests](#running-the-tests)
-* [Behaviors](#behaviors)
-  + [times](#times)
-  + [persists](#persists)
-  + [expects](#expects)
-  + [returns](#returns)
-  + [throws](#throws)
+* [The structure and use of **DrMock** mock objects](#the-structure-and-use-of-drmock-mock-objects)
+  + [The internal mock object](#the-internal-mock-object)
+  + [`Method` objects and `Behavior` objects](#method-objects-and-behavior-objects)
+  + [`Behavior` configuration](#behavior-configuration)
+  + [Examples](#examples)
 * [Details](#details)
+  + [Accessing overloads](#accessing-overloads)
   + [Interface methods](#interface-methods)
   + [Polymorphism](#polymorphism)
   + [Operators](#operators)
   + [Changing nomenclature templates](#changing-nomenclature-templates)
   + [Ignore order of behaviors](#ignore-order-of-behaviors)
   + [DrMockModule documentation](#drmockmodule-documentation)
-* [Caveats](#caveats)
-  + [Raw pointers as parameters](#raw-pointers-as-parameters)
 * [Fine print: Interface](#fine-print-interface)
 * [Bibliography](#bibliography)
 
@@ -297,49 +295,462 @@ Do `make` to run the tests. The following should occur:
 Total Test time (real) =   0.01 sec
 ```
 
-## Behaviors
+## The structure and use of **DrMock** mock objects
 
-Recall that a call like `warehouse->mock.remove()` returns a `Method`
-object that owns a queue (called the `BehaviorStack`) onto which
-`Behavior`s may be pushed using `Method::push`. 
+We've already been mentioned that the `DrMockModule` CMake macro
+produces a class `FooMock` from every specified interface `IFoo`, that
+`FooMock` implements `IFoo` and that `FooMock` has a public member
+`mock` of type `DRMOCK_Object_Foo`, the _internal mock object_, whose
+source is generated alongside that of `FooMock` and that helps the user
+configure the behavior of `FooMock`. Let's go into more detail.
 
-Everytime the underlying `Method` is called, the 
-This section briefly describes how `Behavior`
-instances may be configured.
+### The internal mock object
 
-### times
+The internal mock object's implementation looks roughly as follows:
+```cpp
+class DRMOCK_Object_IWarehouse
+{
 
-Every `Behavior` _persists_ for a number of calls made to the underlying
-`Method` before it expires. Using `times(unsigned int)`, this number of
-calls is set. The default value is `1`.
+public:
+  auto& add()
+  {
+    return *METHODS_DRMOCK_add;
+  }
 
-See also: [persists](#persists).
+  auto& remove()
+  {
+    return *METHODS_DRMOCK_remove;
+  }
 
-### persists
+  /* Other things, discussed later... */
 
-Every `Behavior` _persists_ for a number of calls made to the underlying
-`Method` before it expires. Calling `persists()` makes the `Behavior`
-immortal - it will never expire, no matter how many calls are made.
+private:
+  /* Method objects */
+  std::shared_ptr<Method<void, std::string, std::size_t>> METHODS_DRMOCK_add;
+  std::shared_ptr<Method<bool, std::string, std::size_t>> METHODS_DRMOCK_remove;
+  
+  /* Details... */
+};
+```
+And the corresponding implementation of the mocked interface is, in
+gist, this:
+```cpp
+class WarehouseMock final : public IWarehouse
+{
+public:
+  mutable drmock::mock_implementations::DRMOCK_Object_IWarehouse mock{};
 
-See also: [times](#times).
+  void add(std::string a0, std::size_t a1) override
+  {
+    mock.add().call(std::move(a0), std::move(a1));
+  }
 
-### expects
+  bool remove(const std::string& a0, std::size_t a1) override
+  {
+    auto& result = *mock.remove().call(a0, std::move(a1));
+    return std::forward<bool>(result);
+  }
+};
+```
 
-Use `expects(Args... args)` to instruct the `Behavior` to expect the
-underlying method to be called with `args...` as arguments. 
+The short of it is this: For every method (in fact, every overload - but
+more of that later) there's an `std::shared_ptr<Method<Result, Args...>>` 
+member in the interval mock object. When the mock implementation's
+methods are called, the call is forwarded to the `Method`'s `call`
+method:
+```cpp
+warehouse->add("foo", 2);  // warehouse->mock.add().call("foo", 2);
+```
 
-### returns
+The result of this call must be configured using the interface of the
+`Method` object members held by the internal mock object. This is
+discussed in the next section.
 
-Use `returns(T&& result)` to instruct the `Behavior` to return `result`
-on every method call that triggers it. Here `T` is the underlying
-`Method`'s return value type.
+**Note.** This implementation is a lie. The actual implementation is
+more convoluted due to it's overload handling.  Some other details have
+been left out, as well.  Feel free to take a peek at
+`DRMOCK_Object_IWarehouse` and `WarehouseMock` under
+`samples/mock/build/src/DrMock/mock/WarehouseMock.h` (after building) to
+get a feel for the design of the mock implementations.
 
-### throws
+### `Method` objects and `Behavior` objects
 
-Use `throws(E&& exception)` to instruct the `Behavior` to throw
-`exception` on every method call that triggers it.
+#### `Method` objects
+
+The return value of a `Method` object's `call` method is controlled
+using either it's `BehaviorQueue`, or _state calculus_. We concentrate
+on the `BehaviorQueue` here. You can read all about state calculus in a
+later tutorial.
+
+A `Method`'s `BehaviorQueue` is empty upon initialization, and may be
+filled with `Behavior`'s using `Method::push`, which pushes a new
+`Behavior` onto the `BehaviorQueue` and returns a reference to it. In
+other words, when doing something like
+```cpp
+warehouse->mock.remove().push(). // And so on...
+```
+we're configuring an instance of `Behavior` on the `BehaviorQueue` of
+`METHODS_DRMOCK_remove`.
+
+#### `Behavior` objects
+
+A `Behavior` object describes the behavior of a method at runtime. What
+does that mean? Here are the cliff notes:
+
+* Like a method, a `Behavior` has a return type and parameter types.
+
+* A `Behavior` can _expect_ a certain _input_ (a set of arguments that
+  match the parameter types).
+
+* A `Behavior` can _produce_ either a pointer to an instance of
+  its return type, an `std::exception_ptr`, or nothing.
+
+* Every `Behavior` has a life span. After a set number of productions
+  (which may be infinite, making the object _immortal_, so to speak),
+  the `Behavior` object no longer _persists_. It is, then, considered
+  dead.
+
+* The results of the production, as well as the life span must be
+  configured by the user.
+
+For example,
+```cpp
+warehouse->mock.remove().push()
+    .expects("foo", 2)
+    .times(1)
+    .return(true);
+```
+pushes a new `Behavior` onto the `BehaviorQueue`, then configures that
+`Behavior` to expect the input `("foo", 2)`, to persists for exactly one
+production, and to produce `true`.
+
+#### `Method::call(...)`
+
+What happens when a `Method` object's `call` method is called? Let's say
+the following call is made:
+```cpp
+warehouse->add("foo", 2);  // warehouse->mock.add().call("foo", 2);
+```
+The `Method` object then searches its `BehaviorQueue` bottom to top for
+a _persistant_ (live) `Behavior` object that expects the provided input,
+`("foo", 2")`. If a matching `Behavior` is found, it's `produce()`
+method is called.
+
+* If `std::shared_ptr<Result>` is produced, the `Method` returns that as
+  return value. If nothing is returned and the return type of `Method`
+  is `void`, then `nullptr` is returned.
+
+* If an `std::exception_ptr` is produced, the pointee exception is
+  rethrown by the `Method`.
+ 
+A couple of things can go wrong here:
+
+* No matching `Behavior` is found.
+
+* The matching `Behavior` produces nothing, but the return value of
+  `Method` is not `void`.
+
+#### Failure
+
+The user can check the correctness of a `Method` object by calling
+`verify()`, which, by default, return `true`.
+If any of the errors mentioned above occur, the call is considered a
+_failure_. All future calls of `verify()` will return `false`. After
+pushing an error message onto a log which can be accessed using
+`makeFormattedErrorString()`, the `Method` tries to gracefully rescue
+the call by doing one of the following:
+
+* If the return type is default constructible, return a default
+  constructed value.
+
+* If the return type is `void`, return.
+
+* Otherwise, `std::abort`.
+
+The `DRTEST_VERIFY_MOCK` macro calls `verify()` and prints
+`makeFormattedErrorString()` if it returns `false`.
+
+**Note.** A failed execution is the result of _unexpected behavior_ or
+of the user's failure to properly configure the `Method` object's
+`BehaviorQueue`.
+
+### `Behavior` configuration
+
+So, it's all about properly configuring the `BehaviorQueue`. Recall that
+the `Method` class has a `push()` method that pushes a new `Behavior`
+onto the `BehaviorQueue` and returns the corresponding `Behavior&`.
+
+The `Behavior`s are expected to occur in the order that are pushed,
+unless `enforce_order` is called (see [Ignore order of
+behaviors](#ignore-order-of-behaviors) for details).
+
+This is the interface you will be using to configure the pushed
+`Behavior`:
+
+```cpp
+template<typename Result, typename... Args>
+class Behavior
+{
+public:
+  Behavior& expects(Args...);
+  template<typename T> Behavior& returns(T&&);
+  template<typeanme T> Behavior& throws(E&&);
+  Behavior& times(unsigned int);
+  Behavior& times(unsigned int, unsigned int);
+  Behavior& persists();
+  template<typename... Deriveds> Behavior& polymoprhic();
+
+  /* ... */
+}
+```
+
+All of these return `this`, allowing us to string multiple
+configurations together.
+
+* `expects(Args... args)`  
+  Expect a call with `args...` as arguments.
+
+* `returns(T&&)`  
+  Produce the passed value on production.
+
+* `throws(E&&)`  
+  Throw the passed exception on production.
+
+* `times(unsigned int)`  
+  Specify the _exact_ number of expected calls.
+
+* `times(unsigned int, unsigned int)`  
+  Specify a range of expected calls.
+
+* `persists()`  
+  Make the behavior immortal.
+
+**Note.** `times(unsigned int, unsigned int)` is used to set a minimum
+and maximum number of calls. For example, `times(2, 4)` configures the
+`Behavior` to expect two, three _or four_ calls. The default expected
+times is _exactly once_.
+
+The last method, `template<typename... Deriveds> Behavior& polymorphic()`, 
+is used to instruct the `Behavior` to expect one of the following:
+
+* `Args*...`
+
+* `std::shared_ptr<Args>...`
+
+* `std::unique_ptr<Args>...`
+
+whose pointees are values of type `Deriveds...`, etc.  For details, see
+[Polymorphism](polymorphism).
+
+### Examples
+
+All of the following tests are based on the following interface:
+```cpp
+class IFoo
+{
+public:
+  virtual ~IFoo() = default;
+
+  virtual int f(std::string, unsigned int) = 0;
+  virtual float g() = 0;
+  virtual void h() = 0;
+};
+```
+
+For an example involving `polymorphism`, see
+[Polymorphism](polymorphism). To see there examples in action, take a
+look at `samples/example/tests/FooTest.cpp`.
+
+```cpp
+DRTEST_TEST(voidNoExpect)
+{
+  auto foo = std::make_shared<FooMock>();
+
+  foo->h();
+  DRTEST_ASSERT(not foo->mock.verify());
+}
+```
+
+```cpp
+DRTEST_TEST(voidExpect)
+{
+  auto foo = std::make_shared<FooMock>();
+
+  foo->mock.h().push().expects();
+  foo->h();
+  DRTEST_ASSERT(foo->mock.verify());
+}
+```
+
+```cpp
+DRTEST_TEST(missingReturn)
+{
+  auto foo = std::make_shared<FooMock>();
+  float x;
+
+  foo->mock.g().push().expects();
+  x = foo->g();
+  DRTEST_ASSERT(not foo->mock.verify());
+  DRTEST_ASSERT_LE(x, 0.0001f);
+}
+```
+
+```cpp
+DRTEST_TEST(timesRange)
+{
+  auto foo = std::make_shared<FooMock>();
+  int x;
+
+  foo->mock.f().push()
+      .expects("foo", 123)
+      .times(1, 3)
+      .returns(5);
+
+  // 0
+  DRTEST_ASSERT(not foo->mock.verify());
+
+  // 1
+  x = foo->f("foo", 123);
+  DRTEST_ASSERT(foo->mock.verify());
+  DRTEST_ASSERT_EQ(x, 5);
+
+  // 2
+  x = foo->f("foo", 123);
+  DRTEST_ASSERT(foo->mock.verify());
+  DRTEST_ASSERT_EQ(x, 5);
+
+  // 3
+  x = foo->f("foo", 123);
+  DRTEST_ASSERT(foo->mock.verify());
+  DRTEST_ASSERT_EQ(x, 5);
+
+  // 4
+  x = foo->f("foo", 123);
+  DRTEST_ASSERT(not foo->mock.verify());
+  DRTEST_ASSERT_EQ(x, 0);
+}
+```
+
+```cpp
+DRTEST_TEST(timesExact)
+{
+  auto foo = std::make_shared<FooMock>();
+  int x;
+
+  foo->mock.f().push()
+      .expects("foo", 123)
+      .times(2)
+      .returns(5);
+
+  // 0
+  DRTEST_ASSERT(not foo->mock.verify());
+
+  // 1
+  x = foo->f("foo", 123);
+  DRTEST_ASSERT(not foo->mock.verify());
+  DRTEST_ASSERT_EQ(x, 5);
+
+  // 2
+  x = foo->f("foo", 123);
+  DRTEST_ASSERT(foo->mock.verify());
+  DRTEST_ASSERT_EQ(x, 5);
+
+  // 3
+  x = foo->f("foo", 123);
+  DRTEST_ASSERT(not foo->mock.verify());
+  DRTEST_ASSERT_EQ(x, 0);
+}
+```
+
+```cpp
+DRTEST_TEST(enforceOrder)
+{
+  auto foo = std::make_shared<FooMock>();
+
+  foo->mock.f().push()
+      .expects("foo", 123)
+      .times(1)
+      .returns(1);
+  foo->mock.f().push()
+      .expects("bar", 456)
+      .times(1)
+      .returns(2);
+
+  int x = foo->f("bar", 456);
+  int y = foo->f("foo", 123);
+
+  DRTEST_ASSERT(not foo->mock.verify());
+
+  // Out of turn call results in default value return.
+  DRTEST_ASSERT_EQ(x, 0);
+  DRTEST_ASSERT_EQ(y, 1);
+}
+```
 
 ## Details
+
+### Accessing overloads
+
+We've yet to discuss how to access overloads. Consider the following interface:
+```cpp
+class IBar
+{
+public:
+  virtual ~IBar() = default;
+
+  virtual int f() = 0;
+  virtual int f() const = 0;
+  virtual int f(int) = 0;
+  virtual int f(float, std::vector<int>) const = 0;
+};
+```
+
+How do we access the methods here? We can't just do `bar->mock.f()`!
+Instead, template parameters must be used:
+
+* If `f` is a method with overloads, then to access the corresponding
+  `Method` object, the method's parameter types must be specified in
+  using template parameters: `bar->mock.f<>()` gets the first overload,
+  `bar->mock.f<int>()` the third, etc.
+
+* If an overload of `f` is const qualified, the last template parameter
+  following the parameter types must be `drmock::Const`. Thus,
+  `bar->mock.f<drmock::Const>()` returns the second overload,
+  `bar->mock.f<float, std::vector<int>, drmock::Const>()` the fourth.
+
+For example (see `samples/example/tests/BarTest.cpp`):
+
+```cpp
+DRTEST_TEST(overload)
+{
+  auto bar = std::make_shared<BarMock>();
+  bar->mock.f<>().push()
+      .expects().returns(1);
+  bar->mock.f<drmock::Const>().push()
+      .expects().returns(2);
+  bar->mock.f<int>().push()
+      .expects(3).returns(3);
+  bar->mock.f<float, std::vector<int>, drmock::Const>().push()
+      .expects(0.0f, {}).returns(4);
+
+  DRTEST_ASSERT_EQ(
+      bar->f(), 
+      1
+    );
+  DRTEST_ASSERT_EQ(
+      std::const_pointer_cast<const BarMock>(bar)->f(),
+      2
+    );
+  DRTEST_ASSERT_EQ(
+      bar->f(3), 
+      3
+    );
+  DRTEST_ASSERT_EQ(
+      bar->f(0.0f, {}), 
+      4
+    );
+}
+```
 
 ### Interface methods
 
@@ -507,13 +918,13 @@ DrMockModule(
 ### Ignore order of behaviors
 
 Recall that `Behavior`s are expected to occur in the order in which they
-are pushed onto the `Method`'s `BehaviorStack`. This can be disabled by
+are pushed onto the `Method`'s `BehaviorQueue`. This can be disabled by
 calling `Method::enfore_order` as follows:
 ```cpp
 warehouse->mock.remove().enforce_order(false);
 ```
 If `enforce_order` is disabled, and the mocked method is called, the
-first `Behavior` on the `BehaviorStack` that matches the method call is
+first `Behavior` on the `BehaviorQueue` that matches the method call is
 triggered.
 
 ### DrMockModule documentation
@@ -591,22 +1002,6 @@ DrMockModule(
   `HEADERS`. The Qt5 framework path is automatically added to this list
   if `QTMODULES` is used. Default value is equivalent to passing an
   empty list.
-
-## Caveats
-
-### Raw pointers as parameters
-
-While technically not prohibited, the use of raw pointers as parameters
-or return values of interface methods will most likely lead to undesired
-results: Raw pointers are comparable (cf. [Interface methods](#interface-methods)),
-but they are compared directly. Thus, the following will fail:
-```cpp
-int* x = new int{0};
-int* y = new int{0};  // *x == *y
-object->mock.func().expects(x);
-object->func(y);  // x != y
-DRTEST_ASSERT(object->mock.verify());  // Expected `x`, but received `y`.
-```
 
 ## Fine print: Interface
 
