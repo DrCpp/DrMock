@@ -197,9 +197,9 @@ instructs the state object to transition the default slot from the state
 `"leftThrusterOn"` to the default state `""` if
 `toggleLeftThruster(false)` is called.
 
-The wildcard symbol `"*"` may be used as catch-all for the current
-state. Pushing regular transitions before or after a transition with
-wilcard add exceptions to the catch-all:
+The wildcard symbol `"*"` may be used as catch-all/fallthrough symbol
+for the current state. Pushing regular transitions before or after a
+transition with wilcard add exceptions to the catch-all:
 ```
 rocket->mock.launch().state()
     .transition("*", "liftOff")
