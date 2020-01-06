@@ -1186,9 +1186,7 @@ class Class:
         }
         return [ExplicitInstantiation(i) for i in instantiations]
 
-    def _make_mock_object(
-        self
-    ) -> Class:
+    def _make_mock_object(self) -> Class:
         """ Return a `Class` object that represents the mock object of `self`. """
         mo = Class()
         mo.name = "DRMOCK_Object_" + self.name
