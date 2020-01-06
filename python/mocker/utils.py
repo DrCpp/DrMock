@@ -29,6 +29,21 @@ def split(li, f):
     return [[x for x in li if f(x) == value] for value in values]
 
 def swap(regex: str, out: str, x: str) -> str:
+    """ Capture `x` with `regex` and replace substring `"*"` in `out`
+    with captured content.
+
+    :raises ValueError: If `regex` doesn't have exactly one capture
+        group.
+    :raises ValueError: If `out` doesn't contain exactly one `"*"`.
+    :raises ValueError: If `regex` doesn't match `x`.
+
+    :example:
+
+        regex = "[0-9](\1)foo"
+        out = "foo*"
+        x = "4barfooo"
+        swap(regex, out, x)  # "foobar"
+    """
     # Check that `regex` contains exactly one capture group.
     if re.compile(regex).groups != 1:
         raise ValueError(
