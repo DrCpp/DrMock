@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_MOCK_TUPLEPACKCOMPARE_H
-#define SRC_MOCK_TUPLEPACKCOMPARE_H
+#ifndef DRMOCK_SRC_MOCK_DETAIL_ISTUPLEPACKEQUAL_H
+#define DRMOCK_SRC_MOCK_DETAIL_ISTUPLEPACKEQUAL_H
 
 #include "IIsTuplePackEqual.h"
 #include "IsEqual.h"
@@ -85,4 +85,4 @@ private:
 
 }} // namespaces
 
-#endif /* SRC_MOCK_TUPLEPACKCOMPARE_H */
+#endif /* DRMOCK_SRC_MOCK_DETAIL_ISTUPLEPACKEQUAL_H */

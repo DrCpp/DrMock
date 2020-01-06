@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef MOCK_TMP_TYPEINFO_H
-#define MOCK_TMP_TYPEINFO_H
+#ifndef DRMOCK_SRC_MOCK_DETAIL_TYPEINFO_H
+#define DRMOCK_SRC_MOCK_DETAIL_TYPEINFO_H
 
 #include <string>
 
@@ -211,4 +211,4 @@ DRMOCK_DECLARE_TYPE(double)
 DRMOCK_DECLARE_TYPE(void)
 DRMOCK_DECLARE_TYPE(std::string)
 
-#endif /* MOCK_TMP_TYPEINFO_H */
+#endif /* DRMOCK_SRC_MOCK_DETAIL_TYPEINFO_H */
