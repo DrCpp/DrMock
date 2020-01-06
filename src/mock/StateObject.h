@@ -19,6 +19,13 @@
 #ifndef DRMOCK_SRC_MOCK_STATEOBJECT_H
 #define DRMOCK_SRC_MOCK_STATEOBJECT_H
 
+/* StateObject
+
+Stores _slots_ (by name) and their _state_. Slots that are stored in the
+StateObject are called _registered_. Upon construction, only the default
+slot `""` (empty string) is registered with state `""`.
+*/
+
 #include <string>
 #include <unordered_map>
 
@@ -27,10 +34,18 @@ namespace drmock {
 class StateObject
 {
 public:
-  std::string get();
+  /* 
+  Get the state of `slot` (resp. the default slot). 
+  
+  If `slot` is not registered yet, it is registered with state `""`
+  before returning `""`.
+  */
   std::string get(const std::string& slot);
-  void set(std::string state);
+  std::string get();
+
+  /* Set the state of `slot` (resp. the default slot) to `state`. */
   void set(const std::string& slot, std::string state);
+  void set(std::string state);
 
 private:
   std::unordered_map<std::string, std::string> slots_{};

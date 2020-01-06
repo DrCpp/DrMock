@@ -21,27 +21,27 @@
 namespace drmock {
 
 std::string
-StateObject::get()
-{
-  return get("");
-}
-
-std::string
 StateObject::get(const std::string& slot)
 {
   return slots_[slot];
 }
 
-void
-StateObject::set(std::string state)
+std::string
+StateObject::get()
 {
-  set("", std::move(state));
+  return get("");
 }
 
 void
 StateObject::set(const std::string& slot, std::string state)
 {
   slots_[slot] = std::move(state);
+}
+
+void
+StateObject::set(std::string state)
+{
+  set("", std::move(state));
 }
 
 } // namespace drmock
