@@ -19,6 +19,8 @@
 #ifndef DRMOCK_SRC_MOCK_UTIL_H
 #define DRMOCK_SRC_MOCK_UTIL_H
 
+/* Utilities used in the generated source code of mock objects. */
+
 namespace drmock {
 
 template<typename... Ts>

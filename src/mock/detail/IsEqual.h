@@ -29,7 +29,7 @@ namespace drmock { namespace detail {
 
 /* IsEqual
 
-Class template with operator== that compares two objects by the
+Class template with `operator()` that compares two objects by the
 following recursive rules:
 
 (1) If `T` is no shared pointer, unique pointer or raw pointer and
@@ -64,7 +64,7 @@ all i = 0 .. n, then
 returns zero.
 
 Otherwise, IsEqual is undefined. Note that the five specializations are
-implemented in the order (1), (3), (2), (4), (5).
+not implemented in numerical order.
 */
 
 template<typename T, typename U = T, typename enable = void>

@@ -27,6 +27,22 @@
 
 namespace drmock {
 
+/* AbstractBehavior
+
+Abstract class template that represents a method's behavior. The
+`call(...)` method _produces_ an output of one of the following types:
+
+(1) std::monotstate (no output)
+
+(2) std::shared_ptr<std::decay_t<Result>> (return value)
+
+(3) std::exception_ptr (the method has thrown)
+
+The produced output is decided by comparing the input with
+implementation specific data. The comparison method is set using the
+`setIsEqual()` method.
+*/
+
 template<typename Result, typename... Args>
 class AbstractBehavior
 {

@@ -48,6 +48,7 @@ public:
   void set(std::string state);
 
 private:
+  /* map: slot -> state */
   std::unordered_map<std::string, std::string> slots_{};
 }; 
 

@@ -24,6 +24,12 @@
 
 namespace drmock { namespace detail {
 
+/* IsTuplePackEqual
+
+Class template with operator() that compares lhs tuples with rhs
+parameter pack, according to the rules specified in `IsEqual.h`.
+*/
+
 template<
     typename TupleTypeBase,
     typename TupleTypeDerived = TupleTypeBase,

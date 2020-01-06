@@ -19,6 +19,8 @@
 #ifndef DRMOCK_SRC_MOCK_QUALIFIERS_H
 #define DRMOCK_SRC_MOCK_QUALIFIERS_H
 
+/* Utility structs used in the generated source code of mock objects. */
+
 namespace drmock {
 
 struct Const
