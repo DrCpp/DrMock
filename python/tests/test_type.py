@@ -15,10 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
-""" Makeshift tests for:
+""" Makeshift test:
 
-* mocker.Method.from_cursor
-* mocker.Type.from_spelling
+* Check that type declarations are properly translated
 """
 
 from mocker import parse

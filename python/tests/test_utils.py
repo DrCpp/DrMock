@@ -15,10 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
-""" Tests for:
+""" Makeshift test:
 
+* utils.split
 * utils.swap
-
 """
 
 import unittest

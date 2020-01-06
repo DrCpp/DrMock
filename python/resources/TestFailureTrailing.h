@@ -16,9 +16,9 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_PYTHON_RESOUCRES_TESTFAILURETRAILING_H
-#define DRMOCK_PYTHON_RESOUCRES_TESTFAILURETRAILING_H
+#ifndef DRMOCK_PYTHON_RESOURCES_TESTFAILURETRAILING_H
+#define DRMOCK_PYTHON_RESOURCES_TESTFAILURETRAILING_H
 
 namespace abc {  // Failure due to missing namespace curly brace.
 
-#endif /* DRMOCK_PYTHON_RESOURCES_TESTTYPE_H */
+#endif /* DRMOCK_PYTHON_RESOURCES_TESTFAILURETRAILING_H */

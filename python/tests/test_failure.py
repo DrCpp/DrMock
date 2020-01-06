@@ -15,10 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
-""" Makeshift tests for:
+""" Makeshift test: Check that mocker raises on...
 
-* mocker.Method.from_cursor
-* mocker.Type.from_spelling
+* Examples of incorrect syntax (TestFailureTrailing, TestFailureSyntax).
+* Examples of undefined class templates (TestFailureInclude).
 """
 
 from mocker import parse
@@ -28,7 +28,7 @@ import unittest
 tests = {
     "TestFailureTrailing.h",
     "TestFailureSyntax.h",
-    "TestFailureInclude.h"
+    "TestFailureInclude.h",
 }
 
 class TestFailure(unittest.TestCase):

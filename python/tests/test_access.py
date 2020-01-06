@@ -15,10 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
-""" Makeshift tests for:
+""" Makeshift test:
 
-* mocker.Method.from_cursor
-* mocker.Type.from_spelling
+*   Check that mocker.parse.get_class throws if an interface delcares
+    private methods.
 """
 
 from mocker import parse
@@ -27,6 +27,5 @@ import unittest
 
 class TestQt(unittest.TestCase):
     def test_private(self):
-        """ Test that the Q_OBJECT macro is properly recognized. """
         with self.assertRaises(RuntimeError):
             parse.get_class("Example", "resources/TestAccess.h")
