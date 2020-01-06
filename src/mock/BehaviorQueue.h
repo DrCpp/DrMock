@@ -19,10 +19,10 @@
 #ifndef DRMOCK_SRC_MOCK_BEHAVIORSTACK_H
 #define DRMOCK_SRC_MOCK_BEHAVIORSTACK_H
 
-#include <memory>
-#include <vector>
-#include <variant>
 #include <exception>
+#include <memory>
+#include <variant>
+#include <vector>
 
 #include "detail/IIsTuplePackEqual.h"
 #include "AbstractBehavior.h"
@@ -50,7 +50,6 @@ public:
       std::shared_ptr<DecayedResult>,
       std::exception_ptr
     > call(const Args&...) override;
-
   bool is_exhausted() const;
 
 private:

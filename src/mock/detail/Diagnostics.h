@@ -21,6 +21,7 @@
 
 #include <iostream>
 #include <sstream>
+
 #include "TypeInfo.h"
 
 namespace drmock { namespace detail {
@@ -65,8 +66,7 @@ template<typename... Ts>
 struct PrintAll
 {
   void operator()(std::vector<std::string>& strings)
-  {
-  }
+  {}
 };
 
 template<typename T>

@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <stdexcept>
 #include <iostream>
+#include <stdexcept>
 
 namespace drtest { namespace detail {
 

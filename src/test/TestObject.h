@@ -19,12 +19,12 @@
 #ifndef DRMOCK_SRC_TEST_TESTOBJECT_H
 #define DRMOCK_SRC_TEST_TESTOBJECT_H
 
-#include <string>
-#include <vector>
-#include <unordered_map>
-#include <functional>
-#include <typeindex>
 #include <any>
+#include <functional>
+#include <string>
+#include <typeindex>
+#include <unordered_map>
+#include <vector>
 
 namespace drtest { namespace detail {
 

@@ -24,10 +24,10 @@
 #include <QTimer>
 #endif
 
+#include "FunctionInvoker.h"
 #include "Global.h"
 #include "ILogger.h"
 #include "Logger.h"
-#include "FunctionInvoker.h"
 
 namespace drtest { namespace detail {
 

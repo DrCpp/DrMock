@@ -19,8 +19,8 @@
 #ifndef DRMOCK_SRC_TEST_SINGLETON_H
 #define DRMOCK_SRC_TEST_SINGLETON_H
 
-#include <mutex>
 #include <memory>
+#include <mutex>
 
 namespace drtest { namespace detail {
 

@@ -16,7 +16,6 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 namespace drmock {
 
 template<typename Result, typename... Args>

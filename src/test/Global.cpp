@@ -20,8 +20,8 @@
 
 #include <sstream>
 
-#include "Singleton.tpp"
 #include "ILogger.h"
+#include "Singleton.tpp"
 
 namespace drtest { namespace detail {
 

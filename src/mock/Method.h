@@ -20,14 +20,16 @@
 #define DRMOCK_SRC_MOCK_METHOD_H
 
 #include <list>
-#include <vector>
 #include <memory>
+#include <string>
+#include <vector>
 
-#include "IMethod.h"
+#include "AbstractBehavior.h"
 #include "Behavior.h"
 #include "BehaviorQueue.h"
-#include "StateObject.h"
+#include "IMethod.h"
 #include "StateBehavior.h"
+#include "StateObject.h"
 
 namespace drmock {
 

@@ -19,8 +19,8 @@
 #ifndef DRMOCK_SRC_MOCK_STATEOBJECT_H
 #define DRMOCK_SRC_MOCK_STATEOBJECT_H
 
-#include <unordered_map>
 #include <string>
+#include <unordered_map>
 
 namespace drmock {
 

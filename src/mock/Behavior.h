@@ -23,12 +23,9 @@
 #include <optional>
 #include <variant>
 
-#include "AbstractBehavior.h"
-#include "detail/IsTuplePackEqual.h"
+#include "detail/IIsTuplePackEqual.h"
 
 namespace drmock {
-
-template<typename, typename...> class Method;
 
 template<typename Result, typename... Args>
 class Behavior

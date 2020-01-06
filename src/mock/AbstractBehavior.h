@@ -19,11 +19,11 @@
 #ifndef DRMOCK_SRC_MOCK_ABSTRACTBEHAVIOR_H
 #define DRMOCK_SRC_MOCK_ABSTRACTBEHAVIOR_H
 
-#include <variant>
-#include <memory>
 #include <exception>
+#include <memory>
+#include <variant>
 
-#include "detail/IsTuplePackEqual.h"
+#include "detail/IIsTuplePackEqual.h"
 
 namespace drmock {
 

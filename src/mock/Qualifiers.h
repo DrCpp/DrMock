@@ -21,10 +21,10 @@
 
 namespace drmock {
 
-struct Volatile
+struct Const
 {};
 
-struct Const
+struct Volatile
 {};
 
 } // namespace drmock

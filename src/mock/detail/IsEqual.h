@@ -23,7 +23,6 @@
 #include <type_traits>
 
 #include "IIsEqual.h"
-
 #include "TypeTraits.h"
 
 namespace drmock { namespace detail {

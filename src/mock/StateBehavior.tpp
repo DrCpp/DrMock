@@ -16,6 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include "detail/IsTuplePackEqual.h"
+
 namespace drmock {
 
 template<typename Result, typename... Args>

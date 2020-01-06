@@ -19,9 +19,9 @@
 #ifndef DRMOCK_SRC_TEST_TESTFAILURE_H
 #define DRMOCK_SRC_TEST_TESTFAILURE_H
 
-#include <string>
 #include <exception>
 #include <sstream>
+#include <string>
 
 namespace drtest { namespace detail {
 

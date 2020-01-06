@@ -19,13 +19,13 @@
 #ifndef DRMOCK_SRC_TEST_GLOBAL_H
 #define DRMOCK_SRC_TEST_GLOBAL_H
 
-#include <unordered_set>
-#include <unordered_map>
-#include <vector>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
 
-#include "TestObject.h"
 #include "Singleton.h"
+#include "TestObject.h"
 
 namespace drtest { namespace detail {
 

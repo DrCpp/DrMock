@@ -19,8 +19,8 @@
 #ifndef DRMOCK_SRC_TEST_TEST_H
 #define DRMOCK_SRC_TEST_TEST_H
 
+#include "Interface.h"
 #include "TestMacros.h"
 #include "TestMain.h"
-#include "Interface.h"
 
 #endif /* DRMOCK_SRC_TEST_TEST_H */

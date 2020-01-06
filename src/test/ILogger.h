@@ -19,9 +19,9 @@
 #ifndef DRMOCK_SRC_TEST_ILOGGER_H
 #define DRMOCK_SRC_TEST_ILOGGER_H
 
-#include <string>
-#include <sstream>
 #include <ostream>
+#include <sstream>
+#include <string>
 
 #include "Singleton.h"
 
