@@ -21,13 +21,13 @@
 namespace drmock {
 
 std::string
-StateObject::get() const
+StateObject::get()
 {
   return get("");
 }
 
 std::string
-StateObject::get(const std::string& slot) const
+StateObject::get(const std::string& slot)
 {
   return slots_[slot];
 }

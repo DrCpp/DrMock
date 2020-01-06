@@ -27,14 +27,13 @@ namespace drmock {
 class StateObject
 {
 public:
-  std::string get() const;
-  std::string get(const std::string& slot) const;
+  std::string get();
+  std::string get(const std::string& slot);
   void set(std::string state);
   void set(const std::string& slot, std::string state);
 
 private:
-  std::string default_slot_{};
-  mutable std::unordered_map<std::string, std::string> slots_{};
+  std::unordered_map<std::string, std::string> slots_{};
 }; 
 
 } // namespace drmock
