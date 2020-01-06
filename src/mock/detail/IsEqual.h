@@ -27,40 +27,52 @@
 
 namespace drmock { namespace detail {
 
-// A recursively defined template struct similar to `std::equal_to`.
-//
-// (1) `IsEqual<T, T>`, where `T` is no `std::shared_ptr` or
-//     `std::tuple` and `T::operator==(const T&)` is defined.
-//
-//     `IsEqual<T>{}(x, y)` returns `x == y`.
-//
-// (2) `IsEqual<std::shared_ptr<T>, std::shared_ptr<T>>` (or
-//     `IsEqual<std::shared_ptr<T>>`), where `IsEqual<T, T>` is defined.
-//
-//     `IsEqual<std::shared_ptr<T>>{}(p, q)` returns `IsEqual<T>(*p, *q)`.
-//
-// (3) `IsEqual<std::shared_ptr<T>, std::shared_ptr<U>>`, where
-//     `IsEqual<U>` is defined.
-//
-//     `IsEqual<std::shared_ptr<T>, std::shared_ptr<U>>{}(p, q)` returns
-//     `IsEqual<U, U>(*std::dynamic_pointer_cast<U>(p), *std::dynamic_pointer_cast<U>(q))`.
-//
-// (4) `IsEqual<std::tuple<T0, ... ,Tn>, std::tuple<U0, ..., Un>>`,
-//     where `IsEqual<Ti, Ui>` is defined for all i=0,...,n. Note: this
-//     implies that either Ti, Ui are `std::shared_ptr`s or that Ti = Ui.
-//
-//     `IsEqual<std::tuple<T0, ..., Tn>, std::tuple<U0, ..., Un>>{}(t, u)`
-//     returns
-//     `IsEqual<T0, U0>{}(std::get<0>(t), std::get<0>(u)) and ...
-//     and IsEqual<Tn, Un>{}(std::get<n>(t), std::get<n>(u))`.
-//
-// (5) `IsEqual<std::tuple<>, std::tuple<>>{}(t, u)` always returns
-//     `true`.
+/* IsEqual
+
+Class template with operator== that compares two objects by the
+following recursive rules:
+
+(1) If `T` is no shared pointer, unique pointer or raw pointer and
+`T::operator==(const T&) const` is defined, then
+
+  `IsEqual<T>{}(x, y)` returns `x == y`.
+
+(2) If `IsEqual<T>` is defined, then 
+
+  `IsEqual<T*>{}(x, y)` returns `IsEqual<T>{}(*x, *y)`.
+
+(Similar for shared pointers and unique pointers.)
+
+(3) If `IsEqual<U>` is defined, then
+
+  `IsEqual<T*, U*>{}(x, y)` returns
+
+  `IsEqual<U, U>(*std::dynamic_pointer_cast<U>(x),
+                 *std::dynamic_pointer_cast<U>(y))`.
+
+(4) If T, U are same-size tuples and `IsEqual<Ti, Ui>` is defined for
+all i = 0 .. n, then
+
+  `IsEqual<T, U>{}(t, u)` returns
+
+     `IsEqual<T0, U0>{}(std::get<0>(t), std::get<0>(u)) 
+  and IsEqual<T1, U1>{}(std::get<1>(t), std::get<1>(u)) 
+  and ...
+  and IsEqual<T1, U1>{}(std::get<n>(t), std::get<n>(u))`.
+
+(5) If T, U are `std::tuple<>` then `IsEqual<T, U>::operator()` always
+returns zero.
+
+Otherwise, IsEqual is undefined. Note that the five specializations are
+implemented in the order (1), (3), (2), (4), (5).
+*/
+
 template<typename T, typename U = T, typename enable = void>
 struct IsEqual;  // Undefined.
 
-//  (1) `IsEqual` for comparing objects that are not `std::shared_ptr`s
-//      or `std::tuple`s. `IsEqual::invoke(x, y)` returns `x == y`.
+/* ************************************
+ * (1)
+ * ************************************ */
 template<typename T>
 struct IsEqual<
     T,
@@ -86,10 +98,10 @@ struct IsEqual<
   }
 };
 
-//  (3) IsEqual for comparing `std::shared_ptr<T>`s and `std::shared_ptr<U>`s as
-//  well as `std::unique_ptr<T>`s and `std::unique_ptr<U>`s where `U` is derived
-//  from `T`. `IsEqual::invoke(p, q)` will return `true` if `p` and `q` point to
-//  objects of type `U` that are equal, `false` otherwise.
+
+/* ************************************
+ * (3)
+ * ************************************ */
 template<typename T, typename U>
 struct IsEqual<
     T,
@@ -102,10 +114,7 @@ struct IsEqual<
       >::type
   > : public IIsEqual<T>
 {
-  bool operator()(
-      const T& lhs,
-      const T& rhs
-    ) const override
+  bool operator()(const T& lhs, const T& rhs) const override
   {
     using ElemType = typename U::element_type;
     std::shared_ptr<ElemType> lhs_cast = std::dynamic_pointer_cast<ElemType>(lhs);
@@ -128,10 +137,7 @@ struct IsEqual<
       >::type
   > : public IIsEqual<T>
 {
-  bool operator()(
-      const T& lhs,
-      const T& rhs
-    ) const override
+  bool operator()(const T& lhs, const T& rhs) const override
   {
     // Cannot cast a unique_ptr, need to cast the raw pointer and wrap it in
     // shared_ptr with noop deleter.
@@ -144,9 +150,9 @@ struct IsEqual<
   }
 };
 
-//  (2) Comparison of `std::shared_ptr`s and `std::unique_ptr`s of the same
-//  type. `IsEqual::invoke(p, q)` returns `true` if the objects pointed to by
-//  `p` and `q` are equal, `false` otherwise.
+/* ************************************
+ * (2)
+ * ************************************ */
 template<typename T>
 struct IsEqual<
     T,
@@ -158,10 +164,7 @@ struct IsEqual<
   >
     : public IIsEqual<T>
 {
-  bool operator()(
-      const T& lhs,
-      const T& rhs
-    ) const override
+  bool operator()(const T& lhs, const T& rhs) const override
   {
     using ElemType = typename T::element_type;
     return IsEqual<ElemType>{}(*lhs, *rhs);
@@ -178,16 +181,15 @@ struct IsEqual<
   >
     : public IIsEqual<T>
 {
-  bool operator()(
-      const T& lhs,
-      const T& rhs
-    ) const override
+  bool operator()(const T& lhs, const T& rhs) const override
   {
     return IsEqual<typename std::remove_pointer<T>::type>{}(*lhs, *rhs);
   }
 };
 
-// (4)
+/* ************************************
+ * (4)
+ * ************************************ */
 template<typename T, typename U>
 struct IsEqual<
     T,
@@ -221,8 +223,9 @@ private:
   }
 };
 
-// (5) Specialization for the empty tuple; `operator()(...)` always returns
-// `true`.
+/* ************************************
+ * (5)
+ * ************************************ */
 template<>
 struct IsEqual<std::tuple<>, std::tuple<>> : public IIsEqual<std::tuple<>>
 {
@@ -231,12 +234,6 @@ struct IsEqual<std::tuple<>, std::tuple<>> : public IIsEqual<std::tuple<>>
     return true;
   }
 };
-
-template<typename T, typename U>
-bool is_equal(const T& lhs, const U& rhs)
-{
-  return IsEqual<T, U>{}.operator()(lhs, rhs);
-}
 
 }} // namespace drmock
 
