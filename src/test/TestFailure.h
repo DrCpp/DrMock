@@ -16,12 +16,22 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+/* FIXME 
+ *
+ * Put drmock::detail::StreamIfStreamable into a neutral namespace, e.g.
+ * drutil::StreamIfStreamable; by extension, move TypeTraits and
+ * TypeInfo, there as well.
+ *
+ * FIXME */
+
 #ifndef DRMOCK_SRC_TEST_TESTFAILURE_H
 #define DRMOCK_SRC_TEST_TESTFAILURE_H
 
 #include <exception>
 #include <sstream>
 #include <string>
+
+#include "../mock/detail/Diagnostics.h"
 
 namespace drtest { namespace detail {
 
@@ -61,9 +71,9 @@ TestFailure::TestFailure(
   std::stringstream s{};
   s << std::endl;
   s << "    (" << std::move(lhs_expr) << ") " << std::endl;
-  s << "      " << lhs << std::endl;
+  s << "      " << drmock::detail::StreamIfStreamable<LhsType>{lhs} << std::endl;
   s << "    (expected " << op << ")" << std::endl;
-  s << "      " << rhs << std::endl;
+  s << "      " << drmock::detail::StreamIfStreamable<RhsType>{rhs} << std::endl;
   what_ = s.str();
 }
 

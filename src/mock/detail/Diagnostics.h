@@ -16,13 +16,16 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DEVELOP_MOCK_DIAGNOSTICS_H
-#define DEVELOP_MOCK_DIAGNOSTICS_H
+#ifndef DRMOCK_SRC_MOCK_DETAIL_DIAGNOSTICS_H
+#define DRMOCK_SRC_MOCK_DETAIL_DIAGNOSTICS_H
 
 #include <iostream>
 #include <sstream>
+#include <string>
+#include <vector>
 
 #include "TypeInfo.h"
+#include "TypeTraits.h"
 
 namespace drmock { namespace detail {
 
@@ -92,4 +95,4 @@ struct PrintAll<T, Ts...>
 
 }} // namespace drmock::detail
 
-#endif /* DEVELOP_MOCK_DIAGNOSTICS_H */
+#endif /* DRMOCK_SRC_MOCK_DETAIL_DIAGNOSTICS_H */
