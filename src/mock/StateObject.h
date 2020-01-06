@@ -19,17 +19,17 @@
 #ifndef DRMOCK_SRC_MOCK_STATEOBJECT_H
 #define DRMOCK_SRC_MOCK_STATEOBJECT_H
 
+#include <string>
+#include <unordered_map>
+
+namespace drmock {
+
 /* StateObject
 
 Stores _slots_ (by name) and their _state_. Slots that are stored in the
 StateObject are called _registered_. Upon construction, only the default
 slot `""` (empty string) is registered with state `""`.
 */
-
-#include <string>
-#include <unordered_map>
-
-namespace drmock {
 
 class StateObject
 {
