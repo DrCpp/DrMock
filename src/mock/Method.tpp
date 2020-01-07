@@ -45,20 +45,20 @@ Method<Result, Args...>::Method(std::string name, std::shared_ptr<StateObject> s
   is_tuple_pack_equal_{std::make_shared<detail::IsTuplePackEqual<std::tuple<Args...>>>()},
   state_object_{std::move(state_object)},
   state_behavior_{},
-  behavior_stack_{std::make_shared<BehaviorQueue<Result, Args...>>(is_tuple_pack_equal_)},
-  behavior_{behavior_stack_}
+  behavior_queue_{std::make_shared<BehaviorQueue<Result, Args...>>(is_tuple_pack_equal_)},
+  behavior_{behavior_queue_}
 {}
 
 template<typename Result, typename... Args>
 BehaviorQueue<Result, Args...>&
 Method<Result, Args...>::io()
 {
-  if (not behavior_stack_)
+  if (not behavior_queue_)
   {
-    behavior_stack_ = std::make_shared<BehaviorQueue<Result, Args...>>(is_tuple_pack_equal_);
+    behavior_queue_ = std::make_shared<BehaviorQueue<Result, Args...>>(is_tuple_pack_equal_);
   }
-  behavior_ = behavior_stack_;
-  return *behavior_stack_;
+  behavior_ = behavior_queue_;
+  return *behavior_queue_;
 }
 
 template<typename Result, typename... Args>
@@ -99,9 +99,9 @@ Method<Result, Args...>::polymorphic()
       std::tuple<Args...>,
       std::tuple<Deriveds...>
     >>();
-  if (behavior_stack_)
+  if (behavior_queue_)
   {
-    behavior_stack_->setIsEqual(is_tuple_pack_equal_);
+    behavior_queue_->setIsEqual(is_tuple_pack_equal_);
   }
   if (state_behavior_)
   {
@@ -113,11 +113,11 @@ template<typename Result, typename... Args>
 bool
 Method<Result, Args...>::verify() const
 {
-  // If behavior_stack_ is used for verification, check if it's
+  // If behavior_queue_ is used for verification, check if it's
   // exhausted.
   if (not state_behavior_)
   {
-    return (not has_failed_) and behavior_stack_->is_exhausted();
+    return (not has_failed_) and behavior_queue_->is_exhausted();
   }
   return not has_failed_;
 }

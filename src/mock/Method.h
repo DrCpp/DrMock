@@ -33,6 +33,40 @@
 
 namespace drmock {
 
+/* Method
+
+A mocked C++ method. Has a _name_ (with no current effect on behavior),
+can be called and verified. The effect of the call is determined by an
+AbstractBehavior, which must be configured prior to the call. 
+
+Per default, the AbstractBehavior is a BehaviorQueue. But using io() and
+state(), the AbstractBehavior can be switched between the queue and a
+StateBehavior.
+
+When the Method is called with `args...`, the call is forwarded to the
+currently selected behavior:
+
+(1) Any produced std::exception_ptr is re-thrown. 
+
+(2) Any prodcued std::shared_ptr is returned.
+
+(3) If the Method's return value is void, then a nullptr is returned.
+
+If none of those occur, the call is considered to have _failed_. Any
+future call of verify() will now return `false` (per default, it returns
+`true`). An error message is printed, and then, If the return value of
+Method is default constructible or void, then the default or a nullptr
+is returned. Otherwise, `std::abort()` is called.
+
+*** Implementation details: ***
+
+The currently used AbstractBehavior (`state_behavior_` or
+`behavior_queue_`) is `behavior_`, while the other is a nullptr.
+
+The sole purpose of `is_tuple_pack_equal_` is to be used as argument of
+AbstractBehavior::setIsEqual whenever the AbstractBehavior changes.
+*/
+
 template<typename Result, typename... Args>
 class Method final : public IMethod
 {
@@ -43,14 +77,21 @@ public:
   Method(std::string);
   Method(std::shared_ptr<StateObject>);
   Method(std::string, std::shared_ptr<StateObject>);
+
+  // Set `is_tuple_pack_equal_` to `IsEqual<tuple<Args...>, tuple<Deriveds...>>`,
+  // and call
   template<typename... Deriveds> void polymorphic();
 
+  // Enable BehaviorQueue usage and return a reference to the queue.
   BehaviorQueue<Result, Args...>& io();
   Behavior<Result, Args...>& push();
   void enforce_order(bool);
 
+  // Enable StateBehavior usage and return a reference to the s
   StateBehavior<Result, Args...>& state();
 
+  // Per default, return `true`. If an error occured (see above), return
+  // `false`.
   bool verify() const override;
   const std::vector<std::vector<std::string>>& error_msgs() const;
   std::string makeFormattedErrorString() const;
@@ -62,7 +103,7 @@ private:
   std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal_{};
   std::shared_ptr<StateObject> state_object_{};
   std::shared_ptr<StateBehavior<Result, Args...>> state_behavior_{};
-  std::shared_ptr<BehaviorQueue<Result, Args...>> behavior_stack_{};
+  std::shared_ptr<BehaviorQueue<Result, Args...>> behavior_queue_{};
   std::shared_ptr<AbstractBehavior<Result, Args...>> behavior_{};
   bool has_failed_ = false;
   std::vector<std::vector<std::string>> error_msgs_{};

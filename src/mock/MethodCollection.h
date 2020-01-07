@@ -22,6 +22,12 @@
 #include <memory>
 #include <vector>
 
+/* MethodCollection
+
+Contained for std::shared_ptr<IMethod>. Has a method that verifies all
+contained objects.
+*/
+
 namespace drmock {
 
 class IMethod;
