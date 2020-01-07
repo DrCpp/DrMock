@@ -45,12 +45,13 @@ searched from front to back for a matching element.
 
 *** Implementation details: ***
 
-The queue is implemented as std::vector, and, once pushed/enqueued, a
-Behavior instance never leaves the queue. Instead, the _front_ of the
-queue is determined by the first element that still persists.
+* The queue is implemented as std::vector, and, once pushed/enqueued, a
+  Behavior instance never leaves the queue. Instead, the _front_ of the
+  queue is determined by the first element that still persists.
 
-The sole purpose of `is_tuple_pack_equal_` is to be used as argument of
-Behavior::setIsEqual whenever new elements are pushed onto the queue.
+* The sole purpose of `is_tuple_pack_equal_` is to be used as argument
+  of Behavior::setIsEqual whenever new elements are pushed onto the
+  queue.
 */
 
 template<typename Result, typename... Args>

@@ -30,6 +30,91 @@
 
 namespace drmock {
 
+/* StateBehavior
+
+(See also: AbstractBehavior.) Holds a StateObject, whose states are
+changed by calling by and determine the return value of call().
+
+* The entries of the _transition table_ take the following form:
+
+    (slot, oldState, tuple(input...), newState)
+
+  Read: "On `input...`, transition `slot` from `oldState` (if that is its
+  state) to `newState`."
+
+  A special state is the wildcard state `"*"`, which acts as a fallthru
+  state (see below).
+
+* The transition table may never have any inconsitencies. Therefore, if
+  a transition is pushed that violates the following rules, an exception
+  is thrown:
+
+  (1) There may be no two entries with
+
+        slot1     is equal to slot2, 
+        oldState1 is equal to oldState2, and
+        input1... is equal to input2... (using `is_tuple_pack_equal_`),
+
+      except if `oldState` is the wildcard state `"*"`.
+
+  (2) The wildcard state `"*"` may never occur as `newState`.
+
+* The return value of call() is determined by a _result slot_. The
+  _return table_ is simply
+
+    map: state (of result slot) -> return value
+
+* The result table may never have any inconsitencies. Therefore, if
+  a transition is pushed that violates the following rules, an exception
+  is thrown:
+
+  (1) There may be not two entries with
+    
+        slot1 is equal to slot2.
+
+  (Currently, the wildcard state may occur in the table, but will have
+  no effect, as it can never occur as newState in the transition table,
+  and therefore can never occur as state of the result slot, _unless_
+  the user would to something like inject a `StateObject` which already
+  contains a slot whose current state is `"*"` into the
+  `StateBehavior`.)
+
+* The effect of `call(input...)` is as follows:
+
+  (1) For every slot, find a matching entry 
+        
+        (slot, oldState, tuple(input...), newState)
+
+      of the transition table (i.e. `slot` and `input...` match and
+      `oldState` is equal to `state_object_->get(slot)`). If found,
+      set the slot's state to `newState`.
+
+      If no matching transition is found, search the wildcard
+      transitions for a matching entry: 
+  
+        (slot, "*", tuple(input...), newState)
+
+      (i.e. `slot` and `input...` match). If found, set the slot's state
+      to `newState`.
+
+  (2) Take the (new) state of the result slot and look it up in the
+      result table. If a result (return value of exception pointer) is
+      found, return that. If the result type is void, return {}. Else,
+      return an `std::monostate`.
+
+*** Implementation details: ***
+
+* The transition table is implemented as follows:
+
+    map: slot -> { map: oldState -> { vector : (input..., newState) } }
+
+  A vector is used instead of a map/unordered_map to prevent the need for
+  an operator</std::hash.
+
+* The sole purpose of `is_tuple_pack_equal_` is to be used as argument
+  of AbstractBehavior::setIsEqual whenever the AbstractBehavior changes.
+*/
+
 template<typename Result, typename... Args>
 class StateBehavior final : public AbstractBehavior<Result, Args...>
 {
@@ -43,6 +128,8 @@ public:
       std::shared_ptr<detail::IIsTuplePackEqual<Args...>>
     );
 
+  // Add transition for default slot (resp. `slot`). Throws according to
+  // the rules above.
   StateBehavior& transition(
       std::string current_state,
       std::string new_state,
@@ -55,6 +142,10 @@ public:
       Args... input
     );
 
+  // Add entry to result table - see above for details. 
+  //
+  // On first call, set the result slot to default slot (resp. `slot`).
+  // Not available for void methods.
   template<typename T = Result> StateBehavior& returns(
       const std::string& state,
       const std::enable_if_t<not std::is_same_v<Result, void>, T>& value
@@ -74,6 +165,7 @@ public:
       std::enable_if_t<not std::is_same_v<Result, void>, T>&&
     );
 
+  // Add throw for default slot (resp. `slot`).
   template<typename E> StateBehavior& throws(
       const std::string& state,
       E&& excp
@@ -84,9 +176,10 @@ public:
       E&& excp
     );
 
+  // Setter for `is_tuple_pack_equal_`.
   template<typename... Deriveds> StateBehavior& polymorphic();
   void setIsEqual(std::shared_ptr<detail::IIsTuplePackEqual<Args...>>) override;
-
+  
   virtual std::variant<
       std::monostate,
       std::shared_ptr<typename std::decay<Result>::type>,
@@ -94,9 +187,12 @@ public:
     > call(const Args&...) override;
 
 private:
-  using Vector = std::vector<std::pair<std::tuple<Args...>, std::string>>;
-
+  // Set the result slot if not already set.  
   void setResultSlot(const std::string& slot);
+  bool fix_result_slot_{false};  // Remember if result slot is set.
+
+  // Throw if the result slot is set and `slot` is not equal to `slot_`
+  // or if `state` already occurs in an entry of the result table.
   void throwOnConflict(
       const std::string& slot,
       const std::string& state
@@ -105,7 +201,6 @@ private:
   std::shared_ptr<StateObject> state_object_;
   std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal_{};
   std::string slot_{};
-  bool fixed_{false};
   std::map<
       std::string,
       std::variant<
@@ -114,7 +209,13 @@ private:
           std::exception_ptr
         >
     > results_{};
-  std::map<std::string, std::map<std::string, Vector>> transitions_{}; 
+  std::map<
+      std::string, 
+      std::map<
+          std::string, 
+          std::vector<std::pair<std::tuple<Args...>, std::string>>
+        >
+    > transitions_{}; 
   // slot -> { state -> { (input, target) } }
 };
 

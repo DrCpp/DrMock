@@ -60,11 +60,11 @@ is returned. Otherwise, `std::abort()` is called.
 
 *** Implementation details: ***
 
-The currently used AbstractBehavior (`state_behavior_` or
-`behavior_queue_`) is `behavior_`, while the other is a nullptr.
+* The currently used AbstractBehavior (`state_behavior_` or
+  `behavior_queue_`) is `behavior_`, while the other is a nullptr.
 
-The sole purpose of `is_tuple_pack_equal_` is to be used as argument of
-AbstractBehavior::setIsEqual whenever the AbstractBehavior changes.
+* The sole purpose of `is_tuple_pack_equal_` is to be used as argument
+  of AbstractBehavior::setIsEqual whenever the AbstractBehavior changes.
 */
 
 template<typename Result, typename... Args>

@@ -293,10 +293,10 @@ template<typename Result, typename... Args>
 void
 StateBehavior<Result, Args...>::setResultSlot(const std::string& slot)
 {
-  if (not fixed_)
+  if (not fix_result_slot_)
   {
     slot_ = slot;
-    fixed_ = true;
+    fix_result_slot_ = true;
   }
 }
 
@@ -307,7 +307,7 @@ StateBehavior<Result, Args...>::throwOnConflict(
     const std::string& state
   ) const
 {
-  if (fixed_ and slot != slot_)
+  if (fix_result_slot_ and slot != slot_)
   {
     throw std::runtime_error{"Result slot already set to '" + slot_ + "'."};
   }
