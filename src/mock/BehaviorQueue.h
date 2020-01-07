@@ -30,6 +30,29 @@
 
 namespace drmock {
 
+/* BehaviorQueue
+
+(See also: AbstractBehavior.) A container of Behavior objects that acts
+as AbstractBehavior.
+
+When `call(args...)` is called, the BehaviorQueue checks if the _front_
+element of the queue (see implementation details below) matches
+`args...`. If yes, the front behavior produces and the output is
+forwarded. Otherwise, std::monotstate (no output) is returned.
+
+If `enforce_order` is set to `false`, then the entire queue is instead
+searched from front to back for a matching element.
+
+*** Implementation details: ***
+
+The queue is implemented as std::vector, and, once pushed/enqueued, a
+Behavior instance never leaves the queue. Instead, the _front_ of the
+queue is determined by the first element that still persists.
+
+The sole purpose of `is_tuple_pack_equal_` is to be used as argument of
+Behavior::setIsEqual whenever new elements are pushed onto the queue.
+*/
+
 template<typename Result, typename... Args>
 class BehaviorQueue final : public AbstractBehavior<Result, Args...>
 {
@@ -42,6 +65,9 @@ public:
   Behavior<Result, Args...>& push();
   Behavior<Result, Args...>& back();
   void enforce_order(bool);
+
+  // Set `is_tuple_pack_equal_` and call `setIsEqual` for *all* elements
+  // of the queue.
   template<typename... Deriveds> void polymorphic();
   void setIsEqual(std::shared_ptr<detail::IIsTuplePackEqual<Args...>>) override;
 
@@ -50,6 +76,8 @@ public:
       std::shared_ptr<DecayedResult>,
       std::exception_ptr
     > call(const Args&...) override;
+
+  // Check if all elements of the container are exhausted.
   bool is_exhausted() const;
 
 private:

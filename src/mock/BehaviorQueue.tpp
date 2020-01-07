@@ -132,12 +132,10 @@ template<typename Result, typename... Args>
 bool
 BehaviorQueue<Result, Args...>::is_exhausted() const
 {
-  bool value = true;
-  for (const auto& b : behaviors_)
-  {
-    value = value and b.is_exhausted();
-  }
-  return value;
+  return std::all_of(
+      behaviors_.begin(), behaviors_.end(),
+      [](const auto& x) { return x.is_exhausted(); }
+    );
 }
 
 } // namespace drmock

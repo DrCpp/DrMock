@@ -27,6 +27,28 @@
 
 namespace drmock {
 
+/* Behavior
+
+Class template that represents a method's behavior. 
+
++ A Behavior has a return type (Result) and parameter types (Args...).
+
++ A Behavior can _expect_ a certain _input_ (a set of arguments that
+  match the parameter types).
+
++ A Behavior can _produce_ either a shared pointer to an instance of its
+  return type or an std::exception_ptr.
+
++ A Behavior has a life span. After a set number of productions
+  (which may be infinite), the Behavior object no longer _persists_. 
+
++ The results of the production and the life span must be configured by
+  the user.
+
+All of the class' setters, like `expects`, `returns`, override their
+previous values.
+*/
+
 template<typename Result, typename... Args>
 class Behavior
 {
@@ -34,24 +56,46 @@ public:
   Behavior();
   Behavior(std::shared_ptr<detail::IIsTuplePackEqual<Args...>>);
 
+  // Reset the expected arguments.
   template<typename T = std::tuple<Args...>>
     typename std::enable_if<(std::tuple_size<T>::value > 0), Behavior&>::type expects();
+
+  // Set the expected arguments, return value or thrown exception.
   Behavior& expects(Args...);
   template<typename T> Behavior& returns(T&&);
   template<typename E> Behavior& throws(E&&);
+
+  // Set the exact number or a range of expected productions.
+  //
+  // @example: b.times(2, 4)  // Expect 2, 3 or 4 productions. 
   Behavior& times(unsigned int);
   Behavior& times(unsigned int, unsigned int);
+  
+  // Configure this to be persistent/immortal. This overrides any
+  // previous or future `times` calls.
   Behavior& persists();
-  template<typename... Deriveds> Behavior& polymorphic();
 
+  // Setters for is_tuple_pack_equal_.
+  template<typename... Deriveds> Behavior& polymorphic();
+  void setIsEqual(std::shared_ptr<detail::IIsTuplePackEqual<Args...>>);
+
+  // Check if this is persistent (i.e. still has productions left or
+  // persists).
   bool is_persistent() const;
+  // Check if this persists or the expected number of productions has
+  // been met.
   bool is_exhausted() const;
+
+  // Check if the parameter pack matches the values stored in `expect_`.
   bool match(const Args&...) const;
+  // Produce: return result_ or exception_. The default production
+  // is nullptr (representing no production). exception_ is returned
+  // if it is not null, otherwise result_ is returned.
   std::variant<
       std::shared_ptr<typename std::decay<Result>::type>,
       std::exception_ptr
     > produce();
-  void setIsEqual(std::shared_ptr<detail::IIsTuplePackEqual<Args...>>);
+
 
 private:
   std::optional<std::tuple<Args...>> expect_{};
@@ -59,7 +103,7 @@ private:
   std::exception_ptr exception_{};
   unsigned int times_min_ = 1;
   unsigned int times_max_ = 1;
-  unsigned int num_calls_ = 0;
+  unsigned int num_calls_ = 0;  // Number of productions made.
   bool persists_ = false;
   std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal_{};
 };
