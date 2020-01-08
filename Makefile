@@ -4,7 +4,7 @@ default:
 	mkdir -p build && cd build && make -j10 && ctest --output-on-failure
 
 clean:
-	rm -fr build
+	rm -fr build && rm -fr prefix
 
 install:
 	cd build && make install && cd ..
