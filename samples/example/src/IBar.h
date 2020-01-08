@@ -19,7 +19,7 @@
 #ifndef DRMOCK_SAMPLES_EXAMPLES_SRC_IBAR_H
 #define DRMOCK_SAMPLES_EXAMPLES_SRC_IBAR_H
 
-#include <string>
+#include <vector>
 
 namespace drmock { namespace samples {
 
