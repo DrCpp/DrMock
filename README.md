@@ -19,8 +19,8 @@ along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 # DrMock
 
-**DrMock** is a testing and mocking framework for C++ designed for usage
-with Qt5.
+**DrMock** is a testing and mocking framework for C++ that emphasizes
+state verification.
 
 ### Announcments
 
@@ -36,10 +36,10 @@ Release 0.1.0 is now available.
 
 * Unit test framework
 * Automated mock object source code generation
-* Mock objects may serve as stubs for state verification
+* Mock objects configurable by state
 * Qt5/QObject support 
 
-Testing with **DrMock** looks like this:
+Testing and mocking with **DrMock** looks like this:
 ```cpp
 DRTEST_TEST(launch)
 {
@@ -87,7 +87,7 @@ The basic requirements for building and running **DrMock** are:
 
 * [libclang](http://llvm.org/git/clang) (at least 6.0.0)
 
-* [Python3](https://www.python.org) (at least 3.7)
+* [Python3.7](https://www.python.org)
 
 The following Python3 packages are automatically installed during build:
 

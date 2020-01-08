@@ -28,7 +28,7 @@ The `make` call also configures and builds the python script
 generating the source code of mock objects. It may be installed by doing
 
 ```
-pip3 install python/dist/DrMockGenerator-[version]-py3-none-any.whl
+pip3.7 install python/dist/DrMockGenerator-[version]-py3-none-any.whl
 [--target TARGET]
 ```
 
