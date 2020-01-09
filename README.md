@@ -47,18 +47,18 @@ DRTEST_TEST(launch)
 
   // Define rocket's state behavior.
   rocket->mock.toggleLeftThruster().state()
-      .transition("", "leftThrusterOn", true)
-      .transition("leftThrusterOn", "", false)
-      .transition("rightThrusterOn", "allThrustersOn", true)
-      .transition("allThrustersOn", "rightThrusterOn", false);
+      .transition("",                "leftThrusterOn",  true )
+      .transition("leftThrusterOn",  "",                false)
+      .transition("rightThrusterOn", "allThrustersOn",  true )
+      .transition("allThrustersOn",  "rightThrusterOn", false);
   rocket->mock.toggleRightThruster().state()
-      .transition("", "rightThrusterOn", true)
-      .transition("rightThrusterOn", "", false)
-      .transition("leftThrusterOn", "allThrustersOn", true)
-      .transition("allThrusterOn", "rightThrusterOn", false);
+      .transition("",                "rightThrusterOn", true )
+      .transition("rightThrusterOn", "",                false)
+      .transition("leftThrusterOn",  "allThrustersOn",  true )
+      .transition("allThrusterOn",   "rightThrusterOn", false);
   rocket->mock.launch().state()
-      .transition("", "failure")
-      .transition("*", "liftOff");
+      .transition("",                "failure")
+      .transition("*",               "liftOff");
 
   // Run the test.
   drmock::samples::LaunchPad launch_pad{rocket};
@@ -66,7 +66,13 @@ DRTEST_TEST(launch)
   DRTEST_ASSERT(rocket->mock.verifyState("liftOff"));
 }
 ```
-For details, see [here](docs/tutorial.md).
+We're testing that `launch_pad` enables at least one of the rocket's
+thrusters, then calls `rocket->launch()`. Note that it doesn't matter
+how many times the thrusters are switched on and off, only the state of
+`rocket` after the test matters. This means that **DrMock** tests can be
+designed without a particular implementation in mind.
+
+For details, see [here](docs/samples/states.md).
 
 ## Requirements
 
@@ -97,6 +103,30 @@ The following Python3 packages are automatically installed during build:
 * [python3-setuptools](https://pypi.org/project/setuptools) (at least 41.4.0)
 
 * [wheel](https://pythonwheels.com) (at least 0.32.3)
+
+## Contributing to **DrMock**
+
+You are cordially invited to contribute to **DrMock** by reporting and
+fixing bugs, and by proposing and implementing new features. 
+
+To report bugs or request a feature, raise an issue in this repository.
+Make a pull request if you wish to fix a bug or implement a new feature.
+
+When making a pull request, please ensure the code is properly unit
+tested, and that all tests pass. If changes are made to the CMake or
+python component, please mind that **DrMock** succeeds to build and
+passes the unit tests on _all_ supported platforms.
+
+### Licensing
+
+All contributions will be issued under the GPL 3.0 license. All new
+files must include a GPL 3.0 license stub, including your authorship
+copyright.
+
+### Code style
+
+When contributing code, please follow the style of existing **DrMock**
+source code.
 
 ## Acknowledgments
 
