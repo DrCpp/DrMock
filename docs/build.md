@@ -21,19 +21,22 @@ along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 In the source directory, do `make`, then `make install`. This will
 install the **DrMock** cmake package into `{SOURCE_DIR}/prefix`. Move
-the contents of that folder wherever you please.
+the contents of that folder wherever you please. For example,
+```
+rsync -a prefix/ /usr/local
+```
 
 The `make` call also configures and builds the python script
 `DrMockGenerator` and its dependencies. This script is required for
 generating the source code of mock objects. It may be installed by doing
 
 ```
-pip3.7 install python/dist/DrMockGenerator-[version]-py3-none-any.whl
+pip3.7 install [--user] python/dist/DrMockGenerator-[version]-py3-none-any.whl
 [--target TARGET]
 ```
-
-where `TARGET` is the target directory for the installation, or by
-copying the contents of `python/build` to a convenient location.
+where `TARGET` is the target directory for the installation and brackets
+denote optional arguments, or by copying the contents of `python/build`
+to a convenient location.
 
 ## Building with support for Qt
 
@@ -45,9 +48,38 @@ following the steps above. Example:
 export DRMOCK_QT_PATH="$HOME/Qt/5.13.1/clang_64"
 ```
 
+## Fetching Dependencies
+
+Some notes on fetching dependencies. 
+
+### CMake
+
+On some Linux systems, CMake 3.13 might not be available via the package
+manager you're using (this seems to be the case with Ubuntu 18.04). It's
+not difficult to build from source, following
+[https://cmake.org/install/](https://cmake.org/install/).
+
+We've noticed that on a mint Ubuntu installation, the following error
+will occur when doing `./bootstrap`: [CMake not able to find OpenSSL
+library](https://stackoverflow.com/questions/16248775/cmake-not-able-to-find-openssl-library),
+which we were able to solve by installing `openssl-dev`:
+```
+sudo apt-get install openssl-dev
+```
+(or similar for other package managers).
+
+### libclang
+
+To satisfy the libclang dependency, do
+```
+sudo apt-get install libclang-6.0-dev
+```
+(or similar for other package managers); it is not sufficient to install
+the `libclang1-6.0` package.
+
 ## Troubleshooting
 
-#### `libgl` missing
+### `libgl` missing
 
 You might encounter the following on Linux when linking against
 `Qt5::Widgets`:
@@ -59,3 +91,4 @@ The solution is to install `libgl-dev`:
 ```
 sudo apt-get install libgl-dev
 ```
+(or similar for other package managers).
