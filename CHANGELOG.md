@@ -41,8 +41,8 @@ Released 2020/??/??
 
 ### Fixed
 
-* Remark that `DRMOCK_QT_PATH` must be set when using `DrMockModule`
-  with Qt5 modules.
+* Add remark that `DRMOCK_QT_PATH` must be set when using `DrMockModule`
+  with Qt5 modules to documentation.
 
 
 
