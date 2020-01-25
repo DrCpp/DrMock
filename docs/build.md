@@ -19,6 +19,8 @@ along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 # Building DrMock
 
+### Using the Makefile
+
 In the source directory, do `make`, then `make install`. This will
 install the **DrMock** cmake package into `{SOURCE_DIR}/prefix`. Move
 the contents of that folder wherever you please. For example,
@@ -31,22 +33,47 @@ The `make` call also configures and builds the python script
 generating the source code of mock objects. It may be installed by doing
 
 ```
-pip3.7 install [--user] python/dist/DrMockGenerator-[version]-py3-none-any.whl
-[--target TARGET]
+pip3.7 install [--user] python/dist/DrMockGenerator-[version]-py3-none-any.whl [--target TARGET]
 ```
 where `TARGET` is the target directory for the installation and brackets
 denote optional arguments, or by copying the contents of `python/build`
 to a convenient location.
 
-## Building with support for Qt
+### Manually using CMake
+
+If you do not wish to use the presupplied Makefile, you can use CMake
+manually to install **DrMock**. Install the python component _first_:
+```
+cd python
+python3.7 setup.py bdist_wheel
+cd dist
+pip3.7 install [--user] DrMockGenerator-[version]-py3-none-any.whl [--target TARGET]
+```
+where `TARGET` is the target directory for the installation and brackets
+denote optional arguments.
+
+_Then_ install the C++ component, by doing something along the following
+lines:
+```
+cmake . && make && make install
+```
+
+## Building with Qt
 
 If you wish to mock Qt5's `Q_OBJECT`s, set the environment variable
 `$DRMOCK_QT_PATH` equal to the location of the Qt library before
 following the steps above. Example:
-
 ```
 export DRMOCK_QT_PATH="$HOME/Qt/5.13.1/clang_64"
 ```
+If you are using CMake manually, you will naturally have to update
+`CMAKE_PREFIX_PATH` if Qt is not already located in your prefix path:
+```
+cmake. -D CMAKE_PREFIX_PATH=$DRMOCK_QT_PATH
+```
+
+**Note.** `$DRMOCK_QT_PATH` must be set in order to use **DrMock** with
+  Qt.
 
 ## Fetching Dependencies
 
@@ -56,7 +83,7 @@ Some notes on fetching dependencies.
 
 On some Linux systems, CMake 3.13 might not be available via the package
 manager you're using (this seems to be the case with Ubuntu 18.04). It's
-not difficult to build from source, following
+not difficult to build CMake from source, following
 [https://cmake.org/install/](https://cmake.org/install/).
 
 We've noticed that on a mint Ubuntu installation, the following error
