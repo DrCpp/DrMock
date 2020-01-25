@@ -24,7 +24,7 @@ state verification.
 
 ### Announcments
 
-Release v0.2.x is now available.
+Release v0.2.x is now available. For details, see [changelog](CHANGELOG.md).
 
 ### Getting started
 
