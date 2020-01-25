@@ -100,11 +100,6 @@ endforeach()
 # Configure install.
 #######################################
 
-# If install directory is default, install to `prefix` instead.
-if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-  set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/prefix CACHE PATH "..." FORCE)
-endif()
-
 set(CMAKE_INSTALL_INCLUDEDIR "include/${PROJECT_NAME}")
 set(CMAKE_INSTALL_LIBDIR "lib")
 set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
