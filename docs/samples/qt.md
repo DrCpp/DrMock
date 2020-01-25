@@ -72,7 +72,7 @@ and a CMake policy that allows mocking generated source code. Of course,
 one must also find the Qt5 package.
 
 When calling `DrMockModule`, the required Qt5 modules must now
-bespecified using the keyword `QTMODULES`, as follows.  **DrMock** will
+bespecified using the keyword `QTMODULES`, as follows. **DrMock** will
 automatically link `TARGET` to the required libraries.
 
 ```cmake
@@ -86,6 +86,10 @@ DrMockModule(
     IFoo.h
 )
 ```
+
+Furthermore, in order to use DrMockModule with Qt, the `$DRMOCK_QT_PATH`
+environment variable must be set (see [Building DrMock](../build.md) for
+details).
 
 The `DrMockTest` call requires no changes for the use of Qt.
 
