@@ -10,9 +10,9 @@ endif
 
 .PHONY: default
 default:
-	mkdir -p build && cd build && cmake .. -DCMAKE_PREFIX_PATH=${DRMOCK_QT_PATH}
-	cd python && make && python3.7 setup.py bdist_wheel && cd ..
-	mkdir -p build && cd build && make -j$(num_threads) && ctest --output-on-failure
+	cd python && make && cd ..
+	mkdir -p build && cd build && cmake .. -D CMAKE_PREFIX_PATH=${DRMOCK_QT_PATH}
+	cd build && make -j$(num_threads) && ctest --output-on-failure
 
 .PHONY: clean
 clean:
