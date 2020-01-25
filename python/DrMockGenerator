@@ -64,7 +64,7 @@ if args.isystem is None:
     args.isystem = []
 if args.iframework is None:
     args.iframework = []
-print("Mocking " + args.input)
+# print("Mocking " + args.input)
 
 # Configure clang.
 parse.configure(

@@ -25,6 +25,8 @@ Released 2020/??/??
 
 * Autodetect number of threads for compiling in Makefile
 
+* Add convenience features to Makefile
+
 ### Changed
 
 * Append `DRMOCK_QT_PATH` to `CMAKE_PREFIX_PATH` in Makefile
@@ -35,7 +37,7 @@ Released 2020/??/??
 
 ### Removed
 
-???
+* Disable verbose print from DrMockGenerator
 
 ### Fixed
 
