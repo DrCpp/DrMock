@@ -24,7 +24,7 @@ state verification.
 
 ### Announcments
 
-Release 0.1.0 is now available.
+Release v0.2.x is now available.
 
 ### Getting started
 
