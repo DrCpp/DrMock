@@ -42,21 +42,33 @@ to a convenient location.
 ### Manually using CMake
 
 If you do not wish to use the presupplied Makefile, you can use CMake
-manually to install **DrMock**. Install the python component _first_:
+manually to install **DrMock**. Configure the C++ component _without_
+building it:
+```
+cmake .
+```
+Don't forget to set `CMAKE_PREFIX_PATH` if necessary. Then install the
+python component:
 ```
 cd python
 python3.7 setup.py bdist_wheel
 cd dist
 pip3.7 install [--user] DrMockGenerator-[version]-py3-none-any.whl [--target TARGET]
+cd ..
+cd ..
 ```
 where `TARGET` is the target directory for the installation and brackets
 denote optional arguments.
 
-_Then_ install the C++ component, by doing something along the following
-lines:
+_Then_ install the C++ component:
 ```
-cmake . && make && make install
+make && make install
 ```
+
+This order is necessary, as running the CMake configuration writes the
+location of libclang to `python/mocker/mocker.cfg`, which the python
+component requires for testing, and the python component is required 
+to be fully functional when building the C++ component.
 
 ## Building with Qt
 
