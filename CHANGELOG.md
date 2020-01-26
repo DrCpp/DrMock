@@ -23,13 +23,17 @@ Released 2020/??/??
 
 ### Added
 
-* Autodetect number of threads for compiling in Makefile
+* Add to build system:
 
-* Add convenience features to Makefile
+  - Autodetect number of threads for compiling in Makefile
+
+  - Convenience Makefile for building all sample projects
+
+  - `make clean` directive to python Makefile
+
+  - Tutorial for building **DrMock** without Makefile
 
 ### Changed
-
-* Append `DRMOCK_QT_PATH` to `CMAKE_PREFIX_PATH` in Makefile
 
 ### Deprecated
 
@@ -43,8 +47,6 @@ Released 2020/??/??
 
 * Add remark that `DRMOCK_QT_PATH` must be set when using `DrMockModule`
   with Qt5 modules to documentation.
-
-
 
 # DrMock 0.1.0
 
