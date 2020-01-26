@@ -45,9 +45,9 @@ samples/basic
 ### Requirements
 
 This project requires an installation of **DrMock** in `prefix/` or the
-`CMAKE_PREFIX_PATH`. If your installation of **DrMock** is located
-elsewhere, you must change the `-DCMAKE_PREFIX_PATH=...` flag in
-`Makefile` (for details, see below).
+`CMAKE_PREFIX_PATH` environment variable. If your installation of
+**DrMock** is located elsewhere, you must change the value of
+`CMAKE_PREFIX_PATH`.
 
 ## Setup
 
@@ -95,15 +95,15 @@ Now lets take a look at the `Makefile`:
 
 ```makefile
 default:
-  mkdir -p build && cd build && cmake .. -DCMAKE_PREFIX_PATH=../../prefix && make -j10 && ctest --output-on-failure
-
-clean:
-  rm -fr build
+  mkdir -p build && cd build && cmake .. -DCMAKE_PREFIX_PATH=../../prefix 
+  cd build && make -j$(num_threads) && ctest --output-on-failure
 ```
 
-If you haven't already, you can set the `CMAKE_PREFIX_PATH` to the
-installation directory of the **DrMock** package.  If you've done `make
-&& make install` in the **DrMock** source folder and haven't moved
+Nothing fancy here. Note the ctest call after building.
+
+If you haven't already, set the `CMAKE_PREFIX_PATH` environment variable
+to the installation directory of the **DrMock** package. If you've done
+`make && make install` in the **DrMock** source folder and haven't moved
 `prefix`, the default `CMAKE_PREFIX_PATH` set in the `Makefile` is
 referencing the correct directory. 
 

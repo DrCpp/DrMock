@@ -78,8 +78,13 @@ following the steps above. Example:
 ```
 export DRMOCK_QT_PATH="$HOME/Qt/5.13.1/clang_64"
 ```
-If you are using CMake manually, you will naturally have to update
-`CMAKE_PREFIX_PATH` if Qt is not already located in your prefix path:
+If you haven't already, you will also have to add this path to your
+prefix path by setting the `CMAKE_PREFIX_PATH` environment variable:
+```
+export CMAKE_PREFIX_PATH=$DRMOCK_QT_PATH
+```
+If you are using CMake manually, you could do this using a CMake
+directive:
 ```
 cmake. -D CMAKE_PREFIX_PATH=$DRMOCK_QT_PATH
 ```
