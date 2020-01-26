@@ -9,3 +9,5 @@ clean:
 	rm -fr build
 	rm -fr DrMockGenerator.egg-info
 	rm -fr dist
+	rm -fr mocker/__pycache__
+	rm -f mocker/mocker.cfg
