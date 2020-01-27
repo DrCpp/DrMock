@@ -19,25 +19,28 @@ along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 # DrMock
 
-**DrMock** is a testing and mocking framework for C++ that emphasizes
-state verification.
+**DrMock** is a testing and mocking framework for C++ that offers unique
+features for mock object configuration.
 
 ### Announcments
 
-Release v0.2.x is now available. For details, see [changelog](CHANGELOG.md).
+Release v0.2.x is now available. For details, see
+[changelog](CHANGELOG.md).
 
 ### Getting started
 
-* A guide to building **DrMock** may be found [here](docs/build.md).
-* **DrMock** sample projects and tutorials are found
-  [here](docs/tutorial.md).
+* A short introduction to **DrMock** may be found [here](docs/introduction.md)
+
+* A guide to building **DrMock** may be found [here](docs/build.md)
+
+* **DrMock** sample projects and tutorials may be found [here](docs/tutorial.md)
 
 ### Features
 
 * Unit test framework
-* Automated mock object source code generation
-* Mock objects configurable by state
-* Qt5/QObject support 
+* On-the-fly mock object source code generation
+* Unique method of configuring mock objects by state
+* Qt5 support 
 
 Testing and mocking with **DrMock** looks like this:
 ```cpp
@@ -60,17 +63,15 @@ DRTEST_TEST(launch)
       .transition("",                "failure")
       .transition("*",               "liftOff");
 
-  // Run the test.
+  // Check that the pad launches the rocket *after* enabling a thruster.
   drmock::samples::LaunchPad launch_pad{rocket};
   launch_pad.launch();
   DRTEST_ASSERT(rocket->mock.verifyState("liftOff"));
 }
 ```
-We're testing that `launch_pad` enables at least one of the rocket's
-thrusters, then calls `rocket->launch()`. Note that it doesn't matter
-how many times the thrusters are switched on and off, only the state of
-`rocket` after the test matters. This means that **DrMock** tests can be
-designed without a particular implementation in mind.
+Note that it doesn't matter how many times the thrusters are switched on
+and off, only the state of `rocket` after the test matters. **DrMock**
+allows tests to be designed without a particular implementation in mind.
 
 For details, see [here](docs/samples/states.md).
 
@@ -114,7 +115,7 @@ Make a pull request if you wish to fix a bug or implement a new feature.
 
 When making a pull request, please ensure the code is properly unit
 tested, and that all tests pass. If changes are made to the CMake or
-python component, please mind that **DrMock** succeeds to build and
+Python component, please mind that **DrMock** succeeds to build and
 passes the unit tests on _all_ supported platforms.
 
 ### Licensing
