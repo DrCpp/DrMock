@@ -19,7 +19,7 @@ along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 # DrMock
 
-**DrMock** is a testing and mocking framework for C++ that offers unique
+**DrMock** is a testing and mocking framework for C++17 that offers unique
 features for mock object configuration.
 
 ### Announcments
