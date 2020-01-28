@@ -40,7 +40,7 @@ Release v0.2.x is now available. For details, see
 * Unit test framework
 * On-the-fly mock object source code generation
 * Unique method of configuring mock objects by state
-* Qt5 support 
+* Qt5 compatible 
 
 Testing and mocking with **DrMock** looks like this:
 ```cpp
@@ -50,15 +50,16 @@ DRTEST_TEST(launch)
 
   // Define rocket's state behavior.
   rocket->mock.toggleLeftThruster().state()
-      .transition("",                "leftThrusterOn",  true )
-      .transition("leftThrusterOn",  "",                false)
-      .transition("rightThrusterOn", "allThrustersOn",  true )
-      .transition("allThrustersOn",  "rightThrusterOn", false);
+                  // Source state    // Destination state  // Input value
+      .transition("",                "leftThrusterOn",     true )
+      .transition("leftThrusterOn",  "",                   false)
+      .transition("rightThrusterOn", "allThrustersOn",     true )
+      .transition("allThrustersOn",  "rightThrusterOn",    false);
   rocket->mock.toggleRightThruster().state()
-      .transition("",                "rightThrusterOn", true )
-      .transition("rightThrusterOn", "",                false)
-      .transition("leftThrusterOn",  "allThrustersOn",  true )
-      .transition("allThrusterOn",   "rightThrusterOn", false);
+      .transition("",                "rightThrusterOn",    true )
+      .transition("rightThrusterOn", "",                   false)
+      .transition("leftThrusterOn",  "allThrustersOn",     true )
+      .transition("allThrusterOn",   "rightThrusterOn",    false);
   rocket->mock.launch().state()
       .transition("",                "failure")
       .transition("*",               "liftOff");
