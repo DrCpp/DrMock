@@ -1,8 +1,8 @@
 .PHONY: default
 default:
-	pip3.7 install --user -r requirements.txt
-	python3.7 -m unittest discover tests/
-	python3.7 setup.py bdist_wheel
+	pip install --user -r requirements.txt
+	python -m unittest discover tests/
+	python setup.py bdist_wheel
 
 .PHONY: clean
 clean:

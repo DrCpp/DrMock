@@ -19,6 +19,18 @@ along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 # Building DrMock
 
+## Requirements for building and using DrMock
+
+Build requirements and supported platforms are found in the
+[README.md](../README.md). Using and building **DrMock** requires that
+`python` and `pip` are >= 3.7.0 (we suggest you use
+[pyenv](https://github.com/pyenv/pyenv) to manage your python versions;
+see below for details).
+
+## Building 
+
+**DrMock** may be configured manually, or using the delivered Makefiles.
+
 ### Using the Makefile
 
 In the source directory, do `make`, then `make install`. This will
@@ -33,7 +45,7 @@ The `make` call also configures and builds the python script
 generating the source code of mock objects. It may be installed by doing
 
 ```
-pip3.7 install [--user] python/dist/DrMockGenerator-[version]-py3-none-any.whl [--target TARGET]
+pip install [--user] python/dist/DrMockGenerator-[version]-py3-none-any.whl [--target TARGET]
 ```
 where `TARGET` is the target directory for the installation and brackets
 denote optional arguments, or by copying the contents of `python/build`
@@ -101,7 +113,7 @@ Some notes on fetching dependencies.
 On some Linux systems, CMake 3.13 might not be available via the package
 manager you're using (this seems to be the case with Ubuntu 18.04). It's
 not difficult to build CMake from source, following
-[https://cmake.org/install/](https://cmake.org/install/).
+[https://cmake.org/install/ ](https://cmake.org/install/).
 
 We've noticed that on a mint Ubuntu installation, the following error
 will occur when doing `./bootstrap`: [CMake not able to find OpenSSL
@@ -136,3 +148,12 @@ The solution is to install `libgl-dev`:
 sudo apt-get install libgl-dev
 ```
 (or similar for other package managers).
+
+### `python` versions
+
+On many systems, `python` will still point to Python 2.7.x, which has
+reached the end of its life on 01/01/2020 (as of January 2020, macOS
+Catalina and Ubuntu 18.04 are examples of this). 
+Using this configuration **DrMock** requires `python` to point to Python >= 3.7.0. 
+The proper way to do this is to use the aforementioned
+[pyenv](https://github.com/pyenv/pyenv).
