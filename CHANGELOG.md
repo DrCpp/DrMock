@@ -23,7 +23,7 @@ Released 2020/??/??
 
 ### Added
 
-* Add to build system:
+* Build system:
 
   - Autodetect number of threads for compiling in Makefile
 
@@ -32,6 +32,8 @@ Released 2020/??/??
   - `make clean` directive to python Makefile
 
   - Tutorial for building **DrMock** without Makefile
+
+  - pkg-config file
 
 ### Changed
 
@@ -47,6 +49,13 @@ Released 2020/??/??
 
 * Add remark that `DRMOCK_QT_PATH` must be set when using `DrMockModule`
   with Qt5 modules to documentation.
+
+* Make python calls more robust by replacing `python3.7` and `pip3.7`
+  with `python` and `pip` and shifting the responsibility of managing
+  the python versions to the user.
+
+* Replace odd error message thrown when using `DrMockModule` with
+  `QTMODULE` parameter but unset `DRMOCK_QT_PATH` environment variable.
 
 # DrMock 0.1.0
 
