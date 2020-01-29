@@ -204,6 +204,11 @@ function(DrMockModule)
 
   # If Qt is enabled, add the Qt framework and include paths.
   foreach (module ${PARSED_ARGS_QTMODULES})
+    # Check if DRMOCK_QT_PATH is defined.
+    if (NOT DEFINED ENV{DRMOCK_QT_PATH})
+      message(FATAL_ERROR "DrMockModule error: DRMOCK_QT_PATH not defined")
+    endif()
+
     # Compute the Qt iframework flag for macOS users.
     set(qtPath $ENV{DRMOCK_QT_PATH})
     string(REGEX REPLACE "\\\\" "" qtPathUnescaped ${qtPath}) 
