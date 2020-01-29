@@ -115,6 +115,12 @@ install(
 set_target_properties(${PROJECT_NAME} PROPERTIES EXPORT_NAME Core)
 
 install(
+  DIRECTORY pkgconfig/
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
+  FILES_MATCHING
+    PATTERN "*.pc"
+)
+install(
   DIRECTORY include/
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
@@ -124,6 +130,15 @@ install(
   FILES_MATCHING 
     PATTERN "*.h" 
     PATTERN "*.tpp"
+)
+
+#######################################
+# pkgconfig
+#######################################
+
+configure_file(
+  ${CMAKE_SOURCE_DIR}/pkgconfig/DrMock.pc.in 
+  ${CMAKE_SOURCE_DIR}/pkgconfig/DrMock.pc
 )
 
 #######################################
