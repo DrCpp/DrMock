@@ -15,13 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
-prefix=@CMAKE_INSTALL_PREFIX@
-includedir=${prefix}/include
-libdir=${prefix}/lib
-
 Name: DrMock
 Description: C++17 testing and mocking framework
 Version: @PROJECT_VERSION@
 
-Cflags: -I${includedir}/DrMock
-Libs: -L${libdir} -lDrMock
+Cflags: -I@CMAKE_INSTALL_PREFIX@/include/DrMock
+Libs: -L@CMAKE_INSTALL_PREFIX@/lib -lDrMock
