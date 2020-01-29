@@ -22,3 +22,6 @@ libdir=${prefix}/lib
 Name: DrMock
 Description: C++17 testing and mocking framework
 Version: @PROJECT_VERSION@
+
+Cflags: -I${includedir}/DrMock
+Libs: -L${libdir} -lDrMock
