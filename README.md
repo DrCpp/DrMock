@@ -50,16 +50,16 @@ DRTEST_TEST(launch)
 
   // Define rocket's state behavior.
   rocket->mock.toggleLeftThruster().state()
-                  // Source state    // Destination state  // Input value
-      .transition("",                "leftThrusterOn",     true )
-      .transition("leftThrusterOn",  "",                   false)
-      .transition("rightThrusterOn", "allThrustersOn",     true )
-      .transition("allThrustersOn",  "rightThrusterOn",    false);
+                  // Source state    // Destination state   // Input value
+      .transition("",                "leftThrusterOn",      true )
+      .transition("leftThrusterOn",  "",                    false)
+      .transition("rightThrusterOn", "allThrustersOn",      true )
+      .transition("allThrustersOn",  "rightThrusterOn",     false);
   rocket->mock.toggleRightThruster().state()
-      .transition("",                "rightThrusterOn",    true )
-      .transition("rightThrusterOn", "",                   false)
-      .transition("leftThrusterOn",  "allThrustersOn",     true )
-      .transition("allThrusterOn",   "rightThrusterOn",    false);
+      .transition("",                "rightThrusterOn",     true )
+      .transition("rightThrusterOn", "",                    false)
+      .transition("leftThrusterOn",  "allThrustersOn",      true )
+      .transition("allThrustersOn",  "leftThrusterOn",      false);
   rocket->mock.launch().state()
       .transition("",                "failure")
       .transition("*",               "liftOff");

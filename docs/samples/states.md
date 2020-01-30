@@ -226,7 +226,7 @@ Liftoff can only succeed if at least one thruster is on.
       .transition("", "rightThrusterOn", true)
       .transition("rightThrusterOn", "", false)
       .transition("leftThrusterOn", "allThrustersOn", true)
-      .transition("allThrusterOn", "rightThrusterOn", false);
+      .transition("allThrustersOn", "leftThrusterOn", false);
   rocket->mock.launch().state()
       .transition("", "failure")
       .transition("*", "liftOff");
