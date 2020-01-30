@@ -57,6 +57,8 @@ Released 2020/??/??
 * Replace odd error message thrown when using `DrMockModule` with
   `QTMODULE` parameter but unset `DRMOCK_QT_PATH` environment variable.
 
+* Fix transition table in rocket example
+
 # DrMock 0.1.0
 
 Released 2020/01/10
