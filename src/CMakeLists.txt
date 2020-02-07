@@ -39,5 +39,5 @@ target_include_directories(${PROJECT_NAME}
 )
 
 target_compile_options(${PROJECT_NAME} PRIVATE
-  -Wall -Werror -g -fPIC -pedantic -O2 -fdiagnostics-color=always
+  -Wall -Werror -fPIC -pedantic -O2 -fdiagnostics-color=always
 )
