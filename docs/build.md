@@ -43,7 +43,6 @@ rsync -a prefix/ /usr/local
 The `make` call also configures and builds the python script
 `DrMockGenerator` and its dependencies. This script is required for
 generating the source code of mock objects. It may be installed by doing
-
 ```
 pip install [--user] python/dist/DrMockGenerator-[version]-py3-none-any.whl [--target TARGET]
 ```
@@ -90,13 +89,10 @@ following the steps above. Example:
 ```
 export DRMOCK_QT_PATH="$HOME/Qt/5.13.1/clang_64"
 ```
-If you haven't already, you will also have to add this path to your
-prefix path by setting the `CMAKE_PREFIX_PATH` environment variable:
-```
-export CMAKE_PREFIX_PATH=$DRMOCK_QT_PATH
-```
-If you are using CMake manually, you could do this using a CMake
-directive:
+If you're using the Makefile for building, `${DRMOCK_QT_PATH}` will be
+used to set the `CMAKE_PREFIX_PATH`. If you're building manually and
+haven't already, you will also have to add `${DRMOCK_QT_PATH}` to your
+prefix path by using a CMake directive:
 ```
 cmake. -D CMAKE_PREFIX_PATH=$DRMOCK_QT_PATH
 ```
