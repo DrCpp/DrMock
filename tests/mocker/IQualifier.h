@@ -25,7 +25,7 @@ class IQualifier
 {
 public:
   virtual ~IQualifier() = default;
-  
+
   virtual void f() const = 0;
   virtual int g() const noexcept = 0;
   virtual int h(float, double) const = 0;

@@ -1,4 +1,4 @@
-<!-- 
+<!--
 Copyright 2019 Ole Kliemann, Malte Kliemann
 
 This file is part of DrMock.
@@ -40,7 +40,7 @@ Release v0.2.x is now available. For details, see
 * Unit test framework
 * On-the-fly mock object source code generation
 * Unique method of configuring mock objects by state
-* Qt5 compatible 
+* Qt5 compatible
 
 Testing and mocking with **DrMock** looks like this:
 ```cpp
@@ -99,7 +99,7 @@ The basic requirements for building and running **DrMock** are:
 
 The following Python3 packages are automatically installed during build:
 
-* [Clang Python bindings](https://github.com/llvm-mirror/clang/tree/master/bindings/python) 
+* [Clang Python bindings](https://github.com/llvm-mirror/clang/tree/master/bindings/python)
   (at least 6.0.0)
 
 * [python3-setuptools](https://pypi.org/project/setuptools) (at least 41.4.0)
@@ -109,7 +109,7 @@ The following Python3 packages are automatically installed during build:
 ## Contributing to **DrMock**
 
 You are cordially invited to contribute to **DrMock** by reporting and
-fixing bugs, and by proposing and implementing new features. 
+fixing bugs, and by proposing and implementing new features.
 
 To report bugs or request a feature, raise an issue in this repository.
 Make a pull request if you wish to fix a bug or implement a new feature.
@@ -133,7 +133,7 @@ source code.
 ## Acknowledgments
 
 During the configuration of **DrMock**'s build system, we have profited
-greatly from P. Arias' 
-[It's Time To Do CMake Right](https://pabloariasal.github.io/2018/02/19/its-time-to-do-cmake-right/) 
-and D. Berner's 
+greatly from P. Arias'
+[It's Time To Do CMake Right](https://pabloariasal.github.io/2018/02/19/its-time-to-do-cmake-right/)
+and D. Berner's
 [Cmake line by line - creating a header-only library](http://dominikberner.ch/cmake-interface-lib/).

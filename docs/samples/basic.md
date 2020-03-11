@@ -1,4 +1,4 @@
-<!-- 
+<!--
 Copyright 2019 Ole Kliemann, Malte Kliemann
 
 This file is part of DrMock.
@@ -67,7 +67,7 @@ find_package(DrMock COMPONENTS Core REQUIRED)
 
 This will fail if `DrMock::Core` cannot be found in the
 `CMAKE_PREFIX_PATH`. Make sure that DrMock installed there, or set the
-prefix in the `Makefile` (see below). 
+prefix in the `Makefile` (see below).
 
 Finding the **DrMock** package
 automatically import the macro `DrMockTest`, which may be used to
@@ -95,7 +95,7 @@ Now lets take a look at the `Makefile`:
 
 ```makefile
 default:
-  mkdir -p build && cd build && cmake .. -DCMAKE_PREFIX_PATH=../../prefix 
+  mkdir -p build && cd build && cmake .. -DCMAKE_PREFIX_PATH=../../prefix
   cd build && make -j$(num_threads) && ctest --output-on-failure
 ```
 
@@ -105,11 +105,11 @@ If you haven't already, set the `CMAKE_PREFIX_PATH` environment variable
 to the installation directory of the **DrMock** package. If you've done
 `make && make install` in the **DrMock** source folder and haven't moved
 `prefix`, the default `CMAKE_PREFIX_PATH` set in the `Makefile` is
-referencing the correct directory. 
+referencing the correct directory.
 
 ## Source code
 
-Time to look at some test code. Open `basicTest.cpp`! 
+Time to look at some test code. Open `basicTest.cpp`!
 
 `DrMock/Test.h` contains **DrMock**'s test macros and must be included
 in every test source file. To open a new test, do
@@ -133,8 +133,8 @@ DRTEST_TEST(someTest)
 ```
 
 To compare objects of some type `T`, the following `DRTEST_ASSERT_[...]`
-macros may be used if `T` implements 
-`std::ostream& operator<<(ostream& os, const T&)`, 
+macros may be used if `T` implements
+`std::ostream& operator<<(ostream& os, const T&)`,
 as done in the next test.
 ```cpp
 DRTEST_TEST(anotherTest)
@@ -158,7 +158,7 @@ If the compared type `T` doesn't provide a streaming operator, use
 
 ### Exceptions
 
-To check for exceptions, use 
+To check for exceptions, use
 ```cpp
 DRTEST_ASSERT_THROW(statement, exceptionType);
 ```
@@ -239,7 +239,7 @@ After adding the columns, the `drtest::addRow` function may then be used
 to populate the table:
 ```cpp
 drtest::addRows(
-    "row description", 
+    "row description",
     1stColumnEntry,
     2ndColumnEntry,
     ...
@@ -387,8 +387,8 @@ can be caused by not properly isolating commas occuring in macro
 arguments. For example,
 ```cpp
 DRTEST_ASSERT(
-    std::vector<int>{0, 1, 2} 
-    == 
+    std::vector<int>{0, 1, 2}
+    ==
     std::vector<int>{3, 4, 5}
   );
 ```
@@ -397,8 +397,8 @@ will throw this error. The macro will assume it is called with
 this, use parens `()` to encapsulate these commas:
 ```cpp
 DRTEST_ASSERT(
-    (std::vector<int>{0, 1, 2}) 
-    == 
+    (std::vector<int>{0, 1, 2})
+    ==
     (std::vector<int>{3, 4, 5})
   );
 ```
@@ -432,7 +432,7 @@ DrMockTest(
   TESTS
     test.cpp
   OPTIONS
-    -Wall 
+    -Wall
     -Werror
 )
 ```

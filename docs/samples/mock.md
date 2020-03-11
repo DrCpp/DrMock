@@ -1,4 +1,4 @@
-<!-- 
+<!--
 Copyright 2019 Ole Kliemann, Malte Kliemann
 
 This file is part of DrMock.
@@ -56,7 +56,7 @@ samples/mock
 │   │   Order.h
 │   │   Warehouse.cpp
 │   │   Warehouse.h
-│   
+│
 └───tests
     │   CMakeLists.txt
     │   OrderTest.cpp
@@ -116,7 +116,7 @@ being requested, this should be `false`. Otherwise, `true`.  Although it
 is irrelevant here, the reader is invited to look at the sample
 implementation found in `Warehouse.h` and `Warehouse.cpp`.
 
-Let's take a short peek at the header of `Order` for a moment. 
+Let's take a short peek at the header of `Order` for a moment.
 ```cpp
 // Order.h
 
@@ -138,11 +138,11 @@ private:
 ```
 Note that the parameter of `fill` is an `std::shared_ptr` to allow the
 use of polymorphism. You could use virtually any type of (smart) pointer
-in place of `std::shared_ptr`. 
+in place of `std::shared_ptr`.
 
 Here's the straightforward implementation of the `fill` method:
 ```cpp
-void 
+void
 Order::fill(const std::shared_ptr<IWarehouse& wh)
 {
   filled_ = wh->remove(commodity_, quantity_);
@@ -154,7 +154,7 @@ the commodity from the warehouse and set `filled_` accordingly.
 ## Setup
 
 To use **DrMock** to create source code for a mock of `IWarehouse`, the
-macro `DrMockModule` is used. 
+macro `DrMockModule` is used.
 ```cmake
 # src/CMakeLists.txt
 
@@ -189,7 +189,7 @@ try removing the `GENERATOR` argument.
 A detailed documentation may be found in [DrMockModule documentation](#drmockmodule-documentation).
 
 Let's now see how mock objects are used in tests. First, take a look at
-`tests/CMakeLists.txt`. 
+`tests/CMakeLists.txt`.
 ```cmake
 DrMockTest(
   LIBS
@@ -243,7 +243,7 @@ For instance, to define the behavior of `remove`, you call
 `warehouse->mock.remove()`. This returns a `Method` object onto which
 `Behavior`s may be pushed using `push` (detail below). Here, the mock
 object is instructed to expect the call `remove("foo", 2)` _exactly
-once_ (call `times` with parameter 1), and then to return `true`. 
+once_ (call `times` with parameter 1), and then to return `true`.
 
 **Note.** The `push` method, as well as `expects`, `times`, etc. returns
 a reference to the pushed behavior, thus allowing the user to
@@ -328,7 +328,7 @@ private:
   /* Method objects */
   std::shared_ptr<Method<void, std::string, std::size_t>> METHODS_DRMOCK_add;
   std::shared_ptr<Method<bool, std::string, std::size_t>> METHODS_DRMOCK_remove;
-  
+
   /* Details... */
 };
 ```
@@ -354,7 +354,7 @@ public:
 ```
 
 The short of it is this: For every method (in fact, every overload - but
-more of that later) there's an `std::shared_ptr<Method<Result, Args...>>` 
+more of that later) there's an `std::shared_ptr<Method<Result, Args...>>`
 member in the interval mock object. When the mock implementation's
 methods are called, the call is forwarded to the `Method`'s `call`
 method:
@@ -442,7 +442,7 @@ method is called.
 
 * If an `std::exception_ptr` is produced, the pointee exception is
   rethrown by the `Method`.
- 
+
 A couple of things can go wrong here:
 
 * No matching `Behavior` is found.
@@ -507,22 +507,22 @@ public:
 All of these return `this`, allowing us to string multiple
 configurations together.
 
-* `expects(Args... args)`  
+* `expects(Args... args)`
   Expect a call with `args...` as arguments.
 
-* `returns(T&&)`  
+* `returns(T&&)`
   Produce the passed value on production.
 
-* `throws(E&&)`  
+* `throws(E&&)`
   Throw the passed exception on production.
 
-* `times(unsigned int)`  
+* `times(unsigned int)`
   Specify the _exact_ number of expected calls.
 
-* `times(unsigned int, unsigned int)`  
+* `times(unsigned int, unsigned int)`
   Specify a range of expected calls.
 
-* `persists()`  
+* `persists()`
   Make the behavior immortal.
 
 **Note.** `times(unsigned int, unsigned int)` is used to set a minimum
@@ -530,7 +530,7 @@ and maximum number of calls. For example, `times(2, 4)` configures the
 `Behavior` to expect two, three _or four_ calls. The default expected
 times is _exactly once_.
 
-The last method, `template<typename... Deriveds> Behavior& polymorphic()`, 
+The last method, `template<typename... Deriveds> Behavior& polymorphic()`,
 is used to instruct the `Behavior` to expect one of the following:
 
 * `Args*...`
@@ -734,7 +734,7 @@ DRTEST_TEST(overload)
       .expects(0.0f, {}).returns(4);
 
   DRTEST_ASSERT_EQ(
-      bar->f(), 
+      bar->f(),
       1
     );
   DRTEST_ASSERT_EQ(
@@ -742,11 +742,11 @@ DRTEST_TEST(overload)
       2
     );
   DRTEST_ASSERT_EQ(
-      bar->f(3), 
+      bar->f(3),
       3
     );
   DRTEST_ASSERT_EQ(
-      bar->f(0.0f, {}), 
+      bar->f(0.0f, {}),
       4
     );
 }
@@ -783,14 +783,14 @@ drmock::samples::Bar func(drmock::samples::Foo) const = 0;
 
 **DrMock** also requires that parameters of interface method be
 _comparable_. Thus, they must implement `operator==`, with the following
-exceptions: 
+exceptions:
 
 (1) `std::shared_ptr<T>` and `std::unique_ptr<T>` are comparable if `T`
 is comparable. They are compared by comparing their pointees.  If the
 pointee type `T` is abstract, polymorphism must be specified, see below.
 
 (2) `std::tuple<Ts...>` is comparable if all
-elements of `Ts...` are comparable. 
+elements of `Ts...` are comparable.
 
 ### Polymorphism
 
@@ -801,12 +801,12 @@ object must be informed informed which derived type to expect using the
 
 For example,
 ```cpp
-class Base 
+class Base
 {
   // ...
 };
 
-class Derived : public Base 
+class Derived : public Base
 {
   // Make `Derived` comparable.
   bool operator==(const Derived&) const { /* ... */ }
@@ -816,7 +816,7 @@ class Derived : public Base
 
 // IFoo.h
 
-class IFoo 
+class IFoo
 {
 public:
   ~IFoo() = default;
@@ -830,7 +830,7 @@ Then, use `polymorphic` to register `Derived`:
 auto foo = std::make_shared<FooMock>();
 foo->mock.func().polymorphic<std::shared_ptr<Derived>, std::shared_ptr<Derived>>();
 foo->mock.func().expects(
-    std::make_shared<Derived>(/* ... */), 
+    std::make_shared<Derived>(/* ... */),
     std::make_shared<Derived>(/* ... */)
   );
 ```
@@ -890,7 +890,7 @@ If you don't wish to follow this template, you must change the call to
 `DrMockModule`. The arguments of `IFILE` and `ICLASS` must be regular
 expression with exactly one capture group, those of `MOCKFILE` and
 `MOCKCLASS` must contain a single subexpression `\1` (beware the CMake
-excape rules!). 
+excape rules!).
 
 The capture groups gather the implementation file and class name and
 replace said subexpressions to compute the mock file and class name. For
@@ -930,7 +930,7 @@ triggered.
 ### DrMockModule documentation
 ```cmake
 DrMockModule(
-  TARGET 
+  TARGET
   HEADERS header1 [header2 [header3 ...]]
   [IFILE]
   [MOCKFILE]
@@ -974,7 +974,7 @@ DrMockModule(
   class names match. The regex must contain exactly one subexpression
   character `"\\1"`. The default value is `MOCKFILE`.
 
-##### GENERATOR 
+##### GENERATOR
   A path to the generator script of DrMock. Default value is the
   current path.
 
@@ -987,11 +987,11 @@ DrMockModule(
   `QTMODULES` is defined (even if it's empty), the `HEADERS` will be
   added to the sources of `TARGET`, thus allowing the interfaces that
   are Q_OBJECT to be mocked. Default value is undefined.
-  
+
 ##### INCLUDE
   A list of include path's that are required to parse the `HEADERS`.
   The include paths of Qt5 modules passed in the `QTMODULES` parameter
-  are automatically added to this list.  
+  are automatically added to this list.
 
   The default value contains ${CMAKE_CURRENT_SOURCE_DIR} (the
   directory that `DrMockModule` is called from) and the current
@@ -1046,7 +1046,7 @@ described above and must satisfy the following conditions:
 * Every parameter or return value `Foo` of the interface's methods shall
   satisfy one of the following conditions:
 
-  (1) `Foo` is not abstract and implements 
+  (1) `Foo` is not abstract and implements
     `bool operator==(const Foo&) const`.
 
   (2) It is an `std::shared_ptr` or an `std::unique_ptr` to a type that

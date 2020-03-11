@@ -23,7 +23,7 @@ using namespace outer::inner;
 
 DRTEST_TEST(singleSlot)
 {
-  VerifyStateMock foo{}; 
+  VerifyStateMock foo{};
   foo.mock.set1().state()
       .transition("*", "on", true)
       .transition("*", "off", false);
@@ -40,7 +40,7 @@ DRTEST_TEST(singleSlot)
 
 DRTEST_TEST(multipleSlots)
 {
-  VerifyStateMock foo{}; 
+  VerifyStateMock foo{};
   foo.mock.set1().state()
       .transition("slot1", "*", "on", true)
       .transition("slot1", "*", "off", false);

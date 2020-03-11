@@ -21,7 +21,7 @@
 
 namespace foo { namespace bar {
 
-class Foo 
+class Foo
 {
 public:
   int passthru(int x) { return x; }

@@ -23,7 +23,7 @@ cmake_minimum_required (VERSION 3.13)
 
 project(
   DrMock
-  VERSION 0.2.0 
+  VERSION 0.2.0
   DESCRIPTION "C++17 testing and mocking framework"
   LANGUAGES CXX
 )
@@ -38,7 +38,7 @@ find_library(
   LIBCLANG_PATH
   NAMES clang clang-6.0 clang-7.0 clang-8.0
   PATH_SUFFIXES lib
-  HINTS 
+  HINTS
     /Library/Developer/CommandLineTools/usr
     /usr/lib/llvm-7/lib
 )
@@ -48,16 +48,16 @@ endif()
 
 # Write the libclang path to the mocker.cfg.
 configure_file(
-  ${CMAKE_SOURCE_DIR}/python/mocker/mocker.cfg.in 
+  ${CMAKE_SOURCE_DIR}/python/mocker/mocker.cfg.in
   ${CMAKE_SOURCE_DIR}/python/mocker/mocker.cfg
 )
 
 # If enabled, find Qt.
 if (DEFINED ENV{DRMOCK_QT_PATH})
   find_package(
-    Qt5 
-    COMPONENTS 
-      Core 
+    Qt5
+    COMPONENTS
+      Core
   )
   if (${Qt5_FOUND})
     # Set CMP0071 to NEW so that generated files are automoc'ed.
@@ -65,7 +65,7 @@ if (DEFINED ENV{DRMOCK_QT_PATH})
     set(CMAKE_AUTOMOC ON)
   else()
     message(
-      FATAL_ERROR 
+      FATAL_ERROR
       "DRMOCK_QT_PATH environment variable is set, but Qt5 was not found."
     )
   endif()
@@ -90,8 +90,8 @@ set(DrMockMacros
 foreach (pathToFile ${${PROJECT_NAME}Macros})
   get_filename_component(name ${pathToFile} NAME)
   configure_file(
-    ${pathToFile} 
-    ${CMAKE_CURRENT_BINARY_DIR}/${name} 
+    ${pathToFile}
+    ${CMAKE_CURRENT_BINARY_DIR}/${name}
     COPYONLY
   )
 endforeach()
@@ -125,10 +125,10 @@ install(
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 install(
-  DIRECTORY src/ 
+  DIRECTORY src/
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-  FILES_MATCHING 
-    PATTERN "*.h" 
+  FILES_MATCHING
+    PATTERN "*.h"
     PATTERN "*.tpp"
 )
 
@@ -137,7 +137,7 @@ install(
 #######################################
 
 configure_file(
-  ${CMAKE_SOURCE_DIR}/pkgconfig/DrMock.pc.in 
+  ${CMAKE_SOURCE_DIR}/pkgconfig/DrMock.pc.in
   ${CMAKE_SOURCE_DIR}/pkgconfig/DrMock.pc
 )
 
@@ -146,7 +146,7 @@ configure_file(
 #######################################
 
 install(
-  EXPORT 
+  EXPORT
     ${PROJECT_NAME}Targets
   FILE
     ${PROJECT_NAME}Targets.cmake
@@ -160,16 +160,16 @@ include(CMakePackageConfigHelpers)
 
 write_basic_package_version_file(
     ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
-  VERSION 
+  VERSION
     ${PROJECT_VERSION}
-  COMPATIBILITY 
+  COMPATIBILITY
     SameMajorVersion
 )
 
 configure_package_config_file(
     ${CMAKE_CURRENT_LIST_DIR}/cmake/${PROJECT_NAME}Config.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-  INSTALL_DESTINATION 
+  INSTALL_DESTINATION
     ${INSTALL_CONFIGDIR}
 )
 
@@ -178,7 +178,7 @@ install(
   FILES
     ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
-  DESTINATION 
+  DESTINATION
     ${INSTALL_CONFIGDIR}
 )
 
@@ -188,17 +188,17 @@ foreach (pathToFile ${${PROJECT_NAME}Macros})
   install(
     FILES
       ${CMAKE_CURRENT_BINARY_DIR}/${name}
-    DESTINATION 
+    DESTINATION
       ${INSTALL_CONFIGDIR}
   )
 endforeach()
 
 export(
-  EXPORT 
-    ${PROJECT_NAME}Targets 
-  FILE 
-    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake 
-  NAMESPACE 
+  EXPORT
+    ${PROJECT_NAME}Targets
+  FILE
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake
+  NAMESPACE
     ${PROJECT_NAME}::
 )
 

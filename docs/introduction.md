@@ -9,10 +9,10 @@ The framework consists of two components, which we will describe
 briefly.
 
 The _DrMockGenerator component_ is written in Python and used by
-invoking **DrMock**'s CMake macros. 
+invoking **DrMock**'s CMake macros.
 It parses C++ header files that contain interfaces, extracts their ASTs
 and creates the source code of mock classes for the given interfaces.
-The _core component_ is written in C++. 
+The _core component_ is written in C++.
 It offers a unit testing framework (error logger, test tables, wide
 range of assertions, etc.) and a template framework for
 configuring, controlling and verifying the behavior of the mock object's

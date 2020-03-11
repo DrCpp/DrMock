@@ -21,7 +21,7 @@ def split(li, f):
     """ Split `li` into sublists of equivalence classes.
 
     :example:
-        
+
         r = split(["foo", "bar", "foobar"], len)
         r  # [["foo", "bar"], ["foobar"]]
     """

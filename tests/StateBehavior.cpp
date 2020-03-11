@@ -102,7 +102,7 @@ DRTEST_TEST(multipleArguments)
   b.transition("state2", "", 0, 0.0f, 0.0);
   b.transition("state3", "", 0, 0.0f, 0.0);
   b.transition("state4", "", 0, 0.0f, 0.0);
-  
+
   b.returns("", "state1", 1);
   b.returns("", "state2", 2);
   b.returns("", "state3", 3);
@@ -328,7 +328,7 @@ DRTEST_TEST(polymorphic)
   auto so = std::make_shared<StateObject>();
   StateBehavior<int, std::shared_ptr<Base>, std::shared_ptr<Base>> b{so};
   b.transition("", "state1", std::make_shared<Derived>(1, 2), std::make_shared<Derived>(2, 2));
-  
+
   b.returns("state1", 1);
 
   // No polymorphism.

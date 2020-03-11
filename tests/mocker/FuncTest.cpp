@@ -65,7 +65,7 @@ DRTEST_TEST(success)
 
   {
     FuncMock mock{};
-    std::shared_ptr<std::unordered_map<int, std::string>> a1 
+    std::shared_ptr<std::unordered_map<int, std::string>> a1
         = std::make_shared<std::unordered_map<int, std::string>>();
     float a2{3};
     std::string a3{"foo"};

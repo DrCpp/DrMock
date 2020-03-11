@@ -28,7 +28,7 @@ DRTEST_TEST(eventLoop)
 {
   auto foo = std::make_shared<UseQtMock>();
   auto bar = std::make_shared<UseQtMock>();
-  
+
   QObject::connect(
       foo.get(), &IUseQt::theSignal,
       bar.get(), &IUseQt::theSlot,
@@ -38,7 +38,7 @@ DRTEST_TEST(eventLoop)
   bar->mock.theSlot().push().times(1);
   emit foo->theSignal();
 
-  QEventLoop event_loop{}; 
+  QEventLoop event_loop{};
   event_loop.processEvents();
 
   DRTEST_ASSERT(bar->mock.verify());

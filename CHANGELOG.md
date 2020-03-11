@@ -1,4 +1,4 @@
-<!-- 
+<!--
 Copyright 2020 Ole Kliemann, Malte Kliemann
 
 This file is part of DrMock.

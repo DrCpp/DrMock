@@ -37,7 +37,7 @@ namespace drmock {
 
 A mocked C++ method. Has a _name_ (with no current effect on behavior),
 can be called and verified. The effect of the call is determined by an
-AbstractBehavior, which must be configured prior to the call. 
+AbstractBehavior, which must be configured prior to the call.
 
 Per default, the AbstractBehavior is a BehaviorQueue. But using io() and
 state(), the AbstractBehavior can be switched between the queue and a
@@ -46,7 +46,7 @@ StateBehavior.
 When the Method is called with `args...`, the call is forwarded to the
 currently selected behavior:
 
-(1) Any produced std::exception_ptr is re-thrown. 
+(1) Any produced std::exception_ptr is re-thrown.
 
 (2) Any prodcued std::shared_ptr is returned.
 

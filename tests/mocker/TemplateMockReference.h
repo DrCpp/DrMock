@@ -75,8 +75,8 @@ private:
 
   MethodCollection methods{
       std::vector<std::shared_ptr<IMethod>>{
-          DRTEST_hTemplate_0, 
-          DRTEST_fTemplate_0, 
+          DRTEST_hTemplate_0,
+          DRTEST_fTemplate_0,
           DRTEST_gTemplate_0
         }
     };

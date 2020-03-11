@@ -1,4 +1,4 @@
-<!-- 
+<!--
 Copyright 2019 Ole Kliemann, Malte Kliemann
 
 This file is part of DrMock.
@@ -26,15 +26,15 @@ You will find a step-by-step tutorial for each of them here:
 
 [samples/basic](samples/basic.md)
 
-Learn how to setup and create unit tests with **DrMock**, 
-about the various macros, 
+Learn how to setup and create unit tests with **DrMock**,
+about the various macros,
 and how to use test tables.
 
 ---
 
 [samples/mock](samples/mock.md)
 
-Learn how **DrMock**'s mock objects work, 
+Learn how **DrMock**'s mock objects work,
 how to automatically create their source code from an interface,
 and how to configure and verify their behavior.
 

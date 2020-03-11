@@ -77,7 +77,7 @@ DRTEST_TEST(fails)
 DRTEST_TEST(success)
 {
   {
-    CurioMock mock{}; 
+    CurioMock mock{};
     OuterTypeAlias a1{"foo"};
     outer::inner::ICurio::InnerTypeAlias r{ 1, 2, 3, 4, 5 };
     mock.mock.funcUsingParameter().push()
@@ -88,9 +88,9 @@ DRTEST_TEST(success)
     DRTEST_ASSERT(mock.mock.verify());
     DRTEST_ASSERT(mock.mock.funcUsingParameter().verify());
   }
-  
+
   {
-    CurioMock mock{}; 
+    CurioMock mock{};
     const int* const expects = new int{123};
     mock.mock.funcOddParameters<const int* const>().push()
         .expects(expects)
@@ -104,7 +104,7 @@ DRTEST_TEST(success)
   }
 
   {
-    CurioMock mock{}; 
+    CurioMock mock{};
     const int* const* expects = new int*{new int{123}};
     mock.mock.funcOddParameters<const int* const* const&&>().push()
         .expects(expects)
@@ -120,7 +120,7 @@ DRTEST_TEST(success)
   }
 
   {
-    CurioMock mock{}; 
+    CurioMock mock{};
     std::unique_ptr<int> a1 = std::make_unique<int>(12);
     mock.mock.funcNonCopyableArg().push()
         .expects(std::move(a1))
@@ -132,7 +132,7 @@ DRTEST_TEST(success)
   }
 
   {
-    CurioMock mock{}; 
+    CurioMock mock{};
     std::unique_ptr<int> r = std::make_unique<int>(12);
     mock.mock.funcNonCopyableResult().push()
         .expects()
@@ -143,7 +143,7 @@ DRTEST_TEST(success)
   }
 
   {
-    CurioMock mock{}; 
+    CurioMock mock{};
     std::unique_ptr<int> r = std::make_unique<int>(12);
     mock.mock.funcNonCopyableResult().push()
         .expects()

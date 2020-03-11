@@ -1,4 +1,4 @@
-<!-- 
+<!--
 Copyright 2019 Ole Kliemann, Malte Kliemann
 
 This file is part of DrMock.
@@ -27,7 +27,7 @@ Build requirements and supported platforms are found in the
 [pyenv](https://github.com/pyenv/pyenv) to manage your python versions;
 see below for details).
 
-## Building 
+## Building
 
 **DrMock** may be configured manually, or using the delivered Makefiles.
 
@@ -78,7 +78,7 @@ make && make install
 
 This order is necessary, as running the CMake configuration writes the
 location of libclang to `python/mocker/mocker.cfg`, which the python
-component requires for testing, and the python component is required 
+component requires for testing, and the python component is required
 to be fully functional when building the C++ component.
 
 ## Building with Qt
@@ -102,7 +102,7 @@ cmake. -D CMAKE_PREFIX_PATH=$DRMOCK_QT_PATH
 
 ## Fetching Dependencies
 
-Some notes on fetching dependencies. 
+Some notes on fetching dependencies.
 
 ### CMake
 
@@ -149,7 +149,7 @@ sudo apt-get install libgl-dev
 
 On many systems, `python` will still point to Python 2.7.x, which has
 reached the end of its life on 01/01/2020 (as of January 2020, macOS
-Catalina and Ubuntu 18.04 are examples of this). 
-Using this configuration **DrMock** requires `python` to point to Python >= 3.7.0. 
+Catalina and Ubuntu 18.04 are examples of this).
+Using this configuration **DrMock** requires `python` to point to Python >= 3.7.0.
 The proper way to do this is to use the aforementioned
 [pyenv](https://github.com/pyenv/pyenv).

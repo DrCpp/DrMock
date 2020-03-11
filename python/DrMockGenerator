@@ -31,32 +31,32 @@ parser.add_argument("input")
 parser.add_argument("output_header")
 parser.add_argument("output_source")
 parser.add_argument(
-    "interface_pattern", 
+    "interface_pattern",
     default = "I([A-Z].*)"
 )
 parser.add_argument(
-    "mock_pattern", 
+    "mock_pattern",
     default = "*Mock"
 )
 parser.add_argument(
-    "--std", 
+    "--std",
     default = "c++17"
 )
 parser.add_argument(
-    "-I", 
-    "--isystem", 
-    nargs="*", 
+    "-I",
+    "--isystem",
+    nargs="*",
     required=False
 )
 parser.add_argument(
-    "-F", 
-    "--iframework", 
-    nargs="*", 
+    "-F",
+    "--iframework",
+    nargs="*",
     required=False
 )
 parser.add_argument(
-    "--before-install", 
-    action="store_true", 
+    "--before-install",
+    action="store_true",
     default=False
 )
 args = parser.parse_args()
@@ -68,8 +68,8 @@ if args.iframework is None:
 
 # Configure clang.
 parse.configure(
-    args.std, 
-    args.isystem, 
+    args.std,
+    args.isystem,
     args.iframework,
     args.before_install
 )
@@ -77,8 +77,8 @@ parse.configure(
 cls = parse.get_class(args.interface_pattern, args.input)
 # Determine name of the mock class.
 mock_name = utils.swap(
-    args.interface_pattern, 
-    args.mock_pattern, 
+    args.interface_pattern,
+    args.mock_pattern,
     cls.name
 )
 # Create mock object.

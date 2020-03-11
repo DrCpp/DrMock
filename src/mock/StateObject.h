@@ -34,9 +34,9 @@ slot `""` (empty string) is registered with state `""`.
 class StateObject
 {
 public:
-  /* 
-  Get the state of `slot` (resp. the default slot). 
-  
+  /*
+  Get the state of `slot` (resp. the default slot).
+
   If `slot` is not registered yet, it is registered with state `""`
   before returning `""`.
   */
@@ -50,7 +50,7 @@ public:
 private:
   /* map: slot -> state */
   std::unordered_map<std::string, std::string> slots_{};
-}; 
+};
 
 } // namespace drmock
 

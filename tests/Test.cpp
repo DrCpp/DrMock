@@ -189,9 +189,9 @@ DRTEST_TEST(test_without_data)
   DRTEST_ASSERT_THROW(DRTEST_FETCH(std::string, col1), std::logic_error);
 }
 
-struct A 
+struct A
 {
-  bool operator==(const A&) const 
+  bool operator==(const A&) const
   {
     return true;
   }

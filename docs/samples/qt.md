@@ -1,4 +1,4 @@
-<!-- 
+<!--
 Copyright 2019 Ole Kliemann, Malte Kliemann
 
 This file is part of DrMock.
@@ -19,7 +19,7 @@ along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 # samples/qt
 This sample demonstrates how to use **DrMock** to mock an interface
-`IFoo` that inherits from `QObject` and uses the `Q_OBJECT` macro. 
+`IFoo` that inherits from `QObject` and uses the `Q_OBJECT` macro.
 
 ### Table of contents
 
@@ -37,7 +37,7 @@ samples/qt
 └───src
 │   │   CMakeLists.txt
 │   │   IFoo.h
-│   
+│
 └───tests
     │   CMakeLists.txt
     │   FooTest.cpp
@@ -52,7 +52,7 @@ This project requires an installation of **DrMock** in `prefix/` or the
 
 ## Setup
 
-Let's take a look at the changes make to `CMakeLists.txt`. 
+Let's take a look at the changes make to `CMakeLists.txt`.
 
 ```cmake
 # samples/qt/CMakeLists.txt
@@ -173,7 +173,7 @@ Total Test time (real) =   0.02 sec
 Some `QObject`s, such as `QEventLoop` require a `QApplication` to run in
 the main thread of the program to function correctly. To run a
 `QApplication` in the main thread during a `DRTEST_TEST`, define the
-`DRTEST_USE_QT` macro before including `DrMock/Test.h`. 
+`DRTEST_USE_QT` macro before including `DrMock/Test.h`.
 
 Let's take a look at the previous example, but this time, connect the
 two `FooMock` instances via `Qt::QueuedConnection`:
@@ -183,7 +183,7 @@ DRTEST_TEST(useQt)
 {
   auto foo = std::make_shared<FooMock>();
   auto bar = std::make_shared<FooMock>();
-  
+
   QObject::connect(
       foo.get(), &IFoo::someSignal,
       bar.get(), &IFoo::someSlot,

@@ -187,7 +187,7 @@ DRTEST_TEST(polymorphicIo)
 DRTEST_TEST(stateFail)
 {
   Method<int, int> m{"test"};
-  m.state().transition("", "state1", 1);  
+  m.state().transition("", "state1", 1);
   m.state().returns("state1", 1);
   m.call(2);
   DRTEST_ASSERT(not m.verify());
@@ -196,7 +196,7 @@ DRTEST_TEST(stateFail)
 DRTEST_TEST(stateSuccess)
 {
   Method<int, int> m{"test"};
-  m.state().transition("", "state1", 1);  
+  m.state().transition("", "state1", 1);
   m.state().transition("state1", "state2", 2);
   m.state().returns("state1", 1);
   m.call(1);

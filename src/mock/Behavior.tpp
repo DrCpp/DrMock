@@ -80,7 +80,7 @@ Behavior<Result, Args...>::times(unsigned int t)
 template<typename Result, typename... Args>
 Behavior<Result, Args...>&
 Behavior<Result, Args...>::times(
-    unsigned int times_min, 
+    unsigned int times_min,
     unsigned int times_max
   )
 {

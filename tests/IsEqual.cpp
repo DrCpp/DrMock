@@ -105,7 +105,7 @@ DRTEST_TEST(sharedPolymorphic)
 DRTEST_TEST(unique)
 {
   auto is_equal = detail::IsEqual<std::unique_ptr<A>>{};
-  
+
   DRTEST_ASSERT(
       is_equal(std::make_unique<A>(0), std::make_unique<A>(0))
     );
@@ -189,54 +189,54 @@ DRTEST_TEST(tupleSharedPolymorphic)
   // First, second, third components are all equal.
   x = std::make_tuple(
       std::make_shared<B>(0, 1),
-      std::make_shared<B>(2, 3), 
+      std::make_shared<B>(2, 3),
       std::make_shared<B>(4, 5)
     );
   y = std::make_tuple(
       std::make_shared<B>(0, 1),
-      std::make_shared<B>(2, 3), 
+      std::make_shared<B>(2, 3),
       std::make_shared<B>(4, 5)
     );
   DRTEST_ASSERT(is_equal(x, y));
 
   // First components are not equal.
-  
+
   x = std::make_tuple(
       std::make_shared<B>(0, 1),
-      std::make_shared<B>(2, 3), 
+      std::make_shared<B>(2, 3),
       std::make_shared<B>(4, 5)
     );
   y = std::make_tuple(
       std::make_shared<B>(0, -1),
-      std::make_shared<B>(2, 3), 
+      std::make_shared<B>(2, 3),
       std::make_shared<B>(4, 5)
     );
   DRTEST_ASSERT(not is_equal(x, y));
-  
-  
+
+
   // First component fails dynamic cast.
   x = std::make_tuple(
       std::make_shared<B>(0, 1),
-      std::make_shared<B>(2, 3), 
+      std::make_shared<B>(2, 3),
       std::make_shared<B>(4, 5)
     );
   y = std::make_tuple(
       std::make_shared<A>(0),
-      std::make_shared<B>(2, 3), 
+      std::make_shared<B>(2, 3),
       std::make_shared<B>(4, 5)
     );
   DRTEST_ASSERT(not is_equal(x, y));
-  
-  
+
+
   // Second components are not equal.
   x = std::make_tuple(
       std::make_shared<B>(0, 1),
-      std::make_shared<B>(2, 3), 
+      std::make_shared<B>(2, 3),
       std::make_shared<B>(4, 5)
     );
   y = std::make_tuple(
       std::make_shared<B>(0, 1),
-      std::make_shared<B>(2, 234), 
+      std::make_shared<B>(2, 234),
       std::make_shared<B>(4, 5)
     );
   DRTEST_ASSERT(not is_equal(x, y));
@@ -244,12 +244,12 @@ DRTEST_TEST(tupleSharedPolymorphic)
   // Second component fails dynamic cast.
   x = std::make_tuple(
       std::make_shared<B>(0, 1),
-      std::make_shared<B>(2, 3), 
+      std::make_shared<B>(2, 3),
       std::make_shared<B>(4, 5)
     );
   y = std::make_tuple(
       std::make_shared<B>(0, 1),
-      std::make_shared<A>(2), 
+      std::make_shared<A>(2),
       std::make_shared<B>(4, 5)
     );
   DRTEST_ASSERT(not is_equal(x, y));
@@ -257,12 +257,12 @@ DRTEST_TEST(tupleSharedPolymorphic)
   // Third components are not equal.
   x = std::make_tuple(
       std::make_shared<B>(0, 1),
-      std::make_shared<B>(2, 3), 
+      std::make_shared<B>(2, 3),
       std::make_shared<B>(4, 5)
     );
   y = std::make_tuple(
       std::make_shared<B>(0, 1),
-      std::make_shared<B>(2, 3), 
+      std::make_shared<B>(2, 3),
       std::make_shared<B>(4, 567)
     );
   DRTEST_ASSERT(not is_equal(x, y));
@@ -270,12 +270,12 @@ DRTEST_TEST(tupleSharedPolymorphic)
   // Third component fails dynamic cast.
   x = std::make_tuple(
       std::make_shared<B>(0, 1),
-      std::make_shared<B>(2, 3), 
+      std::make_shared<B>(2, 3),
       std::make_shared<B>(4, 5)
     );
   y = std::make_tuple(
       std::make_shared<B>(0, 1),
-      std::make_shared<B>(2, 3), 
+      std::make_shared<B>(2, 3),
       std::make_shared<A>(4)
     );
   DRTEST_ASSERT(not is_equal(x, y));
@@ -286,7 +286,7 @@ DRTEST_TEST(tupleRecursion)
   auto is_equal = detail::IsEqual<
       std::tuple<int, std::tuple<int, std::tuple<float>>, double>
     >{};
-  
+
   // Middle tuple is equal.
   auto x = std::make_tuple(1, std::make_tuple(2, std::make_tuple(3.4f)), 5.6);
   auto y = std::make_tuple(1, std::make_tuple(2, std::make_tuple(3.4f)), 5.6);

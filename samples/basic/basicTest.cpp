@@ -26,7 +26,7 @@ DRTEST_TEST(someTest)
   DRTEST_ASSERT(3 + 4 == 7);
 }
 
-// Note: `DRTEST_ASSERT_EQ`, etc. require an 
+// Note: `DRTEST_ASSERT_EQ`, etc. require an
 // ```
 // std::ostream& operator<<(ostream& os, const T&)
 // ```
@@ -53,7 +53,7 @@ DRTEST_TEST(exceptionTest)
       throw std::runtime_error{"foo"},
       std::runtime_error
     );
-  
+
   // If you wish, you can check multiple statements if any of them
   // raises.
   DRTEST_ASSERT_THROW(
@@ -76,7 +76,7 @@ DRTEST_DATA(someTestWithTable)
   drtest::addColumn<int>("rhs");
   drtest::addColumn<int>("expected");
   drtest::addColumn<std::string>("randomStuff");
-  
+
   // Populate the table with data.
   drtest::addRow(
       "Small numbers",  // Description of the row.
@@ -104,7 +104,7 @@ DRTEST_DATA(someTestWithTable)
 DRTEST_TEST(someTestWithTable)
 {
   // The following will be executed once for each row.
-  
+
   // Fetch data from the columns. `lhs`, `rhs`, `expected` and
   // `randomStuff` are now variables, their values determined by the
   // current row.
