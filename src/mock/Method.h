@@ -78,8 +78,8 @@ public:
   Method(std::shared_ptr<StateObject>);
   Method(std::string, std::shared_ptr<StateObject>);
 
-  // Set `is_tuple_pack_equal_` to `IsEqual<tuple<Args...>, tuple<Deriveds...>>`,
-  // and call
+  // Set the comparison method of `behavior_queue_` or `state_behavior_`
+  // (depending on which is active) to `IsEqual<tuple<Args...>, tuple<Deriveds...>>`.
   template<typename... Deriveds> void polymorphic();
 
   // Enable BehaviorQueue usage and return a reference to the queue.
@@ -87,7 +87,8 @@ public:
   Behavior<Result, Args...>& push();
   void enforce_order(bool);
 
-  // Enable StateBehavior usage and return a reference to the s
+  // Enable StateBehavior usage and return a reference to the state
+  // behavior.
   StateBehavior<Result, Args...>& state();
 
   // Per default, return `true`. If an error occured (see above), return
