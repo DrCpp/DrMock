@@ -51,6 +51,7 @@ DrMockModule(
     ISharedState.h
     IVerifyState.h
     IExample.h
+    IDummy.h
     subdir/IBar.h
   INSTALLFLAG ON
 )
@@ -77,6 +78,7 @@ DrMockTest(
     FileExtensionTest.cpp
     AbstractTest.cpp
     MultipleClassesTest.cpp
+    DummyTest.cpp
     IncludeTest.cpp
     SubdirTest.cpp
     DerivedTest.cpp

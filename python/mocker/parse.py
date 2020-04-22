@@ -1117,6 +1117,7 @@ class Class:
         hdr.statements.append(EmptyLine())
         # Append an input directive for the interface's header file, and the
         # required headers from drmock.
+        hdr.statements.append("#define DRMOCK_SWAP_MACROS\n")
         hdr.statements.append(IncludeDirective(interface_file))
         hdr.statements.append(IncludeDirective(Static.prefix + "Mock.h"))
         hdr.statements.append(EmptyLine())
