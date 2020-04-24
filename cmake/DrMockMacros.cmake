@@ -19,7 +19,7 @@ macro(DrMockEnableQt)
   cmake_policy(SET CMP0071 NEW)
   set(CMAKE_AUTOMOC ON)
 endmacro()
-  
+
 # DrMockTest(
 #   TESTS test1 [test2 [test3 ...]]
 #   [LIBS lib1 [lib2 [lib3 ...]]]
@@ -35,12 +35,19 @@ endmacro()
 function(DrMockTest)
   cmake_parse_arguments(
     PARSED_ARGS
-    "" 
     ""
-    "LIBS;TESTS;OPTIONS" 
-    ${ARGN} 
+    ""
+    "LIBS;TESTS;OPTIONS"
+    ${ARGN}
   )
   foreach (path ${PARSED_ARGS_TESTS})
+    # Check if `path` exists, throw otherwise.
+    get_filename_component(absolutePath ${path} ABSOLUTE)
+    if (NOT EXISTS ${absolutePath})
+      message(FATAL_ERROR "DrMockTest error: Failed to find ${path}.")
+    endif()
+
+    # Register test.
     get_filename_component(name "${path}" NAME_WE)
     add_executable("${name}" "${path}")
     target_link_libraries(
@@ -144,10 +151,10 @@ endfunction()
 function(DrMockModule)
   cmake_parse_arguments(
     PARSED_ARGS
-    "" 
+    ""
     "TARGET;IFILE;MOCKFILE;ICLASS;MOCKCLASS;GENERATOR;INSTALLFLAG"
-    "HEADERS;LIBS;QTMODULES;INCLUDE;FRAMEWORKS" 
-    ${ARGN} 
+    "HEADERS;LIBS;QTMODULES;INCLUDE;FRAMEWORKS"
+    ${ARGN}
   )
 
   # Check for missing arguments.
@@ -167,7 +174,7 @@ function(DrMockModule)
       message(FATAL_ERROR "DrMockModule error: file ${filename} not found")
     endif()
   endforeach()
-  
+
   # Optional arguments.
   if (NOT PARSED_ARGS_ICLASS)
     set(PARSED_ARGS_ICLASS "I([a-zA-Z0-9].*)")
@@ -180,7 +187,7 @@ function(DrMockModule)
   if(NOT PARSED_ARGS_IFILE)
     set(PARSED_ARGS_IFILE ${PARSED_ARGS_ICLASS})
   endif()
-  
+
   if (NOT PARSED_ARGS_MOCKFILE)
     set(PARSED_ARGS_MOCKFILE ${PARSED_ARGS_MOCKCLASS})
   endif()
@@ -196,7 +203,7 @@ function(DrMockModule)
   else()
     set(PARSED_ARGS_INCLUDE ${PARSED_ARGS_INCLUDE} ${DrMock_PREFIX_PATH})
   endif()
- 
+
   # Define a list to hold the paths of the source files.
   set(sources)
   # Make a directory for the mock object's header and source files.
@@ -206,9 +213,9 @@ function(DrMockModule)
   foreach (module ${PARSED_ARGS_QTMODULES})
     # Compute the Qt iframework flag for macOS users.
     set(qtPath $ENV{DRMOCK_QT_PATH})
-    string(REGEX REPLACE "\\\\" "" qtPathUnescaped ${qtPath}) 
+    string(REGEX REPLACE "\\\\" "" qtPathUnescaped ${qtPath})
     file(TO_CMAKE_PATH "${qtPathUnescaped}/lib" qtFrameworkPath)
-    
+
     # Add the framework path to the list of framework paths.
     set(PARSED_ARGS_FRAMEWORKS ${PARSED_ARGS_FRAMEWORKS} ${qtFrameworkPath})
 
@@ -230,7 +237,7 @@ function(DrMockModule)
 
   # Append the current CMake include path to the include path of the
   # mocker. Also, add CMAKE_CURRENT_SOURCE_DIR to this list.
-  get_property(includeDirs 
+  get_property(includeDirs
     DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     PROPERTY INCLUDE_DIRECTORIES
   )
@@ -245,19 +252,19 @@ function(DrMockModule)
     # Get the relative path from the current source directory to the
     # directory containing `header`.
     get_filename_component(
-      absolutePathToHeader 
-      ${header} 
+      absolutePathToHeader
+      ${header}
       ABSOLUTE
     )  # /[...]/project/[DIRS]/IExample.h
     get_filename_component(
-      absoluteDir 
-      ${absolutePathToHeader} 
+      absoluteDir
+      ${absolutePathToHeader}
       DIRECTORY
     )  #/[...]/project/[DIRS]
-    file(RELATIVE_PATH 
-      relativePathToHeader 
+    file(RELATIVE_PATH
+      relativePathToHeader
       # ${CMAKE_CURRENT_SOURCE_DIR} 
-      ${CMAKE_CURRENT_SOURCE_DIR} 
+      ${CMAKE_CURRENT_SOURCE_DIR}
       "${absoluteDir}"
     )  # [DIRS]
     # If `relativePathToHeader` is empty, set it to equal to the current
@@ -269,23 +276,23 @@ function(DrMockModule)
     # Get the filename of `header`.
     get_filename_component(headerFilename ${header} NAME)  # IExample.h
     # Remove the file extension.
-    STRING(REGEX REPLACE 
-      "\\.[^.]*$" 
-      "" 
-      headerFilenameWithoutExtension 
+    STRING(REGEX REPLACE
+      "\\.[^.]*$"
+      ""
+      headerFilenameWithoutExtension
       ${headerFilename}
     )  # IExample
     # Strip the interface cast from the file name.
-    STRING(REGEX REPLACE 
+    STRING(REGEX REPLACE
       ${PARSED_ARGS_IFILE}
-      "\\1" 
-      unadornedFilename 
+      "\\1"
+      unadornedFilename
       ${headerFilenameWithoutExtension}
     )  # Example
     # Cast the unadorned filename onto the mock cast.
-    STRING(REGEX REPLACE 
-      "\\\\1" 
-      ${unadornedFilename} 
+    STRING(REGEX REPLACE
+      "\\\\1"
+      ${unadornedFilename}
       mockFilenameWithoutExtension
       ${PARSED_ARGS_MOCKFILE}
     )  # ExampleMock 
@@ -293,8 +300,8 @@ function(DrMockModule)
     # Get the header file's file extension.
     string(REGEX MATCH "\\.([^.]*)$" headerFileExtension ${headerFilename})  # .h, .hpp
     # Compute the mock object's header and source file names.
-    set(mockHeaderFilename 
-      "${mockFilenameWithoutExtension}${headerFileExtension}"  
+    set(mockHeaderFilename
+      "${mockFilenameWithoutExtension}${headerFileExtension}"
     )  # ExampleMocke.h, ExampleMock.hpp
     set(mockSourceFilename ${mockFilenameWithoutExtension}.cpp)  # ExampleMock.cpp
     # Create a directory for the mock object's header and source files.
@@ -323,12 +330,12 @@ function(DrMockModule)
 
     # Call the mocker command.
     add_custom_command(
-      OUTPUT 
+      OUTPUT
         ${mockHeaderOutputPath}
         ${mockSourceOutputPath}
-      COMMAND 
+      COMMAND
         ${PARSED_ARGS_GENERATOR}
-        ${absolutePathToHeader} 
+        ${absolutePathToHeader}
         ${mockHeaderPathAbsolute}
         ${mockSourcePathAbsolute}
         \"${PARSED_ARGS_ICLASS}\"
@@ -336,12 +343,12 @@ function(DrMockModule)
         ${installFlag}
         "-I"
         ${includesQuotedList}
-        "-F" 
+        "-F"
         ${frameworksQuotedList}
       DEPENDS ${absolutePathToHeader}
       COMMENT "Mocking ${header}..."
     )
-    
+
     # Add the source path to the list of sources.
     set(sources ${sources} ${mockSourceOutputPath})
     if (PARSED_ARGS_QTMODULES)
