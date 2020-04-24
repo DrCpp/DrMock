@@ -1054,7 +1054,7 @@ described above and must satisfy the following conditions:
 
   (3) It is an `std::tuple` of types that satisfy (1), (2) or (3).
 
-<sup>2</sup>: QObjects are exceptions to these rule, see [samples/qt](samples/qt)
+<sup>2</sup>: QObjects are exceptions to these rule, see [samples/qt](qt.md)
   below.
 
 ## Bibliography

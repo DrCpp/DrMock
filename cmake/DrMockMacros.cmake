@@ -41,6 +41,13 @@ function(DrMockTest)
     ${ARGN}
   )
   foreach (path ${PARSED_ARGS_TESTS})
+    # Check if `path` exists, throw otherwise.
+    get_filename_component(absolutePath ${path} ABSOLUTE)
+    if (NOT EXISTS ${absolutePath})
+      message(FATAL_ERROR "DrMockTest error: Failed to find ${path}.")
+    endif()
+
+    # Register test.
     get_filename_component(name "${path}" NAME_WE)
     add_executable("${name}" "${path}")
     target_link_libraries(
