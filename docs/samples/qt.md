@@ -181,13 +181,13 @@ DRTEST_TEST(useQt)
   auto bar = std::make_shared<FooMock>();
   
   QObject::connect(
-      foo.get(), &IFoo::someSignal,
-      bar.get(), &IFoo::someSlot,
+      foo.get(), &IFoo::theSignal,
+      bar.get(), &IFoo::theSlot,
       Qt::QueuedConnection  // Connect via event loop.
     );
 
-  bar->mock.someSlot().push().times(1);
-  emit foo->someSignal();
+  bar->mock.theSlot().push().times(1);
+  emit foo->theSignal();
 
   // ...
 }
