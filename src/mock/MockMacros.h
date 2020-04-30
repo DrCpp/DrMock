@@ -42,7 +42,7 @@
 //
 // Note: The entire namespace of the class must be specified.
 #define DRMOCK_DUMMY(cls) \
-bool operator==(const cls&, const cls&) \
+inline bool operator==(const cls&, const cls&) \
 { \
   return true; \
 } // Define trivial operator==.
