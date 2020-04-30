@@ -16,40 +16,35 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_MOCKMACROS_H
-#define DRMOCK_SRC_MOCKMACROS_H
+#ifndef DRMOCK_SRC_MOCK_MOCKMACROS_H
+#define DRMOCK_SRC_MOCK_MOCKMACROS_H
 
 /* Mock-specific macros
- * 
- * Beware! Some of the macros below allow an alternative interpretation,
- * which is used by defining DRMOCK_SWAP_MACROS. 
  *
- * DRMOCK_SWAP_MACROS should _never_ be defined in production code or
- * test code. It is for use in mock code only (that is, for use by the
- * DrMockGenerator). The reasoning behind this is that by using the
- * macros below, source code can be treated differently depending on
- * whether a mock object or an object proper is created. Consider
- * DRMOCK_SWAP_MACROS a _private_ macro of the DrMock module. */
+ * Beware! This header should _never_ be used in production code!
+ * It is for use in mock code only (that is, for use by the
+ * DrMockGenerator), and will be included in the source code of mock
+ * objects.
+ *
+ * To apply macros _only_ in mock code, protect them using
+ *
+ * #ifdef DRMOCK
+ * ...
+ * #endif
+ *
+ * This way, header files can be treated differently depending
+ * on whether a mock object or an object proper is created. */
 
-// Ignore the argument during mock object compilation.
-#ifndef DRMOCK_SWAP_MACROS
-// #define DRMOCK_IGNORE(...) __VA_ARGS__  // Ignore the _macro_ in production/test code.
-#define DRMOCK_IGNORE(...) __VA_ARGS__
-#else
-#define DRMOCK_IGNORE(...)  // Ignore the _arguments_ in mock code.
-#endif
+// The macro DRMOCK is defined if and only if this header is included.
+#define DRMOCK
 
-// Create a trivial operator== for argument in mock code.
+// Create a trivial operator== for argument.
 //
 // Note: The entire namespace of the class must be specified.
-#ifndef DRMOCK_SWAP_MACROS
-#define DRMOCK_DUMMY(...)  // Ignore the _arguments_ in production/test code.
-#else
 #define DRMOCK_DUMMY(cls) \
 bool operator==(const cls&, const cls&) \
 { \
   return true; \
 } // Define trivial operator==.
-#endif
 
-#endif /* DRMOCK_SRC_MOCKMACROS_H */
+#endif /* DRMOCK_SRC_MOCK_MOCKMACROS_H */

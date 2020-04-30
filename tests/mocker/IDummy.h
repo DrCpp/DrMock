@@ -19,19 +19,21 @@
 #ifndef DRMOCK_TESTS_MOCKER_IDUMMY_H
 #define DRMOCK_TESTS_MOCKER_IDUMMY_H
 
-#include "mock/MockMacros.h"
-
 namespace outer { namespace inner {
 
 class Foo
 {
   // When compiling the mock object, ignore that this operator was
   // deleted!
-  DRMOCK_IGNORE(bool operator==(const Foo&) const = delete;)
+#ifndef DRMOCK
+  bool operator==(const Foo&) const = delete;
+#endif
 };
 
 // Create dummy comparison method.
+#ifdef DRMOCK
 DRMOCK_DUMMY(outer::inner::Foo);
+#endif
 
 class IDummy
 {
