@@ -255,11 +255,11 @@ of foo is filled from the warehouse. Judging from the implementation of
 earlier, removing two units of foo will succeed. Whether the defined
 behavior occured of not may be verified using the following call:
 ```cpp
-DRTEST_ASSERT(warehouse->mock.verify());
+DRTEST_ASSERT(warehouse->mock.remove().verify());
 ```
 Or, if you prefer:
 ```cpp
-DRTEST_VERIFY_MOCK(warehouse->mock);
+DRTEST_VERIFY_MOCK(warehouse->mock.remove());
 ```
 After verifying the mock, we check that the `filled` method returns the
 correct value:
