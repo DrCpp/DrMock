@@ -65,7 +65,7 @@ elsewhere, you must change the `-DCMAKE_PREFIX_PATH=...` flag in
 
 Mocks are usually used to test objects against their implementation. For
 example, in [samples/mock](#samplesmock), expecting the behavior
-```
+```cpp
 warehouse->mock.remove().push()
     .expect("foo", 2)
     .times(1)
@@ -163,7 +163,7 @@ the _default state_ `""`.
 
 The primary method of controlling the state object is by defining
 _transitions_. To add a transition to a method, do
-```
+```cpp
 rocket->mock.launch().state().transition(
     "main",
     "leftThrusterOn",
@@ -173,7 +173,7 @@ rocket->mock.launch().state().transition(
 This informs the state object to transition the slot `"main"` from the
 state `"leftThrusterOn"` to `"liftOff"` when `launch()` is called.
 If no slot is specified, as in
-```
+```cpp
 rocket->mock.launch().state().transition(
     "leftThrusterOn",
     "liftOff"
@@ -186,7 +186,7 @@ calling `transition`. This is done automatically.
 
 Now, `launch` doesn't take any arguments. If the underlying methods
 takes arguments, the `transition` call requires an input. For example, 
-```
+```cpp
 rocket->mock.toggleLeftThruster().state().transition(
     "leftThrusterOn",
     "",
@@ -200,7 +200,7 @@ instructs the state object to transition the default slot from the state
 The wildcard symbol `"*"` may be used as catch-all/fallthrough symbol
 for the current state. Pushing regular transitions before or after a
 transition with wilcard add exceptions to the catch-all:
-```
+```cpp
 rocket->mock.launch().state()
     .transition("*", "liftOff")
     .transition("", "failure");
@@ -237,7 +237,7 @@ which, in this example, is used to model the `"allThrustersOff"` state.
 After `launch()` is executed, the correctness of `launch()` is tested by
 asserting that the current state of the default slot of `rocket` is
 equal to `liftOff`:
-```
+```cpp
 DRTEST_ASSERT(rocket->mock.verifyState("liftOff");
 ```
 (The method
@@ -276,7 +276,7 @@ method's return value and parameters.
 
 ### transition
 
-```
+```cpp
 StateBehavior& transition(
    [const std::string& slot,]
     std::string current_state,
@@ -290,7 +290,7 @@ arguments `input...`.
 
 ### returns
 
-```
+```cpp
 StateBehavior& returns(
    [const std::string& slot,]
     const std::string& state,
@@ -306,7 +306,7 @@ Instruct the `StateBehavior` to return `value` if the state of `slot` is
 `state`. `"*"` may not be used as catch-all in the `returns` method.
 
 Example:
-```
+```cpp
 // ILever.h
 
 class ILever
@@ -332,7 +332,7 @@ DRTEST_TEST(...)
 
 ### throws
 
-```
+```cpp
 template<typename E> StateBehavior& throws(
    [const std::string& slot,]
     const std::string& state,
@@ -344,7 +344,7 @@ is `state`.
 
 ### polymorphic
 
-```
+```cpp
 template<typename... Deriveds> StateBehavior& polymorphic();
 ```
 Instruct the `StateBehavior` to expect as argument
@@ -359,7 +359,7 @@ eliminated in many cases, thus freeing the programmer to have any
 knowledge of the implementation of the system under test. 
 
 Consider the following example: 
-```
+```cpp
 class ILever
 {
 public:
@@ -371,15 +371,15 @@ class TrapDoor
 {
 public:
   TrapDoor(std::shared_ptr<ILever>);
-  
-  bool open() 
-  { 
-    return lever_.get(); 
+
+  bool open()
+  {
+    return lever_.get();
   }
-  void toggle(bool v) 
-  { 
-    lever_.set(v); 
-  } 
+  void toggle(bool v)
+  {
+    lever_.set(v);
+  }
 
 private:
   std::shared_ptr<ILever> lever_;
@@ -388,7 +388,7 @@ private:
 
 Usually, verifying correctness of `TrapDoor` would look something like
 this:
-```
+```cpp
 DRTEST_TEST(toggle)
 {
   // Configure mock.
@@ -407,7 +407,7 @@ In other words: Call `trap_door.toggle(...)` and verify that `lever`
 behaves as expected. This is good old behavior verification.
 
 But you can also do this:
-```
+```cpp
 DRTEST_TEST(interactionOpenToggle)
 {
   // Configure mock.

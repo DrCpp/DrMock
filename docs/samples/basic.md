@@ -199,7 +199,7 @@ This macro may also be applied to multiple statements at once, using the
 same syntax as `DRTEST_ASSERT_THROW`.
 
 **Note.**
-```
+```cpp
 DRTEST_ASSERT_TEST_FAIL(throw std::runtime_error{"foo"});
 ```
 will cause the test to fail.
@@ -440,7 +440,7 @@ DrMockTest(
 To link the test executables against any number of target library, use
 the `LIBS` parameter (also described in the [next section](mock.md)).
 For example, to link the test above against `pthread`, do
-```
+```cmake
 DrMockTest(
   TESTS
     test.cpp
