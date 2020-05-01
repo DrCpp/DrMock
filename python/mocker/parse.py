@@ -1242,6 +1242,17 @@ class Class:
                 )
             )
         )
+        mo.public.append(
+            Method(
+                name = "makeFormattedErrorString",
+                return_type = "std::string",
+                is_const = True,
+                parameters = [],
+                body = MethodBody(
+                    "return methods.makeFormattedErrorString();"
+                )
+            )
+        )
 
         # For every overload add the shared_ptr's to the Method objects.
         pointers = []

@@ -1,4 +1,4 @@
-/* Copyright 2019 Ole Kliemann, Malte Kliemann
+/* Copyright 2020 Ole Kliemann, Malte Kliemann
  *
  * This file is part of DrMock.
  *
@@ -16,33 +16,20 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_MOCK_METHODCOLLECTION_H
-#define DRMOCK_SRC_MOCK_METHODCOLLECTION_H
+#ifndef DRMOCK_TESTS_MOCKER_IVERIFYALL_H
+#define DRMOCK_TESTS_MOCKER_IVERIFYALL_H
 
-#include <memory>
-#include <vector>
+namespace outer { namespace inner {
 
-/* MethodCollection
-
-Contained for std::shared_ptr<IMethod>. Has a method that verifies all
-contained objects.
-*/
-
-namespace drmock {
-
-class IMethod;
-
-class MethodCollection
+class IVerifyAll
 {
 public:
-  MethodCollection(std::vector<std::shared_ptr<IMethod>>);
-  bool verify() const;
-  std::string makeFormattedErrorString() const;
+  virtual ~IVerifyAll() = default;
 
-private:
-  std::vector<std::shared_ptr<IMethod>> methods_{};
+  virtual void f(int) = 0;
+  virtual void g(float, double) = 0;
 };
 
-} // namespace drmock
+}} // namespace outer::inner
 
-#endif /* DRMOCK_SRC_MOCK_METHODCOLLECTION_H */
+#endif /* DRMOCK_TESTS_MOCKER_IVERIFYALL_H */

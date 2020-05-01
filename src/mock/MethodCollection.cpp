@@ -38,4 +38,20 @@ MethodCollection::verify() const
     );
 }
 
+std::string
+MethodCollection::makeFormattedErrorString() const
+{
+  std::string err = "";
+  for (std::size_t i = 0; i < methods_.size(); ++i)
+  {
+    err += methods_[i]->makeFormattedErrorString();
+
+    if (i != methods_.size() - 1)
+    {
+      err += "\n";
+    }
+  }
+  return err;
+}
+
 } // namespace drmock
