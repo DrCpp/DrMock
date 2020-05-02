@@ -35,6 +35,8 @@ Released 2020/??/??
 
   - pkg-config file
 
+  - Add DRMOCK, DRMOCK_DUMMY macros
+
 ### Changed
 
 ### Deprecated
