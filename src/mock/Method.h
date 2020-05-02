@@ -95,7 +95,7 @@ public:
   // `false`.
   bool verify() const override;
   const std::vector<std::vector<std::string>>& error_msgs() const;
-  std::string makeFormattedErrorString() const;
+  std::string makeFormattedErrorString() const override;
 
   std::shared_ptr<DecayedResult> call(const Args&...);
 

@@ -19,6 +19,8 @@
 #ifndef DRMOCK_SRC_MOCK_IMETHOD_H
 #define DRMOCK_SRC_MOCK_IMETHOD_H
 
+#include <string>
+
 namespace drmock {
 
 class IMethod
@@ -27,6 +29,7 @@ public:
   virtual ~IMethod() = default;
 
   virtual bool verify() const = 0;
+  virtual std::string makeFormattedErrorString() const = 0;
 };
 
 } // namespace drmock

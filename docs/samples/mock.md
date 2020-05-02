@@ -268,6 +268,15 @@ correct value:
 DRTEST_ASSERT(order.filled());
 ```
 
+**Note.**
+You can verify _all_ methods of a mock object at once by applying
+`DRTEST_VERIFY_MOCK` to the mock object itself, like so:
+```cpp
+DRTEST_VERIFY_MOCK(warehouse->mock);
+```
+Beware! Unconfigured methods will result in a failed test if this macro
+is used.
+
 **Note.** When verifying the mock object, the `Behavior`s are expected
 to occur in the order in which they were pushed. See also: [Ignore order
 of behaviors](#ignore-order-of-behaviors).
