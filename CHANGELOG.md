@@ -21,27 +21,33 @@ along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 Released 2020/??/??
 
-### Added
+### Added/Changed:
 
-* Build system:
+* Autodetect number of threads for compiling in Makefile
 
-  - Autodetect number of threads for compiling in Makefile
+* Add convenience Makefile for building all sample projects
 
-  - Convenience Makefile for building all sample projects
+* Add tutorial for manually building **DrMock**
 
-  - `make clean` directive to python Makefile
+* Add pkg-config file
 
-  - Tutorial for building **DrMock** without Makefile
+* Add DRMOCK, DRMOCK_DUMMY macros
 
-  - pkg-config file
+  - Change order of includes in mock objects
+    (so that `DRMOCK` is defined when including the interface header in
+    mock object header)
 
-  - Add DRMOCK, DRMOCK_DUMMY macros
+* Allow applying `DRTEST_VERIFY_MOCK` to mock object (not just method objects)
 
-### Changed
+  - Add `makeFormattedErrorString` virtual method to `IMethod` interface
 
-### Deprecated
+  - Add `makeFormattedErrorString` method to `MethodCollection`
+    (concatenates formatted error strings of collected method objects)
 
-???
+  - Add `makeFormattedErrorString` method to mock objects (returns
+    formatted error string of method collection)
+
+* Add remark about QII pattern to docs
 
 ### Removed
 
@@ -49,17 +55,22 @@ Released 2020/??/??
 
 ### Fixed
 
-* Add remark that `DRMOCK_QT_PATH` must be set when using `DrMockModule`
-  with Qt5 modules to documentation.
+* Add missing remark that `DRMOCK_QT_PATH` must be set when using
+  `DrMockModule` with Qt5 modules to documentation.
 
-* Make python calls more robust by replacing `python3.7` and `pip3.7`
-  with `python` and `pip` and shifting the responsibility of managing
-  the python versions to the user.
+* Apply do-while-false pattern to `DRTEST_VERIFY_MOCK`
+
+* Fix formatting errors and typos in source/docs
+
+* Fix transition table in rocket example
+
+* Replace `python3.7` and `pip3.7` with `python` and `pip` and shifting
+  the responsibility of managing the python versions to the user.
 
 * Replace odd error message thrown when using `DrMockModule` with
   `QTMODULE` parameter but unset `DRMOCK_QT_PATH` environment variable.
 
-* Fix transition table in rocket example
+* Throw error message if `DrMockTest` can't find files specified in `TESTS`.
 
 # DrMock 0.1.0
 
