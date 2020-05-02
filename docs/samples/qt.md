@@ -328,10 +328,10 @@ _alongside duplicates of all public slots_
 (note the occurence of `slot` in `IFoo`).
 This is required so that all pure virtual methods
 are declared in the interface that **DrMock** receives.
-If you fail to do so, **DrMock** will fail to implement the slots,
-`FooMock` would be abstract instead of an implementation of `IFoo`,
+If you fail to do so, **DrMock** will not to implement the slots,
+`FooMock` will be abstract instead of an implementation of `IFoo`,
 and the test code will most likely throw a compilation error similar to this one:
 
 ```cpp
-$HOME/DrAutomaton/build/src/DrMock/mock/SpaceMock.h:52:7: error: abstract class is marked 'final' [-Werror,-Wabstract-final-class] class SpaceMock final : public ISpace<T>
+error: abstract class is marked 'final' [-Werror,-Wabstract-final-class] class FooMock final : public IFoo<T>
 ```
