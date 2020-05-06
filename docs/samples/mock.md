@@ -1059,6 +1059,9 @@ DRMOCK_DUMMY(QQuickWindow)
 
 **Beware!** This macro must be used _outside_ of any namespace,
 and the parameter `Foo` must specify the full namespace of the target class.
+Also note that adding a semicolon `;` at the end of the macro call
+may (depending on your compiler) result in an
+`extra ‘;’ [-Werror=pedantic]` error.
 
 If `Foo::operator==` is deleted
 _and_ you control the source code of `Foo`,

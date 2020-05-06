@@ -34,7 +34,7 @@ class Foo
 
 // Create dummy comparison method.
 #ifdef DRMOCK
-DRMOCK_DUMMY(outer::inner::Foo);
+DRMOCK_DUMMY(outer::inner::Foo)
 #endif
 
 class IDummy : public QObject
