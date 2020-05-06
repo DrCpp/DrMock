@@ -64,7 +64,7 @@ will occur when doing `./bootstrap`: [CMake not able to find OpenSSL
 library](https://stackoverflow.com/questions/16248775/cmake-not-able-to-find-openssl-library),
 which we were able to solve by installing `openssl-dev`:
 ```
-sudo apt-get install openssl-dev
+sudo apt-get install libssl-dev
 ```
 (or similar for other package managers).
 
