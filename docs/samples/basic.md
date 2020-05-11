@@ -32,6 +32,7 @@ This sample demonstrates the basic testing capabilities of **DrMock**.
 * [Caveats](#caveats)<br/>
   + [Commas in macro arguments](#commas-in-macro-arguments)<br/>
   + [Implicit conversion in test tables](#implicit-conversion-in-test-tables)
+  + [Compile options, linking test executables and resource files](#compile-options-linking-test-executables-and-resource-files)
 
 ### Project structure
 
@@ -420,7 +421,7 @@ drtest::addRow(
 will raise such an error, as the fourth column's type is defined as
 `std::string`, yet a null-terminated C string was passed as argument.
 
-### Compile options and linking test executables
+### Compile options, linking test executables and resource files
 
 You may set the compile options of the test executables using the
 `OPTIONS` parameter of `DrMockTest`. If `OPTIONS` is left undefined, the
@@ -440,7 +441,7 @@ DrMockTest(
 To link the test executables against any number of target library, use
 the `LIBS` parameter (also described in the [next section](mock.md)).
 For example, to link the test above against `pthread`, do
-```
+```cmake
 DrMockTest(
   TESTS
     test.cpp
@@ -451,3 +452,18 @@ DrMockTest(
     -Werror
 )
 ```
+
+The `RESOURCE` parameter may be used to add source files to the test
+executable:
+```cmake
+DrMockTest(
+  TESTS
+    test.cpp
+  RESOURCES
+    symbols.cpp
+)
+```
+Maybe `symbols.cpp` contains symbols required by a header included in
+`test.cpp`.
+Another common use-case is that of including `.qrc` files (Qt resource
+files) to the executable if they are required by the test.

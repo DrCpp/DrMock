@@ -49,3 +49,9 @@ DrMockTest(TESTS
 #######################################
 
 add_subdirectory(mocker)
+
+#######################################
+# Test macros
+#######################################
+
+add_subdirectory(macros)
