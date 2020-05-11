@@ -19,7 +19,7 @@ along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 # Using DrMock
 
-Sample projects that use DrMock for testing may be found in `samples/`.
+Sample projects that use **DrMock** for testing may be found in `samples/`.
 You will find a step-by-step tutorial for each of them here:
 
 * [samples/basic](samples/basic.md) 

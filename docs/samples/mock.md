@@ -975,7 +975,7 @@ DrMockModule(
   character `"\\1"`. The default value is `MOCKFILE`.
 
 ##### GENERATOR 
-  A path to the generator script of DrMock. Default value is the
+  A path to the generator script of **DrMock**. Default value is the
   current path.
 
 ##### LIBS

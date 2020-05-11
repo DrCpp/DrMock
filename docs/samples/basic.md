@@ -66,8 +66,8 @@ find_package(DrMock COMPONENTS Core REQUIRED)
 ```
 
 This will fail if `DrMock::Core` cannot be found in the
-`CMAKE_PREFIX_PATH`. Make sure that DrMock installed there, or set the
-prefix in the `Makefile` (see below). 
+`CMAKE_PREFIX_PATH`. Make sure that **DrMock** is installed there, or set the
+prefix in the `Makefile` (see below).
 
 Finding the **DrMock** package
 automatically import the macro `DrMockTest`, which may be used to
