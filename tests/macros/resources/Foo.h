@@ -1,0 +1,6 @@
+#ifndef DRMOCK_TESTS_MACROS_FOO_H
+#define DRMOCK_TESTS_MACROS_FOO_H
+
+int foo();
+
+#endif /* DRMOCK_TESTS_MACROS_FOO_H */

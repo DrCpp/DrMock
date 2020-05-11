@@ -24,20 +24,24 @@ endmacro()
 #   TESTS test1 [test2 [test3 ...]]
 #   [LIBS lib1 [lib2 [lib3 ...]]]
 #   [OPTIONS opt1 [opt2 [opt3 ...]]]
+#   [RESOURCES res1 [res2 [res3 ...]]]
 # )
 #
 # Create a test executable from every element of TESTS and link it
 # against all element of LIBS.
 #
-# Each executable is build with compile options FLAGS; if FLAGS is
+# Each executable is build with compile options OPTIONS; if OPTIONS is
 # undefined, then the following options are used: `-Wall`, `-Werror`,
 # `-g`, `-fPIC`, `-pedantic`, `-O0`.
+#
+# The RESOURCES parameter may be used to include other source files
+# `res1`, etc. in the executable.
 function(DrMockTest)
   cmake_parse_arguments(
     PARSED_ARGS
     ""
     ""
-    "LIBS;TESTS;OPTIONS"
+    "LIBS;TESTS;OPTIONS;RESOURCES"
     ${ARGN}
   )
   foreach (path ${PARSED_ARGS_TESTS})
@@ -49,7 +53,7 @@ function(DrMockTest)
 
     # Register test.
     get_filename_component(name "${path}" NAME_WE)
-    add_executable("${name}" "${path}")
+    add_executable("${name}" "${path}" ${PARSED_ARGS_RESOURCES})
     target_link_libraries(
       "${name}"
       DrMock::Core
