@@ -47,6 +47,9 @@ Released 2020/??/??
   - Add `makeFormattedErrorString` method to mock objects (returns
     formatted error string of method collection)
 
+* Use `RESOURCES` parameter in `DrMockTest` to add resource files to
+  test executables
+
 * Add remark about QII pattern to docs
 
 ### Removed
