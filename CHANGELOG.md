@@ -35,6 +35,9 @@ Released 2020/??/??
 
   - pkg-config file
 
+* Use `RESOURCES` parameter in `DrMockTest` to add resource files to
+  test executables
+
 ### Changed
 
 ### Deprecated
