@@ -29,7 +29,7 @@ public:
   virtual ~IWarehouse() = default;
 
   virtual void add(
-      std::string type, 
+      std::string type,
       std::size_t quantity
     ) = 0;
   virtual bool remove(

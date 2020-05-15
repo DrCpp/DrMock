@@ -37,6 +37,7 @@ class MethodCollection
 public:
   MethodCollection(std::vector<std::shared_ptr<IMethod>>);
   bool verify() const;
+  std::string makeFormattedErrorString() const;
 
 private:
   std::vector<std::shared_ptr<IMethod>> methods_{};

@@ -87,7 +87,7 @@ StateBehavior<Result, Args...>::transition(
 
   // Get the transitions for this slot.
   auto& map = transitions_[slot];  // state -> { (input..., target ) }
-  auto& vec = map[current_state];  // { (input..., target) } 
+  auto& vec = map[current_state];  // { (input..., target) }
 
   // Check for conflicts... A conflict arises if there are two
   // transitions that match the same (slot, current_state, input...).
@@ -102,7 +102,7 @@ StateBehavior<Result, Args...>::transition(
   // If all checks out, add the transition.
   vec.push_back(
       std::make_pair(
-          std::make_tuple(std::move(input)...), 
+          std::make_tuple(std::move(input)...),
           std::move(new_state)
         )
     );
@@ -229,7 +229,7 @@ StateBehavior<Result, Args...>::call(const Args&... args)
     std::string slot = v.first;
     std::string current_state = state_object_->get(slot);
     auto& map = v.second;  // state -> { (input..., target) }
-    
+
     // Results.
     bool found_match{false};
     std::string new_state;

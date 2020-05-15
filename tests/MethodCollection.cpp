@@ -28,6 +28,7 @@ class MMethod final : public IMethod
 public:
   MMethod(bool v): v_{v} {}
   bool verify() const override { return v_; }
+  std::string makeFormattedErrorString() const override { return ""; }
 
 private:
   bool v_ = false;

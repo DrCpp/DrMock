@@ -37,7 +37,7 @@ following recursive rules:
 
   `IsEqual<T>{}(x, y)` returns `x == y`.
 
-(2) If `IsEqual<T>` is defined, then 
+(2) If `IsEqual<T>` is defined, then
 
   `IsEqual<T*>{}(x, y)` returns `IsEqual<T>{}(*x, *y)`.
 
@@ -55,8 +55,8 @@ all i = 0 .. n, then
 
   `IsEqual<T, U>{}(t, u)` returns
 
-     `IsEqual<T0, U0>{}(std::get<0>(t), std::get<0>(u)) 
-  and IsEqual<T1, U1>{}(std::get<1>(t), std::get<1>(u)) 
+     `IsEqual<T0, U0>{}(std::get<0>(t), std::get<0>(u))
+  and IsEqual<T1, U1>{}(std::get<1>(t), std::get<1>(u))
   and ...
   and IsEqual<T1, U1>{}(std::get<n>(t), std::get<n>(u))`.
 
@@ -109,7 +109,7 @@ struct IsEqual<
     typename std::enable_if<
             is_shared_ptr<T>::value
         and is_shared_ptr<U>::value
-        and std::is_base_of<typename T::element_type, typename U::element_type>::value 
+        and std::is_base_of<typename T::element_type, typename U::element_type>::value
         and not std::is_same<T, U>::value
       >::type
   > : public IIsEqual<T>

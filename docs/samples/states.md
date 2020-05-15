@@ -1,4 +1,4 @@
-<!-- 
+<!--
 Copyright 2019 Ole Kliemann, Malte Kliemann
 
 This file is part of DrMock.
@@ -48,7 +48,7 @@ samples/states
 │   │   IRocket.h
 │   │   LaunchPad.cpp
 │   │   LaunchPad.h
-│   
+│
 └───tests
     │   CMakeLists.txt
     │   LaunchPad.cpp
@@ -57,9 +57,9 @@ samples/states
 ### Requirements
 
 This project requires an installation of **DrMock** in `prefix/` or the
-`CMAKE_PREFIX_PATH`. If your installation of **DrMock** is located
-elsewhere, you must change the `-DCMAKE_PREFIX_PATH=...` flag in
-`Makefile`.
+`CMAKE_PREFIX_PATH` environment variable. If your installation of
+**DrMock** is located elsewhere, you must change the value of
+`CMAKE_PREFIX_PATH`.
 
 ## Introduction
 
@@ -150,12 +150,12 @@ Every mock object admits a private `StateObject`, which manages an
 arbitrary number of _slots_, each of which has a _current state_. This
 state object is shared between all methods of the mock object, but, per
 default, it is not used. To enable a method `func` to use the shared
-state object, do 
+state object, do
 ```cpp
 foo->mock.func().state()
 ```
 This call returns an instance of `StateBehavior`, which can be
-configured in the same fashion as `Behavior`. 
+configured in the same fashion as `Behavior`.
 
 Every slot of the `StateObject` is designated using an `std::string`, as
 is every state. Upon execution of the test, the state of every slot is
@@ -179,10 +179,10 @@ rocket->mock.launch().state().transition(
     "liftOff"
   );
 ```
-then the _default slot_ `""` is used. 
+then the _default slot_ `""` is used.
 
 **Note.** There is no need to add slots to the state object prior to
-calling `transition`. This is done automatically. 
+calling `transition`. This is done automatically.
 
 Now, `launch` doesn't take any arguments. If the underlying methods
 takes arguments, the `transition` call requires an input. For example, 
@@ -212,7 +212,7 @@ from any state except the default state, which transitions to
 ## Testing states
 
 As usual, the mock's behavior is configured at the start of the test:
-Liftoff can only succeed if at least one thruster is on. 
+Liftoff can only succeed if at least one thruster is on.
 ```cpp
   auto rocket = std::make_shared<drmock::samples::RocketMock>();
 
@@ -226,7 +226,7 @@ Liftoff can only succeed if at least one thruster is on.
       .transition("", "rightThrusterOn", true)
       .transition("rightThrusterOn", "", false)
       .transition("leftThrusterOn", "allThrustersOn", true)
-      .transition("allThrusterOn", "rightThrusterOn", false);
+      .transition("allThrustersOn", "leftThrusterOn", false);
   rocket->mock.launch().state()
       .transition("", "failure")
       .transition("*", "liftOff");
@@ -241,12 +241,12 @@ equal to `liftOff`:
 DRTEST_ASSERT(rocket->mock.verifyState("liftOff");
 ```
 (The method
-`bool verifyState([const std::string& slot,] const std::string& state);` 
+`bool verifyState([const std::string& slot,] const std::string& state);`
 simply checks if the current state of `slot` is `state`.)
 
 Thus, except for the configuration calls and the singular call to
 `verifyState`, no access or knowledge of the implementation was required
-to test `LaunchPad::launch()`. As demonstrated in 
+to test `LaunchPad::launch()`. As demonstrated in
 [Using DrMock for state verification](#using-drmock-for-state-verification),
 one can sometimes even do better.
 
@@ -269,7 +269,7 @@ effect.
 
 With the exception of `polymorphic`, the configuration methods take the
 slot as optional first parameter. The default value is the default slot
-`""`. 
+`""`.
 
 The parameters `Result` and `Args...` are designators for the underlying
 method's return value and parameters.
@@ -348,7 +348,7 @@ is `state`.
 template<typename... Deriveds> StateBehavior& polymorphic();
 ```
 Instruct the `StateBehavior` to expect as argument
-`std::shared_ptr<Deriveds>...` or `std::unique_ptr<Deriveds>...`. 
+`std::shared_ptr<Deriveds>...` or `std::unique_ptr<Deriveds>...`.
 
 See also: [Polymorphism](#polymorphism).
 
@@ -356,7 +356,7 @@ See also: [Polymorphism](#polymorphism).
 
 Access to the mock object (except during configuration) can be entirely
 eliminated in many cases, thus freeing the programmer to have any
-knowledge of the implementation of the system under test. 
+knowledge of the implementation of the system under test.
 
 Consider the following example: 
 ```cpp

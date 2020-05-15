@@ -22,8 +22,8 @@ add_library(DrMockSampleStates SHARED
 )
 
 # Get the path to the mocker script.
-file(TO_CMAKE_PATH 
-  ${CMAKE_SOURCE_DIR}/../../python/DrMockGenerator 
+file(TO_CMAKE_PATH
+  ${CMAKE_SOURCE_DIR}/../../python/DrMockGenerator
   pathToMocker
 )
 DrMockModule(

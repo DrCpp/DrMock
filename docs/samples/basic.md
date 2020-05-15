@@ -1,4 +1,4 @@
-<!-- 
+<!--
 Copyright 2019 Ole Kliemann, Malte Kliemann
 
 This file is part of DrMock.
@@ -32,6 +32,7 @@ This sample demonstrates the basic testing capabilities of **DrMock**.
 * [Caveats](#caveats)<br/>
   + [Commas in macro arguments](#commas-in-macro-arguments)<br/>
   + [Implicit conversion in test tables](#implicit-conversion-in-test-tables)
+  + [Compile options, linking test executables and resource files](#compile-options-linking-test-executables-and-resource-files)
 
 ### Project structure
 
@@ -45,9 +46,9 @@ samples/basic
 ### Requirements
 
 This project requires an installation of **DrMock** in `prefix/` or the
-`CMAKE_PREFIX_PATH`. If your installation of **DrMock** is located
-elsewhere, you must change the `-DCMAKE_PREFIX_PATH=...` flag in
-`Makefile` (for details, see below).
+`CMAKE_PREFIX_PATH` environment variable. If your installation of
+**DrMock** is located elsewhere, you must change the value of
+`CMAKE_PREFIX_PATH`.
 
 ## Setup
 
@@ -95,21 +96,21 @@ Now lets take a look at the `Makefile`:
 
 ```makefile
 default:
-  mkdir -p build && cd build && cmake .. -DCMAKE_PREFIX_PATH=../../prefix && make -j10 && ctest --output-on-failure
-
-clean:
-  rm -fr build
+  mkdir -p build && cd build && cmake .. -DCMAKE_PREFIX_PATH=../../prefix
+  cd build && make -j$(num_threads) && ctest --output-on-failure
 ```
 
-If you haven't already, you can set the `CMAKE_PREFIX_PATH` to the
-installation directory of the **DrMock** package.  If you've done `make
-&& make install` in the **DrMock** source folder and haven't moved
+Nothing fancy here. Note the ctest call after building.
+
+If you haven't already, set the `CMAKE_PREFIX_PATH` environment variable
+to the installation directory of the **DrMock** package. If you've done
+`make && make install` in the **DrMock** source folder and haven't moved
 `prefix`, the default `CMAKE_PREFIX_PATH` set in the `Makefile` is
-referencing the correct directory. 
+referencing the correct directory.
 
 ## Source code
 
-Time to look at some test code. Open `basicTest.cpp`! 
+Time to look at some test code. Open `basicTest.cpp`!
 
 `DrMock/Test.h` contains **DrMock**'s test macros and must be included
 in every test source file. To open a new test, do
@@ -133,8 +134,8 @@ DRTEST_TEST(someTest)
 ```
 
 To compare objects of some type `T`, the following `DRTEST_ASSERT_[...]`
-macros may be used if `T` implements 
-`std::ostream& operator<<(ostream& os, const T&)`, 
+macros may be used if `T` implements
+`std::ostream& operator<<(ostream& os, const T&)`,
 as done in the next test.
 ```cpp
 DRTEST_TEST(anotherTest)
@@ -158,7 +159,7 @@ If the compared type `T` doesn't provide a streaming operator, use
 
 ### Exceptions
 
-To check for exceptions, use 
+To check for exceptions, use
 ```cpp
 DRTEST_ASSERT_THROW(statement, exceptionType);
 ```
@@ -239,7 +240,7 @@ After adding the columns, the `drtest::addRow` function may then be used
 to populate the table:
 ```cpp
 drtest::addRows(
-    "row description", 
+    "row description",
     1stColumnEntry,
     2ndColumnEntry,
     ...
@@ -387,8 +388,8 @@ can be caused by not properly isolating commas occuring in macro
 arguments. For example,
 ```cpp
 DRTEST_ASSERT(
-    std::vector<int>{0, 1, 2} 
-    == 
+    std::vector<int>{0, 1, 2}
+    ==
     std::vector<int>{3, 4, 5}
   );
 ```
@@ -397,8 +398,8 @@ will throw this error. The macro will assume it is called with
 this, use parens `()` to encapsulate these commas:
 ```cpp
 DRTEST_ASSERT(
-    (std::vector<int>{0, 1, 2}) 
-    == 
+    (std::vector<int>{0, 1, 2})
+    ==
     (std::vector<int>{3, 4, 5})
   );
 ```
@@ -420,7 +421,7 @@ drtest::addRow(
 will raise such an error, as the fourth column's type is defined as
 `std::string`, yet a null-terminated C string was passed as argument.
 
-### Compile options and linking test executables
+### Compile options, linking test executables and resource files
 
 You may set the compile options of the test executables using the
 `OPTIONS` parameter of `DrMockTest`. If `OPTIONS` is left undefined, the
@@ -432,7 +433,7 @@ DrMockTest(
   TESTS
     test.cpp
   OPTIONS
-    -Wall 
+    -Wall
     -Werror
 )
 ```
@@ -451,3 +452,18 @@ DrMockTest(
     -Werror
 )
 ```
+
+The `RESOURCE` parameter may be used to add source files to the test
+executable:
+```cmake
+DrMockTest(
+  TESTS
+    test.cpp
+  RESOURCES
+    symbols.cpp
+)
+```
+Maybe `symbols.cpp` contains symbols required by a header included in
+`test.cpp`.
+Another common use-case is that of including `.qrc` files (Qt resource
+files) to the executable if they are required by the test.

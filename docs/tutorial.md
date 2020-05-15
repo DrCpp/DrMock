@@ -1,4 +1,4 @@
-<!-- 
+<!--
 Copyright 2019 Ole Kliemann, Malte Kliemann
 
 This file is part of DrMock.
@@ -17,19 +17,37 @@ You should have received a copy of the GNU General Public License
 along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
-# Using DrMock
+# DrMock sample projects and tutorials
 
 Sample projects that use **DrMock** for testing may be found in `samples/`.
 You will find a step-by-step tutorial for each of them here:
 
-* [samples/basic](samples/basic.md) 
-  Learn **DrMock**'s basic testing features.
+---
 
-* [samples/mock](samples/mock.md) 
-  Learn how to create and use **DrMock**'s mock objects.
+[samples/basic](samples/basic.md)
 
-* [samples/states](samples/states.md)
-  Learn how to use **DrMock**'s state calculus for state verification.
+Learn how to setup and create unit tests with **DrMock**,
+about the various macros,
+and how to use test tables.
 
-* [samples/qt](samples/qt.md) 
-  Learn how to use **DrMock** to mock `Qt5/QObject`s.
+---
+
+[samples/mock](samples/mock.md)
+
+Learn how **DrMock**'s mock objects work,
+how to automatically create their source code from an interface,
+and how to configure and verify their behavior.
+
+---
+
+[samples/states](samples/states.md)
+
+Learn how to use **DrMock**'s mock objects as stubs for state verification.
+
+---
+
+[samples/qt](samples/qt.md)
+
+Learn how to use **DrMock** with Qt5.
+
+---

@@ -24,20 +24,24 @@ endmacro()
 #   TESTS test1 [test2 [test3 ...]]
 #   [LIBS lib1 [lib2 [lib3 ...]]]
 #   [OPTIONS opt1 [opt2 [opt3 ...]]]
+#   [RESOURCES res1 [res2 [res3 ...]]]
 # )
 #
 # Create a test executable from every element of TESTS and link it
-# against all element of LIBS.  
-# 
-# Each executable is build with compile options FLAGS; if FLAGS is
+# against all element of LIBS.
+#
+# Each executable is build with compile options OPTIONS; if OPTIONS is
 # undefined, then the following options are used: `-Wall`, `-Werror`,
 # `-g`, `-fPIC`, `-pedantic`, `-O0`.
+#
+# The RESOURCES parameter may be used to include other source files
+# `res1`, etc. in the executable.
 function(DrMockTest)
   cmake_parse_arguments(
     PARSED_ARGS
     ""
     ""
-    "LIBS;TESTS;OPTIONS"
+    "LIBS;TESTS;OPTIONS;RESOURCES"
     ${ARGN}
   )
   foreach (path ${PARSED_ARGS_TESTS})
@@ -49,7 +53,7 @@ function(DrMockTest)
 
     # Register test.
     get_filename_component(name "${path}" NAME_WE)
-    add_executable("${name}" "${path}")
+    add_executable("${name}" "${path}" ${PARSED_ARGS_RESOURCES})
     target_link_libraries(
       "${name}"
       DrMock::Core
@@ -92,41 +96,41 @@ endfunction()
 # file extension. The class name of the mock object is computed in
 # analogous fashion.
 #
-# TARGET 
+# TARGET
 #   The name of the library that is created.
 #
 # HEADERS
 #   A list of header files. Every header file must match the regex
 #   provided via the `IFILE` argument.
 #
-# IFILE 
+# IFILE
 #   A regex that describes the pattern that matches the project's
 #   interface header filenames. The regex must contain exactly one
 #   capture group that captures the unadorned filename. The default
 #   value is ``I([a-zA-Z0-9].*)"`.
 #
-# MOCKFILE 
+# MOCKFILE
 #   A string that describes the pattern that the project's mock object
 #   header filenames match. The string must contain exactly one
 #   subexpression character `"\\1"`. The default value is `"\\1Mock"`.
 #
-# ICLASS 
+# ICLASS
 #   A regex that describes the pattern that matches the project's
 #   interface class names. The regex must contain exactly one capture
 #   group that captures the unadorned class name. Each of the specified
 #   header files must contain exactly one class that matches this regex.
 #   The default value is `IFILE`.
 #
-# MOCKCLASS 
+# MOCKCLASS
 #   A string that describes the pattern that the project's mock object
 #   class names match. The regex must contain exactly one subexpression
 #   character `"\\1"`. The default value is `MOCKFILE`.
-# 
-# GENERATOR 
+#
+# GENERATOR
 #   A path to the generator script of DrMock. Default value is the
 #   current path.
 #
-# LIBS 
+# LIBS
 #   A list of libraries that `TARGET` is linked against. Default value
 #   is undefined (treated as empty list).
 #
@@ -135,17 +139,17 @@ endfunction()
 #   `QTMODULES` is defined (even if it's empty), the `HEADERS` will be
 #   added to the sources of `TARGET`, thus allowing the interfaces that
 #   are Q_OBJECT to be mocked. Default value is undefined.
-#   
-# INCLUDE 
+#
+# INCLUDE
 #   A list of include path's that are required to parse the `HEADERS`.
 #   The include paths of Qt5 modules passed in the `QTMODULES` parameter
-#   are automatically added to this list.  
+#   are automatically added to this list.
 
 #   The default value contains ${CMAKE_CURRENT_SOURCE_DIR} (the
 #   directory that `DrMockModule` is called from) and the current
 #   directory's include path.
 #
-# FRAMEWORKS 
+# FRAMEWORKS
 #   A list of macOS framework path's that are required to parse the
 #   `HEADERS`. Default value is undefined (treated as empty list).
 function(DrMockModule)
@@ -211,6 +215,11 @@ function(DrMockModule)
 
   # If Qt is enabled, add the Qt framework and include paths.
   foreach (module ${PARSED_ARGS_QTMODULES})
+    # Check if DRMOCK_QT_PATH is defined.
+    if (NOT DEFINED ENV{DRMOCK_QT_PATH})
+      message(FATAL_ERROR "DrMockModule error: DRMOCK_QT_PATH not defined")
+    endif()
+
     # Compute the Qt iframework flag for macOS users.
     set(qtPath $ENV{DRMOCK_QT_PATH})
     string(REGEX REPLACE "\\\\" "" qtPathUnescaped ${qtPath})
@@ -263,7 +272,7 @@ function(DrMockModule)
     )  #/[...]/project/[DIRS]
     file(RELATIVE_PATH
       relativePathToHeader
-      # ${CMAKE_CURRENT_SOURCE_DIR} 
+      # ${CMAKE_CURRENT_SOURCE_DIR}
       ${CMAKE_CURRENT_SOURCE_DIR}
       "${absoluteDir}"
     )  # [DIRS]
@@ -295,7 +304,7 @@ function(DrMockModule)
       ${unadornedFilename}
       mockFilenameWithoutExtension
       ${PARSED_ARGS_MOCKFILE}
-    )  # ExampleMock 
+    )  # ExampleMock
 
     # Get the header file's file extension.
     string(REGEX MATCH "\\.([^.]*)$" headerFileExtension ${headerFilename})  # .h, .hpp
@@ -364,7 +373,7 @@ function(DrMockModule)
     PUBLIC
     ${CMAKE_CURRENT_BINARY_DIR}/DrMock
   )
-  # Link against DrMock and the other provided libs. 
+  # Link against DrMock and the other provided libs.
   target_link_libraries(${PARSED_ARGS_TARGET} DrMock::Core ${PARSED_ARGS_LIBS})
 endfunction()
 

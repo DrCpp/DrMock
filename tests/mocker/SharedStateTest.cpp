@@ -24,7 +24,7 @@ using namespace outer::inner;
 DRTEST_TEST(success)
 {
   {
-    SharedStateMock foo{}; 
+    SharedStateMock foo{};
     foo.mock.set().state()
         .transition("*", "on", true)
         .transition("*", "off", false);
@@ -38,9 +38,9 @@ DRTEST_TEST(success)
     foo.set(true);
     DRTEST_ASSERT(foo.get());
   }
-  
+
   {
-    SharedStateMock foo{}; 
+    SharedStateMock foo{};
     foo.mock.set().state()
         .transition("*", "on", true)
         .transition("*", "off", false);

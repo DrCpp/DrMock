@@ -36,7 +36,7 @@ class TestSplit(unittest.TestCase):
                 )
             ),
             sorted([
-                ["foo", "foobar"], 
+                ["foo", "foobar"],
                 ["bar", "baz", "barbar"]
             ])
         )
@@ -84,7 +84,7 @@ class TestSwap(unittest.TestCase):
             utils.swap,
             "I([A-Z].*)", "\\1bar", "Ifoo"
         )
-    
+
     def test_success(self):
         self.assertEqual(
             utils.swap("I([A-Z].*)", "\\1Bar", "IFoo"),

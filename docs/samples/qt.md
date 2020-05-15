@@ -1,4 +1,4 @@
-<!-- 
+<!--
 Copyright 2019 Ole Kliemann, Malte Kliemann
 
 This file is part of DrMock.
@@ -19,7 +19,7 @@ along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 # samples/qt
 This sample demonstrates how to use **DrMock** to mock an interface
-`IFoo` that inherits from `QObject` and uses the `Q_OBJECT` macro. 
+`IFoo` that inherits from `QObject` and uses the `Q_OBJECT` macro.
 
 ### Table of contents
 
@@ -39,7 +39,7 @@ samples/qt
 └───src
 │   │   CMakeLists.txt
 │   │   IFoo.h
-│   
+│
 └───tests
     │   CMakeLists.txt
     │   FooTest.cpp
@@ -48,13 +48,13 @@ samples/qt
 ### Requirements
 
 This project requires an installation of **DrMock** in `prefix/` or the
-`CMAKE_PREFIX_PATH`. If your installation of **DrMock** is located
-elsewhere, you must change the `-DCMAKE_PREFIX_PATH=...` flag in
-`Makefile`.
+`CMAKE_PREFIX_PATH` environment variable. If your installation of
+**DrMock** is located elsewhere, you must change the value of
+`CMAKE_PREFIX_PATH`.
 
 ## Setup
 
-Let's take a look at the changes make to `CMakeLists.txt`. 
+Let's take a look at the changes make to `CMakeLists.txt`.
 
 ```cmake
 # samples/qt/CMakeLists.txt
@@ -74,7 +74,7 @@ and a CMake policy that allows mocking generated source code. Of course,
 one must also find the Qt5 package.
 
 When calling `DrMockModule`, the required Qt5 modules must now
-bespecified using the keyword `QTMODULES`, as follows.  **DrMock** will
+bespecified using the keyword `QTMODULES`, as follows. **DrMock** will
 automatically link `TARGET` to the required libraries.
 
 ```cmake
@@ -88,6 +88,10 @@ DrMockModule(
     IFoo.h
 )
 ```
+
+Furthermore, in order to use `DrMockModule` with Qt, the `$DRMOCK_QT_PATH`
+environment variable must be set (see [Building DrMock](../build.md) for
+details).
 
 The `DrMockTest` call requires no changes for the use of Qt.
 
@@ -171,7 +175,7 @@ Total Test time (real) =   0.02 sec
 Some `QObject`s, such as `QEventLoop` require a `QApplication` to run in
 the main thread of the program to function correctly. To run a
 `QApplication` in the main thread during a `DRTEST_TEST`, define the
-`DRTEST_USE_QT` macro before including `DrMock/Test.h`. 
+`DRTEST_USE_QT` macro before including `DrMock/Test.h`.
 
 Let's take a look at the previous example, but this time, connect the
 two `FooMock` instances via `Qt::QueuedConnection`:

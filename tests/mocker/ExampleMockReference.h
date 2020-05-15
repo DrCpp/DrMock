@@ -90,7 +90,7 @@ public:
   DRTEST_MO_METHOD(funcVoid0)  //
   DRTEST_MO_METHOD_NO_OVERLOAD(void, funcVoid0, funcVoid0_Method)
 
-  DRTEST_MO_METHOD(funcVoid0Const)  
+  DRTEST_MO_METHOD(funcVoid0Const)
   DRTEST_MO_METHOD_NO_OVERLOAD(void, funcVoid0Const, funcVoid0Const_Method)
 
   DRTEST_MO_METHOD(funcVoid0Noexcept)

@@ -21,7 +21,7 @@
 
 namespace outer { namespace inner {
 
-class ISharedState 
+class ISharedState
 {
 public:
   virtual ~ISharedState() = default;

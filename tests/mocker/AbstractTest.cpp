@@ -49,7 +49,7 @@ DRTEST_TEST(fails)
         std::logic_error
       );
   }
-  
+
   {
     // Wrong argument.
     AbstractMock mock{};

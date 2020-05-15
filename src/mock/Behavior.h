@@ -29,7 +29,7 @@ namespace drmock {
 
 /* Behavior
 
-Class template that represents a method's behavior. 
+Class template that represents a method's behavior.
 
 + A Behavior has a return type (Result) and parameter types (Args...).
 
@@ -40,7 +40,7 @@ Class template that represents a method's behavior.
   return type or an std::exception_ptr.
 
 + A Behavior has a life span. After a set number of productions
-  (which may be infinite), the Behavior object no longer _persists_. 
+  (which may be infinite), the Behavior object no longer _persists_.
 
 + The results of the production and the life span must be configured by
   the user.
@@ -67,10 +67,10 @@ public:
 
   // Set the exact number or a range of expected productions.
   //
-  // @example: b.times(2, 4)  // Expect 2, 3 or 4 productions. 
+  // @example: b.times(2, 4)  // Expect 2, 3 or 4 productions.
   Behavior& times(unsigned int);
   Behavior& times(unsigned int, unsigned int);
-  
+
   // Configure this to be persistent/immortal. This overrides any
   // previous or future `times` calls.
   Behavior& persists();

@@ -1,4 +1,4 @@
-<!-- 
+<!--
 Copyright 2019 Ole Kliemann, Malte Kliemann
 
 This file is part of DrMock.
@@ -39,6 +39,7 @@ This sample demonstrates the basics of **DrMock**'s mock features.
   + [Changing nomenclature templates](#changing-nomenclature-templates)
   + [Ignore order of behaviors](#ignore-order-of-behaviors)
   + [DrMockModule documentation](#drmockmodule-documentation)
+  + [Macros](#marcos)
 * [Fine print: Interface](#fine-print-interface)
 * [Bibliography](#bibliography)
 
@@ -56,7 +57,7 @@ samples/mock
 │   │   Order.h
 │   │   Warehouse.cpp
 │   │   Warehouse.h
-│   
+│
 └───tests
     │   CMakeLists.txt
     │   OrderTest.cpp
@@ -69,9 +70,9 @@ and `tests/CMakeLists.txt` the tests.
 ### Requirements
 
 This project requires an installation of **DrMock** in `prefix/` or the
-`CMAKE_PREFIX_PATH`. If your installation of **DrMock** is located
-elsewhere, you must change the `-DCMAKE_PREFIX_PATH=...` flag in
-`Makefile`.
+`CMAKE_PREFIX_PATH` environment variable. If your installation of
+**DrMock** is located elsewhere, you must change the value of
+`CMAKE_PREFIX_PATH`.
 
 ## Introduction
 
@@ -116,7 +117,7 @@ being requested, this should be `false`. Otherwise, `true`.  Although it
 is irrelevant here, the reader is invited to look at the sample
 implementation found in `Warehouse.h` and `Warehouse.cpp`.
 
-Let's take a short peek at the header of `Order` for a moment. 
+Let's take a short peek at the header of `Order` for a moment.
 ```cpp
 // Order.h
 
@@ -138,11 +139,11 @@ private:
 ```
 Note that the parameter of `fill` is an `std::shared_ptr` to allow the
 use of polymorphism. You could use virtually any type of (smart) pointer
-in place of `std::shared_ptr`. 
+in place of `std::shared_ptr`.
 
 Here's the straightforward implementation of the `fill` method:
 ```cpp
-void 
+void
 Order::fill(const std::shared_ptr<IWarehouse& wh)
 {
   filled_ = wh->remove(commodity_, quantity_);
@@ -154,7 +155,7 @@ the commodity from the warehouse and set `filled_` accordingly.
 ## Setup
 
 To use **DrMock** to create source code for a mock of `IWarehouse`, the
-macro `DrMockModule` is used. 
+macro `DrMockModule` is used.
 ```cmake
 # src/CMakeLists.txt
 
@@ -189,7 +190,7 @@ try removing the `GENERATOR` argument.
 A detailed documentation may be found in [DrMockModule documentation](#drmockmodule-documentation).
 
 Let's now see how mock objects are used in tests. First, take a look at
-`tests/CMakeLists.txt`. 
+`tests/CMakeLists.txt`.
 ```cmake
 DrMockTest(
   LIBS
@@ -243,7 +244,7 @@ For instance, to define the behavior of `remove`, you call
 `warehouse->mock.remove()`. This returns a `Method` object onto which
 `Behavior`s may be pushed using `push` (detail below). Here, the mock
 object is instructed to expect the call `remove("foo", 2)` _exactly
-once_ (call `times` with parameter 1), and then to return `true`. 
+once_ (call `times` with parameter 1), and then to return `true`.
 
 **Note.** The `push` method, as well as `expects`, `times`, etc. returns
 a reference to the pushed behavior, thus allowing the user to
@@ -266,6 +267,15 @@ correct value:
 ```cpp
 DRTEST_ASSERT(order.filled());
 ```
+
+**Note.**
+You can verify _all_ methods of a mock object at once by applying
+`DRTEST_VERIFY_MOCK` to the mock object itself, like so:
+```cpp
+DRTEST_VERIFY_MOCK(warehouse->mock);
+```
+Beware! Unconfigured methods will result in a failed test if this macro
+is used.
 
 **Note.** When verifying the mock object, the `Behavior`s are expected
 to occur in the order in which they were pushed. See also: [Ignore order
@@ -328,7 +338,7 @@ private:
   /* Method objects */
   std::shared_ptr<Method<void, std::string, std::size_t>> METHODS_DRMOCK_add;
   std::shared_ptr<Method<bool, std::string, std::size_t>> METHODS_DRMOCK_remove;
-  
+
   /* Details... */
 };
 ```
@@ -354,7 +364,7 @@ public:
 ```
 
 The short of it is this: For every method (in fact, every overload - but
-more of that later) there's an `std::shared_ptr<Method<Result, Args...>>` 
+more of that later) there's an `std::shared_ptr<Method<Result, Args...>>`
 member in the interval mock object. When the mock implementation's
 methods are called, the call is forwarded to the `Method`'s `call`
 method:
@@ -442,7 +452,7 @@ method is called.
 
 * If an `std::exception_ptr` is produced, the pointee exception is
   rethrown by the `Method`.
- 
+
 A couple of things can go wrong here:
 
 * No matching `Behavior` is found.
@@ -507,22 +517,22 @@ public:
 All of these return `this`, allowing us to string multiple
 configurations together.
 
-* `expects(Args... args)`  
+* `expects(Args... args)`
   Expect a call with `args...` as arguments.
 
-* `returns(T&&)`  
+* `returns(T&&)`
   Produce the passed value on production.
 
-* `throws(E&&)`  
+* `throws(E&&)`
   Throw the passed exception on production.
 
-* `times(unsigned int)`  
+* `times(unsigned int)`
   Specify the _exact_ number of expected calls.
 
-* `times(unsigned int, unsigned int)`  
+* `times(unsigned int, unsigned int)`
   Specify a range of expected calls.
 
-* `persists()`  
+* `persists()`
   Make the behavior immortal.
 
 **Note.** `times(unsigned int, unsigned int)` is used to set a minimum
@@ -530,7 +540,7 @@ and maximum number of calls. For example, `times(2, 4)` configures the
 `Behavior` to expect two, three _or four_ calls. The default expected
 times is _exactly once_.
 
-The last method, `template<typename... Deriveds> Behavior& polymorphic()`, 
+The last method, `template<typename... Deriveds> Behavior& polymorphic()`,
 is used to instruct the `Behavior` to expect one of the following:
 
 * `Args*...`
@@ -734,7 +744,7 @@ DRTEST_TEST(overload)
       .expects(0.0f, {}).returns(4);
 
   DRTEST_ASSERT_EQ(
-      bar->f(), 
+      bar->f(),
       1
     );
   DRTEST_ASSERT_EQ(
@@ -742,11 +752,11 @@ DRTEST_TEST(overload)
       2
     );
   DRTEST_ASSERT_EQ(
-      bar->f(3), 
+      bar->f(3),
       3
     );
   DRTEST_ASSERT_EQ(
-      bar->f(0.0f, {}), 
+      bar->f(0.0f, {}),
       4
     );
 }
@@ -783,14 +793,20 @@ drmock::samples::Bar func(drmock::samples::Foo) const = 0;
 
 **DrMock** also requires that parameters of interface method be
 _comparable_. Thus, they must implement `operator==`, with the following
-exceptions: 
+exceptions:
 
 (1) `std::shared_ptr<T>` and `std::unique_ptr<T>` are comparable if `T`
 is comparable. They are compared by comparing their pointees.  If the
 pointee type `T` is abstract, polymorphism must be specified, see below.
 
-(2) `std::tuple<Ts...>` is comparable if all
-elements of `Ts...` are comparable. 
+(2) `std::tuple<Ts...>` is comparable if all elements of `Ts...` are
+comparable.
+
+If a parameter is not comparable (for example, a class from a
+third-party library that you do not have any control over), this
+parameter can forcibly made comparable using the `DRMOCK_DUMMY` macro,
+at least if `bool operator==(const Foo&) const` is not deleted
+(see [Macros](#macros) below).
 
 ### Polymorphism
 
@@ -801,12 +817,12 @@ object must be informed informed which derived type to expect using the
 
 For example,
 ```cpp
-class Base 
+class Base
 {
   // ...
 };
 
-class Derived : public Base 
+class Derived : public Base
 {
   // Make `Derived` comparable.
   bool operator==(const Derived&) const { /* ... */ }
@@ -816,7 +832,7 @@ class Derived : public Base
 
 // IFoo.h
 
-class IFoo 
+class IFoo
 {
 public:
   ~IFoo() = default;
@@ -830,7 +846,7 @@ Then, use `polymorphic` to register `Derived`:
 auto foo = std::make_shared<FooMock>();
 foo->mock.func().polymorphic<std::shared_ptr<Derived>, std::shared_ptr<Derived>>();
 foo->mock.func().expects(
-    std::make_shared<Derived>(/* ... */), 
+    std::make_shared<Derived>(/* ... */),
     std::make_shared<Derived>(/* ... */)
   );
 ```
@@ -890,7 +906,7 @@ If you don't wish to follow this template, you must change the call to
 `DrMockModule`. The arguments of `IFILE` and `ICLASS` must be regular
 expression with exactly one capture group, those of `MOCKFILE` and
 `MOCKCLASS` must contain a single subexpression `\1` (beware the CMake
-excape rules!). 
+excape rules!).
 
 The capture groups gather the implementation file and class name and
 replace said subexpressions to compute the mock file and class name. For
@@ -930,7 +946,7 @@ triggered.
 ### DrMockModule documentation
 ```cmake
 DrMockModule(
-  TARGET 
+  TARGET
   HEADERS header1 [header2 [header3 ...]]
   [IFILE]
   [MOCKFILE]
@@ -987,11 +1003,11 @@ DrMockModule(
   `QTMODULES` is defined (even if it's empty), the `HEADERS` will be
   added to the sources of `TARGET`, thus allowing the interfaces that
   are Q_OBJECT to be mocked. Default value is undefined.
-  
+
 ##### INCLUDE
   A list of include path's that are required to parse the `HEADERS`.
   The include paths of Qt5 modules passed in the `QTMODULES` parameter
-  are automatically added to this list.  
+  are automatically added to this list.
 
   The default value contains ${CMAKE_CURRENT_SOURCE_DIR} (the
   directory that `DrMockModule` is called from) and the current
@@ -1002,6 +1018,68 @@ DrMockModule(
   `HEADERS`. The Qt5 framework path is automatically added to this list
   if `QTMODULES` is used. Default value is equivalent to passing an
   empty list.
+
+### Macros
+
+`mock/MockMacros.h` currently declares two macros. 
+
+##### `DRMOCK`
+
+Defined if and only if `mock/MockMacros.h` is included.
+As `<DrMock/Mock.h>` should _never_ be included in production code, 
+`DRMOCK` may be used to check if a header is compiled as part of
+production or test/mock code:
+```cpp
+#ifdef DRMOCK
+/* Do this only in test/mock source code. */
+#endif
+```
+
+A typical use-case is that of protecting other macros provided by **DrMock**
+from the preprocessor in production code (see below for examples).
+
+##### `DRMOCK_DUMMY`
+
+Using `DRMOCK_DUMMY(Foo)` defines a trivial `operator==` as follows:
+```cpp
+inline bool operator==(const Foo&, const Foo&)
+{
+  return true;
+}
+```
+
+This can be used to make all third-party classes that occur as method
+parameters in an interface comparable.
+Example use-case:
+```cpp
+#ifdef DRMOCK
+DRMOCK_DUMMY(QQuickWindow)
+#endif
+```
+
+**Beware!** This macro must be used _outside_ of any namespace,
+and the parameter `Foo` must specify the full namespace of the target class.
+Also note that adding a semicolon `;` at the end of the macro call
+may (depending on your compiler) result in an
+`extra ‘;’ [-Werror=pedantic]` error.
+
+If `Foo::operator==` is deleted
+_and_ you control the source code of `Foo`,
+you can ignore the delete in test/mock code by using the `DRMOCK` macro:
+```cpp
+class Foo
+{
+#ifndef DRMOCK
+  bool operator==(const Foo&) const = delete;
+#endif
+
+  /* ... */
+}
+
+#ifdef DRMOCK
+DRMOCK_DUMMY(Foo)
+#endif
+```
 
 ## Fine print: Interface
 
@@ -1046,7 +1124,7 @@ described above and must satisfy the following conditions:
 * Every parameter or return value `Foo` of the interface's methods shall
   satisfy one of the following conditions:
 
-  (1) `Foo` is not abstract and implements 
+  (1) `Foo` is not abstract and implements
     `bool operator==(const Foo&) const`.
 
   (2) It is an `std::shared_ptr` or an `std::unique_ptr` to a type that

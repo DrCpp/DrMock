@@ -42,7 +42,7 @@ from . import utils
 # template<...> using T = ...;  TYPE_ALIAS_TEMPLATE_DECL
 # using T = ...;                TYPE_ALIAS_DECL
 # void f(...) const override;   CXX_METHOD
-# void f(const T&);             PARM_DECL 
+# void f(const T&);             PARM_DECL
 #        ^^^^^^^^
 # private:                      CXX_ACCESS_SPEC_DECL
 
@@ -59,12 +59,12 @@ class Static:
     std: str = ""  # C++ version.
     compiler_flags: List[str] = []  # Additional compiler flags.
     prefix: str = ""  # Include prefix for headers of drmock.
-    
+
     @staticmethod
     def get_children(root: clang.cindex.Cursor) -> Generator[clang.cindex.Cursor]:
         """ Return the children of `root` contained in the target file `filename`. """
         return (
-            x for x in root.get_children() 
+            x for x in root.get_children()
             if str(x.location.file) == Static.filename
         )
 
@@ -81,7 +81,7 @@ class Static:
         """ Check if `cursor` is a type alias declaration.
 
         .. note:
-            
+
             Beware! Does not check for type alias _template_ declarations.
         """
         return (cursor.kind == CursorKind.TYPE_ALIAS_DECL)
@@ -149,7 +149,7 @@ class Overload:
         return getter
 
     def make_pointers(self) -> List[MemberVariable]:
-        """ Return the overload's `std::shared_ptr<Method>` objects. 
+        """ Return the overload's `std::shared_ptr<Method>` objects.
 
         For each function of the overload a `MemberVariable` object
         (whose `type` is `std::shared_ptr<Method>`) is created. This
@@ -171,7 +171,7 @@ class Overload:
             In other words, if `overload` is an instance of `Overload`,
             then `overload.make_pointers()[i]` and
             `overload.make_dispatch()[i]` must correspond to the same
-            element of `overload.methods`. 
+            element of `overload.methods`.
         """
         result = []
         i = 0  # Index for numbering overloads...
@@ -179,7 +179,7 @@ class Overload:
             # Create a template from the signature of `f`. The types
             # must be decayed before being introduced.
             template_args = TemplateArguments(
-                f.return_type, 
+                f.return_type,
                 *(param.decayed() for param in f.parameters)
             )
             # Polymorphic method object.
@@ -190,23 +190,23 @@ class Overload:
                 constructor_args = ["std::make_shared<" + value_type + '>("", STATEOBJECT_DRMOCK_)']
             )
             # Append to the private members of `mo` and to the list of identifiers
-            # later to be used to initialize the `MethodCollection` object.    
+            # later to be used to initialize the `MethodCollection` object.
             result.append(shared_ptr)
             i += 1
         return result
-    
+
     def make_dispatch(self) -> List[Method]:
-        """ Return the overload's dispatch method objects. 
+        """ Return the overload's dispatch method objects.
 
         For each function of the overload a `Method` (C++) object is
         created. These dispatch method take different combinations of
         specializations of C++ `TypeContainer`s as arguments and,
         depending on the specialization, return one of the
-        `std::shared_ptr<Method>`s members. 
-        
+        `std::shared_ptr<Method>`s members.
+
         The `Methods`s are ordered in the same order in which the
         methods they are construction from occur in `self.methods`.
-            
+
         .. note:
 
             (See also: make_pointers) The return values of
@@ -215,9 +215,9 @@ class Overload:
             In other words, if `overload` is an instance of `Overload`,
             then `overload.make_pointers()[i]` and
             `overload.make_dispatch()[i]` must correspond to the same
-            element of `overload.methods`. 
+            element of `overload.methods`.
 
-        .. note: 
+        .. note:
 
             The dispatch method's name is the mangled name of the
             original method, concatenatied by `"_dispatch"`. This is
@@ -247,7 +247,7 @@ class Overload:
         return result
 
     def make_implementation(self) -> List[Method]:
-        """ Return the mock implementation of the overload. 
+        """ Return the mock implementation of the overload.
 
         For every element of `self.methods`, return a `Method` object
         that calls the method getter function template. The template
@@ -273,7 +273,7 @@ class Overload:
             # If `self` is a proper overload (holds multiple methods),
             # pass the template arguments.
             if self.is_proper():
-                call = "mock.template " + f_impl.mangled_name() + str(template_args) + "().call(" 
+                call = "mock.template " + f_impl.mangled_name() + str(template_args) + "().call("
                 call += ", ".join(var.unpack() for var in f_impl.parameters) + ");"
             # If `self` is not proper, the correct template arguments
             # are automatically used, and need not be manually inserted.
@@ -289,13 +289,13 @@ class Overload:
                 f_impl.body = MethodBody(call)
             # If `f` is non-void, then the result of the call must be
             # forwarded.
-            else: 
+            else:
                 f_impl.body = MethodBody(
                     "auto& result = *" + call,
                     "return std::forward<" \
                         + str(f.return_type) \
                         + ">(drmock::moveIfNotCopyConstructible(result));"
-                )  
+                )
             result.append(f_impl)
         return result
 
@@ -313,7 +313,7 @@ class EmptyLine:
 
 @dataclass
 class CppFile:
-    """ Class for C++ header files. 
+    """ Class for C++ header files.
 
     :ivar str filename: The header's filename.
     :ivar str statements: List of C++ statements occuring in the header.
@@ -338,10 +338,10 @@ class CppFile:
         :returns: The constructed `CppFile`.
         :rtype CppFile:
         :raises: `ValueError` if `tu` holds multiple class declarations.
-        """ 
+        """
         cls = None
         def visit_tree(
-            cursor: clang.cindex.Cursor, 
+            cursor: clang.cindex.Cursor,
             namespace: List[str] = []
         ) -> Class:
             """ Find the first class whose name matches `regex`.
@@ -355,14 +355,14 @@ class CppFile:
             for x in Static.get_children(cursor):
                 if x.kind == CursorKind.NAMESPACE:
                     # Add namespace upon entering the node.
-                    namespace.append(x.displayname)  
-                    visit_tree(x, namespace)  
+                    namespace.append(x.displayname)
+                    visit_tree(x, namespace)
                     # Remove the namespace upon leaving the node.
                     namespace.pop()
                 elif Static.is_class(x):
                     name = x.spelling
                     if re.match(regex, name):
-                        # Create a class and push the enclosing namespace 
+                        # Create a class and push the enclosing namespace
                         cls = Class.from_cursor(x, copy(namespace))
                         break
         visit_tree(self.tu.cursor)
@@ -372,28 +372,28 @@ class CppFile:
         return "\n".join(str(decl) for decl in self.statements)
 
 class AccessSpecifier:
-    """ Class for C++ access specifier declarations. 
+    """ Class for C++ access specifier declarations.
 
     :ivar str _specicier: The access specifier. May be `"public"` or
         `"private"`.
     """
 
     def __init__(self, specifier: str):
-        """ 
+        """
         :raises ValueError: if `specifier` is not `"public"` or `"private"`
         """
         if specifier not in {"public", "private", "signals"}:
             raise ValueError(f"invalid access specifier '{specifier}'")
         self._specifier = specifier
-    
+
     @property
     def specifier(self) -> str:
         return self._specifier
 
     @staticmethod
     def from_cursor(cursor: clang.cindex.Cursor) -> AccessSpecifier:
-        """ Create an `AccessSpecifier` a python clang cursor. 
-        
+        """ Create an `AccessSpecifier` a python clang cursor.
+
         :raises ValueError: if `cursor.kind` is not equal to
             `CursorKind.ACCESS_SPEC_DECL`
         """
@@ -407,7 +407,7 @@ class AccessSpecifier:
         else:
             t = str(tokens[0].spelling)
         return AccessSpecifier(t)
-    
+
     def __str__(self):
         return self.specifier + ":"
 
@@ -432,8 +432,8 @@ class UsingDirective:
 
     @staticmethod
     def from_cursor(cursor: clang.cindex.Cursor) -> UsingDirective:
-        """ Create a `UsingDirective` a python clang cursor. 
-        
+        """ Create a `UsingDirective` a python clang cursor.
+
         :raises ValueError: if `cursor.kind` is not equal to `CursorKind.USING_DIRECTIVE`.
         """
         if cursor.kind != CursorKind.USING_DIRECTIVE:
@@ -458,17 +458,17 @@ class Type:
     type.
 
     .. note::
-        
+
         Although they are implemented in `Type`, volatile qualifiers are
         currently not supported by `mocker.py`.
 
     .. note::
-        
+
         Although references are always `const`, this is not reflected in
-        the value of `is_const`. 
+        the value of `is_const`.
 
     .. note::
-        
+
         `const` qualified references (that is: a reference that is
         `const`, not a reference to a `const` qualified object)
         should not be used at all. (All references in C++ are
@@ -477,7 +477,7 @@ class Type:
         reference to a const object results in a duplicate const
         qualifier. The same goes for volatile qualifiers.
 
-    .. example:: 
+    .. example::
 
         ```
         type0 = Type.from_spelling("const T *")  # This is a `Type`.
@@ -537,7 +537,7 @@ class Type:
         # to const": The distinction between "const reference" and
         # "reference to const" is unnecessary, and the former is only a
         # shorthand for the latter. The same goes for volatile
-        # qualifiers. 
+        # qualifiers.
         #
         # Therefore, when decaying a reference, the cv qualifiers must
         # be removed from the inner type; otherwise, they must be
@@ -554,11 +554,11 @@ class Type:
         # If `type` used to be a (const) reference, it is now naked and
         # must be purged.
         return type.purge()
-    
+
     @staticmethod
     def from_cursor(cursor: clang.cindex.Cursor) -> Type:
-        """ Create a `Type` a python clang cursor. 
-        
+        """ Create a `Type` a python clang cursor.
+
         :raises ValueError: if `cursor.kind` is not equal to `CursorKind.PARM_DECL`.
         """
         if cursor.kind != CursorKind.PARM_DECL:
@@ -568,7 +568,7 @@ class Type:
 
         # The following is a hack to solve some rather unfortunate
         # behavior of python clang. If a type alias such as
-        # 
+        #
         # using T = std::shared_ptr<int>;
         #
         # is used in a class, say outer::inner::Foo, then it might
@@ -579,13 +579,13 @@ class Type:
         # `T` is expanded into `inner::outer::Foo`, unless `T` is
         # suffciently buried (for instance, `std::shared_ptr<T>` will
         # not be expanded). This seems to happen with `spelling`,
-        # `type.spelling`, `displayname`, etc. 
-        # 
+        # `type.spelling`, `displayname`, etc.
+        #
         # Leaving this unchanged would render the `Method` object
         # corresponding to this declaration dependent on the class that
         # the declaration occured in.  But we may want to move the
         # method (and the type alias) into another class!
-        # 
+        #
         # Another matter is that, even if `Foo` is a class template, the
         # expanded name will not contain the template parameters
         # (`outer::inner::Foo` instead of `outer::inner::Foo<...>`).
@@ -593,10 +593,10 @@ class Type:
         # aliases will result in code that will raise a compiler error.
         #
         # The problem is solved by taking the tokens of the parameter
-        # declarations and joining them into a string. 
-         
+        # declarations and joining them into a string.
+
         # But two related problems arise when using tokens. If a
-        # variable name is given to a parameter, as in 
+        # variable name is given to a parameter, as in
         #
         # f(const T & ... foo);
         #                 ^^^
@@ -702,7 +702,7 @@ class Type:
         # Terminate the recursion by reassembleing the remaining tokens.
         t.inner = " ".join(tokens)
         return t
-    
+
     def __eq__(self, other):
         if not isinstance(other, Type):
             return NotImplemented
@@ -734,13 +734,13 @@ class Type:
         return (self.is_lvalue_ref or self.is_rvalue_ref)
 
 class TemplateArguments:
-    """ Class that represents a list of C++ template arguments `<T1, ..., Tn>`. 
+    """ Class that represents a list of C++ template arguments `<T1, ..., Tn>`.
 
     :ivar List[Type] _args: The template arguments `T1, ... Tn`
     """
 
     def __init__(self, *args: Tuple[Type]):
-        """ 
+        """
         :param args: The template arguments.
         :type args: Tuple[Type]
         """
@@ -754,9 +754,9 @@ class TemplateArguments:
         return "<" + ", ".join(str(t) for t in self.args) + ">"
 
 class TemplateDeclaration:
-    """ Class for C++ template declarations `template <T1, ..., Tn>`. 
+    """ Class for C++ template declarations `template <T1, ..., Tn>`.
 
-    :ivar List[str] _parameters: (The names of) the template parameters 
+    :ivar List[str] _parameters: (The names of) the template parameters
         `T1, ..., Tn`.
     """
 
@@ -770,7 +770,7 @@ class TemplateDeclaration:
     @property
     def parameters(self) -> List[Type]:
         return self._parameters
-    
+
     @staticmethod
     def from_cursor(cursor: clang.cindex.Cursor) -> TemplateDeclaration:
         """ Create a `TemplateDeclaration` from the children of `cursor`. """
@@ -786,22 +786,22 @@ class TemplateDeclaration:
                 name = " ".join(tokens[1:])  # "T" or "... Ts"
                 template.parameters.append(name)
         return template
-                
+
     def __str__(self):
         return "template<" + ", ".join("typename " + str(s) for s in self.parameters) + ">"
-       
-    def to_args(self) -> TemplateArguments:
-        """ Return `TemplateArguments` whose args match the parameters of `self`. 
 
-        .. example:: 
-            
+    def to_args(self) -> TemplateArguments:
+        """ Return `TemplateArguments` whose args match the parameters of `self`.
+
+        .. example::
+
             temp_decl = TemplateDeclaration("T", "... Ts")
             temp_args = temp_decl.to_args()
             print(temp_args)  # "<T, Ts...>"
         """
         # Replace all variadic template parameters "... Ts" with "Ts ...".
         args = [
-            utils.swap("\.\.\. (.*)", "\\1 ...", s) 
+            utils.swap("\.\.\. (.*)", "\\1 ...", s)
             if s.startswith("...") else s for s in self.parameters
         ]
         # Create types from the argument strings.
@@ -811,12 +811,12 @@ class TemplateDeclaration:
 @dataclass
 class TypeAlias:
     """ Class for C++ non-template type aliases. """
-    name: str 
+    name: str
     typedef: Type
 
     @staticmethod
     def from_cursor(cursor: clang.cindex.Cursor) -> TypeAlias:
-        """ Create a `TypeAlias` from the children of `cursor`. 
+        """ Create a `TypeAlias` from the children of `cursor`.
 
         :raises ValueError: if `cursor.kind` is not `CursorKind.TYPE_ALIAS_DECL`.
         """
@@ -825,17 +825,17 @@ class TypeAlias:
                 f"invalid CursorKind. Expected: CursorKind.TYPE_ALIAS_DECL; received: {cursor.kind}"
             )
         return TypeAlias(
-            name = cursor.spelling, 
+            name = cursor.spelling,
             typedef = cursor.underlying_typedef_type.spelling
         )
 
     def __str__(self):
         return "using " + self.name + " = " + str(self.typedef) + ";"
-    
+
     def draw(self, tab) -> str:
         return tab*"  " + str(self)
 
-@dataclass 
+@dataclass
 class TypeAliasTemplate:
     """ Class for C++ type alias templates. """
     type_alias: TypeAlias
@@ -843,14 +843,14 @@ class TypeAliasTemplate:
 
     @staticmethod
     def from_cursor(cursor: clang.cindex.Cursor) -> TypeAliasTemplate:
-        """ Create a `TypeAliasTemplate` from `cursor`. 
+        """ Create a `TypeAliasTemplate` from `cursor`.
 
         :raises ValueError: if `cursor.kind` is not
             `CursorKind.TYPE_ALIAS_TEMPLATE_DECL`.
         """
         if cursor.kind != CursorKind.TYPE_ALIAS_TEMPLATE_DECL:
             raise ValueError(
-                f"invalid CursorKind. Expected: CursorKind.TYPE_ALIAS_TEMPLATE_DECL; "  
+                f"invalid CursorKind. Expected: CursorKind.TYPE_ALIAS_TEMPLATE_DECL; "
                 "received: {cursor.kind}"
             )
         return TypeAliasTemplate(
@@ -864,10 +864,10 @@ class TypeAliasTemplate:
 
     def __str__(self):
         return str(self.template) + " " + str(self.type_alias)
-    
+
     def draw(self, tab) -> str:
         s = ""
-        s += tab*"  " + str(self.template) + "\n" 
+        s += tab*"  " + str(self.template) + "\n"
         s += tab*"  " + str(self.type_alias)
         return s
 
@@ -884,7 +884,7 @@ class FriendClass:
 
 @dataclass
 class Class:
-    """ Class for C++ class declarations or definitions. 
+    """ Class for C++ class declarations or definitions.
 
     :ivar str name: The class' name.
     :ivar List[str] namespace: The class' enclosing namespace.
@@ -893,7 +893,7 @@ class Class:
     :ivar bool is_final: `True` if and only if the class has the `final`
         keyword.
     :ivar bool is_qobject: `True` if and only if the `Q_OBJECT` macro
-        occurred in the class' definition. 
+        occurred in the class' definition.
     :ivar Union[NoneType, Type] inherits_from: The class' parent; `None`
         if the class doesn't inherit.
     :ivar Union[NoneType, TemplateDeclaration] template: The class
@@ -907,10 +907,10 @@ class Class:
     is_qobject: bool = False
     inherits_from: List[Union[Type, str]] = field(default_factory=list)
     template: Union[NoneType, TemplateDeclaration] = None
-    
+
     def abstract_methods(self) -> List[Method]:
         abstract_methods = [
-            f for f in self.public if 
+            f for f in self.public if
             isinstance(f, Method) and f.is_pure_virtual
         ]
         return abstract_methods
@@ -932,10 +932,10 @@ class Class:
     def full_name(self) -> str:
         """ Returns the class' name with prefixed enclosing namespace.
 
-        .. example:: 
+        .. example::
 
-            cls = Class(name = "T", namespace = ["outer", "inner"]) 
-            cls.full_name()  # "outer::inner::IExample" 
+            cls = Class(name = "T", namespace = ["outer", "inner"])
+            cls.full_name()  # "outer::inner::IExample"
         """
         s = ""
         s += "".join(space + "::" for space in self.namespace)
@@ -948,23 +948,23 @@ class Class:
 
     def get_overloads(self) -> List[Overload]:
         abstract_methods = [
-            f for f in self.public if 
+            f for f in self.public if
             isinstance(f, Method) and f.is_pure_virtual
         ]
         split_ = utils.split(
-            abstract_methods, 
+            abstract_methods,
             lambda f: f.mangled_name()
         )
         return [Overload(sublist) for sublist in split_]
 
-    @staticmethod 
+    @staticmethod
     def from_cursor(cursor: clang.cindex.Cursor, namespace: List[str]) -> Class:
         """ Initialize a `Class` object in namespace `namespace` from
         `cursor`.
 
         :raises ValueError: if `cursor.kind` is not
             `CursorKind.CLASS_DECL` or `CursorKind.CLASS_TEMPLATE`.
-            
+
         :raises ValueError: if `cursor` points to a class that does not
             satisfy the definition of _interface_ given above.
         """
@@ -975,7 +975,7 @@ class Class:
                 "received: {cursor.kind}"
             )
         cls = Class()
-        cls.name = cursor.spelling  
+        cls.name = cursor.spelling
         cls.namespace = namespace
         # Add template parameters if the cursor points to a class template.
         if cursor.kind == CursorKind.CLASS_TEMPLATE:
@@ -983,7 +983,7 @@ class Class:
         # Create methods, type aliases (templates), using directives
         # from the children of `cursor`.
         access = AccessSpecifier("private")
-        for x in Static.get_children(cursor): 
+        for x in Static.get_children(cursor):
             # Ignore the following...
             if x.kind in {
                 CursorKind.TEMPLATE_TYPE_PARAMETER,
@@ -1070,17 +1070,17 @@ class Class:
             s += AccessSpecifier("public").draw(1) + "\n"
             s += "".join(decl.draw(1) + "\n" for decl in self.public)
         # Body of class declaration ends.
-        s += "};"  
+        s += "};"
         # Namespace close braces.
         if self.namespace:
             s += "\n\n"
-            s += len(self.namespace)*"}" 
+            s += len(self.namespace)*"}"
             s += " // namespace "
             s += "::".join(self.namespace)
         return s
 
     def mock(
-        self, 
+        self,
         interface_file: str,  # Input file
         mock_name: str,  # Mock name
         mock_file: str
@@ -1091,7 +1091,7 @@ class Class:
         :raises ValueError: if `self.statements` does not hold exactly
             one object of type `Class`.
         """
-        
+
         # Create a header file, mock object and mock implementation.
         hdr = CppFile()
         mock_object, mock_implementation = self.make_mock(
@@ -1107,7 +1107,7 @@ class Class:
             .replace("/", "_") \
             .upper()
         include_guard = re.sub(
-            "[^a-zA-Z0-9_]", 
+            "[^a-zA-Z0-9_]",
             "DRMOCK_UNSUPPORED_CHAR",
             include_guard
         )
@@ -1117,8 +1117,8 @@ class Class:
         hdr.statements.append(EmptyLine())
         # Append an input directive for the interface's header file, and the
         # required headers from drmock.
-        hdr.statements.append(IncludeDirective(interface_file))
         hdr.statements.append(IncludeDirective(Static.prefix + "Mock.h"))
+        hdr.statements.append(IncludeDirective(interface_file))
         hdr.statements.append(EmptyLine())
         # If `self` is not a template class, then add the declarations
         # of the explicit instantiations of `Method`.
@@ -1149,21 +1149,21 @@ class Class:
             ])
         else:
             # Prevents AutoGen warning.
-            src.statements.append("// Empty.")  
+            src.statements.append("// Empty.")
         return hdr, src
 
     def make_mock(
-        self, 
+        self,
         mock_name: str
     ) -> Tuple[Class]:
-        """ Return the mock object and implementation of `self`. 
+        """ Return the mock object and implementation of `self`.
 
         See `_make_mock_object` and `_make_mock_implementation` for
         details.
         """
         mock_object = self._make_mock_object()
         mock_implementation = self._make_mock_implementation(
-            mock_name, 
+            mock_name,
             mock_object
         )
         return mock_object, mock_implementation
@@ -1172,7 +1172,7 @@ class Class:
         # Get the decayed signature of all methods. Throw away
         # duplicates.
         abstract_methods = [
-            f for f in self.public if 
+            f for f in self.public if
             isinstance(f, Method) and f.is_pure_virtual
         ]
         decayed = {
@@ -1198,8 +1198,8 @@ class Class:
         # which are printed before the public declarations.
         type_aliases = [
             x for x in self.public
-            if isinstance(x, TypeAlias) 
-            or isinstance(x, TypeAliasTemplate) 
+            if isinstance(x, TypeAlias)
+            or isinstance(x, TypeAliasTemplate)
         ]
         mo.private.extend(type_aliases)
 
@@ -1242,8 +1242,19 @@ class Class:
                 )
             )
         )
+        mo.public.append(
+            Method(
+                name = "makeFormattedErrorString",
+                return_type = "std::string",
+                is_const = True,
+                parameters = [],
+                body = MethodBody(
+                    "return methods.makeFormattedErrorString();"
+                )
+            )
+        )
 
-        # For every overload add the shared_ptr's to the Method objects. 
+        # For every overload add the shared_ptr's to the Method objects.
         pointers = []
         for overload in overloads:
             # Make the pointers, push them to identifiers.
@@ -1271,10 +1282,10 @@ class Class:
         verify.return_type = Type.from_spelling("bool")
         verify.body = MethodBody("return " + collection.name + ".verify();")
         mo.public.append(verify)
-        
+
         # Declare MockObject a friend of the mocked interface. Note that the
         # typename must be prefixed with the enclosing namespace.
-        mock_impl_type = self.full_name() 
+        mock_impl_type = self.full_name()
         if mo.template is not None:
             mock_impl_type += str(mo.template.to_args())
         friend_decl = FriendClass(Type.from_spelling(mock_impl_type))
@@ -1282,7 +1293,7 @@ class Class:
         return mo
 
     def _make_mock_implementation(
-        self, 
+        self,
         mock_name: str,
         mock_object: Class
     ) -> Class:
@@ -1307,12 +1318,12 @@ class Class:
         # directives.
         type_aliases = [
             x for x in self.public
-            if isinstance(x, TypeAlias) 
-            or isinstance(x, TypeAliasTemplate) 
+            if isinstance(x, TypeAlias)
+            or isinstance(x, TypeAliasTemplate)
         ]
         mock.public.extend(type_aliases)
         # Add an instance of the internal mock object as private member to
-        # `mock`. 
+        # `mock`.
         mo_name = mock_object.full_name()
         if mock_object.template is not None:
             mo_name += str(mock_object.template.to_args())
@@ -1327,18 +1338,18 @@ class Class:
         return mock
 
 class MethodBody:
-    """ Class for C++ method bodies. 
+    """ Class for C++ method bodies.
 
     :ivar List[str] _statements: The statements occurring in the method
         body.
-    """ 
+    """
 
     def __init__(self, *args: Tuple[str]):
         """
         :param args: The statements found in the function body.
         :type args: Tuple[str]
         """
-        self._statements = list(args) 
+        self._statements = list(args)
 
     @property
     def statements(self) -> List[str]:
@@ -1355,12 +1366,12 @@ class MethodBody:
 @dataclass
 class Parameter:
     """ Class for C++ variables, function parameters or template
-    arguments. 
+    arguments.
 
     :ivar str name: The parameter's name.
     :ivar Type type: The parameter's type.
-    """ 
-    name: str 
+    """
+    name: str
     type: Type
 
     def __str__(self):
@@ -1379,28 +1390,28 @@ class Parameter:
             ```
         """
         if self.type.is_lvalue_ref:
-            s = self.name 
+            s = self.name
         else:
-            s = "std::move(" + self.name + ")" 
+            s = "std::move(" + self.name + ")"
         s += self.type.is_parameter_pack*" ..."
         return s
 
 @dataclass
 class MemberVariable:
     """ Class for C++ member declarations. """
-    name: str 
+    name: str
     type: Type
     constructor_args: List[str] = field(default_factory = list)
     is_mutable: bool = False
 
     def __str__(self):
         s = ""
-        s += self.is_mutable*"mutable " 
-        s += str(self.type) 
-        s += " " 
-        s += self.name 
+        s += self.is_mutable*"mutable "
+        s += str(self.type)
+        s += " "
+        s += self.name
         s += "{"
-        s += ", ".join(self.constructor_args) 
+        s += ", ".join(self.constructor_args)
         s += "};"
         return s
 
@@ -1431,7 +1442,7 @@ class Method:
         pass
 
     def set_variables(self, *args: Tuple[str]) -> void:
-        """ Add variable names to the parameters `self`. 
+        """ Add variable names to the parameters `self`.
 
         :param args: The variable names
         :type args: Tuple[str]
@@ -1447,15 +1458,15 @@ class Method:
         return len(self.parameters)
 
     def mangled_name(self) -> str:
-        """ Return the method's name with operator symbols replaced. 
+        """ Return the method's name with operator symbols replaced.
 
         Use this to turn the spelling of an operator declaration into a
         legal method name.
         """
         str = self.name
         for key, item in {
-            "<=>": "SpaceShip",  
-            "->*": "PointerToMember",  
+            "<=>": "SpaceShip",
+            "->*": "PointerToMember",
             "co_await": "CoAwait"
         }.items():
             str = str.replace(key, item)
@@ -1468,8 +1479,8 @@ class Method:
             ">>": "StreamRight",
             "&&": "And",
             "||": "Or",
-            "++": "Increment",  
-            "--": "Decrement",  
+            "++": "Increment",
+            "--": "Decrement",
             "->": "Arrow",
         }.items():
             str = str.replace(key, item)
@@ -1477,13 +1488,13 @@ class Method:
             "+": "Plus",
             "-": "Minus",
             "*": "Ast",
-            "/": "Div",  
-            "%": "Modulo",  
-            "^": "Caret",  
-            "&": "Amp",  
-            "|": "Pipe",  
-            "~": "Tilde",  
-            "!": "Not",  
+            "/": "Div",
+            "%": "Modulo",
+            "^": "Caret",
+            "&": "Amp",
+            "|": "Pipe",
+            "~": "Tilde",
+            "!": "Not",
             "=": "Assign",
             "<": "Lesser",
             ">": "Greater",
@@ -1500,7 +1511,7 @@ class Method:
 
         :raises ValueError: if `cursor.kind` is not
             `CursorKind.CLASS_DECL` or `CursorKind.CLASS_TEMPLATE`.
-            
+
         :raises ValueError: if `cursor` points to a class that does not
             satisfy the definition of _interface_ given above.
         """
@@ -1514,12 +1525,12 @@ class Method:
             raise ValueError(f"method {f.name} is not pure virtual")
         # Create method object.
         f.parameters = [
-            Type.from_cursor(x) for x in Static.get_children(cursor) 
+            Type.from_cursor(x) for x in Static.get_children(cursor)
             if Static.is_parameter_decl(x)
         ]
         # The following is a hack to solve some rather unfortunate
         # behavior of python clang. If a type alias such as
-        # 
+        #
         # using T = std::shared_ptr<int>;
         #
         # is used in a class, say outer::inner::Foo, then it might
@@ -1530,13 +1541,13 @@ class Method:
         # `T` is expanded into `inner::outer::Foo`, unless `T` is
         # suffciently buried (for instance, `std::shared_ptr<T>` will
         # not be expanded). This seems to happen with `spelling`,
-        # `type.spelling`, `displayname`, etc. 
-        # 
+        # `type.spelling`, `displayname`, etc.
+        #
         # Leaving this unchanged would render the `Method` object
         # corresponding to this declaration dependent on the class that
         # the declaration occured in.  But we may want to move the
         # method (and the type alias) into another class!
-        # 
+        #
         # Another matter is that, even if `Foo` is a class template, the
         # expanded name will not contain the template parameters
         # (`outer::inner::Foo` instead of `outer::inner::Foo<...>`).
@@ -1547,18 +1558,18 @@ class Method:
         # assemble the return type. If `Foo` is a class template and a
         # template parameter of `Foo` appears as parameter in the type
         # alias, it is represented in the form
-        # 
+        #
         # shared_ptr<type-parameter-0-i>
         #
         # where `i` is the index of the parameter (note the missing
-        # `std::`). 
+        # `std::`).
         #
         # The current solution is to gather the tokens of the CXX_METHOD
         # cursor between the virtual keyword and the function name, and
         # pass these to `Type.from_spelling`.
         #
         # virtual const T * const f() = 0;
-        #         ^^^^^^^^^^^^^^^ 
+        #         ^^^^^^^^^^^^^^^
         #
         # Special care must be taken when dealing with operators.
         tokens = [t.spelling for t in cursor.get_tokens()]
@@ -1582,7 +1593,7 @@ class Method:
         # Get these tokens! (There is, apparently, no other way to check
         # for cv qualifiers using python clang.)
         delim = tokens.index(")")
-        keywords = tokens[delim+1:] 
+        keywords = tokens[delim+1:]
         if "override" in keywords:
             f.is_override = True
         if "volatile" in keywords:
@@ -1591,7 +1602,7 @@ class Method:
         # specifications can be obtained using python clang.
         f.is_const = cursor.is_const_method()
         f.is_pure_virtual = cursor.is_pure_virtual_method()
-        if (cursor.exception_specification_kind 
+        if (cursor.exception_specification_kind
             == cindex.ExceptionSpecificationKind.BASIC_NOEXCEPT
         ):
             f.is_noexcept = True
@@ -1632,16 +1643,16 @@ class Method:
         return s
 
 def get_class(
-    regex: str, 
-    filename: str, 
+    regex: str,
+    filename: str,
     undef: bool = True
 ) -> Class:
-    """ Return the class declaration of `name` from the header `file`. 
+    """ Return the class declaration of `name` from the header `file`.
 
     :raises ValueError: if no class declaration of `name` is found in
         `file`.
     """
-    # Read the file.  
+    # Read the file.
     with open(filename, "r") as file:
         source = file.read()
     # Hide macros from the preprocessor.
@@ -1650,7 +1661,7 @@ def get_class(
     # Parse the source and create a translation unit.
     tu = translate(filename, source)
     # Read the header file from the translation unit.
-    hdr = CppFile.from_unit(tu) 
+    hdr = CppFile.from_unit(tu)
     # Find a matching class.
     cls = hdr.get_class(regex)
     if cls is None:
@@ -1665,9 +1676,9 @@ def undef_macros(source: str) -> str:
     replaces the macro with its definition:
 
     Q_OBJECT
-    
+
     Unlike the macro, the delcaration is now detected by the python
-    clang parser. 
+    clang parser.
     """
     # Note that this approach is preferable to just searching the input
     # file for `Q_OBJECT`, as Q_OBJECT is allowed to occur in, say,
@@ -1692,11 +1703,11 @@ def translate(filename: str, source: str) -> clang.cindex.TranslationUnit:
     index = cindex.Index.create()
     Static.filename = "DRMOCK-" + filename
     tu = index.parse(
-        Static.filename, 
+        Static.filename,
         [
-            "-x", 
-            "c++", 
-            "-std=" + Static.std, 
+            "-x",
+            "c++",
+            "-std=" + Static.std,
             "-fPIC",
         ] \
             + Static.compiler_flags,
@@ -1732,7 +1743,7 @@ def dump(filename: str, undef: bool = True ):
         for x in Static.get_children(root):
             func(x, depth)
             visit_tree(x, func, depth + 1)
-    # Read the file.  
+    # Read the file.
     with open(filename, "r") as file:
         source = file.read()
     # Hide macros from the preprocessor.
@@ -1745,12 +1756,12 @@ def dump(filename: str, undef: bool = True ):
 
 
 def configure(
-    std: str, 
-    includes: List[str] = [], 
+    std: str,
+    includes: List[str] = [],
     frameworks: List[str] = [],
     before_install: bool = False
 ):
-    """ Setup python clang for usage. 
+    """ Setup python clang for usage.
 
     The paths in `"mocker.cfg"` are expected to be native UNIX paths.
     """

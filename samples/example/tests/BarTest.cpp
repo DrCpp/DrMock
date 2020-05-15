@@ -38,7 +38,7 @@ DRTEST_TEST(overload)
       .returns(4);
 
   DRTEST_ASSERT_EQ(
-      bar->f(), 
+      bar->f(),
       1
     );
   DRTEST_ASSERT_EQ(
@@ -46,11 +46,11 @@ DRTEST_TEST(overload)
       2
     );
   DRTEST_ASSERT_EQ(
-      bar->f(3), 
+      bar->f(3),
       3
     );
   DRTEST_ASSERT_EQ(
-      bar->f(0.0f, {}), 
+      bar->f(0.0f, {}),
       4
     );
 }

@@ -28,7 +28,7 @@ class IQualifierOverload
 {
 public:
   virtual ~IQualifierOverload() = default;
-  
+
   virtual void funcOverloadConst() = 0;
   virtual void funcOverloadConst() const = 0;
   virtual std::vector<std::string>& funcOverloadConstDifferentReturn() = 0;

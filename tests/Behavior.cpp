@@ -28,40 +28,40 @@ DRTEST_TEST(exhausted)
   Behavior<void, int, std::string> b{};
 
   // Per default, one call is expected for exhaustion.
-  DRTEST_ASSERT(not b.is_exhausted());  
-  
+  DRTEST_ASSERT(not b.is_exhausted());
+
   b.expects(2, "foo").times(2);
   DRTEST_ASSERT(not b.is_exhausted());
 
-  b.produce();  
+  b.produce();
   DRTEST_ASSERT(not b.is_exhausted());
 
-  b.produce();  
+  b.produce();
   DRTEST_ASSERT(b.is_exhausted());
-  
+
   // Excess calls don't change exhaustion.
-  b.produce();  
+  b.produce();
   DRTEST_ASSERT(b.is_exhausted());
 }
 
 DRTEST_TEST(exhaustedMinMax)
 {
   Behavior<void, int, std::string> b{};
-  
+
   b.expects(2, "foo").times(2, 4);
   DRTEST_ASSERT(not b.is_exhausted());
-  
-  b.produce();  
+
+  b.produce();
   DRTEST_ASSERT(not b.is_exhausted());
- 
-  b.produce();  
+
+  b.produce();
   DRTEST_ASSERT(b.is_exhausted());
 
-  b.produce();  
+  b.produce();
   DRTEST_ASSERT(b.is_exhausted());
 
   // Excess calls don't change exhaustion.
-  b.produce();  
+  b.produce();
   DRTEST_ASSERT(b.is_exhausted());
 }
 

@@ -100,7 +100,7 @@ DRTEST_TEST(success)
     bool r = true;
     mock.mock.funcOverloadLvalueRvalueAndConst<const std::string&&>().push()
         .expects(a1)
-        .returns(r)    
+        .returns(r)
         .times(1);
     DRTEST_COMPARE(
         mock.funcOverloadLvalueRvalueAndConst(std::move(a1)),

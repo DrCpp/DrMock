@@ -51,7 +51,7 @@ changed by calling by and determine the return value of call().
 
   (1) There may be no two entries with
 
-        slot1     is equal to slot2, 
+        slot1     is equal to slot2,
         oldState1 is equal to oldState2, and
         input1... is equal to input2... (using `is_tuple_pack_equal_`),
 
@@ -69,7 +69,7 @@ changed by calling by and determine the return value of call().
   is thrown:
 
   (1) There may be not two entries with
-    
+
         slot1 is equal to slot2.
 
   (Currently, the wildcard state may occur in the table, but will have
@@ -81,8 +81,8 @@ changed by calling by and determine the return value of call().
 
 * The effect of `call(input...)` is as follows:
 
-  (1) For every slot, find a matching entry 
-        
+  (1) For every slot, find a matching entry
+
         (slot, oldState, tuple(input...), newState)
 
       of the transition table (i.e. `slot` and `input...` match and
@@ -90,8 +90,8 @@ changed by calling by and determine the return value of call().
       set the slot's state to `newState`.
 
       If no matching transition is found, search the wildcard
-      transitions for a matching entry: 
-  
+      transitions for a matching entry:
+
         (slot, "*", tuple(input...), newState)
 
       (i.e. `slot` and `input...` match). If found, set the slot's state
@@ -142,7 +142,7 @@ public:
       Args... input
     );
 
-  // Add entry to result table - see above for details. 
+  // Add entry to result table - see above for details.
   //
   // On first call, set the result slot to default slot (resp. `slot`).
   // Not available for void methods.
@@ -179,7 +179,7 @@ public:
   // Setter for `is_tuple_pack_equal_`.
   template<typename... Deriveds> StateBehavior& polymorphic();
   void setIsEqual(std::shared_ptr<detail::IIsTuplePackEqual<Args...>>) override;
-  
+
   virtual std::variant<
       std::monostate,
       std::shared_ptr<typename std::decay<Result>::type>,
@@ -187,7 +187,7 @@ public:
     > call(const Args&...) override;
 
 private:
-  // Set the result slot if not already set.  
+  // Set the result slot if not already set.
   void setResultSlot(const std::string& slot);
   bool fix_result_slot_{false};  // Remember if result slot is set.
 
@@ -210,12 +210,12 @@ private:
         >
     > results_{};
   std::map<
-      std::string, 
+      std::string,
       std::map<
-          std::string, 
+          std::string,
           std::vector<std::pair<std::tuple<Args...>, std::string>>
         >
-    > transitions_{}; 
+    > transitions_{};
   // slot -> { state -> { (input, target) } }
 };
 

@@ -21,7 +21,7 @@
 
 namespace outer { namespace inner {
 
-class IVerifyState 
+class IVerifyState
 {
 public:
   virtual ~IVerifyState() = default;

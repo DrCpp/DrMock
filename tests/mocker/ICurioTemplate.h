@@ -40,10 +40,10 @@ class ICurioTemplate
 {
 public:
   using InnerTypeAlias = std::vector<T>;
-  
+
   template<typename V, typename... Vs>
   using InnerTypeAliasTemplate = std::unordered_map<V, std::tuple<Vs...>>;
-  
+
   virtual ~ICurioTemplate() = default;
 
   virtual InnerTypeAlias funcUsingParameter(OuterTypeAlias) = 0;

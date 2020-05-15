@@ -23,8 +23,8 @@ include(${CMAKE_SOURCE_DIR}/cmake/DrMockMacros.cmake)
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
 # Path to the generator script.
-file(TO_CMAKE_PATH 
-  ${CMAKE_SOURCE_DIR}/python/DrMockGenerator 
+file(TO_CMAKE_PATH
+  ${CMAKE_SOURCE_DIR}/python/DrMockGenerator
   pathToMocker
 )
 
@@ -49,3 +49,9 @@ DrMockTest(TESTS
 #######################################
 
 add_subdirectory(mocker)
+
+#######################################
+# Test macros
+#######################################
+
+add_subdirectory(macros)

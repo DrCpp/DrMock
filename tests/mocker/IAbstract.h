@@ -31,7 +31,7 @@ public:
   virtual ~IAbstract() = default;
 
   virtual std::shared_ptr<outer::inner::IFoo> f(
-      const std::shared_ptr<outer::inner::IFoo>&   
+      const std::shared_ptr<outer::inner::IFoo>&
     ) = 0;
 };
 
