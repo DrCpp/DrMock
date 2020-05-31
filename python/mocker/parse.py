@@ -1117,8 +1117,8 @@ class Class:
         hdr.statements.append(EmptyLine())
         # Append an input directive for the interface's header file, and the
         # required headers from drmock.
-        hdr.statements.append(IncludeDirective(interface_file))
         hdr.statements.append(IncludeDirective(Static.prefix + "Mock.h"))
+        hdr.statements.append(IncludeDirective(interface_file))
         hdr.statements.append(EmptyLine())
         # If `self` is not a template class, then add the declarations
         # of the explicit instantiations of `Method`.
@@ -1239,6 +1239,17 @@ class Class:
                 ],
                 body = MethodBody(
                     "return STATEOBJECT_DRMOCK_->get(slot) == state;"
+                )
+            )
+        )
+        mo.public.append(
+            Method(
+                name = "makeFormattedErrorString",
+                return_type = "std::string",
+                is_const = True,
+                parameters = [],
+                body = MethodBody(
+                    "return methods.makeFormattedErrorString();"
                 )
             )
         )

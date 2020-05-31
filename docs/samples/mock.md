@@ -39,6 +39,7 @@ This sample demonstrates the basics of **DrMock**'s mock features.
   + [Changing nomenclature templates](#changing-nomenclature-templates)
   + [Ignore order of behaviors](#ignore-order-of-behaviors)
   + [DrMockModule documentation](#drmockmodule-documentation)
+  + [Macros](#marcos)
 * [Fine print: Interface](#fine-print-interface)
 * [Bibliography](#bibliography)
 
@@ -266,6 +267,15 @@ correct value:
 ```cpp
 DRTEST_ASSERT(order.filled());
 ```
+
+**Note.**
+You can verify _all_ methods of a mock object at once by applying
+`DRTEST_VERIFY_MOCK` to the mock object itself, like so:
+```cpp
+DRTEST_VERIFY_MOCK(warehouse->mock);
+```
+Beware! Unconfigured methods will result in a failed test if this macro
+is used.
 
 **Note.** When verifying the mock object, the `Behavior`s are expected
 to occur in the order in which they were pushed. See also: [Ignore order
@@ -789,8 +799,14 @@ exceptions:
 is comparable. They are compared by comparing their pointees.  If the
 pointee type `T` is abstract, polymorphism must be specified, see below.
 
-(2) `std::tuple<Ts...>` is comparable if all
-elements of `Ts...` are comparable.
+(2) `std::tuple<Ts...>` is comparable if all elements of `Ts...` are
+comparable.
+
+If a parameter is not comparable (for example, a class from a
+third-party library that you do not have any control over), this
+parameter can forcibly made comparable using the `DRMOCK_DUMMY` macro,
+at least if `bool operator==(const Foo&) const` is not deleted
+(see [Macros](#macros) below).
 
 ### Polymorphism
 
@@ -1002,6 +1018,68 @@ DrMockModule(
   `HEADERS`. The Qt5 framework path is automatically added to this list
   if `QTMODULES` is used. Default value is equivalent to passing an
   empty list.
+
+### Macros
+
+`mock/MockMacros.h` currently declares two macros. 
+
+##### `DRMOCK`
+
+Defined if and only if `mock/MockMacros.h` is included.
+As `<DrMock/Mock.h>` should _never_ be included in production code, 
+`DRMOCK` may be used to check if a header is compiled as part of
+production or test/mock code:
+```cpp
+#ifdef DRMOCK
+/* Do this only in test/mock source code. */
+#endif
+```
+
+A typical use-case is that of protecting other macros provided by **DrMock**
+from the preprocessor in production code (see below for examples).
+
+##### `DRMOCK_DUMMY`
+
+Using `DRMOCK_DUMMY(Foo)` defines a trivial `operator==` as follows:
+```cpp
+inline bool operator==(const Foo&, const Foo&)
+{
+  return true;
+}
+```
+
+This can be used to make all third-party classes that occur as method
+parameters in an interface comparable.
+Example use-case:
+```cpp
+#ifdef DRMOCK
+DRMOCK_DUMMY(QQuickWindow)
+#endif
+```
+
+**Beware!** This macro must be used _outside_ of any namespace,
+and the parameter `Foo` must specify the full namespace of the target class.
+Also note that adding a semicolon `;` at the end of the macro call
+may (depending on your compiler) result in an
+`extra ‘;’ [-Werror=pedantic]` error.
+
+If `Foo::operator==` is deleted
+_and_ you control the source code of `Foo`,
+you can ignore the delete in test/mock code by using the `DRMOCK` macro:
+```cpp
+class Foo
+{
+#ifndef DRMOCK
+  bool operator==(const Foo&) const = delete;
+#endif
+
+  /* ... */
+}
+
+#ifdef DRMOCK
+DRMOCK_DUMMY(Foo)
+#endif
+```
 
 ## Fine print: Interface
 

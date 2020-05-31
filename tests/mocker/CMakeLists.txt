@@ -51,6 +51,7 @@ DrMockModule(
     ISharedState.h
     IVerifyState.h
     IExample.h
+    IVerifyAll.h
     subdir/IBar.h
   INSTALLFLAG ON
 )
@@ -83,6 +84,7 @@ DrMockTest(
     SharedStateTest.cpp
     VerifyStateTest.cpp
     ExampleMockTest.cpp
+    VerifyAllTest.cpp
 )
 
 #######################################
@@ -98,7 +100,8 @@ if (${Qt5_FOUND})
       ISlots.h
       ISignals.h
       IUseQt.h
-      IEmit.h
+      # IEmit.h
+      IDummy.h
     QTMODULES
       Qt5::Core
     INSTALLFLAG ON
@@ -115,6 +118,7 @@ if (${Qt5_FOUND})
       SlotsTest.cpp
       SignalsTest.cpp
       UseQtTest.cpp
-      EmitTest.cpp
+      # EmitTest.cpp
+      DummyTest.cpp
   )
 endif()

@@ -1,4 +1,4 @@
-/* Copyright 2019 Ole Kliemann, Malte Kliemann
+/* Copyright 2020 Ole Kliemann, Malte Kliemann
  *
  * This file is part of DrMock.
  *
@@ -16,33 +16,32 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_MOCK_METHODCOLLECTION_H
-#define DRMOCK_SRC_MOCK_METHODCOLLECTION_H
+#include "test/Test.h"
+#include "mock/DummyMock.h"
 
-#include <memory>
-#include <vector>
+using namespace outer::inner;
 
-/* MethodCollection
-
-Contained for std::shared_ptr<IMethod>. Has a method that verifies all
-contained objects.
-*/
-
-namespace drmock {
-
-class IMethod;
-
-class MethodCollection
+DRTEST_TEST(fails)
 {
-public:
-  MethodCollection(std::vector<std::shared_ptr<IMethod>>);
-  bool verify() const;
-  std::string makeFormattedErrorString() const;
+  DummyMock mock{};
+  bool verified = mock.mock.f().verify();
+  DRTEST_ASSERT(verified);
+  Foo foo{};
+  mock.f(foo);
+  DRTEST_ASSERT(not mock.mock.verify());
+  verified = mock.mock.f().verify();
+  DRTEST_ASSERT(not verified);
+}
 
-private:
-  std::vector<std::shared_ptr<IMethod>> methods_{};
-};
-
-} // namespace drmock
-
-#endif /* DRMOCK_SRC_MOCK_METHODCOLLECTION_H */
+DRTEST_TEST(success)
+{
+  DummyMock mock{};
+  Foo foo1{};
+  Foo foo2{};
+  mock.mock.f().push()
+      .expects(foo1)
+      .times(1);
+  mock.f(foo2);  // Trivial operator== must always return `true`.
+  DRTEST_ASSERT(mock.mock.verify());
+  DRTEST_ASSERT(mock.mock.f().verify());
+}

@@ -1,4 +1,4 @@
-/* Copyright 2019 Ole Kliemann, Malte Kliemann
+/* Copyright 2020 Ole Kliemann, Malte Kliemann
  *
  * This file is part of DrMock.
  *
@@ -16,33 +16,37 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_MOCK_METHODCOLLECTION_H
-#define DRMOCK_SRC_MOCK_METHODCOLLECTION_H
+#ifndef DRMOCK_TESTS_MOCKER_IDUMMY_H
+#define DRMOCK_TESTS_MOCKER_IDUMMY_H
 
-#include <memory>
-#include <vector>
+#include <QObject>
 
-/* MethodCollection
+namespace outer { namespace inner {
 
-Contained for std::shared_ptr<IMethod>. Has a method that verifies all
-contained objects.
-*/
-
-namespace drmock {
-
-class IMethod;
-
-class MethodCollection
+class Foo
 {
-public:
-  MethodCollection(std::vector<std::shared_ptr<IMethod>>);
-  bool verify() const;
-  std::string makeFormattedErrorString() const;
-
-private:
-  std::vector<std::shared_ptr<IMethod>> methods_{};
+  // When compiling the mock object, ignore that this operator was
+  // deleted!
+#ifndef DRMOCK
+  bool operator==(const Foo&) const = delete;
+#endif
 };
 
-} // namespace drmock
+// Create dummy comparison method.
+#ifdef DRMOCK
+DRMOCK_DUMMY(outer::inner::Foo)
+#endif
 
-#endif /* DRMOCK_SRC_MOCK_METHODCOLLECTION_H */
+class IDummy : public QObject
+{
+  Q_OBJECT
+
+public:
+  virtual ~IDummy() = default;
+
+  virtual void f(outer::inner::Foo) = 0;
+};
+
+}} // namespace outer::inner
+
+#endif /* DRMOCK_TESTS_MOCKER_IDUMMY_H */

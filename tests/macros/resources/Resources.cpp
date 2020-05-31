@@ -1,4 +1,4 @@
-/* Copyright 2019 Ole Kliemann, Malte Kliemann
+/* Copyright 2020 Ole Kliemann, Malte Kliemann
  *
  * This file is part of DrMock.
  *
@@ -16,33 +16,12 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_MOCK_METHODCOLLECTION_H
-#define DRMOCK_SRC_MOCK_METHODCOLLECTION_H
+#include "test/Test.h"
 
-#include <memory>
-#include <vector>
+#include "Foo.h"
 
-/* MethodCollection
-
-Contained for std::shared_ptr<IMethod>. Has a method that verifies all
-contained objects.
-*/
-
-namespace drmock {
-
-class IMethod;
-
-class MethodCollection
+// Test that the symbol `foo` is found.
+DRTEST_TEST(resource)
 {
-public:
-  MethodCollection(std::vector<std::shared_ptr<IMethod>>);
-  bool verify() const;
-  std::string makeFormattedErrorString() const;
-
-private:
-  std::vector<std::shared_ptr<IMethod>> methods_{};
-};
-
-} // namespace drmock
-
-#endif /* DRMOCK_SRC_MOCK_METHODCOLLECTION_H */
+  DRTEST_ASSERT_EQ(foo(), 123);
+}
