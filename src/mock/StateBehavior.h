@@ -115,10 +115,15 @@ changed by calling by and determine the return value of call().
   of AbstractBehavior::setIsEqual whenever the AbstractBehavior changes.
 */
 
-template<typename Result, typename... Args>
-class StateBehavior final : public AbstractBehavior<Result, Args...>
+template<typename Class, typename ReturnType, typename... Args>
+class StateBehavior final : public AbstractBehavior<Class, ReturnType, Args...>
 {
 public:
+  using Result = std::pair<
+                     std::shared_ptr<std::decay_t<ReturnType>>,
+                     std::shared_ptr<AbstractSignal<Class>>
+                   >;
+
   StateBehavior();
   StateBehavior(
       std::shared_ptr<StateObject>
@@ -146,23 +151,23 @@ public:
   //
   // On first call, set the result slot to default slot (resp. `slot`).
   // Not available for void methods.
-  template<typename T = Result> StateBehavior& returns(
+  template<typename T = ReturnType> StateBehavior& returns(
       const std::string& state,
-      const std::enable_if_t<not std::is_same_v<Result, void>, T>& value
+      const std::enable_if_t<not std::is_same_v<ReturnType, void>, T>& value
     );
-  template<typename T = Result> StateBehavior& returns(
+  template<typename T = ReturnType> StateBehavior& returns(
       const std::string& state,
-      std::enable_if_t<not std::is_same_v<Result, void>, T>&& value
+      std::enable_if_t<not std::is_same_v<ReturnType, void>, T>&& value
     );
-  template<typename T = Result> StateBehavior& returns(
+  template<typename T = ReturnType> StateBehavior& returns(
       const std::string& slot,
       const std::string& state,
-      const std::enable_if_t<not std::is_same_v<Result, void>, T>&
+      const std::enable_if_t<not std::is_same_v<ReturnType, void>, T>&
     );
-  template<typename T = Result> StateBehavior& returns(
+  template<typename T = ReturnType> StateBehavior& returns(
       const std::string& slot,
       const std::string& state,
-      std::enable_if_t<not std::is_same_v<Result, void>, T>&&
+      std::enable_if_t<not std::is_same_v<ReturnType, void>, T>&&
     );
 
   // Add throw for default slot (resp. `slot`).
@@ -176,13 +181,25 @@ public:
       E&& excp
     );
 
+  template<typename... SigArgs> StateBehavior& emits(
+      const std::string& state,
+      void (Class::*)(SigArgs...),
+      SigArgs&&...
+    );
+  template<typename... SigArgs> StateBehavior& emits(
+      const std::string& state,
+      const std::string& slot,
+      void (Class::*)(SigArgs...),
+      SigArgs&&...
+    );
+
   // Setter for `is_tuple_pack_equal_`.
   template<typename... Deriveds> StateBehavior& polymorphic();
   void setIsEqual(std::shared_ptr<detail::IIsTuplePackEqual<Args...>>) override;
 
   virtual std::variant<
       std::monostate,
-      std::shared_ptr<typename std::decay<Result>::type>,
+      Result,
       std::exception_ptr
     > call(const Args&...) override;
 
@@ -198,6 +215,12 @@ private:
       const std::string& state
     ) const;
 
+  void updateResultSlot(
+      const std::string& state,
+      std::shared_ptr<std::decay_t<ReturnType>> rtn,
+      std::shared_ptr<AbstractSignal<Class>> signal
+    );
+
   std::shared_ptr<StateObject> state_object_;
   std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal_{};
   std::string slot_{};
@@ -205,7 +228,7 @@ private:
       std::string,
       std::variant<
           std::monostate,
-          std::shared_ptr<typename std::decay<Result>::type>,
+          Result,
           std::exception_ptr
         >
     > results_{};

@@ -110,7 +110,8 @@ class Overload:
     :ivar List[Method] methods: List of `Method`s of the overload.
     """
 
-    def __init__(self, methods: List[Method]):
+    def __init__(self, parent_class: Class, methods: List[Method]):
+        self.parent_class = parent_class
         self.methods = methods
 
     def is_proper(self) -> bool:
@@ -178,7 +179,11 @@ class Overload:
         for f in self.methods:
             # Create a template from the signature of `f`. The types
             # must be decayed before being introduced.
+            class_expr = self.parent_class.full_name()
+            if self.parent_class.template is not None:
+                class_expr += str(self.parent_class.template.to_args())
             template_args = TemplateArguments(
+                class_expr,
                 f.return_type,
                 *(param.decayed() for param in f.parameters)
             )
@@ -298,6 +303,33 @@ class Overload:
                 )
             result.append(f_impl)
         return result
+
+    def make_getters(self) -> List[str]:
+        """ Return a list of statements that return all overloaded
+        methods.
+
+        See `self.make_implementation` for details.
+        """
+
+        results = []
+        for f in self.methods:
+            template_args = TemplateArguments(*f.parameters)
+            # If `f` is const, add the const qualifier to the template
+            # arguments.
+            if f.is_const:
+                template_args.args.append(Type.from_spelling("drmock::Const"))
+            # If `self` is a proper overload (holds multiple methods),
+            # pass the template arguments.
+            if self.is_proper():
+                getter = "mock.template " \
+                    + f.mangled_name() \
+                    + str(template_args) + "()"
+            # If `self` is not proper, the correct template arguments
+            # are automatically used, and need not be manually inserted.
+            else:
+                getter = "mock." + f.mangled_name() + "()"
+            results.append(getter)
+        return results
 
 class EmptyLine:
     """ Class for empty lines in a `Class` or `CppFile` object. """
@@ -955,7 +987,7 @@ class Class:
             abstract_methods,
             lambda f: f.mangled_name()
         )
-        return [Overload(sublist) for sublist in split_]
+        return [Overload(self, sublist) for sublist in split_]
 
     @staticmethod
     def from_cursor(cursor: clang.cindex.Cursor, namespace: List[str]) -> Class:
@@ -1083,7 +1115,8 @@ class Class:
         self,
         interface_file: str,  # Input file
         mock_name: str,  # Mock name
-        mock_file: str
+        mock_file: str,
+        use_qt: bool
     ) -> Tuple[CppFile]:
         """ Create two `CppFile`s that holds a mock object's and a mock
         declaration and implementation constructed from `self`.
@@ -1115,6 +1148,10 @@ class Class:
         hdr.statements.append("#ifndef " + include_guard)
         hdr.statements.append("#define " + include_guard)
         hdr.statements.append(EmptyLine())
+        # Set the DRMOCK_USE_QT macro if the `Qt` flag is set.
+        if use_qt:
+            hdr.statements.append("#define DRMOCK_USE_QT")
+            hdr.statements.append(EmptyLine())
         # Append an input directive for the interface's header file, and the
         # required headers from drmock.
         hdr.statements.append(IncludeDirective(Static.prefix + "Mock.h"))
@@ -1180,10 +1217,11 @@ class Class:
             for f in abstract_methods
         }
         # From these signatures, create instantiations of `Method`.
-        instantiations = {
-            "drmock::Method<" + ", ".join(sig) + ">"
-            for sig in decayed
-        }
+        expr = "drmock::Method<" + self.full_name()
+        if self.template is not None:
+            expr += self.template.to_args()
+        expr += ", "
+        instantiations = {expr + ", ".join(sig) + ">" for sig in decayed}
         return [ExplicitInstantiation(i) for i in instantiations]
 
     def _make_mock_object(self) -> Class:
@@ -1322,6 +1360,19 @@ class Class:
             or isinstance(x, TypeAliasTemplate)
         ]
         mock.public.extend(type_aliases)
+        # Add a constructor that setup's the methods.
+        ctor_body_statements = []
+        for overload in self.get_overloads():
+            getters = overload.make_getters()
+            for g in getters:
+                ctor_body_statements.append(g + ".parent(this);")
+        ctor_body = MethodBody(*ctor_body_statements)
+        ctor = Method()
+        ctor.name = mock_name
+        ctor.parameters = []
+        ctor.return_type = Type("")
+        ctor.body = ctor_body
+        mock.public.append(ctor)
         # Add an instance of the internal mock object as private member to
         # `mock`.
         mo_name = mock_object.full_name()

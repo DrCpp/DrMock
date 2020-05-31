@@ -21,8 +21,11 @@
 
 #include <exception>
 #include <memory>
+#include <string>
+#include <utility>
 #include <variant>
 
+#include "AbstractSignal.h"
 #include "detail/IIsTuplePackEqual.h"
 
 namespace drmock {
@@ -43,7 +46,7 @@ implementation specific data. The comparison method is set using the
 `setIsEqual()` method.
 */
 
-template<typename Result, typename... Args>
+template<typename Class, typename Result, typename... Args>
 class AbstractBehavior
 {
 public:
@@ -54,7 +57,10 @@ public:
     ) = 0;
   virtual std::variant<
       std::monostate,
-      std::shared_ptr<typename std::decay<Result>::type>,
+      std::pair<
+          std::shared_ptr<typename std::decay<Result>::type>,
+          std::shared_ptr<AbstractSignal<Class>>
+        >,
       std::exception_ptr
     > call(const Args&...) = 0;
 };

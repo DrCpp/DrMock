@@ -32,9 +32,11 @@ public:
 
 public slots:
   virtual void f() = 0;
+  virtual void slt(int) = 0;
 
 signals:
   void g();
+  void sig(int);
 };
 
 }} // namespace outer::inner

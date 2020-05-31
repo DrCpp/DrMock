@@ -17,78 +17,91 @@
 */
 
 #include "detail/IsTuplePackEqual.h"
+#include "Signal.h"
 
 namespace drmock {
 
-template<typename Result, typename... Args>
-Behavior<Result, Args...>::Behavior()
+template<typename Class, typename ReturnType, typename... Args>
+Behavior<Class, ReturnType, Args...>::Behavior()
 :
   Behavior{std::make_shared<detail::IsTuplePackEqual<std::tuple<Args...>>>()}
 {}
 
-template<typename Result, typename... Args>
-Behavior<Result, Args...>::Behavior(
+template<typename Class, typename ReturnType, typename... Args>
+Behavior<Class, ReturnType, Args...>::Behavior(
     std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal
   )
 :
   is_tuple_pack_equal_{std::move(is_tuple_pack_equal)}
 {}
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 template<typename T>
-typename std::enable_if<(std::tuple_size<T>::value > 0), Behavior<Result, Args...>&>::type
-Behavior<Result, Args...>::expects()
+std::enable_if_t<(std::tuple_size_v<T> > 0), Behavior<Class, ReturnType, Args...>&>
+Behavior<Class, ReturnType, Args...>::expects()
 {
   expect_.reset();
   return *this;
 }
 
-template<typename Result, typename... Args>
-Behavior<Result, Args...>&
-Behavior<Result, Args...>::expects(Args... args)
+template<typename Class, typename ReturnType, typename... Args>
+Behavior<Class, ReturnType, Args...>&
+Behavior<Class, ReturnType, Args...>::expects(Args... args)
 {
   expect_.emplace(std::move(args)...);
   return *this;
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 template<typename T>
-Behavior<Result, Args...>&
-Behavior<Result, Args...>::returns(T&& result)
+Behavior<Class, ReturnType, Args...>&
+Behavior<Class, ReturnType, Args...>::returns(T&& result)
 {
-  result_ = std::make_shared<typename std::decay<Result>::type>(std::forward<T>(result));
+  result_.first = std::make_shared<std::decay_t<ReturnType>>(std::forward<T>(result));
   return *this;
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 template<typename E>
-Behavior<Result, Args...>&
-Behavior<Result, Args...>::throws(E&& exception)
+Behavior<Class, ReturnType, Args...>&
+Behavior<Class, ReturnType, Args...>::throws(E&& exception)
 {
   exception_ = std::make_exception_ptr(std::forward<E>(exception));
   return *this;
 }
 
-template<typename Result, typename... Args>
-Behavior<Result, Args...>&
-Behavior<Result, Args...>::times(unsigned int t)
+template<typename Class, typename ReturnType, typename... Args>
+template<typename... SignalArgs>
+Behavior<Class, ReturnType, Args...>&
+Behavior<Class, ReturnType, Args...>::emits(void (Class::*signal)(SignalArgs...), SignalArgs&&... args)
+{
+  result_.second = std::make_shared<Signal<Class, SignalArgs...>>(
+      signal,
+      std::forward<SignalArgs>(args)...
+    );
+  return *this;
+}
+
+template<typename Class, typename ReturnType, typename... Args>
+Behavior<Class, ReturnType, Args...>&
+Behavior<Class, ReturnType, Args...>::times(unsigned int t)
 {
   times(t, t);
   return *this;
 }
 
-template<typename Result, typename... Args>
-Behavior<Result, Args...>&
-Behavior<Result, Args...>::times(
+template<typename Class, typename ReturnType, typename... Args>
+Behavior<Class, ReturnType, Args...>&
+Behavior<Class, ReturnType, Args...>::times(
     unsigned int times_min,
     unsigned int times_max
   )
 {
   static_assert(
-      std::is_reference_v<Result>
-        or std::is_pointer_v<Result>
-        or std::is_copy_constructible_v<Result>
-        or std::is_same_v<Result, void>,
+      std::is_reference_v<ReturnType>
+        or std::is_pointer_v<ReturnType>
+        or std::is_copy_constructible_v<ReturnType>
+        or std::is_same_v<ReturnType, void>,
       "result type must be reference, pointer or copy-constructible to set times()"
     );
   if (times_min > times_max)
@@ -100,39 +113,39 @@ Behavior<Result, Args...>::times(
   return *this;
 }
 
-template<typename Result, typename... Args>
-Behavior<Result, Args...>&
-Behavior<Result, Args...>::persists()
+template<typename Class, typename ReturnType, typename... Args>
+Behavior<Class, ReturnType, Args...>&
+Behavior<Class, ReturnType, Args...>::persists()
 {
   static_assert(
-      std::is_reference_v<Result>
-        or std::is_pointer_v<Result>
-        or std::is_copy_constructible_v<Result>
-        or std::is_same_v<Result, void>,
+      std::is_reference_v<ReturnType>
+        or std::is_pointer_v<ReturnType>
+        or std::is_copy_constructible_v<ReturnType>
+        or std::is_same_v<ReturnType, void>,
       "result type must be reference, pointer or copy-constructible to set persists()"
     );
   persists_ = true;
   return *this;
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 bool
-Behavior<Result, Args...>::is_persistent() const
+Behavior<Class, ReturnType, Args...>::is_persistent() const
 {
   return persists_ or (num_calls_ < times_max_);
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 bool
-Behavior<Result, Args...>::is_exhausted() const
+Behavior<Class, ReturnType, Args...>::is_exhausted() const
 {
   return persists_ or ((times_min_ <= num_calls_) and (num_calls_ <= times_max_));
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 template<typename... Deriveds>
-Behavior<Result, Args...>&
-Behavior<Result, Args...>::polymorphic()
+Behavior<Class, ReturnType, Args...>&
+Behavior<Class, ReturnType, Args...>::polymorphic()
 {
   is_tuple_pack_equal_ = std::make_shared<detail::IsTuplePackEqual<
       std::tuple<Args...>,
@@ -141,9 +154,9 @@ Behavior<Result, Args...>::polymorphic()
   return *this;
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 bool
-Behavior<Result, Args...>::match(const Args&... args) const
+Behavior<Class, ReturnType, Args...>::match(const Args&... args) const
 {
   if (expect_)
   {
@@ -155,12 +168,12 @@ Behavior<Result, Args...>::match(const Args&... args) const
   }
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 std::variant<
-    std::shared_ptr<typename std::decay<Result>::type>,
+    typename Behavior<Class, ReturnType, Args...>::Result,
     std::exception_ptr
   >
-Behavior<Result, Args...>::produce()
+Behavior<Class, ReturnType, Args...>::produce()
 {
   if (num_calls_ < times_max_)
   {
@@ -177,9 +190,9 @@ Behavior<Result, Args...>::produce()
   }
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 void
-Behavior<Result, Args...>::setIsEqual(
+Behavior<Class, ReturnType, Args...>::setIsEqual(
     std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal
   )
 {

@@ -44,6 +44,16 @@ DrMockTest(TESTS
   StateObject.cpp
 )
 
+# Signal testing.
+if (${Qt5_FOUND})
+  add_library(DrMockSignalDummy SHARED Dummy.cpp)
+  target_link_libraries(DrMockSignalDummy Qt5::Core Qt5::Test)
+  DrMockTest(
+    TESTS Signal.cpp
+    LIBS DrMockSignalDummy
+  )
+endif()
+
 #######################################
 # Test generator.
 #######################################

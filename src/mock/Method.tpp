@@ -20,68 +20,68 @@
 
 namespace drmock {
 
-template<typename Result, typename... Args>
-Method<Result, Args...>::Method()
+template<typename Class, typename ReturnType, typename... Args>
+Method<Class, ReturnType, Args...>::Method()
 :
   Method{""}
 {}
 
-template<typename Result, typename... Args>
-Method<Result, Args...>::Method(std::string name)
+template<typename Class, typename ReturnType, typename... Args>
+Method<Class, ReturnType, Args...>::Method(std::string name)
 :
   Method{std::move(name), std::make_shared<StateObject>()}
 {}
 
-template<typename Result, typename... Args>
-Method<Result, Args...>::Method(std::shared_ptr<StateObject> state_object)
+template<typename Class, typename ReturnType, typename... Args>
+Method<Class, ReturnType, Args...>::Method(std::shared_ptr<StateObject> state_object)
 :
   Method{"", std::move(state_object)}
 {}
 
-template<typename Result, typename... Args>
-Method<Result, Args...>::Method(std::string name, std::shared_ptr<StateObject> state_object)
+template<typename Class, typename ReturnType, typename... Args>
+Method<Class, ReturnType, Args...>::Method(std::string name, std::shared_ptr<StateObject> state_object)
 :
   name_{std::move(name)},
   is_tuple_pack_equal_{std::make_shared<detail::IsTuplePackEqual<std::tuple<Args...>>>()},
   state_object_{std::move(state_object)},
   state_behavior_{},
-  behavior_queue_{std::make_shared<BehaviorQueue<Result, Args...>>(is_tuple_pack_equal_)},
+  behavior_queue_{std::make_shared<BehaviorQueue<Class, ReturnType, Args...>>(is_tuple_pack_equal_)},
   behavior_{behavior_queue_}
 {}
 
-template<typename Result, typename... Args>
-BehaviorQueue<Result, Args...>&
-Method<Result, Args...>::io()
+template<typename Class, typename ReturnType, typename... Args>
+BehaviorQueue<Class, ReturnType, Args...>&
+Method<Class, ReturnType, Args...>::io()
 {
   if (not behavior_queue_)
   {
-    behavior_queue_ = std::make_shared<BehaviorQueue<Result, Args...>>(is_tuple_pack_equal_);
+    behavior_queue_ = std::make_shared<BehaviorQueue<Class, ReturnType, Args...>>(is_tuple_pack_equal_);
   }
   behavior_ = behavior_queue_;
   return *behavior_queue_;
 }
 
-template<typename Result, typename... Args>
-Behavior<Result, Args...>&
-Method<Result, Args...>::push()
+template<typename Class, typename ReturnType, typename... Args>
+Behavior<Class, ReturnType, Args...>&
+Method<Class, ReturnType, Args...>::push()
 {
   return io().push();
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 void
-Method<Result, Args...>::enforce_order(bool value)
+Method<Class, ReturnType, Args...>::enforce_order(bool value)
 {
   io().enforce_order(value);
 }
 
-template<typename Result, typename... Args>
-StateBehavior<Result, Args...>&
-Method<Result, Args...>::state()
+template<typename Class, typename ReturnType, typename... Args>
+StateBehavior<Class, ReturnType, Args...>&
+Method<Class, ReturnType, Args...>::state()
 {
   if (not state_behavior_)
   {
-    state_behavior_ = std::make_shared<StateBehavior<Result, Args...>>(
+    state_behavior_ = std::make_shared<StateBehavior<Class, ReturnType, Args...>>(
         state_object_,
         is_tuple_pack_equal_
       );
@@ -90,10 +90,10 @@ Method<Result, Args...>::state()
   return *state_behavior_;
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 template<typename... Deriveds>
 void
-Method<Result, Args...>::polymorphic()
+Method<Class, ReturnType, Args...>::polymorphic()
 {
   is_tuple_pack_equal_ = std::make_shared<detail::IsTuplePackEqual<
       std::tuple<Args...>,
@@ -109,9 +109,9 @@ Method<Result, Args...>::polymorphic()
   }
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 bool
-Method<Result, Args...>::verify() const
+Method<Class, ReturnType, Args...>::verify() const
 {
   // If behavior_queue_ is used for verification, check if it's
   // exhausted.
@@ -122,27 +122,33 @@ Method<Result, Args...>::verify() const
   return not has_failed_;
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 const std::vector<std::vector<std::string>>&
-Method<Result, Args...>::error_msgs() const
+Method<Class, ReturnType, Args...>::error_msgs() const
 {
   return error_msgs_;
 }
 
-template<typename Result, typename... Args>
-std::shared_ptr<typename std::decay<Result>::type>
-Method<Result, Args...>::call(const Args&... args)
+template<typename Class, typename ReturnType, typename... Args>
+std::shared_ptr<typename std::decay<ReturnType>::type>
+Method<Class, ReturnType, Args...>::call(const Args&... args)
 {
   auto result = behavior_->call(args...);
   if (std::holds_alternative<std::exception_ptr>(result))
   {
     std::rethrow_exception(std::get<std::exception_ptr>(result));
   }
-  else if (std::holds_alternative<std::shared_ptr<DecayedResult>>(result))
+  else if (std::holds_alternative<std::pair<std::shared_ptr<typename std::decay<ReturnType>::type>, std::shared_ptr<AbstractSignal<Class>>>>(result))
   {
-    auto rv = std::get<std::shared_ptr<DecayedResult>>(result);
-    if (rv or std::is_same_v<DecayedResult, void>)
+    auto p = std::get<std::pair<std::shared_ptr<typename std::decay<ReturnType>::type>, std::shared_ptr<AbstractSignal<Class>>>>(result);
+    auto rv = p.first;
+    if (rv or std::is_same_v<DecayedReturnType, void>)
     {
+      auto signal_name = p.second;
+      if (signal_name)
+      {
+        signal_name->invoke(parent_);
+      }
       return rv;
     }
   }
@@ -151,11 +157,11 @@ Method<Result, Args...>::call(const Args&... args)
   error_msgs_.push_back({});
   detail::PrintAll<Args...>{}(error_msgs_.back(), args...);
 
-  if constexpr (std::is_default_constructible_v<DecayedResult>)
+  if constexpr (std::is_default_constructible_v<DecayedReturnType>)
   {
-    return std::make_shared<DecayedResult>();
+    return std::make_shared<DecayedReturnType>();
   }
-  else if constexpr(std::is_same_v<DecayedResult, void>)
+  else if constexpr(std::is_same_v<DecayedReturnType, void>)
   {
     return {};
   }
@@ -165,9 +171,9 @@ Method<Result, Args...>::call(const Args&... args)
   }
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 std::string
-Method<Result, Args...>::makeFormattedErrorString() const
+Method<Class, ReturnType, Args...>::makeFormattedErrorString() const
 {
   std::stringstream s{};
   s << std::endl << "  Method \"" << name_ << "\" failed because" << std::endl;
@@ -180,6 +186,13 @@ Method<Result, Args...>::makeFormattedErrorString() const
     }
   }
   return s.str();
+}
+
+template<typename Class, typename ReturnType, typename... Args>
+void
+Method<Class, ReturnType, Args...>::parent(Class* parent)
+{
+  parent_ = parent;
 }
 
 } // namespace drmock

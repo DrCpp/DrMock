@@ -59,12 +59,17 @@ parser.add_argument(
     action="store_true",
     default=False
 )
+parser.add_argument(
+    "--qt",
+    action="store_true",
+    default=False
+)
+
 args = parser.parse_args()
 if args.isystem is None:
     args.isystem = []
 if args.iframework is None:
     args.iframework = []
-# print("Mocking " + args.input)
 
 # Configure clang.
 parse.configure(
@@ -85,7 +90,8 @@ mock_name = utils.swap(
 header, source = cls.mock(
     args.input,
     mock_name,
-    args.output_header
+    args.output_header,
+    args.qt
 )
 
 # Write mock object to file.

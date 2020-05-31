@@ -16,7 +16,7 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#define DRTEST_USE_QT
+#define DRTEST_USE_QT  // For QSignalSpy!
 #include "test/Test.h"
 #include "mock/EmitMock.h"
 
@@ -27,7 +27,7 @@ using namespace outer::inner;
 DRTEST_TEST(fails)
 {
   EmitMock mock{};
-  QSignalSpy spy{*mock, &IEmit::g};
+  QSignalSpy spy{&mock, &IEmit::g};
   mock.f();
   spy.wait(100);
   DRTEST_ASSERT_EQ(spy.size(), 0);
@@ -36,12 +36,25 @@ DRTEST_TEST(fails)
 DRTEST_TEST(succeeds)
 {
   EmitMock mock{};
-  mock.f().emits("g");
-  QSignalSpy spy{*mock, &IEmit::g};
+  mock.mock.f().push().emits(&IEmit::g);
+  QSignalSpy spy{&mock, &IEmit::g};
   mock.f();
   if (spy.size() == 0)
   {
     spy.wait(100);
   }
-  DRTEST_ASSERT_EQ(spy.size(), 0);
+  DRTEST_ASSERT_EQ(spy.size(), 1);
+}
+
+DRTEST_TEST(succeedsWithArgs)
+{
+  EmitMock mock{};
+  QObject::connect(
+      &mock, &IEmit::sig,
+      &mock, &IEmit::slt
+    );
+  mock.mock.f().push().emits(&IEmit::sig, 123);
+  mock.mock.slt().push().expects(123);
+  mock.f();
+  DRTEST_ASSERT(mock.mock.slt().verify());
 }
