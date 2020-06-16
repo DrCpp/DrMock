@@ -1451,7 +1451,8 @@ class Method:
         """
         if len(args) != self.num_parameters():
             raise ValueError(
-                f"Received: {len(args)} parameters; expected: {self.num_parameters()}")
+                f"Received: {len(args)} parameters; expected: {self.num_parameters()}"
+            )
         self.parameters = [Parameter(name, type) for name, type in zip(args, self.parameters)]
 
     def num_parameters(self) -> int:
@@ -1665,7 +1666,7 @@ def get_class(
     # Find a matching class.
     cls = hdr.get_class(regex)
     if cls is None:
-        raise ValueError("no class matching '{name}' found in '{file}'")
+        raise ValueError(f"no class matching '{regex}' found in '{filename}'")
     return cls
 
 def undef_macros(source: str) -> str:
