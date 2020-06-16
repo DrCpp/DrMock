@@ -19,8 +19,6 @@
 #ifndef DRMOCK_TESTS_MOCKER_IDUMMY_H
 #define DRMOCK_TESTS_MOCKER_IDUMMY_H
 
-#include <QObject>
-
 namespace outer { namespace inner {
 
 class Foo
@@ -37,10 +35,8 @@ class Foo
 DRMOCK_DUMMY(outer::inner::Foo)
 #endif
 
-class IDummy : public QObject
+class IDummy
 {
-  Q_OBJECT
-
 public:
   virtual ~IDummy() = default;
 
