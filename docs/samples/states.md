@@ -433,9 +433,9 @@ behavior of each method of `TrapDoor` using mocks, the _interaction_
 between `TrapDoor`'s methods is tested (the door is `open()` after
 `toggle(true)`, etc.). Only the trap door's _state_ is verified using
 `DRTEST_ASSERT(trap_door.open());`. This requires no knowledge of the
-implementation, only the implementation. This is essentially what's
-called _state verification_, and in this context `lever` would be
-refered to as a _stub_, not a mock.
+implementation, only the interface and the specified behavior. This is
+essentially what's called _state verification_, and in this context
+`lever` would be refered to as a _stub_, not a mock.
 
 For more on mocks and stubs, see [1].
 
