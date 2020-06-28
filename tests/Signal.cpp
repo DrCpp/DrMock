@@ -19,10 +19,13 @@
 #include <QSignalSpy>
 
 #define DRTEST_USE_QT
-#define DRMOCK_USE_QT
+#define DRMOCK_USE_QT  // This is usually set by the mocker.
 #include "test/Test.h"
 #include "mock/Signal.h"
 #include "Dummy.h"
+
+// FIXME Check that the correct arguments are forwarded to the signal in
+// the tests below.
 
 using namespace drmock;
 
@@ -65,7 +68,6 @@ DRTEST_TEST(invokeWithParameters)
     spy.wait(100);
   }
   DRTEST_ASSERT_EQ(spy.size(), 1);
-  // FIXME Check arguments passed?
 }
 
 DRTEST_TEST(invokeWithReference)

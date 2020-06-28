@@ -21,6 +21,12 @@
 #include "test/Test.h"
 #include "mock/StateBehavior.h"
 
+// FIXME Check that the correct arguments are forwarded to the signal in
+// the following tests:
+//
+// emits
+// returnsAndEmits
+
 using namespace drmock;
 
 class Dummy

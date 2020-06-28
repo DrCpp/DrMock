@@ -21,6 +21,12 @@
 #include "test/Test.h"
 #include "mock/Behavior.h"
 
+// FIXME Check that the correct arguments are forwarded to the signal in
+// the following tests:
+//
+// voidReturn
+// nonVoidMethod
+
 using namespace drmock;
 
 class Dummy
