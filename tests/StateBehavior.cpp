@@ -160,6 +160,21 @@ DRTEST_TEST(returnsAndEmits)
   DRTEST_ASSERT(std::holds_alternative<std::monostate>(result));
 }
 
+DRTEST_TEST(returnsAndEmitsFailure)
+{
+  // Test that if and emit is set, but no return value, then an
+  // std::monotstate is returned.
+
+  auto so = std::make_shared<StateObject>();
+  StateBehavior<Dummy, int, int> b{so};
+  float f = 1.23f;
+  double x = 4.56;
+  b.emits<int, float&, const double&>("slot1", "state1", &Dummy::f, 123, f, x);
+
+  auto result = b.call(1);
+  DRTEST_ASSERT(std::holds_alternative<std::monostate>(result));
+}
+
 DRTEST_TEST(transitionConflictButDifferentInput)
 {
   auto so = std::make_shared<StateObject>();
