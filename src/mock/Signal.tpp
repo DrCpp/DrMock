@@ -23,10 +23,10 @@
 namespace drmock {
 
 template<typename Parent, typename... Args>
-Signal<Parent, Args...>::Signal(void (Parent::*signal)(Args...), Args... args)
+Signal<Parent, Args...>::Signal(void (Parent::*signal)(Args...), Args&&... args)
 :
   signal_{std::move(signal)},
-  args_{args...}
+  args_{std::forward<Args>(args)...}
 {}
 
 template<typename Parent, typename... Args>
