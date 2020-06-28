@@ -591,3 +591,10 @@ DRTEST_TEST(overridingReturnsAndEmits)
       std::runtime_error
     );
 }
+
+DRTEST_TEST(overridingThrowsWithThrows)
+{
+  StateBehavior<Dummy, void> b{};
+  b.throws("", std::logic_error{""});
+  DRTEST_ASSERT_THROW(b.throws("", std::logic_error{""}), std::runtime_error);
+}
