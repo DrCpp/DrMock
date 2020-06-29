@@ -22,39 +22,45 @@
 
 #include <QSignalSpy>
 
+// Test that the mocker correctly sets each method's parent but running
+// a general functional test of the `emits` feature.
+
 using namespace outer::inner;
-
-DRTEST_TEST(fails)
-{
-  EmitMock mock{};
-  QSignalSpy spy{&mock, &IEmit::g};
-  mock.f();
-  spy.wait(100);
-  DRTEST_ASSERT_EQ(spy.size(), 0);
-}
-
-DRTEST_TEST(succeeds)
-{
-  EmitMock mock{};
-  mock.mock.f().push().emits(&IEmit::g);
-  QSignalSpy spy{&mock, &IEmit::g};
-  mock.f();
-  if (spy.size() == 0)
-  {
-    spy.wait(100);
-  }
-  DRTEST_ASSERT_EQ(spy.size(), 1);
-}
 
 DRTEST_TEST(succeedsWithArgs)
 {
   EmitMock mock{};
   QObject::connect(
-      &mock, &IEmit::sig,
-      &mock, &IEmit::slt
+      &mock, &IEmit::signal,
+      &mock, &IEmit::slot
     );
-  mock.mock.f().push().emits(&IEmit::sig, 123);
-  mock.mock.slt().push().expects(123);
-  mock.f();
-  DRTEST_ASSERT(mock.mock.slt().verify());
+  std::string foo = "bar";
+  std::vector<float> x = {1.2, 3.4, 5.6};
+  mock.mock.go().push().emits<int, std::string&, const std::vector<float>&>(
+      &IEmit::signal,
+      123, foo, x
+    );
+  foo = "baz";  // Change foo to test that references are not copied.
+  mock.mock.slot().push().expects(123, foo, x);
+  mock.go();
+  DRTEST_ASSERT(mock.mock.slot().verify());
+}
+
+DRTEST_TEST(failsWithArgs)
+{
+  EmitMock mock{};
+  QObject::connect(
+      &mock, &IEmit::signal,
+      &mock, &IEmit::slot
+    );
+  std::string foo = "bar";
+  std::vector<float> x = {1.2, 3.4, 5.6};
+  mock.mock.go().push().emits<int, std::string&, const std::vector<float>&>(
+      &IEmit::signal,
+      123, foo, x
+    );
+  foo = "baz";  // Change foo to test that references are not copied.
+  mock.mock.slot().push().expects(123, foo, x);  // Expect wrong arguments.
+  mock.go();
+  DRTEST_ASSERT(mock.mock.slot().verify());
 }
