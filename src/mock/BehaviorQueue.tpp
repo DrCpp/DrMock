@@ -18,46 +18,46 @@
 
 namespace drmock {
 
-template<typename Result, typename... Args>
-BehaviorQueue<Result, Args...>::BehaviorQueue()
+template<typename Class, typename ReturnType, typename... Args>
+BehaviorQueue<Class, ReturnType, Args...>::BehaviorQueue()
 :
   BehaviorQueue{std::make_shared<detail::IsTuplePackEqual<std::tuple<Args...>>>()}
 {}
 
-template<typename Result, typename... Args>
-BehaviorQueue<Result, Args...>::BehaviorQueue(
+template<typename Class, typename ReturnType, typename... Args>
+BehaviorQueue<Class, ReturnType, Args...>::BehaviorQueue(
     std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal
   )
 :
   is_tuple_pack_equal_{std::move(is_tuple_pack_equal)}
 {}
 
-template<typename Result, typename... Args>
-Behavior<Result, Args...>&
-BehaviorQueue<Result, Args...>::push()
+template<typename Class, typename ReturnType, typename... Args>
+Behavior<Class, ReturnType, Args...>&
+BehaviorQueue<Class, ReturnType, Args...>::push()
 {
   behaviors_.emplace_back(is_tuple_pack_equal_);
   return behaviors_.back();
 }
 
-template<typename Result, typename... Args>
-Behavior<Result, Args...>&
-BehaviorQueue<Result, Args...>::back()
+template<typename Class, typename ReturnType, typename... Args>
+Behavior<Class, ReturnType, Args...>&
+BehaviorQueue<Class, ReturnType, Args...>::back()
 {
   return behaviors_.back();
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 void
-BehaviorQueue<Result, Args...>::enforce_order(bool value)
+BehaviorQueue<Class, ReturnType, Args...>::enforce_order(bool value)
 {
   enforce_order_ = value;
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 template<typename... Deriveds>
 void
-BehaviorQueue<Result, Args...>::polymorphic()
+BehaviorQueue<Class, ReturnType, Args...>::polymorphic()
 {
   setIsEqual(std::make_shared<detail::IsTuplePackEqual<
       std::tuple<Args...>,
@@ -65,9 +65,9 @@ BehaviorQueue<Result, Args...>::polymorphic()
     >>());
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 void
-BehaviorQueue<Result, Args...>::setIsEqual(
+BehaviorQueue<Class, ReturnType, Args...>::setIsEqual(
     std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal
   )
 {
@@ -78,13 +78,16 @@ BehaviorQueue<Result, Args...>::setIsEqual(
   is_tuple_pack_equal_ = std::move(is_tuple_pack_equal);
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 std::variant<
     std::monostate,
-    std::shared_ptr<typename BehaviorQueue<Result, Args...>::DecayedResult>,
+    std::pair<
+        std::shared_ptr<typename std::decay<ReturnType>::type>,
+        std::shared_ptr<AbstractSignal<Class>>
+      >,
     std::exception_ptr
   >
-BehaviorQueue<Result, Args...>::call(const Args&... args)
+BehaviorQueue<Class, ReturnType, Args...>::call(const Args&... args)
 {
   auto match = behaviors_.end();
   auto begin = std::find_if(
@@ -119,7 +122,10 @@ BehaviorQueue<Result, Args...>::call(const Args&... args)
     }
     else
     {
-      return std::get<std::shared_ptr<DecayedResult>>(result);
+      return std::get<std::pair<
+              std::shared_ptr<std::decay_t<ReturnType>>,
+              std::shared_ptr<AbstractSignal<Class>>
+        >>(result);
     }
   }
   else
@@ -128,9 +134,9 @@ BehaviorQueue<Result, Args...>::call(const Args&... args)
   }
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 bool
-BehaviorQueue<Result, Args...>::is_exhausted() const
+BehaviorQueue<Class, ReturnType, Args...>::is_exhausted() const
 {
   return std::all_of(
       behaviors_.begin(), behaviors_.end(),

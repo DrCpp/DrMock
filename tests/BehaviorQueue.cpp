@@ -24,10 +24,21 @@
 
 using namespace drmock;
 
+class Dummy
+{
+public:
+  void f(int, float, double) {}
+};
+
+using Result = std::pair<
+    std::shared_ptr<int>,
+    std::shared_ptr<AbstractSignal<Dummy>>
+  >;
+
 DRTEST_TEST(isExhausted)
 {
   // Empty queue is exhausted.
-  BehaviorQueue<void, int, std::string> m{};
+  BehaviorQueue<Dummy, void, int, std::string> m{};
   DRTEST_ASSERT(m.is_exhausted());
 
   // Push two behaviors that persist.
@@ -46,7 +57,7 @@ DRTEST_TEST(isExhausted)
 
 DRTEST_TEST(enforceOrderFail)
 {
-  BehaviorQueue<void, int, std::string> m{};
+  BehaviorQueue<Dummy, void, int, std::string> m{};
   m.enforce_order(true);
   m.push().expects(1, "foo").times(2);
   m.push().expects(2, "foo").times(1);
@@ -57,7 +68,7 @@ DRTEST_TEST(enforceOrderFail)
 
 DRTEST_TEST(noEnforceOrder)
 {
-  BehaviorQueue<void, int, std::string> m{};
+  BehaviorQueue<Dummy, void, int, std::string> m{};
   m.enforce_order(false);
   m.push().expects(1, "foo").times(2);
   m.push().expects(2, "foo").times(1);
@@ -74,7 +85,7 @@ DRTEST_TEST(noEnforceOrder)
 
 DRTEST_TEST(enforceOrderSuccess)
 {
-  BehaviorQueue<void, int, std::string> m{};
+  BehaviorQueue<Dummy, void, int, std::string> m{};
   m.enforce_order(true);
   m.push().expects(1, "foo").times(2);
   m.push().expects(2, "foo").times(1);
@@ -89,7 +100,7 @@ DRTEST_TEST(enforceOrderSuccess)
 
 DRTEST_TEST(nonVoid)
 {
-  BehaviorQueue<int, int, std::string> m{};
+  BehaviorQueue<Dummy, int, int, std::string> m{};
   m.enforce_order(true);
   m.push()
       .expects(1, "1")
@@ -97,19 +108,43 @@ DRTEST_TEST(nonVoid)
   m.push()
       .expects(2, "2")
       .returns(22);
+  m.push()
+      .expects(3, "3")
+      .returns(33)
+      .emits(&Dummy::f, 1, 2.3f, 4.5);
+  m.push()
+      .returns(44)
+      .emits(&Dummy::f, 1, 2.3f, 4.5)
+      .expects(4, "4");
 
   auto result = m.call(1, "1");
-  std::shared_ptr<int> sp = std::get<std::shared_ptr<int>>(result);
+  std::shared_ptr<int> sp = std::get<Result>(result).first;
+  auto signal = std::get<Result>(result).second;
   DRTEST_COMPARE(*sp, 11);
+  DRTEST_ASSERT(not signal);
 
   result = m.call(2, "2");
-  sp = std::get<std::shared_ptr<int>>(result);
+  sp = std::get<Result>(result).first;
+  signal = std::get<Result>(result).second;
   DRTEST_COMPARE(*sp, 22);
+  DRTEST_ASSERT(not signal);
+
+  result = m.call(3, "3");
+  sp = std::get<Result>(result).first;
+  signal = std::get<Result>(result).second;
+  DRTEST_COMPARE(*sp, 33);
+  DRTEST_ASSERT(signal);
+
+  result = m.call(4, "4");
+  sp = std::get<Result>(result).first;
+  signal = std::get<Result>(result).second;
+  DRTEST_COMPARE(*sp, 44);
+  DRTEST_ASSERT(signal);
 }
 
 DRTEST_TEST(nonCopyable)
 {
-  BehaviorQueue<std::unique_ptr<int>, int, std::unique_ptr<int>> m{};
+  BehaviorQueue<Dummy, std::unique_ptr<int>, int, std::unique_ptr<int>> m{};
   m.enforce_order(true);
   m.push()
       .expects(1, std::make_unique<int>(2))
@@ -119,12 +154,12 @@ DRTEST_TEST(nonCopyable)
       .returns(std::make_unique<int>(2));
 
   auto result = m.call(1, std::make_unique<int>(2));
-  auto sp = std::get<std::shared_ptr<std::unique_ptr<int>>>(result);
+  auto sp = std::get<std::pair<std::shared_ptr<std::unique_ptr<int>>, std::shared_ptr<AbstractSignal<Dummy>>>>(result).first;
   auto p = std::move(*sp);
   DRTEST_COMPARE(*p, 1);
 
   result = m.call(2, std::make_unique<int>(3));
-  sp = std::get<std::shared_ptr<std::unique_ptr<int>>>(result);
+  sp = std::get<std::pair<std::shared_ptr<std::unique_ptr<int>>, std::shared_ptr<AbstractSignal<Dummy>>>>(result).first;
   p = std::move(*sp);
   DRTEST_COMPARE(*p, 2);
 }
@@ -153,7 +188,7 @@ private:
 DRTEST_TEST(polymorphic)
 {
   {
-    BehaviorQueue<void, std::shared_ptr<Base>, std::shared_ptr<Base>> m{};
+    BehaviorQueue<Dummy, void, std::shared_ptr<Base>, std::shared_ptr<Base>> m{};
     m.push()
         .expects(std::make_shared<Derived>(1, 2), std::make_shared<Derived>(2, 2));
     auto result = m.call(
@@ -164,7 +199,7 @@ DRTEST_TEST(polymorphic)
   }
 
   {
-    BehaviorQueue<void, std::shared_ptr<Base>, std::shared_ptr<Base>> m{};
+    BehaviorQueue<Dummy, void, std::shared_ptr<Base>, std::shared_ptr<Base>> m{};
     m.polymorphic<std::shared_ptr<Derived>, std::shared_ptr<Derived>>();
     m.push()
         .expects(std::make_shared<Derived>(1, 2), std::make_shared<Derived>(2, 2));

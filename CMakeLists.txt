@@ -58,6 +58,7 @@ if (DEFINED ENV{DRMOCK_QT_PATH})
     Qt5
     COMPONENTS
       Core
+      Test
   )
   if (${Qt5_FOUND})
     # Set CMP0071 to NEW so that generated files are automoc'ed.

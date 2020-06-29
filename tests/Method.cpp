@@ -22,11 +22,13 @@
 #include "test/Test.h"
 #include "mock/Method.h"
 
+class Dummy {};
+
 using namespace drmock;
 
 DRTEST_TEST(enforceOrderFail)
 {
-  Method<void, int, std::string> m{"test"};
+  Method<Dummy, void, int, std::string> m{"test"};
   m.enforce_order(true);
   m.push().expects(1, "foo").times(2);
   m.push().expects(2, "foo").times(1);
@@ -43,7 +45,7 @@ DRTEST_TEST(enforceOrderFail)
 
 DRTEST_TEST(noEnforceOrder)
 {
-  Method<void, int, std::string> m{"test"};
+  Method<Dummy, void, int, std::string> m{"test"};
   m.enforce_order(false);
   m.push().expects(1, "foo").times(2);
   m.push().expects(2, "foo").times(1);
@@ -61,7 +63,7 @@ DRTEST_TEST(noEnforceOrder)
 
 DRTEST_TEST(enforceOrderSuccess)
 {
-  Method<void, int, std::string> m{"test"};
+  Method<Dummy, void, int, std::string> m{"test"};
   m.enforce_order(true);
   m.push().expects(1, "foo").times(2);
   m.push().expects(2, "foo").times(1);
@@ -77,7 +79,7 @@ DRTEST_TEST(enforceOrderSuccess)
 
 DRTEST_TEST(nonVoid)
 {
-  Method<int, int, std::string> m{"test"};
+  Method<Dummy, int, int, std::string> m{"test"};
   m.enforce_order(true);
   m.push()
       .expects(1, "1")
@@ -99,7 +101,7 @@ DRTEST_TEST(nonVoid)
 
 DRTEST_TEST(nonCopyable)
 {
-  Method<std::unique_ptr<int>, int, std::unique_ptr<int>> m{"test"};
+  Method<Dummy, std::unique_ptr<int>, int, std::unique_ptr<int>> m{"test"};
   m.enforce_order(true);
   m.push()
       .expects(1, std::make_unique<int>(2))
@@ -167,7 +169,7 @@ struct hash<Derived>
 DRTEST_TEST(polymorphicIo)
 {
   {
-    Method<void, std::shared_ptr<Base>, std::shared_ptr<Base>> m{"test"};
+    Method<Dummy, void, std::shared_ptr<Base>, std::shared_ptr<Base>> m{"test"};
     m.push()
         .expects(std::make_shared<Derived>(1, 2), std::make_shared<Derived>(2, 2));
     m.call(std::make_shared<Derived>(10, 2), std::make_shared<Derived>(10, 2)); // fails
@@ -175,7 +177,7 @@ DRTEST_TEST(polymorphicIo)
   }
 
   {
-    Method<void, std::shared_ptr<Base>, std::shared_ptr<Base>> m{"test"};
+    Method<Dummy, void, std::shared_ptr<Base>, std::shared_ptr<Base>> m{"test"};
     m.polymorphic<std::shared_ptr<Derived>, std::shared_ptr<Derived>>();
     m.push()
         .expects(std::make_shared<Derived>(1, 2), std::make_shared<Derived>(2, 2));
@@ -186,7 +188,7 @@ DRTEST_TEST(polymorphicIo)
 
 DRTEST_TEST(stateFail)
 {
-  Method<int, int> m{"test"};
+  Method<Dummy, int, int> m{"test"};
   m.state().transition("", "state1", 1);
   m.state().returns("state1", 1);
   m.call(2);
@@ -195,7 +197,7 @@ DRTEST_TEST(stateFail)
 
 DRTEST_TEST(stateSuccess)
 {
-  Method<int, int> m{"test"};
+  Method<Dummy, int, int> m{"test"};
   m.state().transition("", "state1", 1);
   m.state().transition("state1", "state2", 2);
   m.state().returns("state1", 1);
@@ -208,7 +210,7 @@ DRTEST_TEST(stateSuccess)
 DRTEST_TEST(polymorphicState)
 {
   {
-    Method<int, std::shared_ptr<Base>, std::shared_ptr<Base>> m{"test"};
+    Method<Dummy, int, std::shared_ptr<Base>, std::shared_ptr<Base>> m{"test"};
     m.state().transition(
         "",
         "state1",
@@ -220,7 +222,7 @@ DRTEST_TEST(polymorphicState)
   }
 
   {
-    Method<int, std::shared_ptr<Base>, std::shared_ptr<Base>> m{"test"};
+    Method<Dummy, int, std::shared_ptr<Base>, std::shared_ptr<Base>> m{"test"};
     m.polymorphic<std::shared_ptr<Derived>, std::shared_ptr<Derived>>();
     m.state().transition(
         "",
@@ -253,7 +255,7 @@ private:
 
 DRTEST_TEST(polymorphicPureVirtual)
 {
-  Method<void, std::shared_ptr<Interface>, std::shared_ptr<Interface>> m{"test"};
+  Method<Dummy, void, std::shared_ptr<Interface>, std::shared_ptr<Interface>> m{"test"};
   m.push()
       .expects(std::make_shared<Implementation>(1), std::make_shared<Implementation>(2))
       .times(2);

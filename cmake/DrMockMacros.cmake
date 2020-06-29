@@ -213,6 +213,13 @@ function(DrMockModule)
   # Make a directory for the mock object's header and source files.
   file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/DrMock/mock")
 
+  # If Qt is enabled, set the `qt` flag for DrMockGenerator.
+  if (PARSED_ARGS_QTMODULES)
+    set(useQtFlag "--qt")
+  else()
+    set(useQtFlag "")
+  endif()
+
   # If Qt is enabled, add the Qt framework and include paths.
   foreach (module ${PARSED_ARGS_QTMODULES})
     # Check if DRMOCK_QT_PATH is defined.
@@ -354,6 +361,7 @@ function(DrMockModule)
         ${includesQuotedList}
         "-F"
         ${frameworksQuotedList}
+        ${useQtFlag}
       DEPENDS ${absolutePathToHeader}
       COMMENT "Mocking ${header}..."
     )

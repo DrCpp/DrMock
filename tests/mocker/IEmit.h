@@ -16,27 +16,31 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_TESTS_MOCKER_IMULTIPLECLASSES_H
-#define DRMOCK_TESTS_MOCKER_IMULTIPLECLASSES_H
+#ifndef DRMOCK_TESTS_MOCKER_IEMITS_H
+#define DRMOCK_TESTS_MOCKER_IEMITS_H
+
+#include <string>
+#include <vector>
+
+#include <QObject>
 
 namespace outer { namespace inner {
 
-class IFoo
+class IEmit : public QObject
 {
-public:
-  virtual ~IFoo() = default;
+  Q_OBJECT
 
-  virtual void f() = 0;
-};
-
-// Doesn't match the regex, should be ignored.
-class Bar
-{
 public:
-  // Lots of offensive code:
-  void f(int x) const { int y = x + 3; (void)y; return; }
+  virtual ~IEmit() = default;
+  virtual void go() = 0;
+
+public slots:
+  virtual void slot(int, std::string&, const std::vector<float>&) = 0;
+
+signals:
+  void signal(int, std::string&, const std::vector<float>&);
 };
 
 }} // namespace outer::inner
 
-#endif /* DRMOCK_TESTS_MOCKER_IMULTIPLECLASSES_H */
+#endif /* DRMOCK_TESTS_MOCKER_IEMITS_H */

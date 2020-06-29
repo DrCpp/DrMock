@@ -24,6 +24,11 @@
 #include <string>
 #include <vector>
 
+#ifdef DRMOCK_USE_QT
+#include <QObject>
+#include <QString>
+#endif
+
 #include "AbstractBehavior.h"
 #include "Behavior.h"
 #include "BehaviorQueue.h"
@@ -67,10 +72,10 @@ is returned. Otherwise, `std::abort()` is called.
   of AbstractBehavior::setIsEqual whenever the AbstractBehavior changes.
 */
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 class Method final : public IMethod
 {
-  using DecayedResult = typename std::decay<Result>::type;
+  using DecayedReturnType = typename std::decay<ReturnType>::type;
 
 public:
   Method();
@@ -83,13 +88,13 @@ public:
   template<typename... Deriveds> void polymorphic();
 
   // Enable BehaviorQueue usage and return a reference to the queue.
-  BehaviorQueue<Result, Args...>& io();
-  Behavior<Result, Args...>& push();
+  BehaviorQueue<Class, ReturnType, Args...>& io();
+  Behavior<Class, ReturnType, Args...>& push();
   void enforce_order(bool);
 
   // Enable StateBehavior usage and return a reference to the state
   // behavior.
-  StateBehavior<Result, Args...>& state();
+  StateBehavior<Class, ReturnType, Args...>& state();
 
   // Per default, return `true`. If an error occured (see above), return
   // `false`.
@@ -97,17 +102,21 @@ public:
   const std::vector<std::vector<std::string>>& error_msgs() const;
   std::string makeFormattedErrorString() const override;
 
-  std::shared_ptr<DecayedResult> call(const Args&...);
+  std::shared_ptr<DecayedReturnType> call(const Args&...);
+
+  void parent(Class* parent);
 
 private:
   std::string name_{};
   std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal_{};
   std::shared_ptr<StateObject> state_object_{};
-  std::shared_ptr<StateBehavior<Result, Args...>> state_behavior_{};
-  std::shared_ptr<BehaviorQueue<Result, Args...>> behavior_queue_{};
-  std::shared_ptr<AbstractBehavior<Result, Args...>> behavior_{};
+  std::shared_ptr<StateBehavior<Class, ReturnType, Args...>> state_behavior_{};
+  std::shared_ptr<BehaviorQueue<Class, ReturnType, Args...>> behavior_queue_{};
+  std::shared_ptr<AbstractBehavior<Class, ReturnType, Args...>> behavior_{};
   bool has_failed_ = false;
   std::vector<std::vector<std::string>> error_msgs_{};
+
+  Class* parent_;
 };
 
 } // namespace drmock

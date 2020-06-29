@@ -21,11 +21,29 @@
 #include "test/Test.h"
 #include "mock/Behavior.h"
 
+// FIXME Check that the correct arguments are forwarded to the signal in
+// the following tests:
+//
+// voidReturn
+// nonVoidMethod
+
 using namespace drmock;
+
+class Dummy
+{
+public:
+  void f(int, float, double) {};
+};
+
+template<typename ReturnType>
+using Result = std::pair<
+    std::shared_ptr<ReturnType>,
+    std::shared_ptr<AbstractSignal<Dummy>>
+  >;
 
 DRTEST_TEST(exhausted)
 {
-  Behavior<void, int, std::string> b{};
+  Behavior<Dummy, void, int, std::string> b{};
 
   // Per default, one call is expected for exhaustion.
   DRTEST_ASSERT(not b.is_exhausted());
@@ -46,7 +64,7 @@ DRTEST_TEST(exhausted)
 
 DRTEST_TEST(exhaustedMinMax)
 {
-  Behavior<void, int, std::string> b{};
+  Behavior<Dummy, void, int, std::string> b{};
 
   b.expects(2, "foo").times(2, 4);
   DRTEST_ASSERT(not b.is_exhausted());
@@ -67,22 +85,24 @@ DRTEST_TEST(exhaustedMinMax)
 
 DRTEST_TEST(persistentImpliesExhausted)
 {
-  Behavior<void, int, std::string> b{};
+  Behavior<Dummy, void, int, std::string> b{};
   b.persists();
   DRTEST_ASSERT(b.is_exhausted());
 }
 
 DRTEST_TEST(voidReturn)
 {
-  Behavior<void, int, std::string> b{};
+  Behavior<Dummy, void, int, std::string> b{};
   b.expects(2, "foo");
   DRTEST_ASSERT(not b.match(2, "foobar"));
   DRTEST_ASSERT(b.match(2, "foo"));
   DRTEST_ASSERT(b.is_persistent());
 
   auto result = b.produce();
-  DRTEST_ASSERT(std::holds_alternative<std::shared_ptr<void>>(result));
-  DRTEST_ASSERT(not std::get<std::shared_ptr<void>>(result));
+  auto holds = std::holds_alternative<Result<void>>(result);
+  DRTEST_ASSERT(holds);
+  DRTEST_ASSERT(not std::get<Result<void>>(result).first);
+  DRTEST_ASSERT(not std::get<Result<void>>(result).second);
   DRTEST_ASSERT(not b.is_persistent());
 
   b.persists();
@@ -90,6 +110,12 @@ DRTEST_TEST(voidReturn)
   result = b.produce();
   result = b.produce();
   DRTEST_ASSERT(b.is_persistent());
+
+  b.emits(&Dummy::f, 1, 2.3f, 4.56);
+  result = b.produce();
+  DRTEST_ASSERT(std::holds_alternative<Result<void>>(result));
+  DRTEST_ASSERT(not std::get<Result<void>>(result).first);
+  DRTEST_ASSERT(std::get<Result<void>>(result).second);
 
   b.throws(std::runtime_error{""});
   result = b.produce();
@@ -102,7 +128,7 @@ DRTEST_TEST(voidReturn)
 
 DRTEST_TEST(matchAllExplicit)
 {
-  Behavior<void, int, std::string> b{};
+  Behavior<Dummy, void, int, std::string> b{};
   b.expects();
   DRTEST_ASSERT(b.match(123, "foo"));
   DRTEST_ASSERT(b.match(456, "bar"));
@@ -110,14 +136,14 @@ DRTEST_TEST(matchAllExplicit)
 
 DRTEST_TEST(matchAllImplicit)
 {
-  Behavior<void, int, std::string> b{};
+  Behavior<Dummy, void, int, std::string> b{};
   DRTEST_ASSERT(b.match(123, "foo"));
   DRTEST_ASSERT(b.match(456, "bar"));
 }
 
 DRTEST_TEST(nonVoidMethod)
 {
-  Behavior<int&, int, std::string> b{};
+  Behavior<Dummy, int&, int, std::string> b{};
   b.expects(2, "foo")
    .returns(12);
   DRTEST_ASSERT(not b.match(2, "foobar"));
@@ -125,8 +151,9 @@ DRTEST_TEST(nonVoidMethod)
   DRTEST_ASSERT(b.is_persistent());
 
   auto result = b.produce();
-  DRTEST_ASSERT(std::holds_alternative<std::shared_ptr<int>>(result));
-  DRTEST_COMPARE(*std::get<std::shared_ptr<int>>(result), 12);
+  DRTEST_ASSERT(std::holds_alternative<Result<int>>(result));
+  auto ptr = std::get<Result<int>>(result).first;
+  DRTEST_COMPARE(*ptr, 12);
   DRTEST_ASSERT(not b.is_persistent());
 
   b.persists();
@@ -134,6 +161,13 @@ DRTEST_TEST(nonVoidMethod)
   result = b.produce();
   result = b.produce();
   DRTEST_ASSERT(b.is_persistent());
+
+  b.emits(&Dummy::f, 1, 2.3f, 4.56);
+  result = b.produce();
+  DRTEST_ASSERT(std::holds_alternative<Result<int>>(result));
+  ptr = std::get<Result<int>>(result).first;
+  DRTEST_ASSERT_EQ(*ptr, 12);
+  DRTEST_ASSERT(std::get<Result<int>>(result).second);
 
   b.throws(std::runtime_error{""});
   result = b.produce();
@@ -146,14 +180,14 @@ DRTEST_TEST(nonVoidMethod)
 
 DRTEST_TEST(voidVoidMatchExplicit)
 {
-  Behavior<void> b{};
+  Behavior<Dummy, void> b{};
   b.expects();
   DRTEST_ASSERT(b.match());
 }
 
 DRTEST_TEST(voidVoidMatchImplicit)
 {
-  Behavior<void> b{};
+  Behavior<Dummy, void> b{};
   DRTEST_ASSERT(b.match());
 }
 
@@ -180,7 +214,7 @@ private:
 
 DRTEST_TEST(pointerBase)
 {
-  Behavior<void, std::shared_ptr<Base>, std::shared_ptr<Base>> b{};
+  Behavior<Dummy, void, std::shared_ptr<Base>, std::shared_ptr<Base>> b{};
   b.expects(std::make_shared<Base>(1), std::make_shared<Base>(2));
   DRTEST_ASSERT(
       not b.match(std::make_shared<Base>(2), std::make_shared<Base>(1))
@@ -192,7 +226,7 @@ DRTEST_TEST(pointerBase)
 
 DRTEST_TEST(pointerDerived)
 {
-  Behavior<void, std::shared_ptr<Derived>, std::shared_ptr<Derived>> b{};
+  Behavior<Dummy, void, std::shared_ptr<Derived>, std::shared_ptr<Derived>> b{};
   b.expects(std::make_shared<Derived>(1, 1), std::make_shared<Derived>(1, 2));
   DRTEST_ASSERT(
       not b.match(std::make_shared<Derived>(1, 2), std::make_shared<Derived>(1, 1))
@@ -204,7 +238,7 @@ DRTEST_TEST(pointerDerived)
 
 DRTEST_TEST(polymorphic)
 {
-  Behavior<void, std::shared_ptr<Base>, std::shared_ptr<Base>> b{};
+  Behavior<Dummy, void, std::shared_ptr<Base>, std::shared_ptr<Base>> b{};
   b.expects(std::make_shared<Derived>(1, 2), std::make_shared<Derived>(2, 2));
   DRTEST_ASSERT(
       not b.match(std::make_shared<Derived>(10, 2), std::make_shared<Derived>(10, 2))
@@ -246,7 +280,7 @@ private:
 
 DRTEST_TEST(polymorphicPureVirtual)
 {
-  Behavior<void, std::shared_ptr<Interface>, std::shared_ptr<Interface>> b{
+  Behavior<Dummy, void, std::shared_ptr<Interface>, std::shared_ptr<Interface>> b{
       std::make_shared<detail::IsTuplePackEqual<
             std::tuple<std::shared_ptr<Interface>, std::shared_ptr<Interface>>,
             std::tuple<std::shared_ptr<Implementation>, std::shared_ptr<Implementation>>
@@ -263,7 +297,7 @@ DRTEST_TEST(polymorphicPureVirtual)
 
 DRTEST_TEST(polymorphicPureVirtualDefaultConstructor)
 {
-  Behavior<void, std::shared_ptr<Interface>, std::shared_ptr<Interface>> b{};
+  Behavior<Dummy, void, std::shared_ptr<Interface>, std::shared_ptr<Interface>> b{};
   b.expects(std::make_shared<Implementation>(1), std::make_shared<Implementation>(2));
   DRTEST_ASSERT_THROW(
       b.match(std::make_shared<Implementation>(1), std::make_shared<Implementation>(2)),

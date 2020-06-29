@@ -24,6 +24,7 @@
 #include <variant>
 
 #include "detail/IIsTuplePackEqual.h"
+#include "AbstractSignal.h"
 
 namespace drmock {
 
@@ -31,7 +32,7 @@ namespace drmock {
 
 Class template that represents a method's behavior.
 
-+ A Behavior has a return type (Result) and parameter types (Args...).
++ A Behavior has a return type (ReturnType) and parameter types (Args...).
 
 + A Behavior can _expect_ a certain _input_ (a set of arguments that
   match the parameter types).
@@ -49,21 +50,30 @@ All of the class' setters, like `expects`, `returns`, override their
 previous values.
 */
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 class Behavior
 {
 public:
+  using Result = std::pair<
+                     std::shared_ptr<std::decay_t<ReturnType>>,
+                     std::shared_ptr<AbstractSignal<Class>>
+                   >;
+
   Behavior();
   Behavior(std::shared_ptr<detail::IIsTuplePackEqual<Args...>>);
 
   // Reset the expected arguments.
   template<typename T = std::tuple<Args...>>
-    typename std::enable_if<(std::tuple_size<T>::value > 0), Behavior&>::type expects();
+  std::enable_if_t<(std::tuple_size_v<T> > 0), Behavior&> expects();
 
   // Set the expected arguments, return value or thrown exception.
   Behavior& expects(Args...);
   template<typename T> Behavior& returns(T&&);
   template<typename E> Behavior& throws(E&&);
+  template<typename... SigArgs> Behavior& emits(
+      void (Class::*)(SigArgs...),
+      SigArgs&&...
+    );
 
   // Set the exact number or a range of expected productions.
   //
@@ -91,15 +101,11 @@ public:
   // Produce: return result_ or exception_. The default production
   // is nullptr (representing no production). exception_ is returned
   // if it is not null, otherwise result_ is returned.
-  std::variant<
-      std::shared_ptr<typename std::decay<Result>::type>,
-      std::exception_ptr
-    > produce();
-
+  std::variant<Result, std::exception_ptr> produce();
 
 private:
   std::optional<std::tuple<Args...>> expect_{};
-  std::shared_ptr<typename std::decay<Result>::type> result_{};
+  Result result_{};
   std::exception_ptr exception_{};
   unsigned int times_min_ = 1;
   unsigned int times_max_ = 1;

@@ -18,10 +18,12 @@
 
 #include "detail/IsTuplePackEqual.h"
 
+#include "Signal.h"
+
 namespace drmock {
 
-template<typename Result, typename... Args>
-StateBehavior<Result, Args...>::StateBehavior()
+template<typename Class, typename ReturnType, typename... Args>
+StateBehavior<Class, ReturnType, Args...>::StateBehavior()
 :
   StateBehavior{
       std::make_shared<StateObject>(),
@@ -29,8 +31,8 @@ StateBehavior<Result, Args...>::StateBehavior()
     }
 {}
 
-template<typename Result, typename... Args>
-StateBehavior<Result, Args...>::StateBehavior(
+template<typename Class, typename ReturnType, typename... Args>
+StateBehavior<Class, ReturnType, Args...>::StateBehavior(
     std::shared_ptr<StateObject> state_object
   )
 :
@@ -40,8 +42,8 @@ StateBehavior<Result, Args...>::StateBehavior(
     }
 {}
 
-template<typename Result, typename... Args>
-StateBehavior<Result, Args...>::StateBehavior(
+template<typename Class, typename ReturnType, typename... Args>
+StateBehavior<Class, ReturnType, Args...>::StateBehavior(
     std::shared_ptr<StateObject> state_object,
     std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal
   )
@@ -50,9 +52,9 @@ StateBehavior<Result, Args...>::StateBehavior(
   is_tuple_pack_equal_{is_tuple_pack_equal}
 {}
 
-template<typename Result, typename... Args>
-StateBehavior<Result, Args...>&
-StateBehavior<Result, Args...>::transition(
+template<typename Class, typename ReturnType, typename... Args>
+StateBehavior<Class, ReturnType, Args...>&
+StateBehavior<Class, ReturnType, Args...>::transition(
     std::string current_state,
     std::string new_state,
     Args... input
@@ -67,9 +69,9 @@ StateBehavior<Result, Args...>::transition(
   return *this;
 }
 
-template<typename Result, typename... Args>
-StateBehavior<Result, Args...>&
-StateBehavior<Result, Args...>::transition(
+template<typename Class, typename ReturnType, typename... Args>
+StateBehavior<Class, ReturnType, Args...>&
+StateBehavior<Class, ReturnType, Args...>::transition(
     const std::string& slot,
     const std::string& current_state,
     std::string new_state,
@@ -109,10 +111,10 @@ StateBehavior<Result, Args...>::transition(
   return *this;
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 template<typename... Deriveds>
-StateBehavior<Result, Args...>&
-StateBehavior<Result, Args...>::polymorphic()
+StateBehavior<Class, ReturnType, Args...>&
+StateBehavior<Class, ReturnType, Args...>::polymorphic()
 {
   is_tuple_pack_equal_ = std::make_shared<detail::IsTuplePackEqual<
       std::tuple<Args...>,
@@ -121,75 +123,77 @@ StateBehavior<Result, Args...>::polymorphic()
   return *this;
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 void
-StateBehavior<Result, Args...>::setIsEqual(
+StateBehavior<Class, ReturnType, Args...>::setIsEqual(
     std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal
   )
 {
   is_tuple_pack_equal_ = std::move(is_tuple_pack_equal);
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 template<typename T>
-StateBehavior<Result, Args...>&
-StateBehavior<Result, Args...>::returns(
+StateBehavior<Class, ReturnType, Args...>&
+StateBehavior<Class, ReturnType, Args...>::returns(
     const std::string& state,
-    const std::enable_if_t<not std::is_same_v<Result, void>, T>& value
+    const std::enable_if_t<not std::is_same_v<ReturnType, void>, T>& value
   )
 {
   returns("", state, value);
   return *this;
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 template<typename T>
-StateBehavior<Result, Args...>&
-StateBehavior<Result, Args...>::returns(
+StateBehavior<Class, ReturnType, Args...>&
+StateBehavior<Class, ReturnType, Args...>::returns(
     const std::string& state,
-    std::enable_if_t<not std::is_same_v<Result, void>, T>&& value
+    std::enable_if_t<not std::is_same_v<ReturnType, void>, T>&& value
   )
 {
   returns("", state, std::move(value));
   return *this;
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 template<typename T>
-StateBehavior<Result, Args...>&
-StateBehavior<Result, Args...>::returns(
+StateBehavior<Class, ReturnType, Args...>&
+StateBehavior<Class, ReturnType, Args...>::returns(
     const std::string& slot,
     const std::string& state,
-    const std::enable_if_t<not std::is_same_v<Result, void>, T>& value
+    const std::enable_if_t<not std::is_same_v<ReturnType, void>, T>& value
   )
 {
   setResultSlot(slot);
   throwOnConflict(slot, state);
-  auto ptr = std::make_shared<Result>(value);
-  results_[state] = std::move(ptr);
+  auto return_ptr = std::make_shared<ReturnType>(value);
+  auto signal_ptr = nullptr;
+  updateResultSlot(state, return_ptr, signal_ptr);
   return *this;
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 template<typename T>
-StateBehavior<Result, Args...>&
-StateBehavior<Result, Args...>::returns(
+StateBehavior<Class, ReturnType, Args...>&
+StateBehavior<Class, ReturnType, Args...>::returns(
     const std::string& slot,
     const std::string& state,
-    std::enable_if_t<not std::is_same_v<Result, void>, T>&& value
+    std::enable_if_t<not std::is_same_v<ReturnType, void>, T>&& value
   )
 {
   setResultSlot(slot);
   throwOnConflict(slot, state);
-  auto ptr = std::make_shared<Result>(value);
-  results_[state] = std::move(ptr);
+  auto return_ptr = std::make_shared<ReturnType>(std::move(value));
+  auto signal_ptr = nullptr;
+  updateResultSlot(state, return_ptr, signal_ptr);
   return *this;
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 template<typename E>
-StateBehavior<Result, Args...>&
-StateBehavior<Result, Args...>::throws(
+StateBehavior<Class, ReturnType, Args...>&
+StateBehavior<Class, ReturnType, Args...>::throws(
     const std::string& state,
     E&& excp
   )
@@ -198,10 +202,10 @@ StateBehavior<Result, Args...>::throws(
   return *this;
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 template<typename E>
-StateBehavior<Result, Args...>&
-StateBehavior<Result, Args...>::throws(
+StateBehavior<Class, ReturnType, Args...>&
+StateBehavior<Class, ReturnType, Args...>::throws(
     const std::string& slot,
     const std::string& state,
     E&& excp
@@ -209,18 +213,64 @@ StateBehavior<Result, Args...>::throws(
 {
   setResultSlot(slot);
   throwOnConflict(slot, state);
+
+  // Check if a result is already set for `state`.
+  if (results_.find(state) != results_.end())
+  {
+      throw std::runtime_error{
+          "Result already set for state '" + state + "'. Please check your mock object configuration."
+        };
+  }
+
   auto ptr = std::make_exception_ptr(excp);
   results_[state] = std::move(ptr);
   return *this;
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
+template<typename... SigArgs>
+StateBehavior<Class, ReturnType, Args...>&
+StateBehavior<Class, ReturnType, Args...>::emits(
+    const std::string& state,
+    void (Class::*signal)(SigArgs...),
+    SigArgs&&... args
+  )
+{
+  emits("", state, signal, std::forward<SigArgs>(args)...);
+  return *this;
+}
+
+template<typename Class, typename ReturnType, typename... Args>
+template<typename... SigArgs>
+StateBehavior<Class, ReturnType, Args...>&
+StateBehavior<Class, ReturnType, Args...>::emits(
+    const std::string& slot,
+    const std::string& state,
+    void (Class::*signal)(SigArgs...),
+    SigArgs&&... args
+  )
+{
+  setResultSlot(slot);
+  throwOnConflict(slot, state);
+  auto return_ptr = nullptr;
+  auto signal_ptr = std::make_shared<Signal<Class, SigArgs...>>(
+      signal,
+      std::forward<SigArgs>(args)...
+    );
+  updateResultSlot(state, return_ptr, signal_ptr);
+  return *this;
+}
+
+template<typename Class, typename ReturnType, typename... Args>
 std::variant<
     std::monostate,
-    std::shared_ptr<typename std::decay<Result>::type>,
+    std::pair<
+        std::shared_ptr<std::decay_t<ReturnType>>,
+        std::shared_ptr<AbstractSignal<Class>>
+      >,
     std::exception_ptr
   >
-StateBehavior<Result, Args...>::call(const Args&... args)
+StateBehavior<Class, ReturnType, Args...>::call(const Args&... args)
 {
   // Transition all slots.
   for (const auto& v : transitions_)
@@ -230,7 +280,7 @@ StateBehavior<Result, Args...>::call(const Args&... args)
     std::string current_state = state_object_->get(slot);
     auto& map = v.second;  // state -> { (input..., target) }
 
-    // Results.
+    // ReturnTypes.
     bool found_match{false};
     std::string new_state;
 
@@ -280,18 +330,21 @@ StateBehavior<Result, Args...>::call(const Args&... args)
   }
 
   // If no result was found, but the function is void, return void.
-  if constexpr (std::is_same<typename std::decay<Result>::type, void>::value)
+  if constexpr (std::is_same<std::decay_t<ReturnType>, void>::value)
   {
-    return std::shared_ptr<void>{};
+    return std::pair<
+        std::shared_ptr<void>,
+        std::shared_ptr<AbstractSignal<Class>>
+      >{{}, {}};
   }
 
   // Otherwise, return nothing.
   return std::monostate{};
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 void
-StateBehavior<Result, Args...>::setResultSlot(const std::string& slot)
+StateBehavior<Class, ReturnType, Args...>::setResultSlot(const std::string& slot)
 {
   if (not fix_result_slot_)
   {
@@ -300,9 +353,9 @@ StateBehavior<Result, Args...>::setResultSlot(const std::string& slot)
   }
 }
 
-template<typename Result, typename... Args>
+template<typename Class, typename ReturnType, typename... Args>
 void
-StateBehavior<Result, Args...>::throwOnConflict(
+StateBehavior<Class, ReturnType, Args...>::throwOnConflict(
     const std::string& slot,
     const std::string& state
   ) const
@@ -311,10 +364,55 @@ StateBehavior<Result, Args...>::throwOnConflict(
   {
     throw std::runtime_error{"Result slot already set to '" + slot_ + "'."};
   }
-  else if (results_.find(state) != results_.end())
+}
+
+template<typename Class, typename ReturnType, typename... Args>
+void
+StateBehavior<Class, ReturnType, Args...>::updateResultSlot(
+    const std::string& state,
+    std::shared_ptr<std::decay_t<ReturnType>> return_ptr,
+    std::shared_ptr<AbstractSignal<Class>> signal_ptr
+  )
+{
+  auto it = results_.find(state);
+
+  // If no result is registered for `state`, create one.
+  if (it == results_.end())
   {
-    throw std::runtime_error{"Result already defined for state '" + state + "'."};
+    results_[state] = Result{std::move(return_ptr), std::move(signal_ptr)};
+    return;
   }
+
+  // If there is a result, but it's not a return/emit, raise an error.
+  if (not std::holds_alternative<Result>(it->second))
+  {
+    throw std::runtime_error{"Monostate/throw result already set for state '" + state + "'. Please check your mock object configuration."};
+  }
+  auto result = std::get<Result>(it->second);
+
+  // If the result is return/emit with non-null return, throw instead of overwriting the return. Otherwise, re-use the return value.
+  if (result.first != nullptr)
+  {
+    if (return_ptr != nullptr)
+    {
+      throw std::runtime_error{"Return value already set for state '" + state + "'. Please check your mock object configuration."};
+    }
+    return_ptr = result.first;
+  }
+
+  // If the result is return/emit with non-null emit, throw instead of overwriting the emit.
+  if (result.second != nullptr)
+  {
+    if (signal_ptr != nullptr)
+    {
+      throw std::runtime_error{"Emit already set for state '" + state + "'. Please check your mock object configuration."};
+    }
+    signal_ptr = result.second;
+  }
+
+  // If none of this is true, set the return result, but don't delete
+  // the emit result in the process!
+  results_[state] = Result{return_ptr, signal_ptr};
 }
 
 } // namespace drmock

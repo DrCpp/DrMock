@@ -54,17 +54,20 @@ searched from front to back for a matching element.
   queue.
 */
 
-template<typename Result, typename... Args>
-class BehaviorQueue final : public AbstractBehavior<Result, Args...>
+template<typename Class, typename ReturnType, typename... Args>
+class BehaviorQueue final : public AbstractBehavior<Class, ReturnType, Args...>
 {
-  using DecayedResult = typename std::decay<Result>::type;
+  using Result = std::pair<
+                     std::shared_ptr<std::decay_t<ReturnType>>,
+                     std::shared_ptr<AbstractSignal<Class>>
+                   >;
 
 public:
   BehaviorQueue();
   BehaviorQueue(std::shared_ptr<detail::IIsTuplePackEqual<Args...>>);
 
-  Behavior<Result, Args...>& push();
-  Behavior<Result, Args...>& back();
+  Behavior<Class, ReturnType, Args...>& push();
+  Behavior<Class, ReturnType, Args...>& back();
   void enforce_order(bool);
 
   // Set `is_tuple_pack_equal_` and call `setIsEqual` for *all* elements
@@ -74,7 +77,7 @@ public:
 
   virtual std::variant<
       std::monostate,
-      std::shared_ptr<DecayedResult>,
+      Result,
       std::exception_ptr
     > call(const Args&...) override;
 
@@ -83,7 +86,7 @@ public:
 
 private:
   std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal_{};
-  std::vector<Behavior<Result, Args...>> behaviors_{};
+  std::vector<Behavior<Class, ReturnType, Args...>> behaviors_{};
   bool enforce_order_ = true;
 };
 

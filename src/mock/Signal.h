@@ -16,27 +16,30 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_TESTS_MOCKER_IMULTIPLECLASSES_H
-#define DRMOCK_TESTS_MOCKER_IMULTIPLECLASSES_H
+#ifndef DRMOCK_SRC_MOCK_SIGNAL_H
+#define DRMOCK_SRC_MOCK_SIGNAL_H
 
-namespace outer { namespace inner {
+#include "AbstractSignal.h"
 
-class IFoo
+namespace drmock {
+
+template<typename Parent, typename... Args>
+class Signal final : public AbstractSignal<Parent>
 {
 public:
-  virtual ~IFoo() = default;
+  Signal(void (Parent::*)(Args...), Args&&...);
+  void invoke(Parent*) override;
 
-  virtual void f() = 0;
+private:
+  template<size_t... Is>
+  void invoke_impl_(Parent*, const std::index_sequence<Is...>&);
+
+  void (Parent::*signal_)(Args...);
+  std::tuple<Args...> args_;
 };
 
-// Doesn't match the regex, should be ignored.
-class Bar
-{
-public:
-  // Lots of offensive code:
-  void f(int x) const { int y = x + 3; (void)y; return; }
-};
+} // namespace drmock
 
-}} // namespace outer::inner
+#include "Signal.tpp"
 
-#endif /* DRMOCK_TESTS_MOCKER_IMULTIPLECLASSES_H */
+#endif /* DRMOCK_SRC_MOCK_SIGNAL_H */
