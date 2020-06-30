@@ -135,7 +135,7 @@ template<typename T>
 StateBehavior<Result, Args...>&
 StateBehavior<Result, Args...>::returns(
     const std::string& state,
-    std::enable_if_t<not std::is_same_v<std::decay_t<Result>, void>, T>&& value
+    std::enable_if_t<not std::is_same_v<Result, void>, T>&& value
   )
 {
   returns("", state, std::forward<T>(value));
@@ -148,7 +148,7 @@ StateBehavior<Result, Args...>&
 StateBehavior<Result, Args...>::returns(
     const std::string& slot,
     const std::string& state,
-    std::enable_if_t<not std::is_same_v<std::decay_t<Result>, void>, T>&& value
+    std::enable_if_t<not std::is_same_v<Result, void>, T>&& value
   )
 {
   setResultSlot(slot);
