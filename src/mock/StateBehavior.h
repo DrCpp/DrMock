@@ -148,16 +148,7 @@ public:
   // Not available for void methods.
   template<typename T = Result> StateBehavior& returns(
       const std::string& state,
-      const std::enable_if_t<not std::is_same_v<Result, void>, T>& value
-    );
-  template<typename T = Result> StateBehavior& returns(
-      const std::string& state,
       std::enable_if_t<not std::is_same_v<Result, void>, T>&& value
-    );
-  template<typename T = Result> StateBehavior& returns(
-      const std::string& slot,
-      const std::string& state,
-      const std::enable_if_t<not std::is_same_v<Result, void>, T>&
     );
   template<typename T = Result> StateBehavior& returns(
       const std::string& slot,
