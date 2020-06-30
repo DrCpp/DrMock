@@ -135,22 +135,10 @@ template<typename T>
 StateBehavior<Result, Args...>&
 StateBehavior<Result, Args...>::returns(
     const std::string& state,
-    const std::enable_if_t<not std::is_same_v<Result, void>, T>& value
+    std::enable_if_t<not std::is_same_v<std::decay_t<Result>, void>, T>&& value
   )
 {
-  returns("", state, value);
-  return *this;
-}
-
-template<typename Result, typename... Args>
-template<typename T>
-StateBehavior<Result, Args...>&
-StateBehavior<Result, Args...>::returns(
-    const std::string& state,
-    std::enable_if_t<not std::is_same_v<Result, void>, T>&& value
-  )
-{
-  returns("", state, std::move(value));
+  returns("", state, std::forward<T>(value));
   return *this;
 }
 
@@ -160,28 +148,12 @@ StateBehavior<Result, Args...>&
 StateBehavior<Result, Args...>::returns(
     const std::string& slot,
     const std::string& state,
-    const std::enable_if_t<not std::is_same_v<Result, void>, T>& value
+    std::enable_if_t<not std::is_same_v<std::decay_t<Result>, void>, T>&& value
   )
 {
   setResultSlot(slot);
   throwOnConflict(slot, state);
-  auto ptr = std::make_shared<Result>(value);
-  results_[state] = std::move(ptr);
-  return *this;
-}
-
-template<typename Result, typename... Args>
-template<typename T>
-StateBehavior<Result, Args...>&
-StateBehavior<Result, Args...>::returns(
-    const std::string& slot,
-    const std::string& state,
-    std::enable_if_t<not std::is_same_v<Result, void>, T>&& value
-  )
-{
-  setResultSlot(slot);
-  throwOnConflict(slot, state);
-  auto ptr = std::make_shared<Result>(value);
+  auto ptr = std::make_shared<std::decay_t<Result>>(std::forward<T>(value));
   results_[state] = std::move(ptr);
   return *this;
 }
