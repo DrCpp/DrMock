@@ -137,39 +137,10 @@ template<typename T>
 StateBehavior<Class, ReturnType, Args...>&
 StateBehavior<Class, ReturnType, Args...>::returns(
     const std::string& state,
-    const std::enable_if_t<not std::is_same_v<ReturnType, void>, T>& value
-  )
-{
-  returns("", state, value);
-  return *this;
-}
-
-template<typename Class, typename ReturnType, typename... Args>
-template<typename T>
-StateBehavior<Class, ReturnType, Args...>&
-StateBehavior<Class, ReturnType, Args...>::returns(
-    const std::string& state,
     std::enable_if_t<not std::is_same_v<ReturnType, void>, T>&& value
   )
 {
-  returns("", state, std::move(value));
-  return *this;
-}
-
-template<typename Class, typename ReturnType, typename... Args>
-template<typename T>
-StateBehavior<Class, ReturnType, Args...>&
-StateBehavior<Class, ReturnType, Args...>::returns(
-    const std::string& slot,
-    const std::string& state,
-    const std::enable_if_t<not std::is_same_v<ReturnType, void>, T>& value
-  )
-{
-  setResultSlot(slot);
-  throwOnConflict(slot, state);
-  auto return_ptr = std::make_shared<ReturnType>(value);
-  auto signal_ptr = nullptr;
-  updateResultSlot(state, return_ptr, signal_ptr);
+  returns("", state, std::forward<T>(value));
   return *this;
 }
 
@@ -184,7 +155,7 @@ StateBehavior<Class, ReturnType, Args...>::returns(
 {
   setResultSlot(slot);
   throwOnConflict(slot, state);
-  auto return_ptr = std::make_shared<ReturnType>(std::move(value));
+  auto return_ptr = std::make_shared<ReturnType>(std::forward<T>(value));
   auto signal_ptr = nullptr;
   updateResultSlot(state, return_ptr, signal_ptr);
   return *this;
