@@ -70,7 +70,7 @@ changed by calling by and determine the return value of call().
 
   (1) There may be not two entries with
 
-        slot1 is equal to slot2.
+        state1 is equal to state2.
 
   (Currently, the wildcard state may occur in the table, but will have
   no effect, as it can never occur as newState in the transition table,
