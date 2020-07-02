@@ -155,7 +155,7 @@ StateBehavior<Class, ReturnType, Args...>::returns(
 {
   setResultSlot(slot);
   throwOnConflict(slot, state);
-  auto return_ptr = std::make_shared<ReturnType>(std::forward<T>(value));
+  auto return_ptr = std::make_shared<std::decay_t<ReturnType>>(std::forward<T>(value));
   auto signal_ptr = nullptr;
   updateResultSlot(state, return_ptr, signal_ptr);
   return *this;
