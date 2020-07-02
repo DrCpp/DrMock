@@ -189,7 +189,7 @@ DRTEST_TEST(throwsVoid)
     );
 }
 
-DRTEST_TEST(multipleResultStates)
+DRTEST_TEST(multipleResultSlots)
 {
   auto so = std::make_shared<StateObject>();
   StateBehavior<int, int> b{so};
@@ -200,6 +200,21 @@ DRTEST_TEST(multipleResultStates)
   b.returns("slot1", "state2", 1); // Ok, same slot
   DRTEST_ASSERT_THROW(
       b.returns("slot2", "state3", 1), // Not ok, different slot
+      std::exception
+    );
+}
+
+DRTEST_TEST(sameResultState)
+{
+  // Check that using the same result state twice result in an error.
+  StateBehavior<int, int> b{};
+  b.transition("slot1", "", "state1", 1);
+  b.transition("slot2", "", "state1", 2);
+
+  b.returns("slot1", "state1", 1);
+  b.returns("slot1", "state2", 1); // Ok, same slot
+  DRTEST_ASSERT_THROW(
+      b.returns("slot1", "state1", 1), // Not ok, different slot
       std::exception
     );
 }
