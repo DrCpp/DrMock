@@ -70,7 +70,7 @@ changed by calling by and determine the return value of call().
 
   (1) There may be not two entries with
 
-        state is equal to state2.
+        state1 is equal to state2.
 
       An entry with state equal to `"*"` is allowed, even alongside
       other entries (see below).
