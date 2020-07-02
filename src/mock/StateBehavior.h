@@ -70,14 +70,10 @@ changed by calling by and determine the return value of call().
 
   (1) There may be not two entries with
 
-        slot1 is equal to slot2.
+        state is equal to state2.
 
-  (Currently, the wildcard state may occur in the table, but will have
-  no effect, as it can never occur as newState in the transition table,
-  and therefore can never occur as state of the result slot, _unless_
-  the user would to something like inject a `StateObject` which already
-  contains a slot whose current state is `"*"` into the
-  `StateBehavior`.)
+      An entry with state equal to `"*"` is allowed, even alongside
+      other entries (see below).
 
 * The effect of `call(input...)` is as follows:
 
@@ -99,8 +95,12 @@ changed by calling by and determine the return value of call().
 
   (2) Take the (new) state of the result slot and look it up in the
       result table. If a result (return value of exception pointer) is
-      found, return that. If the result type is void, return {}. Else,
-      return an `std::monostate`.
+      found, return that. If no result is found, check if a return
+      statement for the wildcard state `"*"` exists. If yes, then return
+      its result. (In other words, concrete entries that precedence over
+      the wildcard state, which acts as a "catch-all".) Otherwise, if
+      the result type is void, return {}. Else, return an
+      `std::monostate`.
 
 *** Implementation details: ***
 

@@ -300,6 +300,12 @@ StateBehavior<Class, ReturnType, Args...>::call(const Args&... args)
     return results_[state];
   }
 
+  // If no direct result is found, check for a wildcard.
+  if (results_.find("*") != results_.end())
+  {
+    return results_["*"];
+  }
+
   // If no result was found, but the function is void, return void.
   if constexpr (std::is_same<std::decay_t<ReturnType>, void>::value)
   {

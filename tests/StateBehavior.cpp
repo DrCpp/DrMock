@@ -508,6 +508,32 @@ DRTEST_TEST(wildcardAsTargetState)
     );
 }
 
+DRTEST_TEST(wildcardResult)
+{
+  // Check that a wildcard result is used as catch-all.
+  StateBehavior<Dummy, int> b{};
+  b.transition("", "state1");
+  b.transition("state1", "state2");
+  b.transition("state2", "state3");
+  b.returns("*", 999);
+  b.returns("state2", 2);
+
+  auto result = b.call();
+  DRTEST_ASSERT(std::holds_alternative<Result<int>>(result));
+  auto cast = std::get<Result<int>>(result).first;
+  DRTEST_ASSERT_EQ(*cast, 999);
+
+  result = b.call();
+  DRTEST_ASSERT(std::holds_alternative<Result<int>>(result));
+  cast = std::get<Result<int>>(result).first;
+  DRTEST_ASSERT_EQ(*cast, 2);
+
+  result = b.call();
+  DRTEST_ASSERT(std::holds_alternative<Result<int>>(result));
+  cast = std::get<Result<int>>(result).first;
+  DRTEST_ASSERT_EQ(*cast, 999);
+}
+
 DRTEST_TEST(pushingMultipleWildcardTransitions)
 {
   auto so = std::make_shared<StateObject>();
