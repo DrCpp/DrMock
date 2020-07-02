@@ -195,16 +195,11 @@ public:
     > call(const Args&...) override;
 
 private:
-  // Set the result slot if not already set.
+  // Set the result slot if not already set. Throw if the result slot is
+  // set and `slot` is not equal to `slot_` or if `state` already occurs
+  // in an entry of the result table.
   void setResultSlot(const std::string& slot);
   bool fix_result_slot_{false};  // Remember if result slot is set.
-
-  // Throw if the result slot is set and `slot` is not equal to `slot_`
-  // or if `state` already occurs in an entry of the result table.
-  void throwOnConflict(
-      const std::string& slot,
-      const std::string& state
-    ) const;
 
   void updateResultSlot(
       const std::string& state,
