@@ -17,6 +17,29 @@ You should have received a copy of the GNU General Public License
 along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
+# DrMock 0.3.0
+
+Released 2020/07/05
+
+### Added/Changed:
+
+* Add `emits` method that allows `Method` objects to emit signals when
+  called (for details, see the tutorials). Implementing this feature
+  meant introducing some significant changes (taken from git log):
+
+  - All major class templates now have a new template parameter,
+    the type of the parent mock object (MO). For every MO, the mocker passes
+    a to each Method object of the MO a pointer to the MO. This pointer is
+    required for Signal::invoke(Parent*) [see below].
+
+  - A new class template, `Signal`, represents such signal emissions.
+
+  - Introduce the `--qt` flag for the `DrMockGenerator`, which, when set,
+    `#define`s the DRMOCK_USE_QT macro in all mock source code. The
+    **DrMock** macros automatically apply `--qt` if a test is linked
+    against a Qt library. If `DRMOCK_USE_QT` is not set, calling
+    `Signal::emit` raises an error.
+
 # DrMock 0.2.0
 
 Released 2020/05/15

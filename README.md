@@ -24,7 +24,7 @@ features for mock object configuration.
 
 ### Announcments
 
-Release v0.2.x is now available. For details, see
+Release v0.3.x is now available. For details, see
 [changelog](CHANGELOG.md).
 
 ### Getting started
