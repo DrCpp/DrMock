@@ -48,6 +48,12 @@ template<typename Class, typename ReturnType, typename... Args>
 Behavior<Class, ReturnType, Args...>&
 Behavior<Class, ReturnType, Args...>::expects(Args... args)
 {
+  if (expect_.has_value())
+  {
+    throw std::runtime_error{
+        "Behavior object already configured. Please check your mock object configuration."
+      };
+  }
   expect_.emplace(std::move(args)...);
   return *this;
 }
@@ -57,6 +63,12 @@ template<typename T>
 Behavior<Class, ReturnType, Args...>&
 Behavior<Class, ReturnType, Args...>::returns(T&& result)
 {
+  if (result_.first or exception_)
+  {
+    throw std::runtime_error{
+        "Behavior object already configured. Please check your mock object configuration."
+      };
+  }
   result_.first = std::make_shared<std::decay_t<ReturnType>>(std::forward<T>(result));
   return *this;
 }
@@ -66,6 +78,12 @@ template<typename E>
 Behavior<Class, ReturnType, Args...>&
 Behavior<Class, ReturnType, Args...>::throws(E&& exception)
 {
+  if (result_.first or result_.second or exception_)
+  {
+    throw std::runtime_error{
+        "Behavior object already configured. Please check your mock object configuration."
+      };
+  }
   exception_ = std::make_exception_ptr(std::forward<E>(exception));
   return *this;
 }
@@ -75,6 +93,12 @@ template<typename... SignalArgs>
 Behavior<Class, ReturnType, Args...>&
 Behavior<Class, ReturnType, Args...>::emits(void (Class::*signal)(SignalArgs...), SignalArgs&&... args)
 {
+  if (result_.second or exception_)
+  {
+    throw std::runtime_error{
+        "Behavior object already configured. Please check your mock object configuration."
+      };
+  }
   result_.second = std::make_shared<Signal<Class, SignalArgs...>>(
       signal,
       std::forward<SignalArgs>(args)...
