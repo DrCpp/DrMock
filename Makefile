@@ -17,6 +17,7 @@ default:
 .PHONY: clean
 clean:
 	rm -fr build && rm -fr prefix
+	cd python && make clean
 
 .PHONY: install
 install:
