@@ -40,6 +40,8 @@ Released 2020/07/05
     against a Qt library. If `DRMOCK_USE_QT` is not set, calling
     `Signal::emit` raises an error.
 
+  - Update `samples/qt`
+
 * Throw if conflicts occur during mock object configuration 
 
 ### Fixed
