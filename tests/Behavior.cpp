@@ -99,8 +99,7 @@ DRTEST_TEST(voidReturn)
   DRTEST_ASSERT(b.is_persistent());
 
   auto result = b.produce();
-  auto holds = std::holds_alternative<Result<void>>(result);
-  DRTEST_ASSERT(holds);
+  DRTEST_ASSERT(std::holds_alternative<Result<void>>(result));
   DRTEST_ASSERT(not std::get<Result<void>>(result).first);
   DRTEST_ASSERT(not std::get<Result<void>>(result).second);
   DRTEST_ASSERT(not b.is_persistent());
@@ -110,15 +109,23 @@ DRTEST_TEST(voidReturn)
   result = b.produce();
   result = b.produce();
   DRTEST_ASSERT(b.is_persistent());
+}
 
+DRTEST_TEST(voidReturnEmits)
+{
+  Behavior<Dummy, void, int, std::string> b{};
   b.emits(&Dummy::f, 1, 2.3f, 4.56);
-  result = b.produce();
+  auto result = b.produce();
   DRTEST_ASSERT(std::holds_alternative<Result<void>>(result));
   DRTEST_ASSERT(not std::get<Result<void>>(result).first);
   DRTEST_ASSERT(std::get<Result<void>>(result).second);
+}
 
+DRTEST_TEST(voidReturnThrows)
+{
+  Behavior<Dummy, void, int, std::string> b{};
   b.throws(std::runtime_error{""});
-  result = b.produce();
+  auto result = b.produce();
   DRTEST_ASSERT(std::holds_alternative<std::exception_ptr>(result));
   DRTEST_ASSERT_THROW(
       std::rethrow_exception(std::get<std::exception_ptr>(result)),
@@ -168,9 +175,13 @@ DRTEST_TEST(nonVoidMethod)
   ptr = std::get<Result<int>>(result).first;
   DRTEST_ASSERT_EQ(*ptr, 12);
   DRTEST_ASSERT(std::get<Result<int>>(result).second);
+}
 
+DRTEST_TEST(nonVoidMethodThrows)
+{
+  Behavior<Dummy, int&, int, std::string> b{};
   b.throws(std::runtime_error{""});
-  result = b.produce();
+  auto result = b.produce();
   DRTEST_ASSERT(std::holds_alternative<std::exception_ptr>(result));
   DRTEST_ASSERT_THROW(
       std::rethrow_exception(std::get<std::exception_ptr>(result)),

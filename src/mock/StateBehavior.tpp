@@ -154,7 +154,6 @@ StateBehavior<Class, ReturnType, Args...>::returns(
   )
 {
   setResultSlot(slot);
-  throwOnConflict(slot, state);
   auto return_ptr = std::make_shared<std::decay_t<ReturnType>>(std::forward<T>(value));
   auto signal_ptr = nullptr;
   updateResultSlot(state, return_ptr, signal_ptr);
@@ -183,7 +182,6 @@ StateBehavior<Class, ReturnType, Args...>::throws(
   )
 {
   setResultSlot(slot);
-  throwOnConflict(slot, state);
 
   // Check if a result is already set for `state`.
   if (results_.find(state) != results_.end())
@@ -222,7 +220,6 @@ StateBehavior<Class, ReturnType, Args...>::emits(
   )
 {
   setResultSlot(slot);
-  throwOnConflict(slot, state);
   auto return_ptr = nullptr;
   auto signal_ptr = std::make_shared<Signal<Class, SigArgs...>>(
       signal,
@@ -325,19 +322,10 @@ StateBehavior<Class, ReturnType, Args...>::setResultSlot(const std::string& slot
 {
   if (not fix_result_slot_)
   {
-    slot_ = slot;
     fix_result_slot_ = true;
+    slot_ = slot;
   }
-}
-
-template<typename Class, typename ReturnType, typename... Args>
-void
-StateBehavior<Class, ReturnType, Args...>::throwOnConflict(
-    const std::string& slot,
-    const std::string& state
-  ) const
-{
-  if (fix_result_slot_ and slot != slot_)
+  else if (slot_ != slot)
   {
     throw std::runtime_error{"Result slot already set to '" + slot_ + "'."};
   }
