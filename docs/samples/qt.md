@@ -158,6 +158,30 @@ emit foo->theSignal("foo");
 DRMOCK_ASSERT(bar->mock.verify());
 ```
 
+The `emit foo->theSignal("foo");` looks a bit off. That's how we had to
+do it prior to `DrMock<v0.3.0`. In `DrMock>=0.3.0`  the `emits`
+configuration call is added to `Behavior` and `StateBehavior`. It can be
+used to instruct a mock object to `emit` a signal:
+
+```cpp
+// emit foo->theSignal("foo");  // Old, boring and explicit.
+foo->mock.theSlot().push()
+    .emits<const std::string&>(&IFoo::theSignal, "foo")
+    .expects("bar")
+    .times(1);  // Optional.
+foo->theSlot("bar");  // `emit foo->theSignal("foo")` happens here!
+```
+
+**Note.** As in the case above, you have to be explicit when passing
+`const T&` instead of relying on template deduction. Only calling
+`emits(&IFoo::theSignal, "foo")` will result in a
+`deduced conflicting types for parameter 'SigArgs'` error.
+
+**Note.** If you are using `DrMockGenerator` by hand (which we don't
+recommend), you must set the `--qt` flag when invoking the mocker.
+Otherwise, the `DRMOCK_USE_QT` macro will not be set, and emits will
+raise an error.
+
 ## Running the tests
 
 Do `make`. If everything checks out, this should return

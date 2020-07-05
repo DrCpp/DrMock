@@ -30,6 +30,7 @@ This sample demonstrates the basics of **DrMock**'s mock features.
   + [The internal mock object](#the-internal-mock-object)
   + [`Method` objects and `Behavior` objects](#method-objects-and-behavior-objects)
   + [`Behavior` configuration](#behavior-configuration)
+  + [Combining config calls](#combining-config-calls)
   + [Examples](#examples)
 * [Details](#details)
   + [Accessing overloads](#accessing-overloads)
@@ -505,6 +506,7 @@ public:
   Behavior& expects(Args...);
   template<typename T> Behavior& returns(T&&);
   template<typeanme T> Behavior& throws(E&&);
+  template<typename... SigArgs> Behavior& emits(void (Class::*)(SigArgs...), SigArgs&&...);
   Behavior& times(unsigned int);
   Behavior& times(unsigned int, unsigned int);
   Behavior& persists();
@@ -517,14 +519,23 @@ public:
 All of these return `this`, allowing us to string multiple
 configurations together.
 
+* `expect()`
+  Expect any argument. Note: This is the default setting.
+
 * `expects(Args... args)`
   Expect a call with `args...` as arguments.
 
 * `returns(T&&)`
-  Produce the passed value on production.
+  Produce the passed value on production, after emitting.
 
 * `throws(E&&)`
   Throw the passed exception on production.
+
+* `emits(...)`
+  Emit a Qt signal on production, before returning (for details, see
+  [samples/qt](qt.md)). Using `emits` outside of a Qt context (in other
+  words, if `DRMOCK_USE_QT` is not set) will raise an error when the
+  method is called.
 
 * `times(unsigned int)`
   Specify the _exact_ number of expected calls.
@@ -551,6 +562,36 @@ is used to instruct the `Behavior` to expect one of the following:
 
 whose pointees are values of type `Deriveds...`, etc.  For details, see
 [Polymorphism](polymorphism).
+
+### Combining config calls
+
+Some of the configuration calls may be combined, while others create
+conflicts. If any conflicts occur, **DrMock** will raise an exception,
+which will ask you to fix your test code. The rules are as follows:
+
+* Multiple calls to the same function are not allowed
+
+* `returns` and `emits` may be combined (the method will emit first,
+  then return, of course)
+
+* `throws` may not be combined with `returns` or `emits`
+
+For example:
+```cpp
+bhv.returns(123)
+   .emits(&Dummy::f, 456)  // Ok, returns and emits are parallel.
+   .throws(std::logic_error{""})  // Fails, overriding previous behavior.
+   .returns(456)  // Not ok, overriding previous behavior.
+```
+
+**Note.** Even reiterations will raise errors:
+```
+bhv.returns(123)
+   .expects()
+   .returns(123);  // Not ok, raises error.
+```
+These repetitions should not happen in test code, and **DrMock** will
+let you know.
 
 ### Examples
 

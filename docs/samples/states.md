@@ -274,6 +274,33 @@ slot as optional first parameter. The default value is the default slot
 The parameters `Result` and `Args...` are designators for the underlying
 method's return value and parameters.
 
+Using the wildcard state `"*"` for the `current_state` parameter results
+in the configuration serving as catch-all (or fallthru), to which other
+configuration calls act as exceptions (as described above).
+
+**Note.** The rules from [samples/mock](mock.md) regarding the
+combination of configuration calls apply here. In other words, `returns`
+and `emits` may be combined (and everything may be combined with
+multiple calls to `transition`, of course), and an error if raised if
+any of the configuration calls below are used to create double binds.
+For example:
+```cpp
+bhv.returns("state1", 123)
+   .emits("state1", &Dummy::f, 456)  // Ok, returns and emits are parallel.
+   .throws("state2", std::runtime_error{""})  // Ok, different state.
+   .throws("state1", std::logic_error{""})  // Fails, overriding previous state1 behavior.
+   .returns("state2", 456)  // Ok, different slot.
+   .returns("state2", 789)  // Not ok, raises error.
+```
+
+Furthermore, creating conflicting transition tables will result in an
+error. For example:
+```cpp
+bhv.transition("state1", "state2", 2)
+   .transition("state1", "state3", 3)  // Ok, different input.
+   .transition("state1", "state4", 2)  // Not ok, will raise.
+```
+
 ### transition
 
 ```cpp
@@ -329,6 +356,22 @@ DRTEST_TEST(...)
       .returns("on", true);
 }
 ```
+
+### emits
+
+```cpp
+template<typename... SigArgs> StateBehavior& emits(
+   [const std::string& state,]
+    const std::string& slot,
+    void (Class::*signal)(SigArgs...),
+    SigArgs&&... args
+  );
+```
+Instruct the `StateBehavior` to emit the Qt signal `signal` with
+arguments `args` if the state of `slot` is `state` before returning.
+Using `emits` outside of a Qt context (in other words, if
+`DRMOCK_USE_QT` is not set) will raise an error when the method is
+called.
 
 ### throws
 

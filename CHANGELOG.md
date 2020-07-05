@@ -40,6 +40,14 @@ Released 2020/07/05
     against a Qt library. If `DRMOCK_USE_QT` is not set, calling
     `Signal::emit` raises an error.
 
+* Throw if conflicts occur during mock object configuration 
+
+### Fixed
+
+* The wilcard state `"*"` is no longer ignored when other actions are
+  defined, but rather serves as a catch-all (fallthru) state (the
+  documentation regarding this has been clarified)
+
 # DrMock 0.2.0
 
 Released 2020/05/15
@@ -54,7 +62,7 @@ Released 2020/05/15
 
 * Add pkg-config file
 
-* Add DRMOCK, DRMOCK_DUMMY macros
+* Add `DRMOCK`, `DRMOCK_DUMMY` macros
 
   - Change order of includes in mock objects
     (so that `DRMOCK` is defined when including the interface header in
@@ -96,7 +104,7 @@ Released 2020/05/15
 * Replace odd error message thrown when using `DrMockModule` with
   `QTMODULE` parameter but unset `DRMOCK_QT_PATH` environment variable.
 
-* Throw error message if `DrMockTest` can't find files specified in `TESTS`.
+* Throw error message if `DrMockTest` can't find files specified in `TESTS`
 
 # DrMock 0.1.0
 

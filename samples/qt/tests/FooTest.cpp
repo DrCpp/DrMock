@@ -37,7 +37,13 @@ DRTEST_TEST(signalsAndSlots)
       bar.get(), &IFoo::theSlot
     );
 
-  emit foo->theSignal("foo");
+  // Instruct `foo` to emit `theSignal` with argument `"foo"` when
+  // `theSlot` is called with `"bar"`.
+  foo->mock.theSlot().push()
+      .emits<const std::string&>(&IFoo::theSignal, "foo")
+      .expects("bar")
+      .times(1);  // Optional.
+  foo->theSlot("bar");
 
   DRTEST_ASSERT(bar->mock.verify());
 }

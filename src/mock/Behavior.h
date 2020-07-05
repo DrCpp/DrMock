@@ -46,8 +46,8 @@ Class template that represents a method's behavior.
 + The results of the production and the life span must be configured by
   the user.
 
-All of the class' setters, like `expects`, `returns`, override their
-previous values.
+Making conflicting configuration calls, such as `returns` followed by
+`throws` will raise an error.
 */
 
 template<typename Class, typename ReturnType, typename... Args>
