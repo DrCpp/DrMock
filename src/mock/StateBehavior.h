@@ -59,10 +59,10 @@ changed by calling by and determine the return value of call().
 
   (2) The wildcard state `"*"` may never occur as `newState`.
 
-* The return value of call() is determined by a _result slot_. The
-  _return table_ is simply
+* The return/result value of call() is determined by a _result slot_.
+  The _return/result table_ is simply
 
-    map: state (of result slot) -> return value
+    map: state (of result slot) -> (return value, emit)
 
 * The result table may never have any inconsitencies. Therefore, if
   a transition is pushed that violates the following rules, an exception
@@ -172,6 +172,7 @@ public:
       E&& excp
     );
 
+  // Add emit command to result table - see above for details.
   template<typename... SigArgs> StateBehavior& emits(
       const std::string& state,
       void (Class::*)(SigArgs...),

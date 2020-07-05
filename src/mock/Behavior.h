@@ -32,13 +32,15 @@ namespace drmock {
 
 Class template that represents a method's behavior.
 
-+ A Behavior has a return type (ReturnType) and parameter types (Args...).
++ A Behavior has a parent (Class, the object whose behavior is
+  specified) return type (ReturnType) and parameter types (Args...).
 
 + A Behavior can _expect_ a certain _input_ (a set of arguments that
   match the parameter types).
 
-+ A Behavior can _produce_ either a shared pointer to an instance of its
-  return type or an std::exception_ptr.
++ A Behavior can _produce_ either a pair (first: shared pointer to an
+  instance of its return type, second: shared_ptr to an `AbstractSignal`
+  object), or an std::exception_ptr.
 
 + A Behavior has a life span. After a set number of productions
   (which may be infinite), the Behavior object no longer _persists_.
@@ -66,7 +68,7 @@ public:
   template<typename T = std::tuple<Args...>>
   std::enable_if_t<(std::tuple_size_v<T> > 0), Behavior&> expects();
 
-  // Set the expected arguments, return value or thrown exception.
+  // Set the expected arguments, return value, emit or thrown exception.
   Behavior& expects(Args...);
   template<typename T> Behavior& returns(T&&);
   template<typename E> Behavior& throws(E&&);

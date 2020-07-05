@@ -24,7 +24,8 @@ namespace drmock {
 /* AbstractSignal
 
 Abstract class template that represents a Qt signal emit (not the
-signal!). The `invoke(Parent* parent)` method invokes/executes the emit.
+signal!). The `invoke(Parent* parent)` method invokes/executes the emit
+on the QObject `parent`.
 */
 
 template<typename Parent>
