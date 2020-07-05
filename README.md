@@ -130,6 +130,10 @@ copyright.
 When contributing code, please follow the style of existing **DrMock**
 source code.
 
+## Projects that use **DrMock**
+
+* [DrAutomaton](https://github.com/DrCpp/DrAutomaton), Qt-based cellular automaton library
+
 ## Acknowledgments
 
 During the configuration of **DrMock**'s build system, we have profited
