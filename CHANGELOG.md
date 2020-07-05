@@ -29,8 +29,8 @@ Released 2020/07/05
 
   - All major class templates now have a new template parameter,
     the type of the parent mock object (MO). For every MO, the mocker passes
-    a to each Method object of the MO a pointer to the MO. This pointer is
-    required for Signal::invoke(Parent*) [see below].
+    to each Method object of the MO a pointer to the MO. This pointer is
+    required for `Signal::invoke(Parent*)` [see below].
 
   - A new class template, `Signal`, represents such signal emissions.
 
