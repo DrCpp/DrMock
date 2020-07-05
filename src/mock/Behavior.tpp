@@ -98,7 +98,10 @@ Behavior<Class, ReturnType, Args...>::throws(E&& exception)
 template<typename Class, typename ReturnType, typename... Args>
 template<typename... SignalArgs>
 Behavior<Class, ReturnType, Args...>&
-Behavior<Class, ReturnType, Args...>::emits(void (Class::*signal)(SignalArgs...), SignalArgs&&... args)
+Behavior<Class, ReturnType, Args...>::emits(
+    void (Class::*signal)(SignalArgs...),
+    SignalArgs&&... args
+  )
 {
   if (result_.second or exception_)
   {

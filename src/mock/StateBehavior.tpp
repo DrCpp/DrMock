@@ -187,7 +187,8 @@ StateBehavior<Class, ReturnType, Args...>::throws(
   if (results_.find(state) != results_.end())
   {
       throw std::runtime_error{
-          "Result already set for state '" + state + "'. Please check your mock object configuration."
+          "Result already set for state '" + state + "'. Please check your mock object"
+          " configuration."
         };
   }
 
@@ -351,26 +352,37 @@ StateBehavior<Class, ReturnType, Args...>::updateResultSlot(
   // If there is a result, but it's not a return/emit, raise an error.
   if (not std::holds_alternative<Result>(it->second))
   {
-    throw std::runtime_error{"Monostate/throw result already set for state '" + state + "'. Please check your mock object configuration."};
+    throw std::runtime_error{
+        "Monostate/throw result already set for state '" + state + "'. Please check your mock"
+        " object configuration."
+      };
   }
   auto result = std::get<Result>(it->second);
 
-  // If the result is return/emit with non-null return, throw instead of overwriting the return. Otherwise, re-use the return value.
+  // If the result is return/emit with non-null return, throw instead of
+  // overwriting the return. Otherwise, re-use the return value.
   if (result.first != nullptr)
   {
     if (return_ptr != nullptr)
     {
-      throw std::runtime_error{"Return value already set for state '" + state + "'. Please check your mock object configuration."};
+      throw std::runtime_error{
+          "Return value already set for state '" + state + "'. Please check your mock object"
+          " configuration."
+        };
     }
     return_ptr = result.first;
   }
 
-  // If the result is return/emit with non-null emit, throw instead of overwriting the emit.
+  // If the result is return/emit with non-null emit, throw instead of
+  // overwriting the emit.
   if (result.second != nullptr)
   {
     if (signal_ptr != nullptr)
     {
-      throw std::runtime_error{"Emit already set for state '" + state + "'. Please check your mock object configuration."};
+      throw std::runtime_error{
+          "Emit already set for state '" + state + "'. Please check your mock object"
+          " configuration."
+        };
     }
     signal_ptr = result.second;
   }
