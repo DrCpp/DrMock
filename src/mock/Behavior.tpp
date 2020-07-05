@@ -40,6 +40,13 @@ template<typename T>
 std::enable_if_t<(std::tuple_size_v<T> > 0), Behavior<Class, ReturnType, Args...>&>
 Behavior<Class, ReturnType, Args...>::expects()
 {
+  if (expect_.has_value())
+  {
+    throw std::runtime_error{
+        "Cannot revert Behavior object already configured for specific expect to except-all."
+        " Please check your mock object configuration."
+      };
+  }
   expect_.reset();
   return *this;
 }
@@ -130,7 +137,10 @@ Behavior<Class, ReturnType, Args...>::times(
     );
   if (times_min > times_max)
   {
-    throw std::runtime_error{"minimum number of expected calls must be less or equal to maximum number of expected calls"};
+    throw std::runtime_error{
+        "The minimum number of expected calls must be less or equal to maximum number of expected"
+        " calls. Please check your mock object configuration."
+      };
   }
   times_min_ = times_min;
   times_max_ = times_max;

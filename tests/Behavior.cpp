@@ -323,3 +323,65 @@ DRTEST_TEST(polymorphicPureVirtualDefaultConstructor)
       b.match(std::make_shared<Implementation>(1), std::make_shared<Implementation>(2))
     );
 }
+
+DRTEST_TEST(overrideSpecificExceptWithExceptAll)
+{
+  Behavior<Dummy, void, int> b;
+  b.expects(1);
+  DRTEST_ASSERT_THROW(
+      b.expects(),
+      std::runtime_error
+    );
+}
+
+DRTEST_TEST(overrideResultWithReturn)
+{
+  Behavior<Dummy, int> b;
+  b.returns(123);
+  b.emits(&Dummy::f, 1, 2.3f, 4.56);
+  DRTEST_ASSERT_THROW(
+      b.returns(-456),
+      std::runtime_error
+    );
+}
+
+DRTEST_TEST(overrideResultWithEmit)
+{
+  Behavior<Dummy, int> b;
+  b.returns(123);
+  b.emits(&Dummy::f, 1, 2.3f, 4.56);
+  DRTEST_ASSERT_THROW(
+      b.emits(&Dummy::f, 2, 3.4f, 5.67),
+      std::runtime_error
+    );
+}
+
+DRTEST_TEST(overrideResultWithThrow)
+{
+  Behavior<Dummy, int> b;
+  b.returns(123);
+  DRTEST_ASSERT_THROW(
+      b.throws(std::logic_error{""}),
+      std::runtime_error
+    );
+}
+
+DRTEST_TEST(overrideThrowWithReturn)
+{
+  Behavior<Dummy, int> b;
+  b.throws(std::logic_error{""});
+  DRTEST_ASSERT_THROW(
+      b.returns(123),
+      std::runtime_error
+    );
+}
+
+DRTEST_TEST(overrideThrowWithEmit)
+{
+  Behavior<Dummy, int> b;
+  b.throws(std::logic_error{""});
+  DRTEST_ASSERT_THROW(
+      b.emits(&Dummy::f, 1, 2.3f, 4.56),
+      std::runtime_error
+    );
+}
