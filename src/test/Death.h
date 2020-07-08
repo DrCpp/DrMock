@@ -1,0 +1,102 @@
+#ifndef DRMOCK_SRC_TEST_DEATH_H
+#define DRMOCK_SRC_TEST_DEATH_H
+
+#include <csignal>
+
+#if defined(__unix__) || defined(__APPLE__)
+#include <unistd.h>
+#endif
+
+#include "TestFailure.h"
+
+namespace drtest { namespace death {
+
+static int pipe_[2];
+volatile std::sig_atomic_t atomic_pipe_;  // Self-pipe write end; required due to https://en.cppreference.com/w/c/program/signal
+
+#if defined(__unix__) || defined(__APPLE__)
+static std::vector<int> signals_ = {  // POSIX signals
+    SIGABRT,
+    SIGALRM,
+    SIGBUS,
+    SIGCHLD,
+    SIGCONT,
+    SIGFPE,
+    SIGHUP,
+    SIGILL,
+    SIGINT,
+    // SIGKILL,
+    SIGPIPE,
+    SIGPROF,
+    SIGQUIT,
+    SIGSEGV,
+    // SIGSTOP,
+    SIGTSTP,
+    SIGSYS,
+    SIGTERM,
+    SIGTRAP,
+    SIGTTIN,
+    SIGTTOU,
+    SIGURG,
+    // SIGUSR1,
+    SIGUSR2,
+    SIGVTALRM,
+    SIGXCPU,
+    SIGXFSZ
+  };
+#endif
+
+// Signal handler requires external linkage according to https://en.cppreference.com/w/c/program/signal
+extern "C" {
+  void signal_handler(int x)
+  {
+    write(atomic_pipe_, &x, 4);
+    exit(0);
+  }
+} // extern C
+
+}} // namespace drtest::death
+
+#define DRTEST_ASSERT_DEATH(statement, expected) \
+do \
+{ \
+  pipe(drtest::death::pipe_); \
+  drtest::death::atomic_pipe_ = drtest::death::pipe_[1]; \
+\
+  pid_t pid = fork(); \
+  if (pid == 0) \
+  { \
+    for (auto s: drtest::death::signals_) \
+    { \
+      std::signal(s, drtest::death::signal_handler); \
+    } \
+    statement; /* Child exits here if signal is raised. */ \
+    int no_signal = -1; \
+    write(drtest::death::atomic_pipe_, &no_signal, 4); /* Wake up parent if no signal was raised. */ \
+    close(drtest::death::pipe_[0]); \
+    close(drtest::death::pipe_[1]); \
+    exit(0); \
+  } \
+  else \
+  { \
+    assert(PIPE_BUF >= 4); \
+    std::vector<char> buffer(4); \
+    if (!read(drtest::death::pipe_[0], buffer.data(), 4)) \
+    { \
+      throw std::runtime_error{"read to pipe failed"}; \
+    } \
+\
+    int result = *(int*)buffer.data(); \
+    std::string e = strsignal(expected); \
+    std::string r = strsignal(result); \
+    if (result != expected) \
+    { \
+      throw drtest::detail::TestFailure{__LINE__, "!=", "received", "expected", e, r}; \
+    } \
+  } \
+\
+  close(drtest::death::pipe_[0]); \
+  close(drtest::death::pipe_[1]); \
+} while(false)
+
+#endif /* DRMOCK_SRC_TEST_DEATH_H */
