@@ -1,4 +1,4 @@
-dirs = basic example mock qt states
+dirs = basic example mock qt states death
 
 .PHONY: default
 default:
