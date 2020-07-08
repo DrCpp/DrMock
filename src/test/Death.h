@@ -87,10 +87,20 @@ do \
     } \
 \
     int result = *(int*)buffer.data(); \
-    std::string e = strsignal(expected); \
-    std::string r = strsignal(result); \
     if (result != expected) \
     { \
+\
+      /* Error message */ \
+      std::string e = strsignal(expected); \
+      std::string r; \
+      if (result != -1) \
+      { \
+        r = strsignal(result); \
+      } \
+      else \
+      { \
+        r = "No signal: -1"; \
+      } \
       throw drtest::detail::TestFailure{__LINE__, "!=", "received", "expected", e, r}; \
     } \
   } \
