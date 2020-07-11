@@ -17,6 +17,16 @@ You should have received a copy of the GNU General Public License
 along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
+# DrMock 0.4.0
+
+Release ????/??/??
+
+### Added/Changed:
+
+* Add `DRTEST_ASSERT_DEATH` macro for death testing
+
+
+
 # DrMock 0.3.0
 
 Released 2020/07/05
@@ -49,6 +59,8 @@ Released 2020/07/05
 * The wilcard state `"*"` is no longer ignored when other actions are
   defined, but rather serves as a catch-all (fallthru) state (the
   documentation regarding this has been clarified)
+
+
 
 # DrMock 0.2.0
 
@@ -107,6 +119,8 @@ Released 2020/05/15
   `QTMODULE` parameter but unset `DRMOCK_QT_PATH` environment variable.
 
 * Throw error message if `DrMockTest` can't find files specified in `TESTS`
+
+
 
 # DrMock 0.1.0
 
