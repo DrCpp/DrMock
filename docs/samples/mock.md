@@ -145,7 +145,7 @@ in place of `std::shared_ptr`.
 Here's the straightforward implementation of the `fill` method:
 ```cpp
 void
-Order::fill(const std::shared_ptr<IWarehouse& wh)
+Order::fill(const std::shared_ptr<IWarehouse>& wh)
 {
   filled_ = wh->remove(commodity_, quantity_);
 }
