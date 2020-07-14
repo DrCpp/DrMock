@@ -35,6 +35,8 @@ Release v0.3.x is now available. For details, see
 
 * **DrMock** sample projects and tutorials may be found [here](docs/tutorial.md)
 
+* **DrMock** [cookbook](docs/cookbook.md), a collection of common design patterns
+
 ### Features
 
 * Unit test framework
