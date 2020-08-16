@@ -33,7 +33,7 @@ static int pipe_[2];
 volatile std::sig_atomic_t atomic_pipe_;  // Self-pipe write end; required due to https://en.cppreference.com/w/c/program/signal
 
 #if defined(__unix__) || defined(__APPLE__)
-static std::vector<int> signals_ = {  // POSIX signals
+static std::vector<int> signals_ = {  // POSIX signals, taken from https://man7.org/linux/man-pages/man7/signal.7.html
     SIGABRT,
     SIGALRM,
     SIGBUS,
