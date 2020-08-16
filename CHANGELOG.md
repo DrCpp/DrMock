@@ -19,7 +19,7 @@ along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 # DrMock 0.4.0
 
-Release 2020/08/16
+Released 2020/08/16
 
 ### Added/Changed:
 
