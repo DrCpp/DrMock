@@ -29,13 +29,13 @@ Release v0.4.x is now available. For details, see
 
 ### Getting started
 
-* A short introduction to **DrMock** may be found [here](docs/introduction.md)
+* [Short introduction](docs/introduction.md) to **DrMock**
 
-* A guide to building **DrMock** may be found [here](docs/build.md)
+* [Build guide](docs/build.md)
 
-* **DrMock** sample projects and tutorials may be found [here](docs/tutorial.md)
+* [Tutorials](docs/tutorial.md)
 
-* **DrMock** [cookbook](docs/cookbook.md), a collection of common design patterns
+* [Cookbook](docs/cookbook.md), a collection of common design patterns for **DrMock**
 
 ### Features
 
