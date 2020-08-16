@@ -1,4 +1,4 @@
-# Copyright 2019 Ole Kliemann, Malte Kliemann
+# Copyright 2020 Ole Kliemann, Malte Kliemann
 #
 # This file is part of DrMock.
 #
@@ -15,13 +15,26 @@
 # You should have received a copy of the GNU General Public License
 # along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
-from setuptools import setup
+cmake_minimum_required(VERSION 3.10)
 
-setup(
-    name = "DrMockGenerator",
-    author = "Ole Kliemann, Malte Kliemann",
-    version = "0.4.0",
-    scripts = ["DrMockGenerator"],
-    packages = ["mocker"],
-    include_package_data = True,
+#######################################
+# Project data.
+#######################################
+
+project(DrMockSampleBasic)
+set(CMAKE_CXX_STANDARD 17)
+
+#######################################
+# Dependencies.
+#######################################
+
+find_package(DrMock COMPONENTS Core REQUIRED)
+
+#######################################
+# Testing.
+#######################################
+
+enable_testing()
+DrMockTest(TESTS
+  deathTest.cpp
 )

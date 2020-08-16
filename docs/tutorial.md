@@ -51,3 +51,9 @@ Learn how to use **DrMock**'s mock objects as stubs for state verification.
 Learn how to use **DrMock** with Qt5.
 
 ---
+
+[samples/death](samples/death.md)
+
+Learn how to use **DrMock** for death tests.
+
+---

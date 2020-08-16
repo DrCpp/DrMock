@@ -19,6 +19,7 @@
 #ifndef DRMOCK_SRC_TEST_TESTMACROS_H
 #define DRMOCK_SRC_TEST_TESTMACROS_H
 
+#include "Death.h"
 #include "FunctionInvoker.h"
 #include "Global.h"
 #include "TestFailure.h"
