@@ -24,8 +24,8 @@
 #include <unordered_set>
 #include <vector>
 
-#include "Singleton.h"
 #include "TestObject.h"
+#include "utility/Singleton.h"
 
 namespace drtest { namespace detail {
 

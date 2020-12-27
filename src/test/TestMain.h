@@ -31,7 +31,7 @@
 
 namespace drtest { namespace detail {
 
-FunctionInvoker initGlobal{[] () { Singleton<Global>::set(std::make_shared<Global>()); }};
+FunctionInvoker initGlobal{[] () { drutility::Singleton<Global>::set(std::make_shared<Global>()); }};
 
 }} // namespaces
 
@@ -40,8 +40,8 @@ main(int argc, char** argv)
 {
   using ILogger = drtest::detail::ILogger;
   using Logger = drtest::detail::Logger;
-  using GlobalSingleton = drtest::detail::Singleton<drtest::detail::Global>;
-  using LoggerSingleton = drtest::detail::Singleton<ILogger>;
+  using GlobalSingleton = drutility::Singleton<drtest::detail::Global>;
+  using LoggerSingleton = drutility::Singleton<ILogger>;
 
   LoggerSingleton::set(std::make_shared<Logger>());
 

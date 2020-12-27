@@ -41,7 +41,7 @@ void log(
     location += ", " + data;
   }
 
-  Singleton<ILogger>::get()->logMessage(
+  drutility::Singleton<ILogger>::get()->logMessage(
       false,
       category,
       location,

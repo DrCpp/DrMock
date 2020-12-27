@@ -45,7 +45,7 @@ public:
 #define DRTEST_LOG(category, msg) \
 do { \
   try { \
-    drtest::detail::Singleton<drtest::detail::ILogger>::get()->logMessage( \
+    drutility::Singleton<drtest::detail::ILogger>::get()->logMessage( \
         true, \
         category, \
         __FUNCTION__, \

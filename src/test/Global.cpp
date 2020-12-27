@@ -21,11 +21,11 @@
 #include <sstream>
 
 #include "ILogger.h"
-#include "Singleton.tpp"
+#include "utility/Singleton.tpp"
+
+template class drutility::Singleton<drtest::detail::Global>;
 
 namespace drtest { namespace detail {
-
-template class Singleton<Global>;
 
 Global::Global()
 :
@@ -130,7 +130,7 @@ Global::runTestsAndLog()
 {
   runTests();
 
-  Singleton<ILogger>::get()->logMessage(
+  drutility::Singleton<ILogger>::get()->logMessage(
       false,
       "",
       "",
@@ -140,7 +140,7 @@ Global::runTestsAndLog()
   std::size_t failed = num_failures();
   if (failed == 0)
   {
-    Singleton<ILogger>::get()->logMessage(
+    drutility::Singleton<ILogger>::get()->logMessage(
         false,
         "",
         "",
@@ -150,7 +150,7 @@ Global::runTestsAndLog()
   }
   else
   {
-    Singleton<ILogger>::get()->logMessage(
+    drutility::Singleton<ILogger>::get()->logMessage(
         false,
         "",
         "",

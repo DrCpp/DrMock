@@ -16,40 +16,26 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "Singleton.h"
+#ifndef DRMOCK_SRC_UTILITY_SINGLETON_H
+#define DRMOCK_SRC_UTILITY_SINGLETON_H
 
-namespace drtest { namespace detail {
+#include <memory>
+#include <mutex>
 
-template<typename T>
-std::shared_ptr<T>
-Singleton<T>::get()
-{
-  std::lock_guard lck{Singleton<T>::mtx_()};
-  return Singleton<T>::p_();
-}
+namespace drutility {
 
 template<typename T>
-void
-Singleton<T>::set(std::shared_ptr<T> p)
+class Singleton
 {
-  std::lock_guard lck{Singleton<T>::mtx_()};
-  Singleton<T>::p_() = std::move(p);
-}
+public:
+  static std::shared_ptr<T> get();
+  static void set(std::shared_ptr<T>);
 
-template<typename T>
-std::mutex&
-Singleton<T>::mtx_()
-{
-  static std::mutex mtx{};
-  return mtx;
-}
+private:
+  static std::mutex& mtx_();
+  static std::shared_ptr<T>& p_();
+};
 
-template<typename T>
-std::shared_ptr<T>&
-Singleton<T>::p_()
-{
-  static std::shared_ptr<T> p{};
-  return p;
-}
+} // namespace drutility
 
-}} // namespace drtest::detail
+#endif /* DRMOCK_SRC_UTILITY_SINGLETON_H */

@@ -20,4 +20,4 @@
 
 #include "Singleton.tpp"
 
-template class drtest::detail::Singleton<drtest::detail::ILogger>;
+template class drutility::Singleton<drtest::detail::ILogger>;
