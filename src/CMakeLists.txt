@@ -18,8 +18,8 @@
 add_library(${PROJECT_NAME} SHARED
   mock/MethodCollection.cpp
   mock/StateObject.cpp
-  test/Logger.cpp
-  test/ILogger.cpp
+  utility/Logger.cpp
+  utility/ILogger.cpp
   test/TestFailure.cpp
   test/Global.cpp
   test/TestObject.cpp

@@ -22,5 +22,6 @@
 #include "Interface.h"
 #include "TestMacros.h"
 #include "TestMain.h"
+#include "Logger.h"
 
 #endif /* DRMOCK_SRC_TEST_TEST_H */

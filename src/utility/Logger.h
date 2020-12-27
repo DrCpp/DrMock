@@ -16,49 +16,34 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_TEST_ILOGGER_H
-#define DRMOCK_SRC_TEST_ILOGGER_H
+#ifndef DRMOCK_SRC_UTILITY_LOGGER_H
+#define DRMOCK_SRC_UTILITY_LOGGER_H
 
-#include <ostream>
-#include <sstream>
-#include <string>
+#include <mutex>
 
-#include "Singleton.h"
+#include "ILogger.h"
 
-namespace drtest { namespace detail {
+namespace drutility {
 
-class ILogger
+class Logger : public ILogger
 {
 public:
-  virtual ~ILogger() = default;
-  virtual void logMessage(
+  Logger();
+  void logMessage(
       bool timestamp,
       const std::string& category,
       const std::string& location,
       int line,
       const std::ostream& msg
-    ) = 0;
+    ) override final;
+
+private:
+  std::string mkTimestamp();
+
+  std::mutex mtx_{};
+  std::ostream out_stream_;
 };
 
-}} // namespace drtest::detail
+} // namespace drutility
 
-#define DRTEST_LOG(category, msg) \
-do { \
-  try { \
-    drutility::Singleton<drtest::detail::ILogger>::get()->logMessage( \
-        true, \
-        category, \
-        __FUNCTION__, \
-        __LINE__, \
-        std::stringstream{} << msg \
-      ); \
-   } \
-   catch(...) \
-   {} \
-} while (false)
-#define DRTEST_LOG_DEBUG(msg) DRTEST_LOG("DEBUG", msg)
-#define DRTEST_LOG_INFO(msg) DRTEST_LOG("INFO", msg)
-#define DRTEST_LOG_WARN(msg) DRTEST_LOG("WARN", msg)
-#define DRTEST_LOG_CRIT(msg) DRTEST_LOG("CRIT", msg)
-
-#endif /* DRMOCK_SRC_TEST_ILOGGER_H */
+#endif /* DRMOCK_SRC_UTILITY_LOGGER_H */

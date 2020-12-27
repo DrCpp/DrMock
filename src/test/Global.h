@@ -25,7 +25,7 @@
 #include <vector>
 
 #include "TestObject.h"
-#include "utility/Singleton.h"
+#include "../utility/Singleton.h"
 
 namespace drtest { namespace detail {
 

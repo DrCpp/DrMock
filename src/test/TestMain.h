@@ -26,8 +26,7 @@
 
 #include "FunctionInvoker.h"
 #include "Global.h"
-#include "ILogger.h"
-#include "Logger.h"
+#include "../utility/Logger.h"
 
 namespace drtest { namespace detail {
 
@@ -38,8 +37,8 @@ FunctionInvoker initGlobal{[] () { drutility::Singleton<Global>::set(std::make_s
 int
 main(int argc, char** argv)
 {
-  using ILogger = drtest::detail::ILogger;
-  using Logger = drtest::detail::Logger;
+  using ILogger = drutility::ILogger;
+  using Logger = drutility::Logger;
   using GlobalSingleton = drutility::Singleton<drtest::detail::Global>;
   using LoggerSingleton = drutility::Singleton<ILogger>;
 

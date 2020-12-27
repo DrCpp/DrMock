@@ -20,7 +20,7 @@
 
 #include <sstream>
 
-#include "ILogger.h"
+#include "../utility/ILogger.h"
 #include "TestFailure.h"
 
 namespace drtest { namespace detail {
@@ -41,7 +41,7 @@ void log(
     location += ", " + data;
   }
 
-  drutility::Singleton<ILogger>::get()->logMessage(
+  drutility::Singleton<drutility::ILogger>::get()->logMessage(
       false,
       category,
       location,
