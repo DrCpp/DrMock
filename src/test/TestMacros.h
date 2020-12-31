@@ -19,6 +19,8 @@
 #ifndef DRMOCK_SRC_TEST_TESTMACROS_H
 #define DRMOCK_SRC_TEST_TESTMACROS_H
 
+#include <cmath>
+
 #include "Death.h"
 #include "FunctionInvoker.h"
 #include "Global.h"
@@ -47,10 +49,16 @@ do { if (not (p)) throw drtest::detail::TestFailure{__LINE__, #p}; } while (fals
 #define DRTEST_ASSERT_EQ(lhs, rhs) \
 do { if (not (lhs == rhs)) throw drtest::detail::TestFailure{__LINE__, "==", #lhs, #rhs, lhs, rhs}; } while (false)
 
+#define DRTEST_ASSERT_EQ_FLOAT(lhs, rhs, epsilon) \
+do { if (std::fabs(lhs - rhs) > epsilon) throw drtest::detail::TestFailure{__LINE__, "==", #lhs, #rhs, lhs, rhs}; } while (false)
+
 #define DRTEST_COMPARE(lhs, rhs) DRTEST_ASSERT_EQ(lhs, rhs)
 
 #define DRTEST_ASSERT_NE(lhs, rhs) \
 do { if (not (lhs != rhs)) throw drtest::detail::TestFailure{__LINE__, "!=", #lhs, #rhs, lhs, rhs}; } while (false)
+
+#define DRTEST_ASSERT_NE_FLOAT(lhs, rhs, epsilon) \
+do { if (std::fabs(lhs - rhs) <= epsilon) throw drtest::detail::TestFailure{__LINE__, "==", #lhs, #rhs, lhs, rhs}; } while (false)
 
 #define DRTEST_ASSERT_LE(lhs, rhs) \
 do { if (not (lhs <= rhs)) throw drtest::detail::TestFailure{__LINE__, "<=", #lhs, #rhs, lhs, rhs}; } while (false)

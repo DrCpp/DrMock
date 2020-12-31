@@ -222,3 +222,13 @@ DRTEST_TEST(death_failure_wrong_raise)
 {
   DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT_DEATH(raise(SIGXFSZ), SIGSEGV));
 }
+
+DRTEST_TEST(same_float_are_equal)
+{
+  DRTEST_ASSERT_EQ_FLOAT(1.234, 1.234, 0.00001);
+}
+
+DRTEST_TEST(different_float_are_not_equal)
+{
+  DRTEST_ASSERT_NE_FLOAT(1.233, 1.234, 0.00001);
+}
