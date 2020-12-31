@@ -36,6 +36,12 @@ private:
   static std::shared_ptr<T>& p_();
 };
 
+template<typename T>
+struct SingletonDefault
+{
+  using type = void;
+};
+
 } // namespace drutility
 
 #endif /* DRMOCK_SRC_UTILITY_SINGLETON_H */

@@ -40,6 +40,7 @@ DrMockTest(TESTS
   IsTuplePackEqual.cpp
   MethodCollection.cpp
   BehaviorQueue.cpp
+  Singleton.cpp
   StateBehavior.cpp
   StateObject.cpp
 )

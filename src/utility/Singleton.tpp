@@ -20,6 +20,28 @@
 
 namespace drutility {
 
+namespace detail {
+
+template<typename T, typename U = typename SingletonDefault<T>::type>
+struct MakeSingletonDefault
+{
+  static std::shared_ptr<T> make()
+  {
+    return std::shared_ptr<T>{new U{}};
+  }
+};
+
+template<typename T>
+struct MakeSingletonDefault<T, void>
+{
+  static std::shared_ptr<T> make()
+  {
+    return {};
+  }
+};
+
+} // namespace detail
+
 template<typename T>
 std::shared_ptr<T>
 Singleton<T>::get()
@@ -48,7 +70,7 @@ template<typename T>
 std::shared_ptr<T>&
 Singleton<T>::p_()
 {
-  static std::shared_ptr<T> p{};
+  static std::shared_ptr<T> p{detail::MakeSingletonDefault<T>::make()};
   return p;
 }
 
