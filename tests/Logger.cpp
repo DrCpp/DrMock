@@ -1,4 +1,4 @@
-/* Copyright 2019 Ole Kliemann, Malte Kliemann
+/* Copyright 2020 Ole Kliemann, Malte Kliemann
  *
  * This file is part of DrMock.
  *
@@ -16,15 +16,15 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "ILogger.h"
-#include "Logger.h"
+#include <string>
+#include <memory>
 
-#include "Singleton.tpp"
+#include "test/Test.h"
+#include "utility/ILogger.h"
 
-template<>
-struct drutility::SingletonDefault<drutility::ILogger>
+using namespace drutility;
+
+DRTEST_TEST(has_default_logger)
 {
-  using type = drutility::Logger;
-};
-
-template class drutility::Singleton<drutility::ILogger>;
+  DRTEST_ASSERT(Singleton<ILogger>::get());
+}
