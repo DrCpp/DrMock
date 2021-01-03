@@ -17,7 +17,7 @@
 */
 
 #define DRTEST_USE_QT  // For QSignalSpy!
-#include "test/Test.h"
+#include <drmock/test/Test.h>
 #include "mock/EmitMock.h"
 
 #include <QSignalSpy>

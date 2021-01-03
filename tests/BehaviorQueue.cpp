@@ -19,8 +19,8 @@
 #include <string>
 #include <memory>
 
-#include "test/Test.h"
-#include "mock/BehaviorQueue.h"
+#include <drmock/test/Test.h>
+#include <drmock/mock/BehaviorQueue.h>
 
 using namespace drmock;
 

@@ -200,13 +200,7 @@ function(DrMockModule)
     set(PARSED_ARGS_GENERATOR "DrMockGenerator")
   endif()
 
-  # If PARSED_ARGS_INSTALLFLAG is not set, leave installFlag empty.
-  set(installFlag "")
-  if (${PARSED_ARGS_INSTALLFLAG})
-    set(installFlag "--before-install")
-  else()
-    set(PARSED_ARGS_INCLUDE ${PARSED_ARGS_INCLUDE} ${DrMock_PREFIX_PATH})
-  endif()
+  set(PARSED_ARGS_INCLUDE ${PARSED_ARGS_INCLUDE} ${DrMock_PREFIX_PATH})
 
   # Define a list to hold the paths of the source files.
   set(sources)
@@ -356,7 +350,6 @@ function(DrMockModule)
         ${mockSourcePathAbsolute}
         \"${PARSED_ARGS_ICLASS}\"
         \"${PARSED_ARGS_MOCKCLASS}\"
-        ${installFlag}
         "-I"
         ${includesQuotedList}
         "-F"

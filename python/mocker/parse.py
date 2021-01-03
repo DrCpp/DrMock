@@ -1154,7 +1154,7 @@ class Class:
             hdr.statements.append(EmptyLine())
         # Append an input directive for the interface's header file, and the
         # required headers from drmock.
-        hdr.statements.append(IncludeDirective(Static.prefix + "Mock.h"))
+        hdr.statements.append("#include <drmock/Mock.h>")
         hdr.statements.append(IncludeDirective(interface_file))
         hdr.statements.append(EmptyLine())
         # If `self` is not a template class, then add the declarations
@@ -1810,8 +1810,7 @@ def dump(filename: str, undef: bool = True ):
 def configure(
     std: str,
     includes: List[str] = [],
-    frameworks: List[str] = [],
-    before_install: bool = False
+    frameworks: List[str] = []
 ):
     """ Setup python clang for usage.
 
@@ -1847,9 +1846,3 @@ def configure(
 
     # Get the C++ standard.
     Static.std = std
-
-    # Set the correct include prefix for headers from libdrmock
-    if before_install:
-        Static.prefix = ""
-    else:
-        Static.prefix = "DrMock/"

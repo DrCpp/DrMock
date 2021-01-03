@@ -16,14 +16,14 @@
 # along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 add_library(${PROJECT_NAME} SHARED
-  mock/MethodCollection.cpp
-  mock/StateObject.cpp
-  test/Logger.cpp
-  test/ILogger.cpp
-  test/TestFailure.cpp
-  test/Global.cpp
-  test/TestObject.cpp
-  test/FunctionInvoker.cpp
+  drmock/mock/MethodCollection.cpp
+  drmock/mock/StateObject.cpp
+  drmock/test/Logger.cpp
+  drmock/test/ILogger.cpp
+  drmock/test/TestFailure.cpp
+  drmock/test/Global.cpp
+  drmock/test/TestObject.cpp
+  drmock/test/FunctionInvoker.cpp
 )
 
 # This alias is required for the internal use of the `DrMock_module`
@@ -33,7 +33,6 @@ add_library(${PROJECT_NAME}::Core ALIAS ${PROJECT_NAME})
 target_include_directories(${PROJECT_NAME}
   PUBLIC
     $<INSTALL_INTERFACE:include>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
   PRIVATE
     ${CMAKE_SOURCE_DIR}/src
 )

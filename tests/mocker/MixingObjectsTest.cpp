@@ -19,7 +19,7 @@
 // This test verifies that mixing Qt and non-Qt mocks doesn't cause
 // compiler errors and doesn't change functionality.
 
-#include "test/Test.h"
+#include <drmock/test/Test.h>
 #include "mock/NotAQtObjectMock.h"
 #include "mock/SignalsMock.h"
 
