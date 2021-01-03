@@ -19,7 +19,6 @@
 #ifndef DRMOCK_SRC_MOCK_METHOD_H
 #define DRMOCK_SRC_MOCK_METHOD_H
 
-#include <list>
 #include <memory>
 #include <string>
 #include <vector>
