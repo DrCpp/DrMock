@@ -72,6 +72,28 @@ function(DrMockTest)
     endforeach()
 endfunction()
 
+# drmock_get_qt5_include_dirs(MODULE <module> INCLUDE_DIRS <include_dirs>)
+#
+# Write list of include dirs of Qt5 module <module> to <include_dirs>.
+#
+# Example: drmock_get_qt5_include_dirs(Qt5::Core core_include_dirs)
+function(drmock_get_qt5_include_dirs)
+    cmake_parse_arguments(ARGS
+        ""
+        "MODULE;INCLUDE_DIRS"
+        ""
+        ${ARGN}
+    )
+
+    STRING(REGEX REPLACE
+        "::"
+        ""
+        module_name
+        ${ARGS_MODULE}
+    )
+    set(${ARGS_INCLUDE_DIRS} ${${module_name}_INCLUDE_DIRS} PARENT_SCOPE)
+endfunction()
+
 # DrMockModule(
 #   TARGET
 #   HEADERS header1 [header2 [header3 ...]]
@@ -235,17 +257,8 @@ function(DrMockModule)
         # Add the framework path to the list of framework paths.
         set(PARSED_ARGS_FRAMEWORKS ${PARSED_ARGS_FRAMEWORKS} ${qtFrameworkPath})
 
-        # Remove the namespace from the module designator.
-        STRING(REGEX REPLACE
-            ".*::"
-            ""
-            moduleWithoutNamespace
-            ${module}
-        )
-
-        # Add the include paths to the list of include paths.
-        set(moduleVar "Qt5${moduleWithoutNamespace}_INCLUDE_DIRS")
-        list(APPEND PARSED_ARGS_INCLUDE ${${moduleVar}})
+        drmock_get_qt5_include_dirs(MODULE ${module} INCLUDE_DIRS moduleVar)
+        list(APPEND PARSED_ARGS_INCLUDE ${moduleVar})
 
         # Add the module to the libraries to be linked against.
         set(PARSED_ARGS_LIBS ${PARSED_ARGS_LIBS} ${module})
