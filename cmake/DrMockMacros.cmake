@@ -72,12 +72,12 @@ function(DrMockTest)
     endforeach()
 endfunction()
 
-# drmock_get_qt5_include_dirs(MODULE <module> INCLUDE_DIRS <include_dirs>)
+# drmock_get_qt5_module_include_dirs(MODULE <module> INCLUDE_DIRS <include_dirs>)
 #
 # Write list of include dirs of Qt5 module <module> to <include_dirs>.
 #
-# Example: drmock_get_qt5_include_dirs(Qt5::Core core_include_dirs)
-function(drmock_get_qt5_include_dirs)
+# Example: drmock_get_qt5_module_include_dirs(Qt5::Core core_include_dirs)
+function(drmock_get_qt5_module_include_dirs)
     cmake_parse_arguments(ARGS
         ""
         "MODULE;INCLUDE_DIRS"
@@ -92,6 +92,27 @@ function(drmock_get_qt5_include_dirs)
         ${ARGS_MODULE}
     )
     set(${ARGS_INCLUDE_DIRS} ${${module_name}_INCLUDE_DIRS} PARENT_SCOPE)
+endfunction()
+
+
+function(drmock_get_qt5_module_framework_path)
+    cmake_parse_arguments(ARGS
+        ""
+        "MODULE;FRAMEWORK_PATH;QT_PATH"
+        ""
+        ${ARGN}
+    )
+    if (NOT ARGS_QT_PATH)
+        if (NOT DEFINED ENV{DRMOCK_QT_PATH})
+            message(FATAL_ERROR "drmock_get_qt5_module_framework_path: error: no Qt5 path defined")
+        endif()
+        set(ARGS_QT_PATH $ENV{DRMOCK_QT_PATH})
+    endif()
+
+    string(REGEX REPLACE "\\\\" "" ARGS_QT_PATH ${ARGS_QT_PATH})
+    file(TO_CMAKE_PATH ARGS_QT_PATH ${ARGS_QT_PATH})
+    file(TO_NATIVE_PATH "${ARGS_QT_PATH}/lib" framework_path)
+    set(${ARGS_FRAMEWORK_PATH} ${framework_path} PARENT_SCOPE)
 endfunction()
 
 # DrMockModule(
@@ -244,24 +265,15 @@ function(DrMockModule)
 
     # If Qt is enabled, add the Qt framework and include paths.
     foreach (module ${PARSED_ARGS_QTMODULES})
-        # Check if DRMOCK_QT_PATH is defined.
-        if (NOT DEFINED ENV{DRMOCK_QT_PATH})
-            message(FATAL_ERROR "DrMockModule error: DRMOCK_QT_PATH not defined")
+        if (APPLE)
+            drmock_get_qt5_module_framework_path(MODULE module FRAMEWORK_PATH qtFrameworkPath)
+            list(APPEND PARSED_ARGS_FRAMEWORKS ${qtFrameworkPath})
         endif()
 
-        # Compute the Qt iframework flag for macOS users.
-        set(qtPath $ENV{DRMOCK_QT_PATH})
-        string(REGEX REPLACE "\\\\" "" qtPathUnescaped ${qtPath})
-        file(TO_CMAKE_PATH "${qtPathUnescaped}/lib" qtFrameworkPath)
-
-        # Add the framework path to the list of framework paths.
-        set(PARSED_ARGS_FRAMEWORKS ${PARSED_ARGS_FRAMEWORKS} ${qtFrameworkPath})
-
-        drmock_get_qt5_include_dirs(MODULE ${module} INCLUDE_DIRS moduleVar)
+        drmock_get_qt5_module_include_dirs(MODULE ${module} INCLUDE_DIRS moduleVar)
         list(APPEND PARSED_ARGS_INCLUDE ${moduleVar})
 
-        # Add the module to the libraries to be linked against.
-        set(PARSED_ARGS_LIBS ${PARSED_ARGS_LIBS} ${module})
+        list(APPEND PARSED_ARGS_LIBS ${module})
     endforeach()
 
     # Append the current CMake include path to the include path of the
