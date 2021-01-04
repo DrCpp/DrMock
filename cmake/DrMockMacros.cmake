@@ -95,6 +95,16 @@ function(drmock_get_qt5_module_include_dirs)
 endfunction()
 
 
+# drmock_get_qt5_module_framework_path(MODULE <module>
+#                                      FRAMEWORK_PATH <framework_path>
+#                                      [QT_PATH <qt_path>])
+#
+# Write the framework path of the Qt5 module <module> to <framework_path>.
+#
+# Requires the path to the Qt5 lib/ dir. Specify the path by setting <qt_path> or 
+# the environment variable DRMOCK_QT_PATH.
+#
+# Raises: FATAL_ERROR If path to Qt5 lib/ dir is not specified.
 function(drmock_get_qt5_module_framework_path)
     cmake_parse_arguments(ARGS
         ""
