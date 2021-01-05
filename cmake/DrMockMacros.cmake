@@ -253,25 +253,10 @@ function(DrMockModule)
         set(PARSED_ARGS_GENERATOR "DrMockGenerator")
     endif()
 
-    # If PARSED_ARGS_INSTALLFLAG is not set, leave installFlag empty.
-    set(installFlag "")
-    if (${PARSED_ARGS_INSTALLFLAG})
-        set(installFlag "--before-install")
-    else()
-        set(PARSED_ARGS_INCLUDE ${PARSED_ARGS_INCLUDE} ${DrMock_PREFIX_PATH})
-    endif()
-
     # Define a list to hold the paths of the source files.
     set(sources)
     # Make a directory for the mock object's header and source files.
     file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/DrMock/mock")
-
-    # If Qt is enabled, set the `qt` flag for DrMockGenerator.
-    if (PARSED_ARGS_QTMODULES)
-        set(useQtFlag "--qt")
-    else()
-        set(useQtFlag "")
-    endif()
 
     # If Qt is enabled, add the Qt framework and include paths.
     foreach (module ${PARSED_ARGS_QTMODULES})
@@ -292,8 +277,10 @@ function(DrMockModule)
         DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         PROPERTY INCLUDE_DIRECTORIES
     )
+    message(">>>> includeDirs" ${includeDirs})
+    list(APPEND PARSED_ARGS_INCLUDE ${DrMock_PREFIX_PATH})
     list(APPEND PARSED_ARGS_INCLUDE ${includeDirs})
-    set(PARSED_ARGS_INCLUDE ${PARSED_ARGS_INCLUDE} ${CMAKE_CURRENT_SOURCE_DIR})
+    list(APPEND PARSED_ARGS_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR})
 
     foreach (header ${PARSED_ARGS_HEADERS})
         ###################################
@@ -372,31 +359,42 @@ function(DrMockModule)
         )  # [DIRS]/ExampleMock.cpp
 
         # Prepare quoted argument lists to deal with escaped characters.
-        DrMockQuoteList(includesQuotedList ${PARSED_ARGS_INCLUDE})
-        DrMockQuoteList(frameworksQuotedList ${PARSED_ARGS_FRAMEWORKS})
+        message(">>>> PARSED_ARGS:" ${PARSED_ARGS_INCLUDE})
+        drmock_options_from_list(
+            OPTION "-isystem"
+            INPUT ${PARSED_ARGS_INCLUDE}
+            RESULT generator_option_include_directory
+        )
+        if (PARSED_ARGS_FRAMEWORKS)
+            drmock_options_from_list(
+                OPTION "-iframework"
+                INPUT ${PARSED_ARGS_FRAMEWORKS}
+                RESULT generator_option_iframework
+            )
+        endif()
 
         ###################################
         # Calling the generator.
         ###################################
 
+        message(">>>> GEN:" ${generator_option_include_directory})
+        message("...")
         # Call the mocker command.
+        # TODO Create empty list "command", append until done!
+        set(command)
+        list(APPEND command drmock-gen)
+        list(APPEND command ${absolutePathToHeader})
+        list(APPEND command ${mockHeaderPathAbsolute})
+        list(APPEND command --input-class \"${PARSED_ARGS_ICLASS}\")
+        list(APPEND command --output-class \"${PARSED_ARGS_MOCKCLASS}\")
+        list(APPEND command ${generator_option_include_directory})
+        list(APPEND command ${generator_option_iframework})
+        list(APPEND command "--std=c++${CMAKE_CXX_STANDARD}")
         add_custom_command(
             OUTPUT
                 ${mockHeaderOutputPath}
                 ${mockSourceOutputPath}
-            COMMAND
-                ${PARSED_ARGS_GENERATOR}
-                ${absolutePathToHeader}
-                ${mockHeaderPathAbsolute}
-                ${mockSourcePathAbsolute}
-                \"${PARSED_ARGS_ICLASS}\"
-                \"${PARSED_ARGS_MOCKCLASS}\"
-                ${installFlag}
-                "-I"
-                ${includesQuotedList}
-                "-F"
-                ${frameworksQuotedList}
-                ${useQtFlag}
+            COMMAND ${command}
             DEPENDS ${absolutePathToHeader}
             COMMENT "Mocking ${header}..."
         )
@@ -420,13 +418,23 @@ function(DrMockModule)
     target_link_libraries(${PARSED_ARGS_TARGET} DrMock::Core ${PARSED_ARGS_LIBS})
 endfunction()
 
-# DrMockQuoteList(outputVar [item1 [item2 [item3 ...]]])
+# drmock_options_from_list(OPTION <option>
+#                          INPUT <input1> <input2> ... 
+#                          RESULT <result>)
 #
-# Set `outputVar` to be equal to "item1"[;"item2"[;"item3" ...]]].
-function(DrMockQuoteList outputVar)
-    set(tmp)
-    foreach (elem ${ARGN})
-        set(tmp ${tmp} "\"${elem}\"")
+# Set `result` to be equal to "<option><input1>;<option><input2>;..."
+function(drmock_options_from_list)
+    cmake_parse_arguments(
+        ARGS
+        ""
+        "OPTION;RESULT"
+        "INPUT"
+        ${ARGN}
+    )
+    set(result)
+    message(">>>>>>>input: ${ARGS_INPUT}")
+    foreach (each ${ARGS_INPUT})
+        list(APPEND result "${ARGS_OPTION}\"${each}\"")
     endforeach()
-    set(${outputVar} ${tmp} PARENT_SCOPE)
+    set(${ARGS_RESULT} ${result} PARENT_SCOPE)
 endfunction()

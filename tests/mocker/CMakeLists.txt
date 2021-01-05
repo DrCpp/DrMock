@@ -78,45 +78,45 @@ set(regularTests
   VerifyAllTest.cpp
 )
 
-if (${Qt5_FOUND})
-  #######################################
-  # Test generator with Qt.
-  #######################################
-
-  DrMockModule(
-    TARGET ${PROJECT_NAME}QtMock
-    GENERATOR ${pathToMocker}
-    HEADERS
-      ${regularHeaders}
-      IQObject.h
-      ISlots.h
-      ISignals.h
-      IUseQt.h
-      IEmit.h
-      IDummy.h
-      INotAQtObject.h
-    QTMODULES
-      Qt5::Core Qt5::Test
-    INSTALLFLAG ON
-  )
-  target_compile_options(${PROJECT_NAME}QtMock PRIVATE
-    -Wall -Werror -g -fPIC -pedantic -O0
-  )
-
-  DrMockTest(
-    LIBS
-      ${PROJECT_NAME}QtMock
-    TESTS
-      ${regularTests}
-      QObjectTest.cpp
-      SlotsTest.cpp
-      SignalsTest.cpp
-      UseQtTest.cpp
-      EmitTest.cpp
-      DummyTest.cpp
-      MixingObjectsTest.cpp
-  )
-else()
+# if (${Qt5_FOUND})
+#   #######################################
+#   # Test generator with Qt.
+#   #######################################
+# 
+#   DrMockModule(
+#     TARGET ${PROJECT_NAME}QtMock
+#     GENERATOR ${pathToMocker}
+#     HEADERS
+#       ${regularHeaders}
+#       IQObject.h
+#       ISlots.h
+#       ISignals.h
+#       IUseQt.h
+#       IEmit.h
+#       IDummy.h
+#       INotAQtObject.h
+#     QTMODULES
+#       Qt5::Core Qt5::Test
+#     INSTALLFLAG ON
+#   )
+#   target_compile_options(${PROJECT_NAME}QtMock PRIVATE
+#     -Wall -Werror -g -fPIC -pedantic -O0
+#   )
+# 
+#   DrMockTest(
+#     LIBS
+#       ${PROJECT_NAME}QtMock
+#     TESTS
+#       ${regularTests}
+#       QObjectTest.cpp
+#       SlotsTest.cpp
+#       SignalsTest.cpp
+#       UseQtTest.cpp
+#       EmitTest.cpp
+#       DummyTest.cpp
+#       MixingObjectsTest.cpp
+#   )
+# else()
   #######################################
   # Test generator without Qt.
   #######################################
@@ -135,4 +135,4 @@ else()
     LIBS ${PROJECT_NAME}Mock
     TESTS ${regularTests}
   )
-endif()
+# endif()
