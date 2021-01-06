@@ -122,11 +122,7 @@ install(
     PATTERN "*.pc"
 )
 install(
-  DIRECTORY include/
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
-install(
-  DIRECTORY src/
+  DIRECTORY src/drmock/
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
   FILES_MATCHING
     PATTERN "*.h"

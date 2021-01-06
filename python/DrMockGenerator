@@ -55,11 +55,6 @@ parser.add_argument(
     required=False
 )
 parser.add_argument(
-    "--before-install",
-    action="store_true",
-    default=False
-)
-parser.add_argument(
     "--qt",
     action="store_true",
     default=False
@@ -75,8 +70,7 @@ if args.iframework is None:
 parse.configure(
     args.std,
     args.isystem,
-    args.iframework,
-    args.before_install
+    args.iframework
 )
 # Find the target class.
 cls = parse.get_class(args.interface_pattern, args.input)

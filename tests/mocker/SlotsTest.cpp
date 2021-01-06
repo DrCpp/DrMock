@@ -16,7 +16,7 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "test/Test.h"
+#include <drmock/test/Test.h>
 #include "mock/SlotsMock.h"
 
 using namespace outer::inner;

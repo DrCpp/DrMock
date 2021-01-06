@@ -277,7 +277,6 @@ function(DrMockModule)
         DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         PROPERTY INCLUDE_DIRECTORIES
     )
-    message(">>>> includeDirs" ${includeDirs})
     list(APPEND PARSED_ARGS_INCLUDE ${DrMock_PREFIX_PATH})
     list(APPEND PARSED_ARGS_INCLUDE ${includeDirs})
     list(APPEND PARSED_ARGS_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR})
@@ -359,7 +358,6 @@ function(DrMockModule)
         )  # [DIRS]/ExampleMock.cpp
 
         # Prepare quoted argument lists to deal with escaped characters.
-        message(">>>> PARSED_ARGS:" ${PARSED_ARGS_INCLUDE})
         drmock_options_from_list(
             OPTION "-isystem"
             INPUT ${PARSED_ARGS_INCLUDE}
@@ -377,10 +375,7 @@ function(DrMockModule)
         # Calling the generator.
         ###################################
 
-        message(">>>> GEN:" ${generator_option_include_directory})
-        message("...")
         # Call the mocker command.
-        # TODO Create empty list "command", append until done!
         set(command)
         list(APPEND command drmock-gen)
         list(APPEND command ${absolutePathToHeader})
@@ -432,7 +427,6 @@ function(drmock_options_from_list)
         ${ARGN}
     )
     set(result)
-    message(">>>>>>>input: ${ARGS_INPUT}")
     foreach (each ${ARGS_INPUT})
         list(APPEND result "${ARGS_OPTION}\"${each}\"")
     endforeach()
