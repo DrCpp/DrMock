@@ -359,7 +359,7 @@ function(DrMockModule)
 
         # Prepare quoted argument lists to deal with escaped characters.
         drmock_options_from_list(
-            OPTION "-isystem"
+            OPTION "-I"
             INPUT ${PARSED_ARGS_INCLUDE}
             RESULT generator_option_include_directory
         )
