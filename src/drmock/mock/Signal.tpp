@@ -16,10 +16,6 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifdef DRMOCK_USE_QT
-#include <QObject>
-#endif
-
 namespace drmock {
 
 template<typename Parent, typename... Args>
@@ -44,13 +40,7 @@ Signal<Parent, Args...>::invoke_impl_(
     const std::index_sequence<Is...>&
   )
 {
-#ifdef DRMOCK_USE_QT
-  emit (parent->*signal_)(std::get<Is>(args_)...);
-#else
-  throw std::runtime_error{
-      "Attempting to emit signal without defining DRMOCK_USE_QT"
-    };
-#endif
+  (parent->*signal_)(std::get<Is>(args_)...);
 }
 
 } // namespace drmock
