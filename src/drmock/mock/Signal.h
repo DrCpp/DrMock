@@ -25,16 +25,14 @@ namespace drmock {
 
 /* Signal
 
-Class template that represents a Qt signal emit (not the signal!).
+Class template that represents a Qt signal emit (in fact, a method call).
 
 The signal is ctor'ed from a member function pointer to the signal and
 the arguments of the emit. Note the lack of any reference to the
 invoking QObject.
 
 The invoking QObject occurs only in the `invoke` method call, which will
-invoke/execute the `emit`, _provided that the `DRMOCK_USE_QT` macro is
-set_ (this will always be the case if the mock object code was generated
-using the DrMock CMake macros). Otherwise, an exception will be thrown!
+invoke/execute the `emit`.
 */
 
 template<typename Parent, typename... Args>
