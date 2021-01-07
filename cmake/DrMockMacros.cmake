@@ -210,7 +210,7 @@ function(DrMockModule)
         PARSED_ARGS
         ""
         "TARGET;IFILE;MOCKFILE;ICLASS;MOCKCLASS;GENERATOR;INSTALLFLAG"
-        "HEADERS;LIBS;QTMODULES;INCLUDE;FRAMEWORKS"
+        "HEADERS;LIBS;QTMODULES;INCLUDE;FRAMEWORKS;OPTIONS"
         ${ARGN}
     )
 
@@ -385,6 +385,7 @@ function(DrMockModule)
         list(APPEND command ${generator_option_include_directory})
         list(APPEND command ${generator_option_iframework})
         list(APPEND command "--std=c++${CMAKE_CXX_STANDARD}")
+        list(APPEND command ${PARSED_ARGS_OPTIONS})
         add_custom_command(
             OUTPUT
                 ${mockHeaderOutputPath}

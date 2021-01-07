@@ -98,6 +98,7 @@ if (${Qt5_FOUND})
     QTMODULES
       Qt5::Core Qt5::Test
     INSTALLFLAG ON
+    OPTIONS -fPIC
   )
   target_compile_options(${PROJECT_NAME}QtMock PRIVATE
     -Wall -Werror -g -fPIC -pedantic -O0

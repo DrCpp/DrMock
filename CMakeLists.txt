@@ -42,6 +42,7 @@ find_library(
     /Library/Developer/CommandLineTools/usr
     /usr/lib/llvm-7/lib
 )
+message(STATUS LIBCLANG_PATH=${LIBCLANG_PATH})
 if (NOT LIBCLANG_PATH)
   message(FATAL_ERROR "libclang not found.")
 endif()
@@ -60,6 +61,7 @@ if (DEFINED ENV{DRMOCK_QT_PATH})
       Core
       Test
   )
+  message(STATUS QT_PATH=$ENV{DRMOCK_QT_PATH})
   if (${Qt5_FOUND})
     # Set CMP0071 to NEW so that generated files are automoc'ed.
     cmake_policy(SET CMP0071 NEW)
