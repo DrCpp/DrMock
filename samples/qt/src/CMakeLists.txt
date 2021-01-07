@@ -29,5 +29,6 @@ DrMockModule(
     Qt5::Widgets
   HEADERS
     IFoo.h
+  OPTIONS -fPIC
 )
 
