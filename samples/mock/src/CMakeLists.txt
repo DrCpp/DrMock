@@ -22,14 +22,8 @@ add_library(DrMockSampleMock SHARED
   Warehouse.cpp
 )
 
-# Get the path to the mocker script.
-file(TO_CMAKE_PATH
-  ${CMAKE_SOURCE_DIR}/../../python/DrMockGenerator
-  pathToMocker
-)
 DrMockModule(
   TARGET DrMockSampleMockMocked
-  GENERATOR ${pathToMocker}
   HEADERS
     IWarehouse.h
 )

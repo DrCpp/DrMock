@@ -17,24 +17,10 @@
 
 cmake_minimum_required(VERSION 3.10)
 
-#######################################
-# Project data.
-#######################################
-
 project(DrMockSampleBasic)
 set(CMAKE_CXX_STANDARD 17)
 
-#######################################
-# Dependencies.
-#######################################
-
-find_package(DrMock COMPONENTS Core REQUIRED)
-
-#######################################
-# Testing.
-#######################################
+find_package(DrMock)
 
 enable_testing()
-DrMockTest(TESTS
-  basicTest.cpp
-)
+DrMockTest(TESTS basicTest.cpp)

@@ -17,30 +17,14 @@
 
 cmake_minimum_required(VERSION 3.10)
 
-#######################################
-# Project data.
-#######################################
-
 project(DrMockSampleQt)
 set(CMAKE_CXX_STANDARD 17)
 
-#######################################
-# Dependencies.
-#######################################
-
-find_package(DrMock COMPONENTS Core REQUIRED)
+find_package(DrMock)
 DrMockEnableQt()
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
-#######################################
-# Sources.
-#######################################
-
 add_subdirectory(src)
-
-#######################################
-# Testing.
-#######################################
 
 enable_testing()
 add_subdirectory(tests)
