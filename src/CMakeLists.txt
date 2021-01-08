@@ -28,7 +28,7 @@ add_library(${PROJECT_NAME} SHARED
 
 # This alias is required for the internal use of the `DrMock_module`
 # macro.
-add_library(${PROJECT_NAME}::Core ALIAS ${PROJECT_NAME})
+add_library(${PROJECT_NAME}::DrMock ALIAS ${PROJECT_NAME})
 
 target_include_directories(${PROJECT_NAME}
   PUBLIC

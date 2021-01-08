@@ -114,8 +114,7 @@ install(
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
-# Uncomment to alias the libraries on export.
-set_target_properties(${PROJECT_NAME} PROPERTIES EXPORT_NAME Core)
+set_target_properties(${PROJECT_NAME} PROPERTIES EXPORT_NAME DrMock)
 
 install(
   DIRECTORY pkgconfig/
