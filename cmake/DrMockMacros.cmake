@@ -56,7 +56,7 @@ function(DrMockTest)
         add_executable("${name}" "${path}" ${PARSED_ARGS_RESOURCES})
         target_link_libraries(
             "${name}"
-            DrMock::Core
+            DrMock::DrMock
             ${PARSED_ARGS_LIBS}
         )
         add_test(NAME "${name}" COMMAND "${name}")
@@ -411,14 +411,14 @@ function(DrMockModule)
         ${CMAKE_CURRENT_BINARY_DIR}/DrMock
     )
     # Link against DrMock and the other provided libs.
-    target_link_libraries(${PARSED_ARGS_TARGET} DrMock::Core ${PARSED_ARGS_LIBS})
+    target_link_libraries(${PARSED_ARGS_TARGET} DrMock::DrMock ${PARSED_ARGS_LIBS})
 endfunction()
 
 # drmock_options_from_list(OPTION <option>
 #                          INPUT <input1> <input2> ... 
 #                          RESULT <result>)
 #
-# Set `result` to be equal to "<option><input1>;<option><input2>;..."
+# Set `result` to "<option><input1>;<option><input2>;..."
 function(drmock_options_from_list)
     cmake_parse_arguments(
         ARGS
