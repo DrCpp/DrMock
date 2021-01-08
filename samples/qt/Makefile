@@ -10,7 +10,8 @@ endif
 
 .PHONY: default
 default:
-	mkdir -p build && cd build && cmake .. -DCMAKE_PREFIX_PATH="${DRMOCK_QT_PATH};../../build/install"
+	mkdir -p build
+	cd build && cmake .. -DCMAKE_PREFIX_PATH="${DRMOCK_QT_PATH};../../build/install"
 	cd build && make -j$(num_threads) && ctest --output-on-failure
 
 .PHONY: clean
