@@ -1,3 +1,0 @@
-wheel
-clang >= 6.0.0
-setuptools >= 41.4.0

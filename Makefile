@@ -10,14 +10,14 @@ endif
 
 .PHONY: default
 default:
-	mkdir -p build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=install -DCMAKE_PREFIX_PATH=${DRMOCK_QT_PATH}
-	cd python && make && cd ..
+	mkdir -p build
+	cd build && cmake .. -DCMAKE_INSTALL_PREFIX=install -DCMAKE_PREFIX_PATH=${DRMOCK_QT_PATH}
 	cd build && make -j$(num_threads) && ctest --output-on-failure
 
 .PHONY: clean
 clean:
-	rm -fr build && rm -fr prefix
-	cd python && make clean
+	rm -fr build
+	rm -fr prefix
 
 .PHONY: install
 install:

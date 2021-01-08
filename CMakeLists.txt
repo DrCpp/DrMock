@@ -47,12 +47,6 @@ if (NOT LIBCLANG_PATH)
   message(FATAL_ERROR "libclang not found.")
 endif()
 
-# Write the libclang path to the mocker.cfg.
-configure_file(
-  ${CMAKE_SOURCE_DIR}/python/mocker/mocker.cfg.in
-  ${CMAKE_SOURCE_DIR}/python/mocker/mocker.cfg
-)
-
 # If enabled, find Qt.
 if (DEFINED ENV{DRMOCK_QT_PATH})
   find_package(
