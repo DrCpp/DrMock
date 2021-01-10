@@ -104,7 +104,7 @@ if (${Qt5_FOUND})
     -Wall -Werror -g -fPIC -pedantic -O0
   )
 
-  DrMockTest(
+  drmock_test(
     LIBS
       ${PROJECT_NAME}QtMock
     TESTS
@@ -132,7 +132,7 @@ else()
     -Wall -Werror -g -fPIC -pedantic -O0
   )
 
-  DrMockTest(
+  drmock_test(
     LIBS ${PROJECT_NAME}Mock
     TESTS ${regularTests}
   )

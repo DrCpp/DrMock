@@ -23,4 +23,4 @@ set(CMAKE_CXX_STANDARD 17)
 find_package(DrMock)
 
 enable_testing()
-DrMockTest(TESTS basicTest.cpp)
+drmock_test(TESTS basicTest.cpp)

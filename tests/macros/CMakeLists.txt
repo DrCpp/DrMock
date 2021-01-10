@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
-DrMockTest(
+drmock_test(
   TESTS
     resources/Resources.cpp
   RESOURCES

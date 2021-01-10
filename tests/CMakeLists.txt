@@ -32,7 +32,7 @@ file(TO_CMAKE_PATH
 # Test Core.
 #######################################
 
-DrMockTest(TESTS
+drmock_test(TESTS
   Behavior.cpp
   IsEqual.cpp
   Test.cpp
@@ -48,7 +48,7 @@ DrMockTest(TESTS
 if (${Qt5_FOUND})
   add_library(DrMockSignalDummy SHARED Dummy.cpp)
   target_link_libraries(DrMockSignalDummy Qt5::Core Qt5::Test)
-  DrMockTest(
+  drmock_test(
     TESTS Signal.cpp
     LIBS DrMockSignalDummy
   )

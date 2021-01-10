@@ -38,7 +38,7 @@ endmacro()
 #
 # The RESOURCES parameter may be used to include other source files
 # `res1`, etc. in the executable.
-function(DrMockTest)
+function(drmock_test)
     cmake_parse_arguments(
         ARGS
         ""
@@ -48,28 +48,23 @@ function(DrMockTest)
     )
     foreach (path ${ARGS_TESTS})
         # Check if `path` exists, throw otherwise.
-        get_filename_component(absolutePath ${path} ABSOLUTE)
-        if (NOT EXISTS ${absolutePath})
-            message(FATAL_ERROR "DrMockTest error: Failed to find ${path}.")
+        get_filename_component(absolute_path ${path} ABSOLUTE)
+        if (NOT EXISTS ${absolute_path})
+            message(FATAL_ERROR "drmock_test: error: failed to find ${path}")
         endif()
 
-        # Register test.
-        get_filename_component(name "${path}" NAME_WE)
-        add_executable("${name}" "${path}" ${ARGS_RESOURCES})
+        get_filename_component(name ${path} NAME_WE)
+        add_executable(${name} ${path} ${ARGS_RESOURCES})
         target_link_libraries(
-            "${name}"
+            ${name}
             DrMock::DrMock
             ${ARGS_LIBS}
         )
-        add_test(NAME "${name}" COMMAND "${name}")
+        add_test(NAME ${name} COMMAND ${name})
         if (NOT ARGS_OPTIONS)
-            target_compile_options("${name}" PRIVATE
-                -Wall -Werror -g -fPIC -pedantic -O0
-            )
+            target_compile_options(${name} PRIVATE -Wall -Werror -g -fPIC -pedantic -O0)
         else()
-            target_compile_options("${name}" PRIVATE
-                ${ARGS_OPTIONS}
-            )
+            target_compile_options(${name} PRIVATE ${ARGS_OPTIONS})
         endif()
     endforeach()
 endfunction()
