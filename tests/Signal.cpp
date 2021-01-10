@@ -20,8 +20,8 @@
 
 #define DRTEST_USE_QT
 #define DRMOCK_USE_QT  // This is usually set by the mocker.
-#include <drmock/test/Test.h>
-#include <drmock/mock/Signal.h>
+#include <DrMock/test/Test.h>
+#include <DrMock/mock/Signal.h>
 #include "Dummy.h"
 
 // FIXME Check that the correct arguments are forwarded to the signal in

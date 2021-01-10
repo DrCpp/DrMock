@@ -18,8 +18,8 @@
 
 #include <string>
 
-#include <drmock/test/Test.h>
-#include <drmock/mock/StateBehavior.h>
+#include <DrMock/test/Test.h>
+#include <DrMock/mock/StateBehavior.h>
 
 // FIXME Check that the correct arguments are forwarded to the signal in
 // the following tests:

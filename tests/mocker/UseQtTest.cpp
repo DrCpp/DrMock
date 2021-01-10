@@ -17,7 +17,7 @@
 */
 
 #define DRTEST_USE_QT
-#include <drmock/test/Test.h>
+#include <DrMock/test/Test.h>
 #include "mock/UseQtMock.h"
 
 #include <QEventLoop>

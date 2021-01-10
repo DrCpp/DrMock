@@ -60,7 +60,7 @@ public:
   }
 };
 
-}}} // namespace drmock::mock_implementations
+}}} // namespace DrMock::mock_implementations
 
 namespace outer { namespace inner {
 
@@ -68,11 +68,11 @@ class FuncMock final : public IFunc
 {
 
 public:
-  mutable drmock::mock_implementations::DRTEST_Object_IFunc mock{};
+  mutable DrMock::mock_implementations::DRTEST_Object_IFunc mock{};
   std :: vector < float > gParameters(const std :: shared_ptr < std :: unordered_map < int , std :: string >> & a0, float a1, std :: string a2) override
   {
     auto& result = *mock.gParameters().call(a0, std::move(a1), std::move(a2));
-    return std::forward<std :: vector < float >>(drmock::moveIfNotCopyConstructible(result));
+    return std::forward<std :: vector < float >>(DrMock::moveIfNotCopyConstructible(result));
   }
   void fParameters(int a0, std :: vector < float > a1) override
   {

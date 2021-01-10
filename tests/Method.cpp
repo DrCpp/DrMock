@@ -19,8 +19,8 @@
 #include <string>
 #include <memory>
 
-#include <drmock/test/Test.h>
-#include <drmock/mock/Method.h>
+#include <DrMock/test/Test.h>
+#include <DrMock/mock/Method.h>
 
 class Dummy {};
 

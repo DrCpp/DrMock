@@ -18,7 +18,7 @@
 
 #include <iostream>
 
-#include <drmock/test/Test.h>
+#include <DrMock/test/Test.h>
 
 DRTEST_TEST(initTestCase)
 {

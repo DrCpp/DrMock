@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <drmock/test/Test.h>
-#include <drmock/mock/detail/IsTuplePackEqual.h>
+#include <DrMock/test/Test.h>
+#include <DrMock/mock/detail/IsTuplePackEqual.h>
 
 using namespace drmock::detail;
 
