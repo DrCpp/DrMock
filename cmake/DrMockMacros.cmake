@@ -139,6 +139,30 @@ function(drmock_remove_file_extension)
 endfunction()
 
 
+function(drmock_join_paths)
+    cmake_parse_arguments(
+        ARGS
+        ""
+        "RESULT"
+        "PATHS"
+        ${ARGN}
+    )
+
+    foreach (path ${ARGS_PATHS})
+        file(TO_CMAKE_PATH path ${path})
+        if (NOT _result)
+            set(_result ${path})
+            continue()
+        endif()
+        set(_result "${_result}/${path}")
+    endforeach()
+    file(TO_NATIVE_PATH ${_result} _result)
+
+    set(${ARGS_RESULT} ${_result} PARENT_SCOPE)
+endfunction()
+
+
+
 function(drmock_path_to_output)
     cmake_parse_arguments(
         ARGS
@@ -152,7 +176,7 @@ function(drmock_path_to_output)
 
     get_filename_component(absolutePathToHeader ${header} ABSOLUTE) # /[...]/project/[DIRS]/IExample.h
     get_filename_component(absoluteDir ${absolutePathToHeader} DIRECTORY) #/[...]/project/[DIRS]
-    file(RELATIVE_PATH relativePathToHeader ${CMAKE_CURRENT_SOURCE_DIR} "${absoluteDir}")  # [DIRS]
+    file(RELATIVE_PATH relativePathToHeader ${CMAKE_CURRENT_SOURCE_DIR} ${absoluteDir})  # [DIRS]
     # If `relativePathToHeader` is empty, set it to equal to the current
     # path. This will later allowing uncompilcated path joins.
     if ("${relativePathToHeader}" EQUAL "")
@@ -183,17 +207,20 @@ function(drmock_path_to_output)
     # Compute the mock object's header and source file names.
     set(mockHeaderFilename
         "${mockFilenameWithoutExtension}${headerFileExtension}"
-    )  # ExampleMocke.h, ExampleMock.hpp
+    )  # ExampleMock.h, ExampleMock.hpp
     set(mockSourceFilename ${mockFilenameWithoutExtension}.cpp)  # ExampleMock.cpp
     # Create a directory for the mock object's header and source files.
-    file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/DrMock/mock/${relativePathToHeader}")
+    drmock_join_paths(RESULT path_to_mock_subdirectory
+                      PATHS ${CMAKE_CURRENT_BINARY_DIR} DrMock/mock ${relativePathToHeader})
+    file(MAKE_DIRECTORY ${path_to_mock_subdirectory})
     # Compute the path to the mock object's header and source files
     # relative to cmake's current binary source directory.
-    set(_output_header "DrMock/mock/${relativePathToHeader}/${mockHeaderFilename}")
-    set(_output_source "DrMock/mock/${relativePathToHeader}/${mockSourceFilename}")
-    # Compute the path to the mock object's header and source files
-    # relative to the working directory of the mock script (at the
-    # moment, this is cmake's current binary source directory.
+    drmock_join_paths(
+        RESULT _output_header
+        PATHS DrMock/mock ${relativePathToHeader} ${mockHeaderFilename})
+    drmock_join_paths(
+        RESULT _output_source
+        PATHS DrMock/mock ${relativePathToHeader} ${mockSourceFilename})
 
     set(${ARGS_OUTPUT_HEADER} ${_output_header} PARENT_SCOPE)
     set(${ARGS_OUTPUT_SOURCE} ${_output_source} PARENT_SCOPE)
@@ -248,10 +275,15 @@ function(DrMockModule)
         set(ARGS_GENERATOR "DrMockGenerator")
     endif()
 
+    # Make a directory for the mock object's header and source files.
+    drmock_join_paths(RESULT drmock_directory
+                      PATHS ${CMAKE_CURRENT_BINARY_DIR} DrMock)
+    drmock_join_paths(RESULT mock_directory
+                      PATHS drmock_directory mock)
+    file(MAKE_DIRECTORY mock_directory)
+
     # Define a list to hold the paths of the source files.
     set(sources)
-    # Make a directory for the mock object's header and source files.
-    file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/DrMock/mock")
 
     # If Qt is enabled, add the Qt framework and include paths.
     foreach (module ${ARGS_QTMODULES})
@@ -288,8 +320,13 @@ function(DrMockModule)
             OUTPUT_SOURCE mockSourceOutputPath
         )
         get_filename_component(absolutePathToHeader ${header} ABSOLUTE)
-        set(mockHeaderPathAbsolute "${CMAKE_CURRENT_BINARY_DIR}/${mockHeaderOutputPath}")  # [DIRS]/ExampleMock.[ext]
-        set(mockSourcePathAbsolute "${CMAKE_CURRENT_BINARY_DIR}/${mockSourceOutputPath}")  # [DIRS]/ExampleMock.cpp
+
+        # Compute the path to the mock object's header and sourcfiles
+        # relative to the working directory of the mock script (at the
+        # moment, this is cmake's current binary source directory.
+        drmock_join_paths(
+            RESULT path_from_working_dir_to_output_header
+            PATHS ${CMAKE_CURRENT_BINARY_DIR} ${mockHeaderOutputPath})
 
         # Prepare quoted argument lists to deal with escaped characters.
         drmock_options_from_list(
@@ -313,7 +350,7 @@ function(DrMockModule)
         set(command)
         list(APPEND command drmock-gen)
         list(APPEND command ${absolutePathToHeader})
-        list(APPEND command ${mockHeaderPathAbsolute})
+        list(APPEND command ${path_from_working_dir_to_output_header})
         list(APPEND command --input-class \"${ARGS_ICLASS}\")
         list(APPEND command --output-class \"${ARGS_MOCKCLASS}\")
         list(APPEND command ${generator_option_include_directory})
@@ -329,22 +366,14 @@ function(DrMockModule)
             COMMENT "Mocking ${header}..."
         )
 
-        # Add the source path to the list of sources.
         set(sources ${sources} ${mockSourceOutputPath})
         if (ARGS_QTMODULES)
-            set(sources ${sources} ${header})
+            set(sources ${sources} ${header})  # Need header when using AUTO_MOC!
         endif()
     endforeach()
 
-    # Create the mock library and link it against DrMock.
     add_library(${ARGS_TARGET} SHARED ${sources})
-    # Include the headers in the mock directory.
-    target_include_directories(
-        ${ARGS_TARGET}
-        PUBLIC
-        ${CMAKE_CURRENT_BINARY_DIR}/DrMock
-    )
-    # Link against DrMock and the other provided libs.
+    target_include_directories(${ARGS_TARGET} PUBLIC ${drmock_directory})
     target_link_libraries(${ARGS_TARGET} DrMock::DrMock ${ARGS_LIBS})
 endfunction()
 
