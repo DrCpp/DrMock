@@ -366,9 +366,9 @@ function(DrMockModule)
             COMMENT "Mocking ${header}..."
         )
 
-        set(sources ${sources} ${mockSourceOutputPath})
+        list(APPEND sources ${mockSourceOutputPath})
         if (ARGS_QTMODULES)
-            set(sources ${sources} ${header})  # Need header when using AUTO_MOC!
+            list(APPEND sources ${header})  # Need header when using AUTO_MOC!
         endif()
     endforeach()
 
