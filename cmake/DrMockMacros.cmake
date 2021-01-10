@@ -15,10 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
+
 macro(DrMockEnableQt)
     cmake_policy(SET CMP0071 NEW)
     set(CMAKE_AUTOMOC ON)
 endmacro()
+
 
 # DrMockTest(
 #   TESTS test1 [test2 [test3 ...]]
@@ -38,13 +40,13 @@ endmacro()
 # `res1`, etc. in the executable.
 function(DrMockTest)
     cmake_parse_arguments(
-        PARSED_ARGS
+        ARGS
         ""
         ""
         "LIBS;TESTS;OPTIONS;RESOURCES"
         ${ARGN}
     )
-    foreach (path ${PARSED_ARGS_TESTS})
+    foreach (path ${ARGS_TESTS})
         # Check if `path` exists, throw otherwise.
         get_filename_component(absolutePath ${path} ABSOLUTE)
         if (NOT EXISTS ${absolutePath})
@@ -53,24 +55,25 @@ function(DrMockTest)
 
         # Register test.
         get_filename_component(name "${path}" NAME_WE)
-        add_executable("${name}" "${path}" ${PARSED_ARGS_RESOURCES})
+        add_executable("${name}" "${path}" ${ARGS_RESOURCES})
         target_link_libraries(
             "${name}"
             DrMock::DrMock
-            ${PARSED_ARGS_LIBS}
+            ${ARGS_LIBS}
         )
         add_test(NAME "${name}" COMMAND "${name}")
-        if (NOT PARSED_ARGS_OPTIONS)
+        if (NOT ARGS_OPTIONS)
             target_compile_options("${name}" PRIVATE
                 -Wall -Werror -g -fPIC -pedantic -O0
             )
         else()
             target_compile_options("${name}" PRIVATE
-                ${PARSED_ARGS_OPTIONS}
+                ${ARGS_OPTIONS}
             )
         endif()
     endforeach()
 endfunction()
+
 
 # drmock_get_qt5_module_include_dirs(MODULE <module> INCLUDE_DIRS <include_dirs>)
 #
@@ -125,89 +128,10 @@ function(drmock_get_qt5_module_framework_path)
     set(${ARGS_FRAMEWORK_PATH} ${framework_path} PARENT_SCOPE)
 endfunction()
 
-# DrMockModule(
-#   TARGET
-#   HEADERS header1 [header2 [header3 ...]]
-#   [IFILE]
-#   [MOCKFILE]
-#   [ICLASS]
-#   [MOCKCLASS]
-#   [GENERATOR]
-#   [LIBS lib1 [lib2 [lib3 ...]]]
-#   [QTMODULES module1 [module2 [module3 ...]]]
-#   [INCLUDE include1 [include2 [include3 ...]]]
-#   [FRAMEWORKS framework1 [framework2 [framework3 ...]]]
-# )
-#
-# Create a library `TARGET` that contains mock objects for the
-# specified header files.
-#
-# The name of the output files is determined by matching each input
-# filename (with extensions removed) against `IFILE` and replacing the
-# subexpression character `\\1` in `mockFile` with the content of the
-# unique capture group of `IFILE`, then adding on the previously removed
-# file extension. The class name of the mock object is computed in
-# analogous fashion.
-#
-# TARGET
-#   The name of the library that is created.
-#
-# HEADERS
-#   A list of header files. Every header file must match the regex
-#   provided via the `IFILE` argument.
-#
-# IFILE
-#   A regex that describes the pattern that matches the project's
-#   interface header filenames. The regex must contain exactly one
-#   capture group that captures the unadorned filename. The default
-#   value is ``I([a-zA-Z0-9].*)"`.
-#
-# MOCKFILE
-#   A string that describes the pattern that the project's mock object
-#   header filenames match. The string must contain exactly one
-#   subexpression character `"\\1"`. The default value is `"\\1Mock"`.
-#
-# ICLASS
-#   A regex that describes the pattern that matches the project's
-#   interface class names. The regex must contain exactly one capture
-#   group that captures the unadorned class name. Each of the specified
-#   header files must contain exactly one class that matches this regex.
-#   The default value is `IFILE`.
-#
-# MOCKCLASS
-#   A string that describes the pattern that the project's mock object
-#   class names match. The regex must contain exactly one subexpression
-#   character `"\\1"`. The default value is `MOCKFILE`.
-#
-# GENERATOR
-#   A path to the generator script of DrMock. Default value is the
-#   current path.
-#
-# LIBS
-#   A list of libraries that `TARGET` is linked against. Default value
-#   is undefined (treated as empty list).
-#
-# QTMODULES
-#   A list of Qt5 modules that `TARGET` is linked against. If
-#   `QTMODULES` is defined (even if it's empty), the `HEADERS` will be
-#   added to the sources of `TARGET`, thus allowing the interfaces that
-#   are Q_OBJECT to be mocked. Default value is undefined.
-#
-# INCLUDE
-#   A list of include path's that are required to parse the `HEADERS`.
-#   The include paths of Qt5 modules passed in the `QTMODULES` parameter
-#   are automatically added to this list.
 
-#   The default value contains ${CMAKE_CURRENT_SOURCE_DIR} (the
-#   directory that `DrMockModule` is called from) and the current
-#   directory's include path.
-#
-# FRAMEWORKS
-#   A list of macOS framework path's that are required to parse the
-#   `HEADERS`. Default value is undefined (treated as empty list).
 function(DrMockModule)
     cmake_parse_arguments(
-        PARSED_ARGS
+        ARGS
         ""
         "TARGET;IFILE;MOCKFILE;ICLASS;MOCKCLASS;GENERATOR;INSTALLFLAG"
         "HEADERS;LIBS;QTMODULES;INCLUDE;FRAMEWORKS;OPTIONS"
@@ -215,17 +139,17 @@ function(DrMockModule)
     )
 
     # Check for missing arguments.
-    if (NOT PARSED_ARGS_TARGET)
+    if (NOT ARGS_TARGET)
         message(FATAL_ERROR "DrMockModule error: TARGET parameter missing")
     endif()
 
     # Check if HEADERS is non-empty.
-    if (NOT PARSED_ARGS_HEADERS)
+    if (NOT ARGS_HEADERS)
         message(FATAL_ERROR "DrMockModule error: HEADER parameter missing or empty")
     endif()
 
     # Check that all HEADERS exist.
-    foreach(filename ${PARSED_ARGS_HEADERS})
+    foreach(filename ${ARGS_HEADERS})
         get_filename_component(absolutePathToFilename ${filename} ABSOLUTE)
         if (NOT EXISTS ${absolutePathToFilename})
             message(FATAL_ERROR "DrMockModule error: file ${filename} not found")
@@ -233,24 +157,24 @@ function(DrMockModule)
     endforeach()
 
     # Optional arguments.
-    if (NOT PARSED_ARGS_ICLASS)
-        set(PARSED_ARGS_ICLASS "I([a-zA-Z0-9].*)")
+    if (NOT ARGS_ICLASS)
+        set(ARGS_ICLASS "I([a-zA-Z0-9].*)")
     endif()
 
-    if (NOT PARSED_ARGS_MOCKCLASS)
-        set(PARSED_ARGS_MOCKCLASS "\\1Mock")
+    if (NOT ARGS_MOCKCLASS)
+        set(ARGS_MOCKCLASS "\\1Mock")
     endif()
 
-    if(NOT PARSED_ARGS_IFILE)
-        set(PARSED_ARGS_IFILE ${PARSED_ARGS_ICLASS})
+    if(NOT ARGS_IFILE)
+        set(ARGS_IFILE ${ARGS_ICLASS})
     endif()
 
-    if (NOT PARSED_ARGS_MOCKFILE)
-        set(PARSED_ARGS_MOCKFILE ${PARSED_ARGS_MOCKCLASS})
+    if (NOT ARGS_MOCKFILE)
+        set(ARGS_MOCKFILE ${ARGS_MOCKCLASS})
     endif()
 
-    if (NOT PARSED_ARGS_GENERATOR)
-        set(PARSED_ARGS_GENERATOR "DrMockGenerator")
+    if (NOT ARGS_GENERATOR)
+        set(ARGS_GENERATOR "DrMockGenerator")
     endif()
 
     # Define a list to hold the paths of the source files.
@@ -259,16 +183,16 @@ function(DrMockModule)
     file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/DrMock/mock")
 
     # If Qt is enabled, add the Qt framework and include paths.
-    foreach (module ${PARSED_ARGS_QTMODULES})
+    foreach (module ${ARGS_QTMODULES})
         if (APPLE)
             drmock_get_qt5_module_framework_path(MODULE module FRAMEWORK_PATH qtFrameworkPath)
-            list(APPEND PARSED_ARGS_FRAMEWORKS ${qtFrameworkPath})
+            list(APPEND ARGS_FRAMEWORKS ${qtFrameworkPath})
         endif()
 
         drmock_get_qt5_module_include_dirs(MODULE ${module} INCLUDE_DIRS moduleVar)
-        list(APPEND PARSED_ARGS_INCLUDE ${moduleVar})
+        list(APPEND ARGS_INCLUDE ${moduleVar})
 
-        list(APPEND PARSED_ARGS_LIBS ${module})
+        list(APPEND ARGS_LIBS ${module})
     endforeach()
 
     # Append the current CMake include path to the include path of the
@@ -277,11 +201,11 @@ function(DrMockModule)
         DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         PROPERTY INCLUDE_DIRECTORIES
     )
-    list(APPEND PARSED_ARGS_INCLUDE ${DrMock_PREFIX_PATH})
-    list(APPEND PARSED_ARGS_INCLUDE ${includeDirs})
-    list(APPEND PARSED_ARGS_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR})
+    list(APPEND ARGS_INCLUDE ${DrMock_PREFIX_PATH})
+    list(APPEND ARGS_INCLUDE ${includeDirs})
+    list(APPEND ARGS_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR})
 
-    foreach (header ${PARSED_ARGS_HEADERS})
+    foreach (header ${ARGS_HEADERS})
         ###################################
         # Path computations.
         ###################################
@@ -321,7 +245,7 @@ function(DrMockModule)
         )  # IExample
         # Strip the interface cast from the file name.
         STRING(REGEX REPLACE
-            ${PARSED_ARGS_IFILE}
+            ${ARGS_IFILE}
             "\\1"
             unadornedFilename
             ${headerFilenameWithoutExtension}
@@ -331,7 +255,7 @@ function(DrMockModule)
             "\\\\1"
             ${unadornedFilename}
             mockFilenameWithoutExtension
-            ${PARSED_ARGS_MOCKFILE}
+            ${ARGS_MOCKFILE}
         )  # ExampleMock
 
         # Get the header file's file extension.
@@ -360,13 +284,13 @@ function(DrMockModule)
         # Prepare quoted argument lists to deal with escaped characters.
         drmock_options_from_list(
             OPTION "-I"
-            INPUT ${PARSED_ARGS_INCLUDE}
+            INPUT ${ARGS_INCLUDE}
             RESULT generator_option_include_directory
         )
-        if (PARSED_ARGS_FRAMEWORKS)
+        if (ARGS_FRAMEWORKS)
             drmock_options_from_list(
                 OPTION "-iframework"
-                INPUT ${PARSED_ARGS_FRAMEWORKS}
+                INPUT ${ARGS_FRAMEWORKS}
                 RESULT generator_option_iframework
             )
         endif()
@@ -380,12 +304,12 @@ function(DrMockModule)
         list(APPEND command drmock-gen)
         list(APPEND command ${absolutePathToHeader})
         list(APPEND command ${mockHeaderPathAbsolute})
-        list(APPEND command --input-class \"${PARSED_ARGS_ICLASS}\")
-        list(APPEND command --output-class \"${PARSED_ARGS_MOCKCLASS}\")
+        list(APPEND command --input-class \"${ARGS_ICLASS}\")
+        list(APPEND command --output-class \"${ARGS_MOCKCLASS}\")
         list(APPEND command ${generator_option_include_directory})
         list(APPEND command ${generator_option_iframework})
         list(APPEND command "--std=c++${CMAKE_CXX_STANDARD}")
-        list(APPEND command ${PARSED_ARGS_OPTIONS})
+        list(APPEND command ${ARGS_OPTIONS})
         add_custom_command(
             OUTPUT
                 ${mockHeaderOutputPath}
@@ -397,25 +321,26 @@ function(DrMockModule)
 
         # Add the source path to the list of sources.
         set(sources ${sources} ${mockSourceOutputPath})
-        if (PARSED_ARGS_QTMODULES)
+        if (ARGS_QTMODULES)
             set(sources ${sources} ${header})
         endif()
     endforeach()
 
     # Create the mock library and link it against DrMock.
-    add_library(${PARSED_ARGS_TARGET} SHARED ${sources})
+    add_library(${ARGS_TARGET} SHARED ${sources})
     # Include the headers in the mock directory.
     target_include_directories(
-        ${PARSED_ARGS_TARGET}
+        ${ARGS_TARGET}
         PUBLIC
         ${CMAKE_CURRENT_BINARY_DIR}/DrMock
     )
     # Link against DrMock and the other provided libs.
-    target_link_libraries(${PARSED_ARGS_TARGET} DrMock::DrMock ${PARSED_ARGS_LIBS})
+    target_link_libraries(${ARGS_TARGET} DrMock::DrMock ${ARGS_LIBS})
 endfunction()
 
+
 # drmock_options_from_list(OPTION <option>
-#                          INPUT <input1> <input2> ... 
+#                          INPUT <input1>;<input2>;... 
 #                          RESULT <result>)
 #
 # Set `result` to "<option><input1>;<option><input2>;..."
