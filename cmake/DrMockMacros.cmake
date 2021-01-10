@@ -124,6 +124,82 @@ function(drmock_get_qt5_module_framework_path)
 endfunction()
 
 
+function(drmock_remove_file_extension)
+    cmake_parse_arguments(
+        ARGS
+        ""
+        "STRING;RESULT"
+        ""
+        ${ARGN}
+    )
+
+    set(_result)
+    STRING(REGEX REPLACE "\\.[^.]*$" "" _result ${ARGS_STRING})
+    set(${ARGS_RESULT} ${_result} PARENT_SCOPE)
+endfunction()
+
+
+function(drmock_path_to_output)
+    cmake_parse_arguments(
+        ARGS
+        ""
+        "HEADER;IFILE;MOCKFILE;OUTPUT_HEADER;OUTPUT_SOURCE"
+        ""
+        ${ARGN}
+    )
+    set(_output_header)
+    set(_output_source)
+
+    get_filename_component(absolutePathToHeader ${header} ABSOLUTE) # /[...]/project/[DIRS]/IExample.h
+    get_filename_component(absoluteDir ${absolutePathToHeader} DIRECTORY) #/[...]/project/[DIRS]
+    file(RELATIVE_PATH relativePathToHeader ${CMAKE_CURRENT_SOURCE_DIR} "${absoluteDir}")  # [DIRS]
+    # If `relativePathToHeader` is empty, set it to equal to the current
+    # path. This will later allowing uncompilcated path joins.
+    if ("${relativePathToHeader}" EQUAL "")
+        set(relativePathToHeader ".")
+    endif ()
+
+    # Get the filename of `header`.
+    get_filename_component(headerFilename ${header} NAME)  # IExample.h
+    # Remove the file extension.
+    drmock_remove_file_extension(STRING ${headerFilename}
+                                 RESULT headerFilenameWithoutExtension)  # IExample
+    # Strip the interface cast from the file name.
+    STRING(REGEX REPLACE ${ARGS_IFILE}
+        "\\1"
+        unadornedFilename
+        ${headerFilenameWithoutExtension}
+    )  # Example
+    # Cast the unadorned filename onto the mock cast.
+    STRING(REGEX REPLACE
+        "\\\\1"
+        ${unadornedFilename}
+        mockFilenameWithoutExtension
+        ${ARGS_MOCKFILE}
+    )  # ExampleMock
+
+    # Get the header file's file extension.
+    string(REGEX MATCH "\\.([^.]*)$" headerFileExtension ${headerFilename})  # .h, .hpp
+    # Compute the mock object's header and source file names.
+    set(mockHeaderFilename
+        "${mockFilenameWithoutExtension}${headerFileExtension}"
+    )  # ExampleMocke.h, ExampleMock.hpp
+    set(mockSourceFilename ${mockFilenameWithoutExtension}.cpp)  # ExampleMock.cpp
+    # Create a directory for the mock object's header and source files.
+    file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/DrMock/mock/${relativePathToHeader}")
+    # Compute the path to the mock object's header and source files
+    # relative to cmake's current binary source directory.
+    set(_output_header "DrMock/mock/${relativePathToHeader}/${mockHeaderFilename}")
+    set(_output_source "DrMock/mock/${relativePathToHeader}/${mockSourceFilename}")
+    # Compute the path to the mock object's header and source files
+    # relative to the working directory of the mock script (at the
+    # moment, this is cmake's current binary source directory.
+
+    set(${ARGS_OUTPUT_HEADER} ${_output_header} PARENT_SCOPE)
+    set(${ARGS_OUTPUT_SOURCE} ${_output_source} PARENT_SCOPE)
+endfunction()
+
+
 function(DrMockModule)
     cmake_parse_arguments(
         ARGS
@@ -204,77 +280,16 @@ function(DrMockModule)
         ###################################
         # Path computations.
         ###################################
-
-        # Get the relative path from the current source directory to the
-        # directory containing `header`.
-        get_filename_component(
-            absolutePathToHeader
-            ${header}
-            ABSOLUTE
-        )  # /[...]/project/[DIRS]/IExample.h
-        get_filename_component(
-            absoluteDir
-            ${absolutePathToHeader}
-            DIRECTORY
-        )  #/[...]/project/[DIRS]
-        file(RELATIVE_PATH
-            relativePathToHeader
-            # ${CMAKE_CURRENT_SOURCE_DIR}
-            ${CMAKE_CURRENT_SOURCE_DIR}
-            "${absoluteDir}"
-        )  # [DIRS]
-        # If `relativePathToHeader` is empty, set it to equal to the current
-        # path. This will later allowing uncompilcated path joins.
-        if ("${relativePathToHeader}" EQUAL "")
-            set(relativePathToHeader ".")
-        endif ()
-
-        # Get the filename of `header`.
-        get_filename_component(headerFilename ${header} NAME)  # IExample.h
-        # Remove the file extension.
-        STRING(REGEX REPLACE
-            "\\.[^.]*$"
-            ""
-            headerFilenameWithoutExtension
-            ${headerFilename}
-        )  # IExample
-        # Strip the interface cast from the file name.
-        STRING(REGEX REPLACE
-            ${ARGS_IFILE}
-            "\\1"
-            unadornedFilename
-            ${headerFilenameWithoutExtension}
-        )  # Example
-        # Cast the unadorned filename onto the mock cast.
-        STRING(REGEX REPLACE
-            "\\\\1"
-            ${unadornedFilename}
-            mockFilenameWithoutExtension
-            ${ARGS_MOCKFILE}
-        )  # ExampleMock
-
-        # Get the header file's file extension.
-        string(REGEX MATCH "\\.([^.]*)$" headerFileExtension ${headerFilename})  # .h, .hpp
-        # Compute the mock object's header and source file names.
-        set(mockHeaderFilename
-            "${mockFilenameWithoutExtension}${headerFileExtension}"
-        )  # ExampleMocke.h, ExampleMock.hpp
-        set(mockSourceFilename ${mockFilenameWithoutExtension}.cpp)  # ExampleMock.cpp
-        # Create a directory for the mock object's header and source files.
-        file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/DrMock/mock/${relativePathToHeader}")
-        # Compute the path to the mock object's header and source files
-        # relative to cmake's current binary source directory.
-        set(mockHeaderOutputPath "DrMock/mock/${relativePathToHeader}/${mockHeaderFilename}")
-        set(mockSourceOutputPath "DrMock/mock/${relativePathToHeader}/${mockSourceFilename}")
-        # Compute the path to the mock object's header and source files
-        # relative to the working directory of the mock script (at the
-        # moment, this is cmake's current binary source directory.
-        set(mockHeaderPathAbsolute
-            "${CMAKE_CURRENT_BINARY_DIR}/${mockHeaderOutputPath}"
-        )  # [DIRS]/ExampleMock.[ext]
-        set(mockSourcePathAbsolute
-            "${CMAKE_CURRENT_BINARY_DIR}/${mockSourceOutputPath}"
-        )  # [DIRS]/ExampleMock.cpp
+        drmock_path_to_output(
+            IFILE ${ARGS_IFILE}
+            MOCKFILE ${ARGS_MOCKFILE}
+            HEADER ${header}
+            OUTPUT_HEADER mockHeaderOutputPath
+            OUTPUT_SOURCE mockSourceOutputPath
+        )
+        get_filename_component(absolutePathToHeader ${header} ABSOLUTE)
+        set(mockHeaderPathAbsolute "${CMAKE_CURRENT_BINARY_DIR}/${mockHeaderOutputPath}")  # [DIRS]/ExampleMock.[ext]
+        set(mockSourcePathAbsolute "${CMAKE_CURRENT_BINARY_DIR}/${mockSourceOutputPath}")  # [DIRS]/ExampleMock.cpp
 
         # Prepare quoted argument lists to deal with escaped characters.
         drmock_options_from_list(
@@ -347,9 +362,9 @@ function(drmock_options_from_list)
         "INPUT"
         ${ARGN}
     )
-    set(result)
+    set(_result)
     foreach (each ${ARGS_INPUT})
-        list(APPEND result "${ARGS_OPTION}\"${each}\"")
+        list(APPEND _result "${ARGS_OPTION}\"${each}\"")
     endforeach()
-    set(${ARGS_RESULT} ${result} PARENT_SCOPE)
+    set(${ARGS_RESULT} ${_result} PARENT_SCOPE)
 endfunction()
