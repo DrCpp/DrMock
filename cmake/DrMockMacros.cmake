@@ -110,6 +110,7 @@ function(drmock_get_qt5_module_framework_path)
         ""
         ${ARGN}
     )
+
     if (NOT ARGS_QT_PATH)
         if (NOT DEFINED ENV{DRMOCK_QT_PATH})
             message(FATAL_ERROR "drmock_get_qt5_module_framework_path: error: no Qt5 path defined")
@@ -120,6 +121,7 @@ function(drmock_get_qt5_module_framework_path)
     string(REGEX REPLACE "\\\\" "" ARGS_QT_PATH ${ARGS_QT_PATH})
     file(TO_CMAKE_PATH ARGS_QT_PATH ${ARGS_QT_PATH})
     file(TO_NATIVE_PATH "${ARGS_QT_PATH}/lib" framework_path)
+
     set(${ARGS_FRAMEWORK_PATH} ${framework_path} PARENT_SCOPE)
 endfunction()
 
@@ -132,7 +134,6 @@ function(drmock_remove_file_extension)
         ""
         ${ARGN}
     )
-
     set(_result)
     STRING(REGEX REPLACE "\\.[^.]*$" "" _result ${ARGS_STRING})
     set(${ARGS_RESULT} ${_result} PARENT_SCOPE)
@@ -277,7 +278,7 @@ function(DrMockModule)
 
     # Make a directory for the mock object's header and source files.
     drmock_join_paths(RESULT drmock_directory
-                      PATHS ${CMAKE_CURRENT_BINARY_DIR} DrMock)
+                      PATHS ${CMAKE_CURRENT_BINARY_DIR} DrMock)  # Required later.
     drmock_join_paths(RESULT mock_directory
                       PATHS drmock_directory mock)
     file(MAKE_DIRECTORY mock_directory)
@@ -328,7 +329,6 @@ function(DrMockModule)
             RESULT path_from_working_dir_to_output_header
             PATHS ${CMAKE_CURRENT_BINARY_DIR} ${mockHeaderOutputPath})
 
-        # Prepare quoted argument lists to deal with escaped characters.
         drmock_options_from_list(
             OPTION "-I"
             INPUT ${ARGS_INCLUDE}
