@@ -83,7 +83,7 @@ if (${Qt5_FOUND})
   # Test generator with Qt.
   #######################################
 
-  DrMockModule(
+  drmock_library(
     TARGET ${PROJECT_NAME}QtMock
     GENERATOR ${pathToMocker}
     HEADERS
@@ -122,7 +122,7 @@ else()
   # Test generator without Qt.
   #######################################
 
-  DrMockModule(
+  drmock_library(
     TARGET ${PROJECT_NAME}Mock
     GENERATOR ${pathToMocker}
     HEADERS ${regularHeaders}

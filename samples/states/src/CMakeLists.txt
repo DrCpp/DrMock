@@ -21,7 +21,7 @@ add_library(DrMockSampleStates SHARED
   LaunchPad.cpp
 )
 
-DrMockModule(
+drmock_library(
   TARGET DrMockSampleStatesMocked
   HEADERS
     IRocket.h

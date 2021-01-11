@@ -175,60 +175,62 @@ function(drmock_path_to_output)
     set(_output_header)
     set(_output_source)
 
-    get_filename_component(absolutePathToHeader ${header} ABSOLUTE) # /[...]/project/[DIRS]/IExample.h
-    get_filename_component(absoluteDir ${absolutePathToHeader} DIRECTORY) #/[...]/project/[DIRS]
-    file(RELATIVE_PATH relativePathToHeader ${CMAKE_CURRENT_SOURCE_DIR} ${absoluteDir})  # [DIRS]
-    # If `relativePathToHeader` is empty, set it to equal to the current
+    get_filename_component(absolute_path_to_header ${header} ABSOLUTE) # /[...]/project/[DIRS]/IExample.h
+    get_filename_component(absolute_directory_of_header ${absolute_path_to_header} DIRECTORY) #/[...]/project/[DIRS]
+    file(RELATIVE_PATH relative_path_from_source_dir_to_header ${CMAKE_CURRENT_SOURCE_DIR} ${absolute_directory_of_header})  # [DIRS]
+
+    # If `relative_path_from_source_dir_to_header` is empty, set it to equal to the current
     # path. This will later allowing uncompilcated path joins.
-    if ("${relativePathToHeader}" EQUAL "")
-        set(relativePathToHeader ".")
+    if ("${relative_path_from_source_dir_to_header}" EQUAL "")
+        set(relative_path_from_source_dir_to_header ".")
     endif ()
 
     # Get the filename of `header`.
-    get_filename_component(headerFilename ${header} NAME)  # IExample.h
+    get_filename_component(header_filename ${header} NAME)  # IExample.h
     # Remove the file extension.
-    drmock_remove_file_extension(STRING ${headerFilename}
-                                 RESULT headerFilenameWithoutExtension)  # IExample
+    drmock_remove_file_extension(STRING ${header_filename}
+                                 RESULT header_filename_without_extension)  # IExample
     # Strip the interface cast from the file name.
-    STRING(REGEX REPLACE ${ARGS_IFILE}
+    STRING(REGEX REPLACE
+        ${ARGS_IFILE}
         "\\1"
-        unadornedFilename
-        ${headerFilenameWithoutExtension}
+        captured_expression_from_filename
+        ${header_filename_without_extension}
     )  # Example
     # Cast the unadorned filename onto the mock cast.
     STRING(REGEX REPLACE
         "\\\\1"
-        ${unadornedFilename}
-        mockFilenameWithoutExtension
+        ${captured_expression_from_filename}
+        mock_filename_without_extension
         ${ARGS_MOCKFILE}
     )  # ExampleMock
 
     # Get the header file's file extension.
-    string(REGEX MATCH "\\.([^.]*)$" headerFileExtension ${headerFilename})  # .h, .hpp
+    string(REGEX MATCH "\\.([^.]*)$" header_file_extension ${header_filename})  # .h, .hpp
     # Compute the mock object's header and source file names.
-    set(mockHeaderFilename
-        "${mockFilenameWithoutExtension}${headerFileExtension}"
-    )  # ExampleMock.h, ExampleMock.hpp
-    set(mockSourceFilename ${mockFilenameWithoutExtension}.cpp)  # ExampleMock.cpp
+    set(mock_header_filename ${mock_filename_without_extension}${header_file_extension})  # ExampleMock.h, ExampleMock.hpp
+    set(mock_source_filename ${mock_filename_without_extension}.cpp)  # ExampleMock.cpp
     # Create a directory for the mock object's header and source files.
     drmock_join_paths(RESULT path_to_mock_subdirectory
-                      PATHS ${CMAKE_CURRENT_BINARY_DIR} DrMock/mock ${relativePathToHeader})
+                      PATHS ${CMAKE_CURRENT_BINARY_DIR}
+                            DrMock/mock
+                            ${relative_path_from_source_dir_to_header})
     file(MAKE_DIRECTORY ${path_to_mock_subdirectory})
     # Compute the path to the mock object's header and source files
     # relative to cmake's current binary source directory.
     drmock_join_paths(
         RESULT _output_header
-        PATHS DrMock/mock ${relativePathToHeader} ${mockHeaderFilename})
+        PATHS DrMock/mock ${relative_path_from_source_dir_to_header} ${mock_header_filename})
     drmock_join_paths(
         RESULT _output_source
-        PATHS DrMock/mock ${relativePathToHeader} ${mockSourceFilename})
+        PATHS DrMock/mock ${relative_path_from_source_dir_to_header} ${mock_source_filename})
 
     set(${ARGS_OUTPUT_HEADER} ${_output_header} PARENT_SCOPE)
     set(${ARGS_OUTPUT_SOURCE} ${_output_source} PARENT_SCOPE)
 endfunction()
 
 
-function(DrMockModule)
+function(drmock_library)
     cmake_parse_arguments(
         ARGS
         ""
@@ -239,19 +241,19 @@ function(DrMockModule)
 
     # Check for missing arguments.
     if (NOT ARGS_TARGET)
-        message(FATAL_ERROR "DrMockModule error: TARGET parameter missing")
+        message(FATAL_ERROR "drmock_library error: TARGET parameter missing")
     endif()
 
     # Check if HEADERS is non-empty.
     if (NOT ARGS_HEADERS)
-        message(FATAL_ERROR "DrMockModule error: HEADER parameter missing or empty")
+        message(FATAL_ERROR "drmock_library error: HEADER parameter missing or empty")
     endif()
 
     # Check that all HEADERS exist.
     foreach(filename ${ARGS_HEADERS})
-        get_filename_component(absolutePathToFilename ${filename} ABSOLUTE)
-        if (NOT EXISTS ${absolutePathToFilename})
-            message(FATAL_ERROR "DrMockModule error: file ${filename} not found")
+        get_filename_component(absolute_path_to_filename ${filename} ABSOLUTE)
+        if (NOT EXISTS ${absolute_path_to_filename})
+            message(FATAL_ERROR "drmock_library error: file ${filename} not found")
         endif()
     endforeach()
 
@@ -289,8 +291,8 @@ function(DrMockModule)
     # If Qt is enabled, add the Qt framework and include paths.
     foreach (module ${ARGS_QTMODULES})
         if (APPLE)
-            drmock_get_qt5_module_framework_path(MODULE module FRAMEWORK_PATH qtFrameworkPath)
-            list(APPEND ARGS_FRAMEWORKS ${qtFrameworkPath})
+            drmock_get_qt5_module_framework_path(MODULE module FRAMEWORK_PATH qt_framework_path)
+            list(APPEND ARGS_FRAMEWORKS ${qt_framework_path})
         endif()
 
         drmock_get_qt5_module_include_dirs(MODULE ${module} INCLUDE_DIRS moduleVar)
@@ -301,12 +303,12 @@ function(DrMockModule)
 
     # Append the current CMake include path to the include path of the
     # mocker. Also, add CMAKE_CURRENT_SOURCE_DIR to this list.
-    get_property(includeDirs
+    get_property(include_directories
         DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         PROPERTY INCLUDE_DIRECTORIES
     )
     list(APPEND ARGS_INCLUDE ${DrMock_PREFIX_PATH})
-    list(APPEND ARGS_INCLUDE ${includeDirs})
+    list(APPEND ARGS_INCLUDE ${include_directories})
     list(APPEND ARGS_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR})
 
     foreach (header ${ARGS_HEADERS})
@@ -317,17 +319,17 @@ function(DrMockModule)
             IFILE ${ARGS_IFILE}
             MOCKFILE ${ARGS_MOCKFILE}
             HEADER ${header}
-            OUTPUT_HEADER mockHeaderOutputPath
-            OUTPUT_SOURCE mockSourceOutputPath
+            OUTPUT_HEADER mock_header_path
+            OUTPUT_SOURCE mock_source_path
         )
-        get_filename_component(absolutePathToHeader ${header} ABSOLUTE)
+        get_filename_component(absolute_path_to_header ${header} ABSOLUTE)
 
         # Compute the path to the mock object's header and sourcfiles
         # relative to the working directory of the mock script (at the
         # moment, this is cmake's current binary source directory.
         drmock_join_paths(
             RESULT path_from_working_dir_to_output_header
-            PATHS ${CMAKE_CURRENT_BINARY_DIR} ${mockHeaderOutputPath})
+            PATHS ${CMAKE_CURRENT_BINARY_DIR} ${mock_header_path})
 
         drmock_options_from_list(
             OPTION "-I"
@@ -349,7 +351,7 @@ function(DrMockModule)
         # Call the mocker command.
         set(command)
         list(APPEND command drmock-gen)
-        list(APPEND command ${absolutePathToHeader})
+        list(APPEND command ${absolute_path_to_header})
         list(APPEND command ${path_from_working_dir_to_output_header})
         list(APPEND command --input-class \"${ARGS_ICLASS}\")
         list(APPEND command --output-class \"${ARGS_MOCKCLASS}\")
@@ -359,14 +361,14 @@ function(DrMockModule)
         list(APPEND command ${ARGS_OPTIONS})
         add_custom_command(
             OUTPUT
-                ${mockHeaderOutputPath}
-                ${mockSourceOutputPath}
+                ${mock_header_path}
+                ${mock_source_path}
             COMMAND ${command}
-            DEPENDS ${absolutePathToHeader}
+            DEPENDS ${absolute_path_to_header}
             COMMENT "Mocking ${header}..."
         )
 
-        list(APPEND sources ${mockSourceOutputPath})
+        list(APPEND sources ${mock_source_path})
         if (ARGS_QTMODULES)
             list(APPEND sources ${header})  # Need header when using AUTO_MOC!
         endif()
