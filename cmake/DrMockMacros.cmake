@@ -249,14 +249,6 @@ function(drmock_library)
         message(FATAL_ERROR "drmock_library error: HEADER parameter missing or empty")
     endif()
 
-    # Check that all HEADERS exist.
-    foreach(filename ${ARGS_HEADERS})
-        get_filename_component(absolute_path_to_filename ${filename} ABSOLUTE)
-        if (NOT EXISTS ${absolute_path_to_filename})
-            message(FATAL_ERROR "drmock_library error: file ${filename} not found")
-        endif()
-    endforeach()
-
     # Optional arguments.
     if (NOT ARGS_ICLASS)
         set(ARGS_ICLASS "I([a-zA-Z0-9].*)")
