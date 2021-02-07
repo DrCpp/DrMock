@@ -17,7 +17,6 @@ default:
 .PHONY: clean
 clean:
 	rm -fr build
-	rm -fr prefix
 
 .PHONY: install
 install:
