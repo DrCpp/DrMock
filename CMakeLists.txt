@@ -125,15 +125,6 @@ install(
 )
 
 #######################################
-# pkgconfig
-#######################################
-
-configure_file(
-  ${CMAKE_SOURCE_DIR}/pkgconfig/DrMock.pc.in
-  ${CMAKE_SOURCE_DIR}/pkgconfig/DrMock.pc
-)
-
-#######################################
 # Configure export.
 #######################################
 
