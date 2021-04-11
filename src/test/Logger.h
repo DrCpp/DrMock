@@ -19,31 +19,12 @@
 #ifndef DRMOCK_SRC_TEST_LOGGER_H
 #define DRMOCK_SRC_TEST_LOGGER_H
 
-#include <mutex>
+#include "../utility/ILogger.h"
 
-#include "ILogger.h"
-
-namespace drtest { namespace detail {
-
-class Logger : public ILogger
-{
-public:
-  Logger();
-  void logMessage(
-      bool timestamp,
-      const std::string& category,
-      const std::string& location,
-      int line,
-      const std::ostream& msg
-    ) override final;
-
-private:
-  std::string mkTimestamp();
-
-  std::mutex mtx_{};
-  std::ostream out_stream_;
-};
-
-}} // namespace drtest::detail
+#define DRTEST_LOG(category, msg) DRUTILITY_LOG(category, msg)
+#define DRTEST_LOG_DEBUG(msg) DRTEST_LOG("DEBUG", msg)
+#define DRTEST_LOG_INFO(msg) DRTEST_LOG("INFO", msg)
+#define DRTEST_LOG_WARN(msg) DRTEST_LOG("WARN", msg)
+#define DRTEST_LOG_CRIT(msg) DRTEST_LOG("CRIT", msg)
 
 #endif /* DRMOCK_SRC_TEST_LOGGER_H */

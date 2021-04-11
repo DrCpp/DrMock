@@ -18,7 +18,7 @@
 
 #include "Singleton.h"
 
-namespace drtest { namespace detail {
+namespace drutility {
 
 template<typename T>
 std::shared_ptr<T>
@@ -52,4 +52,4 @@ Singleton<T>::p_()
   return p;
 }
 
-}} // namespace drtest::detail
+} // namespace drutility

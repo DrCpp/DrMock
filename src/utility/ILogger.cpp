@@ -16,26 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_TEST_SINGLETON_H
-#define DRMOCK_SRC_TEST_SINGLETON_H
+#include "ILogger.h"
 
-#include <memory>
-#include <mutex>
+#include "Singleton.tpp"
 
-namespace drtest { namespace detail {
-
-template<typename T>
-class Singleton
-{
-public:
-  static std::shared_ptr<T> get();
-  static void set(std::shared_ptr<T>);
-
-private:
-  static std::mutex& mtx_();
-  static std::shared_ptr<T>& p_();
-};
-
-}} // namespace drtest::detail
-
-#endif /* DRMOCK_SRC_TEST_SINGLETON_H */
+template class drutility::Singleton<drutility::ILogger>;

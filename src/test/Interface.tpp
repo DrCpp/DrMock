@@ -24,14 +24,14 @@ template<typename T>
 void
 addColumn(std::string column)
 {
-  detail::Singleton<detail::Global>::get()->addColumn<T>(std::move(column));
+  drutility::Singleton<detail::Global>::get()->addColumn<T>(std::move(column));
 }
 
 template<typename... Ts>
 void
 addRow(const std::string& row, Ts&&... ts)
 {
-  detail::Singleton<detail::Global>::get()->addRow(row, std::forward<Ts>(ts)...);
+  drutility::Singleton<detail::Global>::get()->addRow(row, std::forward<Ts>(ts)...);
 }
 
 } // namespace drtest

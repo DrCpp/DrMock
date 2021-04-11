@@ -20,7 +20,7 @@
 
 #include <iostream>
 
-namespace drtest { namespace detail {
+namespace drutility {
 
 Logger::Logger()
 :
@@ -76,4 +76,4 @@ Logger::mkTimestamp()
   return {};
 }
 
-}} // namespace drtest::detail
+} // namespace drutility
