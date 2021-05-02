@@ -238,37 +238,15 @@ function(drmock_library)
         "HEADERS;LIBS;QTMODULES;INCLUDE;FRAMEWORKS;OPTIONS"
         ${ARGN}
     )
-
-    # Check for missing arguments.
-    if (NOT ARGS_TARGET)
-        message(FATAL_ERROR "drmock_library error: TARGET parameter missing")
-    endif()
-
-    # Check if HEADERS is non-empty.
-    if (NOT ARGS_HEADERS)
-        message(FATAL_ERROR "drmock_library error: HEADER parameter missing or empty")
-    endif()
-
-    # Optional arguments.
-    if (NOT ARGS_ICLASS)
-        set(ARGS_ICLASS "I([a-zA-Z0-9].*)")
-    endif()
-
-    if (NOT ARGS_MOCKCLASS)
-        set(ARGS_MOCKCLASS "\\1Mock")
-    endif()
-
-    if(NOT ARGS_IFILE)
-        set(ARGS_IFILE ${ARGS_ICLASS})
-    endif()
-
-    if (NOT ARGS_MOCKFILE)
-        set(ARGS_MOCKFILE ${ARGS_MOCKCLASS})
-    endif()
-
-    if (NOT ARGS_GENERATOR)
-        set(ARGS_GENERATOR "DrMockGenerator")
-    endif()
+    _drmock_required_param(ARGS_TARGET
+        "drmock_library: TARGET parameter missing")
+    _drmock_required_param(ARGS_HEADERS
+        "drmock_library: HEADER parameter missing or empty")
+    _drmock_optional_param(ARGS_ICLASS "I([a-zA-Z0-9].*)")
+    _drmock_optional_param(ARGS_MOCKCLASS "\\1Mock")
+    _drmock_optional_param(ARGS_IFILE "${ARGS_ICLASS}")
+    _drmock_optional_param(ARGS_MOCKFILE "${ARGS_MOCKCLASS}")
+    _drmock_optional_param(ARGS_GENERATOR "DrMockGenerator")
 
     # Make a directory for the mock object's header and source files.
     drmock_join_paths(RESULT drmock_directory
@@ -369,6 +347,23 @@ function(drmock_library)
     add_library(${ARGS_TARGET} SHARED ${sources})
     target_include_directories(${ARGS_TARGET} PUBLIC ${drmock_directory})
     target_link_libraries(${ARGS_TARGET} DrMock::DrMock ${ARGS_LIBS})
+endfunction()
+
+
+function(_drmock_optional_param param default)
+    if (NOT DEFINED ${param})
+        set(${param} ${default} PARENT_SCOPE)
+    endif()
+endfunction()
+
+
+function(_drmock_required_param param what)
+    if (NOT DEFINED ${param})
+        if (NOT DEFINED what)
+            set(what "${param} missing")
+        endif()
+        message(FATAL_ERROR ${what})
+    endif()
 endfunction()
 
 
