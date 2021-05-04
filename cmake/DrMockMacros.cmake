@@ -22,11 +22,10 @@ macro(DrMockEnableQt)
 endmacro()
 
 
-# DrMockTest(
-#   TESTS test1 [test2 [test3 ...]]
-#   [LIBS lib1 [lib2 [lib3 ...]]]
-#   [OPTIONS opt1 [opt2 [opt3 ...]]]
-#   [RESOURCES res1 [res2 [res3 ...]]]
+# drmock_test(TESTS test1 [test2 [test3 ...]]
+#             [LIBS lib1 [lib2 [lib3 ...]]]
+#             [OPTIONS opt1 [opt2 [opt3 ...]]]
+#             [RESOURCES res1 [res2 [res3 ...]]]
 # )
 #
 # Create a test executable from every element of TESTS and link it
@@ -69,6 +68,81 @@ function(drmock_test)
     endforeach()
 endfunction()
 
+
+# drmock_library(TARGET <target>
+#                HEADERS header1 [header2 ...]
+#                [IFILE <ifile>]
+#                [MOCKFILE <mock_file>]
+#                [ICLASS <iclass>]
+#                [MOCKCLASS <mockclass>]
+#                [LIBS lib1 [lib2 ...]]
+#                [QTMODULES module1 [module2 ...]]
+#                [INCLUDE include1 [include2 ...]]
+#                [FRAMEWORKS framework1 [framework2 ...]]
+#                [OPTIONS option1 [option2 ...]]
+#
+# Create a library `target` that contains mock objects for the
+# specified header files.
+#
+# The name of the output files is determined by matching each input
+# filename (with extensions removed) against <ifile> and replacing the
+# subexpression character `\\1` in <mockfile> with the content of the
+# unique capture group of <ifile>, then adding on the previously removed
+# file extension. The class name of the mock object is computed in
+# analogous fashion.
+#
+# TARGET
+#     The name of the library that is created.
+#
+# HEADERS
+#     A list of header files. Every header file must match the regex
+#     provided via the <ifile> argument.
+#
+# IFILE
+#     A regex that describes the pattern that matches the project's
+#     interface header filenames. The regex must contain exactly one
+#     capture group that captures the unadorned filename. The default
+#     value is ``I([a-zA-Z0-9].*)"`.
+#
+# MOCKFILE
+#     A string that describes the pattern that the project's mock object
+#     header filenames match. The string must contain exactly one
+#     subexpression character `"\\1"`. The default value is `"\\1Mock"`.
+#
+# ICLASS
+#     A regex that describes the pattern that matches the project's
+#     interface class names. The regex must contain exactly one capture
+#     group that captures the unadorned class name. Each of the specified
+#     header files must contain exactly one class that matches this regex.
+#     The default value is <ifile>.
+#
+# MOCKCLASS
+#     A string that describes the pattern that the project's mock object
+#     class names match. The regex must contain exactly one subexpression
+#     character `"\\1"`. The default value is <mockfile>.
+#
+# LIBS
+#     A list of libraries that `TARGET` is linked against. Default value
+#     is undefined (treated as empty list).
+#
+# QTMODULES
+#     A list of Qt5 modules that `TARGET` is linked against. If
+#     `QTMODULES` is defined (even if it's empty), the `HEADERS` will be
+#     added to the sources of `TARGET`, thus allowing the interfaces
+#     that are Q_OBJECT to be mocked. Default value is undefined.
+#
+# INCLUDE
+#     A list of include path's that are required to parse the `HEADERS`.
+#     The include paths of Qt5 modules passed in the `QTMODULES`
+#     parameter are automatically added to this list.
+#
+#     The default value contains ${CMAKE_CURRENT_SOURCE_DIR} (the
+#     directory that `DrMockModule` is called from) and the current
+#     directory's include path.
+#
+# FRAMEWORKS
+#     A list of macOS framework path's that are required to parse the
+#     `HEADERS`. Default value is undefined (treated as empty list).
 
 function(drmock_library)
     cmake_parse_arguments(
@@ -263,6 +337,10 @@ function(_drmock_get_qt5_module_framework_path)
 endfunction()
 
 
+# _drmock_remove_file_extension(RESULT <result> STRING <string>)
+#
+# Remove the file extension from <string> and write the result into
+# <result>.
 function(_drmock_remove_file_extension)
     cmake_parse_arguments(
         ARGS
@@ -277,6 +355,9 @@ function(_drmock_remove_file_extension)
 endfunction()
 
 
+# _drmock_join_paths(RESULT <result> PATHS <path1>;<path2>;...)
+#
+# Join the native paths <path1>... and write the result into <result>.
 function(_drmock_join_paths)
     cmake_parse_arguments(
         ARGS
@@ -300,15 +381,14 @@ function(_drmock_join_paths)
 endfunction()
 
 
-
-# _drmock_path_to_output(HEADER
-#                        IFILE
-#                        MOCKFILE
-#                        OUTPUT_HEADER
-#                        OUTPUT_SOURCE)
+# _drmock_path_to_output(HEADER <header>
+#                        IFILE <i_file>
+#                        MOCKFILE <mock_file>
+#                        OUTPUT_HEADER <output_header>
+#                        OUTPUT_SOURCE <output_source>)
 #
 # Compute output header and output source file names; write them to
-# `OUTPUT_HEADER` and `OUTPUT_SOURCE`, resp.
+# <output_header> and <output_source>, resp.
 function(_drmock_path_to_output)
     cmake_parse_arguments(
         ARGS
