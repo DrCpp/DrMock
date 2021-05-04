@@ -74,7 +74,7 @@ function(drmock_library)
     cmake_parse_arguments(
         ARGS
         ""
-        "TARGET;IFILE;MOCKFILE;ICLASS;MOCKCLASS;GENERATOR"
+        "TARGET;IFILE;MOCKFILE;ICLASS;MOCKCLASS"
         "HEADERS;LIBS;QTMODULES;INCLUDE;FRAMEWORKS;OPTIONS"
         ${ARGN}
     )
@@ -86,7 +86,6 @@ function(drmock_library)
     _drmock_optional_param(ARGS_MOCKCLASS "\\1Mock")
     _drmock_optional_param(ARGS_IFILE "${ARGS_ICLASS}")
     _drmock_optional_param(ARGS_MOCKFILE "${ARGS_MOCKCLASS}")
-    _drmock_optional_param(ARGS_GENERATOR "DrMockGenerator")
 
     # Make a directory for the mock object's header and source files.
     _drmock_join_paths(RESULT drmock_directory
