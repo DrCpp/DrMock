@@ -23,4 +23,4 @@ set(CMAKE_CXX_STANDARD 17)
 find_package(DrMock COMPONENTS Core REQUIRED)
 
 enable_testing()
-DrMockTest(TESTS deathTest.cpp)
+drmock_test(TESTS deathTest.cpp)

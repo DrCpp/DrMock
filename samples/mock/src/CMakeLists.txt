@@ -22,7 +22,7 @@ add_library(DrMockSampleMock SHARED
   Warehouse.cpp
 )
 
-DrMockModule(
+drmock_library(
   TARGET DrMockSampleMockMocked
   HEADERS
     IWarehouse.h

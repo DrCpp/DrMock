@@ -16,27 +16,28 @@
 # along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 add_library(${PROJECT_NAME} SHARED
-  drmock/mock/MethodCollection.cpp
-  drmock/mock/StateObject.cpp
-  drmock/test/Logger.cpp
-  drmock/test/ILogger.cpp
-  drmock/test/TestFailure.cpp
-  drmock/test/Global.cpp
-  drmock/test/TestObject.cpp
-  drmock/test/FunctionInvoker.cpp
+    drmock/mock/MethodCollection.cpp
+    drmock/mock/StateObject.cpp
+    drmock/test/Logger.cpp
+    drmock/test/ILogger.cpp
+    drmock/test/TestFailure.cpp
+    drmock/test/Global.cpp
+    drmock/test/TestObject.cpp
+    drmock/test/FunctionInvoker.cpp
 )
 
 # This alias is required for the internal use of the `DrMock_module`
 # macro.
 add_library(${PROJECT_NAME}::DrMock ALIAS ${PROJECT_NAME})
 
-target_include_directories(${PROJECT_NAME}
-  PUBLIC
-    $<INSTALL_INTERFACE:include>
-  PRIVATE
-    ${CMAKE_SOURCE_DIR}/src
+target_include_directories(
+    ${PROJECT_NAME}
+    PUBLIC $<INSTALL_INTERFACE:include>
+    PRIVATE ${CMAKE_SOURCE_DIR}/src
 )
 
-target_compile_options(${PROJECT_NAME} PRIVATE
-  -Wall -Werror -fPIC -pedantic -O2 -fdiagnostics-color=always
+target_compile_options(
+    ${PROJECT_NAME}
+    PRIVATE
+        -Wall -Werror -fPIC -pedantic -O2 -fdiagnostics-color=always
 )

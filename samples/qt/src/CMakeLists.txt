@@ -17,7 +17,7 @@
 
 cmake_minimum_required(VERSION 3.10)
 
-DrMockModule(
+drmock_library(
   TARGET DrMockSampleQtMocked
   QTMODULES
     Qt5::Widgets
