@@ -164,6 +164,14 @@ endfunction()
 
 
 
+# drmock_path_to_output(HEADER
+#                       IFILE
+#                       MOCKFILE
+#                       OUTPUT_HEADER
+#                       OUTPUT_SOURCE)
+#
+# Compute output header and output source file names; write them to
+# `OUTPUT_HEADER` and `OUTPUT_SOURCE`, resp.
 function(drmock_path_to_output)
     cmake_parse_arguments(
         ARGS
@@ -350,6 +358,8 @@ function(drmock_library)
 endfunction()
 
 
+# Check if optional parameter is defined, and replace it with default
+# value otherwise.
 function(_drmock_optional_param param default)
     if (NOT DEFINED ${param})
         set(${param} ${default} PARENT_SCOPE)
@@ -357,6 +367,8 @@ function(_drmock_optional_param param default)
 endfunction()
 
 
+# Check if required parameter is defined and raise a FATAL_ERROR with
+# error message `what` otherwise.
 function(_drmock_required_param param what)
     if (NOT DEFINED ${param})
         if (NOT DEFINED what)
