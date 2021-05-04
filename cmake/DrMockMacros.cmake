@@ -242,7 +242,7 @@ function(drmock_library)
     cmake_parse_arguments(
         ARGS
         ""
-        "TARGET;IFILE;MOCKFILE;ICLASS;MOCKCLASS;GENERATOR;INSTALLFLAG"
+        "TARGET;IFILE;MOCKFILE;ICLASS;MOCKCLASS;GENERATOR"
         "HEADERS;LIBS;QTMODULES;INCLUDE;FRAMEWORKS;OPTIONS"
         ${ARGN}
     )

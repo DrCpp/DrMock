@@ -97,7 +97,6 @@ if (${Qt5_FOUND})
             INotAQtObject.h
         QTMODULES
             Qt5::Core Qt5::Test
-        INSTALLFLAG ON
         OPTIONS -fPIC
     )
     target_compile_options(
@@ -127,7 +126,6 @@ else()
         TARGET ${PROJECT_NAME}Mock
         GENERATOR ${pathToMocker}
         HEADERS ${regularHeaders}
-        INSTALLFLAG ON
     )
     target_compile_options(
         ${PROJECT_NAME}Mock
