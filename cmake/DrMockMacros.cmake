@@ -202,6 +202,21 @@ function(drmock_library)
     list(APPEND ARGS_INCLUDE ${include_directories})
     list(APPEND ARGS_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR})
 
+    if (DEFINED ENV{CLANG_LIBRARY_FILE})
+        set(DRMOCK_LIBCLANG_PATH $ENV{CLANG_LIBRARY_FILE})
+    else()
+        # If no environment variable is available, try to find
+        # libclang via CMake.
+        find_library(
+            DRMOCK_LIBCLANG_PATH
+            NAMES clang clang-6.0 clang-7.0 clang-8.0
+            PATH_SUFFIXES lib
+            HINTS
+                /Library/Developer/CommandLineTools/usr
+                /usr/lib/llvm-7/lib
+        )
+    endif()
+
     foreach (header ${ARGS_HEADERS})
         ###################################
         # Path computations.
@@ -256,20 +271,8 @@ function(drmock_library)
         list(APPEND command ${generator_option_include_directory})
         list(APPEND command ${generator_option_iframework})
         list(APPEND command "--std=c++${CMAKE_CXX_STANDARD}")
+        list(APPEND command --clang-library-file ${DRMOCK_LIBCLANG_PATH})
         list(APPEND command ${ARGS_OPTIONS})
-        if (NOT DEFINED ENV{CLANG_LIBRARY_FILE})
-            # If no environment variable is available, try to find
-            # libclang via CMake.
-            find_library(
-                DRMOCK_LIBCLANG_PATH
-                NAMES clang clang-6.0 clang-7.0 clang-8.0
-                PATH_SUFFIXES lib
-                HINTS
-                    /Library/Developer/CommandLineTools/usr
-                    /usr/lib/llvm-7/lib
-            )
-            list(APPEND command --clang-library-file ${DRMOCK_LIBCLANG_PATH})
-        endif()
         add_custom_command(
             OUTPUT
                 ${mock_header_path}
