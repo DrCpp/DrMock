@@ -202,6 +202,20 @@ function(drmock_library)
     list(APPEND ARGS_INCLUDE ${include_directories})
     list(APPEND ARGS_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR})
 
+    # Compute some options for the generator call (--iframework,
+    # --clang-library-path)
+    _drmock_options_from_list(
+        OPTION "-I"
+        INPUT ${ARGS_INCLUDE}
+        RESULT generator_option_include_directory
+    )
+    if (ARGS_FRAMEWORKS)
+        _drmock_options_from_list(
+            OPTION "-iframework"
+            INPUT ${ARGS_FRAMEWORKS}
+            RESULT generator_option_iframework
+        )
+    endif()
     if (DEFINED ENV{CLANG_LIBRARY_FILE})
         set(DRMOCK_LIBCLANG_PATH $ENV{CLANG_LIBRARY_FILE})
     else()
@@ -243,19 +257,6 @@ function(drmock_library)
         _drmock_join_paths(
             RESULT path_from_working_dir_to_output_header
             PATHS ${CMAKE_CURRENT_BINARY_DIR} ${mock_header_path})
-
-        _drmock_options_from_list(
-            OPTION "-I"
-            INPUT ${ARGS_INCLUDE}
-            RESULT generator_option_include_directory
-        )
-        if (ARGS_FRAMEWORKS)
-            _drmock_options_from_list(
-                OPTION "-iframework"
-                INPUT ${ARGS_FRAMEWORKS}
-                RESULT generator_option_iframework
-            )
-        endif()
 
         ###################################
         # Calling the generator.
