@@ -357,7 +357,8 @@ endfunction()
 
 # _drmock_join_paths(RESULT <result> PATHS <path1>;<path2>;...)
 #
-# Join the native paths <path1>... and write the result into <result>.
+# Join native/UNIX paths <path1>... and write the result into <result>
+# (paths may be mixed).
 function(_drmock_join_paths)
     cmake_parse_arguments(
         ARGS
