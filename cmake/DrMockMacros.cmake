@@ -143,6 +143,9 @@ endfunction()
 # FRAMEWORKS
 #     A list of macOS framework path's that are required to parse the
 #     `HEADERS`. Default value is undefined (treated as empty list).
+#
+# OPTIONS
+#     A list of additional options passed to `drmock-gen`.
 
 function(drmock_library)
     cmake_parse_arguments(
