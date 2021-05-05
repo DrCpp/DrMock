@@ -443,7 +443,8 @@ endfunction()
 #                                    FILENAME <filename>
 #                                    PATH <path>)
 #
-# Compute mock output path from filename; write it to <path>.
+# Compute mock output path from filename and create a directory for the
+# mock files; write the path to <path>.
 function(_drmock_compute_path_from_filename)
     cmake_parse_arguments(
         ARGS
