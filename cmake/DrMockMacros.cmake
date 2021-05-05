@@ -405,8 +405,9 @@ function(_drmock_path_to_output)
     get_filename_component(absolute_directory_of_header ${absolute_path_to_header} DIRECTORY) #/[...]/project/[DIRS]
     file(RELATIVE_PATH relative_path_from_source_dir_to_header ${CMAKE_CURRENT_SOURCE_DIR} ${absolute_directory_of_header})  # [DIRS]
 
-    # If `relative_path_from_source_dir_to_header` is empty, set it to equal to the current
-    # path. This will later allowing uncompilcated path joins.
+    # If `relative_path_from_source_dir_to_header` is empty, set it to
+    # equal to the current path. This will later allow uncompilcated
+    # path joins.
     if ("${relative_path_from_source_dir_to_header}" EQUAL "")
         set(relative_path_from_source_dir_to_header ".")
     endif ()
