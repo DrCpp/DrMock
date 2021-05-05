@@ -383,8 +383,8 @@ endfunction()
 
 
 # _drmock_path_to_output(HEADER <header>
-#                        IFILE <i_file>
-#                        MOCKFILE <mock_file>
+#                        IFILE <ifile>
+#                        MOCKFILE <mockfile>
 #                        OUTPUT_HEADER <output_header>
 #                        OUTPUT_SOURCE <output_source>)
 #
