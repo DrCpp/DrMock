@@ -45,6 +45,8 @@ function(drmock_test)
         "LIBS;TESTS;OPTIONS;RESOURCES"
         ${ARGN}
     )
+    _drmock_required_param(ARGS_TESTS
+        "drmock_library: TESTS parameter missing or empty")
     foreach (path ${ARGS_TESTS})
         # Check if `path` exists, throw otherwise.
         get_filename_component(absolute_path ${path} ABSOLUTE)
