@@ -206,13 +206,20 @@ function(drmock_library)
         ###################################
         # Path computations.
         ###################################
-        _drmock_path_to_output(
+        _drmock_capture_filenames(
             IFILE ${ARGS_IFILE}
             MOCKFILE ${ARGS_MOCKFILE}
             HEADER ${header}
-            OUTPUT_HEADER mock_header_path
-            OUTPUT_SOURCE mock_source_path
-        )
+            OUTPUT_HEADER mock_header_file
+            OUTPUT_SOURCE mock_source_file)
+        _drmock_compute_path_from_filename(
+            HEADER ${header}
+            FILENAME ${mock_header_file}
+            PATH mock_header_path)
+        _drmock_compute_path_from_filename(
+            HEADER ${header}
+            FILENAME ${mock_source_file}
+            PATH mock_source_path)
         get_filename_component(absolute_path_to_header ${header} ABSOLUTE)
 
         # Compute the path to the mock object's header and sourcfiles
@@ -387,15 +394,15 @@ function(_drmock_join_paths)
 endfunction()
 
 
-# _drmock_path_to_output(HEADER <header>
-#                        IFILE <ifile>
-#                        MOCKFILE <mockfile>
-#                        OUTPUT_HEADER <output_header>
-#                        OUTPUT_SOURCE <output_source>)
+# _drmock_capture_filenames(HEADER <header>
+#                           IFILE <ifile>
+#                           MOCKFILE <mockfile>
+#                           OUTPUT_HEADER <output_header>
+#                           OUTPUT_SOURCE <output_source>)
 #
-# Compute output header and output source file names; write them to
+# Compute output header and output source filenames; write them to
 # <output_header> and <output_source>, resp.
-function(_drmock_path_to_output)
+function(_drmock_capture_filenames)
     cmake_parse_arguments(
         ARGS
         ""
@@ -403,22 +410,8 @@ function(_drmock_path_to_output)
         ""
         ${ARGN}
     )
-    set(_output_header)
-    set(_output_source)
-
-    get_filename_component(absolute_path_to_header ${header} ABSOLUTE)  # /[...]/project/[DIRS]/IExample.h
-    get_filename_component(absolute_directory_of_header ${absolute_path_to_header} DIRECTORY)  #/[...]/project/[DIRS]
-    file(RELATIVE_PATH relative_path_from_source_dir_to_header ${CMAKE_CURRENT_SOURCE_DIR} ${absolute_directory_of_header})  # [DIRS]
-
-    # If `relative_path_from_source_dir_to_header` is empty, set it to
-    # equal to the current path. This will later allow uncompilcated
-    # path joins.
-    if ("${relative_path_from_source_dir_to_header}" EQUAL "")
-        set(relative_path_from_source_dir_to_header ".")
-    endif ()
-
     # Get the filename of `header`.
-    get_filename_component(header_filename ${header} NAME)  # IExample.h
+    get_filename_component(header_filename ${ARGS_HEADER} NAME)  # IExample.h
     # Remove the file extension.
     _drmock_remove_file_extension(STRING ${header_filename}
                                   RESULT header_filename_without_extension)  # IExample
@@ -442,6 +435,35 @@ function(_drmock_path_to_output)
     # Compute the mock object's header and source file names.
     set(mock_header_filename ${mock_filename_without_extension}${header_file_extension})  # ExampleMock.h, ExampleMock.hpp
     set(mock_source_filename ${mock_filename_without_extension}.cpp)  # ExampleMock.cpp
+
+    set(${ARGS_OUTPUT_HEADER} ${mock_header_filename} PARENT_SCOPE)
+    set(${ARGS_OUTPUT_SOURCE} ${mock_source_filename} PARENT_SCOPE)
+endfunction()
+
+# _drmock_compute_path_from_filename(HEADER <header>
+#                                    FILENAME <filename>
+#                                    PATH <path>)
+#
+# Compute mock output path from filename; write it to <path>.
+function(_drmock_compute_path_from_filename)
+    cmake_parse_arguments(
+        ARGS
+        ""
+        "HEADER;FILENAME;PATH"
+        ""
+        ${ARGN}
+    )
+    _drmock_required_param(ARGS_HEADER
+        "_drmokc_compute_path_from_filename: HEADER parameter missing")
+    _drmock_required_param(ARGS_FILENAME
+        "_drmokc_compute_path_from_filename: FILENAME parameter missing")
+    _drmock_required_param(ARGS_PATH
+        "_drmokc_compute_path_from_filename: PATH parameter missing")
+
+    get_filename_component(absolute_path_to_header ${ARGS_HEADER} ABSOLUTE)  # /[...]/project/[DIRS]/IExample.h
+    get_filename_component(absolute_directory_of_header ${absolute_path_to_header} DIRECTORY)  #/[...]/project/[DIRS]
+    file(RELATIVE_PATH relative_path_from_source_dir_to_header ${CMAKE_CURRENT_SOURCE_DIR} ${absolute_directory_of_header})  # [DIRS]
+
     # Create a directory for the mock object's header and source files.
     _drmock_join_paths(RESULT path_to_mock_subdirectory
                        PATHS ${CMAKE_CURRENT_BINARY_DIR}
@@ -451,14 +473,10 @@ function(_drmock_path_to_output)
     # Compute the path to the mock object's header and source files
     # relative to cmake's current binary source directory.
     _drmock_join_paths(
-        RESULT _output_header
-        PATHS DrMock/mock ${relative_path_from_source_dir_to_header} ${mock_header_filename})
-    _drmock_join_paths(
-        RESULT _output_source
-        PATHS DrMock/mock ${relative_path_from_source_dir_to_header} ${mock_source_filename})
+        RESULT _path
+        PATHS DrMock/mock ${relative_path_from_source_dir_to_header} ${ARGS_FILENAME})
 
-    set(${ARGS_OUTPUT_HEADER} ${_output_header} PARENT_SCOPE)
-    set(${ARGS_OUTPUT_SOURCE} ${_output_source} PARENT_SCOPE)
+    set(${ARGS_PATH} ${_path} PARENT_SCOPE)
 endfunction()
 
 
