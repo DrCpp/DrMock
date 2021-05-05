@@ -91,7 +91,7 @@ For details, see [here](docs/samples/states.md).
 
 The basic requirements for building and running **DrMock** are:
 
-* [CMake](https://cmake.org) (at least 3.13)
+* [CMake](https://cmake.org) (at least 3.17)
 
 * A C++17-standard-compliant compiler
 

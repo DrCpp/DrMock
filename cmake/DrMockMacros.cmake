@@ -224,10 +224,9 @@ function(drmock_library)
         )
     endif()
 
+    set(mock_header_paths)
+    set(mock_source_paths)
     foreach (header ${ARGS_HEADERS})
-        ###################################
-        # Path computations.
-        ###################################
         _drmock_capture_filenames(
             IFILE ${ARGS_IFILE}
             MOCKFILE ${ARGS_MOCKFILE}
@@ -242,6 +241,15 @@ function(drmock_library)
             HEADER ${header}
             FILENAME ${mock_source_file}
             PATH mock_source_path)
+        list(APPEND mock_header_paths ${mock_header_path})
+        list(APPEND mock_source_paths ${mock_source_path})
+    endforeach()
+
+    foreach (header mock_header_path mock_source_path
+             IN ZIP_LISTS ARGS_HEADERS mock_header_paths mock_source_paths)
+        ###################################
+        # Path computations.
+        ###################################
         get_filename_component(absolute_path_to_header ${header} ABSOLUTE)
 
         # Compute the path to the mock object's header and sourcfiles
