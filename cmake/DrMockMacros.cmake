@@ -166,13 +166,6 @@ function(drmock_library)
     _drmock_optional_param(ARGS_IFILE "${ARGS_ICLASS}")
     _drmock_optional_param(ARGS_MOCKFILE "${ARGS_MOCKCLASS}")
 
-    # Make a directory for the mock object's header and source files.
-    _drmock_join_paths(RESULT drmock_directory
-                       PATHS ${CMAKE_CURRENT_BINARY_DIR} DrMock)  # Required later.
-    _drmock_join_paths(RESULT mock_directory
-                       PATHS drmock_directory mock)
-    file(MAKE_DIRECTORY mock_directory)
-
     # Define a list to hold the paths of the source files.
     set(sources)
 
@@ -290,6 +283,8 @@ function(drmock_library)
     endforeach()
 
     add_library(${ARGS_TARGET} SHARED ${sources})
+    _drmock_join_paths(RESULT drmock_directory
+                       PATHS ${CMAKE_CURRENT_BINARY_DIR} DrMock)  # Required later.
     target_include_directories(${ARGS_TARGET} PUBLIC ${drmock_directory})
     target_link_libraries(${ARGS_TARGET} DrMock::DrMock ${ARGS_LIBS})
 endfunction()
