@@ -168,6 +168,8 @@ function(drmock_library)
 
     set(mock_header_paths)
     set(mock_source_paths)
+    set(input_classes)
+    set(output_classes)
     foreach (header ${ARGS_HEADERS})
         _drmock_capture_filenames(
             IFILE ${ARGS_IFILE}
@@ -185,12 +187,18 @@ function(drmock_library)
             PATH mock_source_path)
         list(APPEND mock_header_paths ${mock_header_path})
         list(APPEND mock_source_paths ${mock_source_path})
+        # We just put copies of the regex's into the input/output class
+        # lists. This is slightly awkward.
+        list(APPEND input_classes ${ARGS_ICLASS})
+        list(APPEND output_classes ${ARGS_MOCKCLASS})
     endforeach()
 
     drmock_library2(TARGET ${ARGS_TARGET}
                     HEADERS ${ARGS_HEADERS}
                     MOCK_HEADER_PATHS ${mock_header_paths}
                     MOCK_SOURCE_PATHS ${mock_source_paths}
+                    INPUT_CLASSES ${input_classes}
+                    OUTPUT_CLASSES ${output_classes}
                     LIBS ${ARGS_LIBS}
                     QTMODULES ${ARGS_QTMODULES}
                     INCLUDE ${ARGS_INCLUDE}
@@ -204,12 +212,33 @@ function(drmock_library2)
         ARGS
         ""
         "TARGET"
-        "HEADERS;MOCK_HEADER_PATHS;MOCK_SOURCE_PATHS;LIBS;QTMODULES;INCLUDE;FRAMEWORKS;OPTIONS"
+        "HEADERS;MOCK_HEADER_PATHS;MOCK_SOURCE_PATHS;INPUT_CLASSES;OUTPUT_CLASSES;LIBS;QTMODULES;INCLUDE;FRAMEWORKS;OPTIONS"
         ${ARGN}
     )
     _drmock_required_param(ARGS_TARGET
         "drmock_library: TARGET parameter missing")
-    # TODO Add check that list lengths coincide!
+
+    list(LENGTH ARGS_HEADERS len_headers)
+    list(LENGTH ARGS_MOCK_HEADER_PATHS len_mock_header_paths)
+    list(LENGTH ARGS_MOCK_SOURCE_PATHS len_mock_source_paths)
+    if ((NOT "${len_headers}" EQUAL "${len_mock_header_paths}")
+     OR (NOT "${len_headers}" EQUAL "${len_mock_source_paths}"))
+        message(FATAL_ERROR "drmock_library2: HEADERS, MOCK_HEADER_PATHS, MOCK_SOURCE_PATHS lists are not the same length")
+    endif()
+
+    # Default values on empty input/output class lists.
+    list(LENGTH ARGS_INPUT_CLASSES len_input_classes)
+    if (${len_input_classes} EQUAL 0)
+        foreach (_ RANGE 1 ${len_headers})
+            list(APPEND ARGS_INPUT_CLASSES "I([a-zA-Z0-9].*)")
+        endforeach()
+    endif()
+    list(LENGTH ARGS_OUTPUT_CLASSES len_output_classes)
+    if (${len_output_classes} EQUAL 0)
+        foreach (_ RANGE 1 ${len_headers})
+            list(APPEND ARGS_OUTPUT_CLASSES "\\1Mock")
+        endforeach()
+    endif()
 
     # Define a list to hold the paths of the source files.
     set(sources)
@@ -269,8 +298,9 @@ function(drmock_library2)
         )
     endif()
 
-    foreach (header mock_header_path mock_source_path
-             IN ZIP_LISTS ARGS_HEADERS ARGS_MOCK_HEADER_PATHS ARGS_MOCK_SOURCE_PATHS)
+    foreach (header mock_header_path mock_source_path input_class output_class
+             IN ZIP_LISTS ARGS_HEADERS ARGS_MOCK_HEADER_PATHS ARGS_MOCK_SOURCE_PATHS
+             ARGS_INPUT_CLASSES ARGS_OUTPUT_CLASSES)
         ###################################
         # Path computations.
         ###################################
@@ -292,8 +322,8 @@ function(drmock_library2)
         list(APPEND command drmock-gen)
         list(APPEND command ${absolute_path_to_header})
         list(APPEND command ${path_from_working_dir_to_output_header})
-        list(APPEND command --input-class \"${ARGS_ICLASS}\")
-        list(APPEND command --output-class \"${ARGS_MOCKCLASS}\")
+        list(APPEND command --input-class \"${input_class}\")
+        list(APPEND command --output-class \"${output_class}\")
         list(APPEND command ${generator_option_include_directory})
         list(APPEND command ${generator_option_iframework})
         list(APPEND command "--std=c++${CMAKE_CXX_STANDARD}")
