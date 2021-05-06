@@ -96,6 +96,9 @@ endfunction()
 # file extension. The class name of the mock object is computed in
 # analogous fashion.
 #
+# Note that since `drmock_library` is implemented using
+# `drmock_library2`, it may raise errors labled `drmock_library2`.
+#
 # TARGET
 #     The name of the library that is created.
 #
@@ -210,6 +213,40 @@ function(drmock_library)
 endfunction()
 
 
+# drmock_library2(TARGET <target>
+#                 HEADERS header1 [header2 ...]
+#                 MOCK_HEADER_PATHS header_path1 [header_path2 ...]
+#                 MOCK_SOURCE_PATHS source_path1 [source_path2 ...]
+#                 [INPUT_CLASSES input_class1 [input_class2 ...]]
+#                 [OUTPUT_CLASSES output_class1 [output_class2 ...]]
+#                 [LIBS lib1 [lib2 ...]]
+#                 [QTMODULES module1 [module2 ...]]
+#                 [INCLUDE include1 [include2 ...]]
+#                 [FRAMEWORKS framework1 [framework2 ...]]
+#                 [OPTIONS option1 [option2 ...]]
+#
+# Create a library `target` that contains mock objects for the
+# specified header files.
+#
+# Unlinke `drmock_library`, we use concrete paths here. The lists
+# `MOCK_HEADER_PATHS` and `MOCK_SOURCE_PATHS` hold the paths to where
+# mock class data is written. They must both have the same length as
+# HEADERS and the data from these three lists are matched against each
+# other by index, i.e. the first entry of HEADER is the path to the
+# first input class, the first entry of MOCK_HEADER_PATH and
+# MOCK_SOURCE_PATH is the path to the header resp. source of the
+# corresponding mock class.
+#
+# The lists `INPUT_CLASSES` and `OUTPUT_CLASSES` are lists of regex's or
+# strings against which the input classes (mocked classes) and output
+# classes (mock classes) are matched, just like in `drmock_library`. The
+# lists must be either empty, in which case the default values specified
+# in the documentation of `drmock_library` are used, or have the same
+# length, in which case they are matched against the list HEADER,
+# MOCK_HEADER_PATH and MOCK_SOURCE_PATH by index.
+#
+# See the documentation of `drmock_library` for details regarding the
+# other parameters.
 function(drmock_library2)
     cmake_parse_arguments(
         ARGS
@@ -221,6 +258,7 @@ function(drmock_library2)
     _drmock_required_param(ARGS_TARGET
         "drmock_library2: TARGET parameter missing")
 
+    # Verify that lengths are correct.
     list(LENGTH ARGS_HEADERS len_headers)
     list(LENGTH ARGS_MOCK_HEADER_PATHS len_mock_header_paths)
     list(LENGTH ARGS_MOCK_SOURCE_PATHS len_mock_source_paths)
