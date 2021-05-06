@@ -46,7 +46,7 @@ function(drmock_test)
         ${ARGN}
     )
     _drmock_required_param(ARGS_TESTS
-        "drmock_library: TESTS parameter missing or empty")
+        "drmock_test: TESTS parameter missing or empty")
     foreach (path ${ARGS_TESTS})
         # Check if `path` exists, throw otherwise.
         get_filename_component(absolute_path ${path} ABSOLUTE)
@@ -311,6 +311,10 @@ function(_drmock_get_qt5_module_include_dirs)
         ""
         ${ARGN}
     )
+    _drmock_required_param(ARGS_MODULE
+        "_drmock_get_qt5_module_include_dirs: MODULE parameter missing or empty")
+    _drmock_required_param(ARGS_INCLUDE_DIRS
+        "_drmock_get_qt5_module_include_dirs: INCLUDE_DIRS parameter missing or empty")
 
     STRING(REGEX REPLACE
         "::"
@@ -340,6 +344,10 @@ function(_drmock_get_qt5_module_framework_path)
         ""
         ${ARGN}
     )
+    _drmock_required_param(ARGS_MODULE
+        "_drmock_get_qt5_module_framework_path: MODULE parameter missing or empty")
+    _drmock_required_param(ARGS_FRAMEWORK_PATH
+        "_drmock_get_qt5_module_framework_path: FRAMEWORK_PATH parameter missing or empty")
 
     if (NOT ARGS_QT_PATH)
         if (NOT DEFINED ENV{DRMOCK_QT_PATH})
@@ -386,6 +394,10 @@ function(_drmock_join_paths)
         "PATHS"
         ${ARGN}
     )
+    _drmock_required_param(ARGS_RESULT
+        "_drmock_join_paths: RESULT parameter missing or empty")
+    _drmock_required_param(ARGS_PATHS
+        "_drmock_join_paths: PATHS parameter missing or empty")
 
     foreach (path ${ARGS_PATHS})
         file(TO_CMAKE_PATH path ${path})
@@ -417,6 +429,17 @@ function(_drmock_capture_filenames)
         ""
         ${ARGN}
     )
+    _drmock_required_param(ARGS_HEADER
+        "_drmock_capture_filenames: HEADER parameter missing or empty")
+    _drmock_required_param(ARGS_IFILE
+        "_drmock_capture_filenames: IFILE parameter missing or empty")
+    _drmock_required_param(ARGS_MOCKFILE
+        "_drmock_capture_filenames: MOCKFILE parameter missing or empty")
+    _drmock_required_param(ARGS_OUTPUT_HEADER
+        "_drmock_capture_filenames: OUTPUT_HEADER parameter missing or empty")
+    _drmock_required_param(ARGS_OUTPUT_SOURCE
+        "_drmock_capture_filenames: OUTPUT_SOURCE parameter missing or empty")
+
     # Get the filename of `header`.
     get_filename_component(header_filename ${ARGS_HEADER} NAME)  # IExample.h
     # Remove the file extension.
@@ -462,11 +485,11 @@ function(_drmock_compute_path_from_filename)
         ${ARGN}
     )
     _drmock_required_param(ARGS_HEADER
-        "_drmokc_compute_path_from_filename: HEADER parameter missing")
+        "_drmock_compute_path_from_filename: HEADER parameter missing")
     _drmock_required_param(ARGS_FILENAME
-        "_drmokc_compute_path_from_filename: FILENAME parameter missing")
+        "_drmock_compute_path_from_filename: FILENAME parameter missing")
     _drmock_required_param(ARGS_PATH
-        "_drmokc_compute_path_from_filename: PATH parameter missing")
+        "_drmock_compute_path_from_filename: PATH parameter missing")
 
     get_filename_component(absolute_path_to_header ${ARGS_HEADER} ABSOLUTE)  # /[...]/project/[DIRS]/IExample.h
     get_filename_component(absolute_directory_of_header ${absolute_path_to_header} DIRECTORY)  #/[...]/project/[DIRS]
@@ -488,6 +511,32 @@ function(_drmock_compute_path_from_filename)
 endfunction()
 
 
+# _drmock_options_from_list(OPTION <option>
+#                           INPUT <input1>;<input2>;... 
+#                           RESULT <result>)
+#
+# Set `result` to "<option><input1>;<option><input2>;..."
+function(_drmock_options_from_list)
+    cmake_parse_arguments(
+        ARGS
+        ""
+        "OPTION;RESULT"
+        "INPUT"
+        ${ARGN}
+    )
+    _drmock_required_param(ARGS_OPTION
+        "_drmock_options_from_list: OPTION parameter missing")
+    _drmock_required_param(ARGS_RESULT
+        "_drmock_options_from_list: RESULT parameter missing")
+
+    set(_result)
+    foreach (each ${ARGS_INPUT})
+        list(APPEND _result "${ARGS_OPTION}\"${each}\"")
+    endforeach()
+    set(${ARGS_RESULT} ${_result} PARENT_SCOPE)
+endfunction()
+
+
 # Check if optional parameter is defined, and replace it with default
 # value otherwise.
 function(_drmock_optional_param param default)
@@ -506,25 +555,4 @@ function(_drmock_required_param param what)
         endif()
         message(FATAL_ERROR ${what})
     endif()
-endfunction()
-
-
-# _drmock_options_from_list(OPTION <option>
-#                           INPUT <input1>;<input2>;... 
-#                           RESULT <result>)
-#
-# Set `result` to "<option><input1>;<option><input2>;..."
-function(_drmock_options_from_list)
-    cmake_parse_arguments(
-        ARGS
-        ""
-        "OPTION;RESULT"
-        "INPUT"
-        ${ARGN}
-    )
-    set(_result)
-    foreach (each ${ARGS_INPUT})
-        list(APPEND _result "${ARGS_OPTION}\"${each}\"")
-    endforeach()
-    set(${ARGS_RESULT} ${_result} PARENT_SCOPE)
 endfunction()
