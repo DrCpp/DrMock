@@ -15,6 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
+set(_DRMOCK_FILE_REGEX_DEFAULT_INPUT "I([a-zA-Z0-9].*)")
+set(_DRMOCK_FILE_REGEX_DEFAULT_OUTPUT "\\1Mock")
+
 
 macro(drmock_enable_qt)
     cmake_policy(SET CMP0071 NEW)
@@ -161,8 +164,8 @@ function(drmock_library)
         "drmock_library: TARGET parameter missing")
     _drmock_required_param(ARGS_HEADERS
         "drmock_library: HEADER parameter missing or empty")
-    _drmock_optional_param(ARGS_ICLASS "I([a-zA-Z0-9].*)")
-    _drmock_optional_param(ARGS_MOCKCLASS "\\1Mock")
+    _drmock_optional_param(ARGS_ICLASS ${_DRMOCK_FILE_REGEX_DEFAULT_INPUT})
+    _drmock_optional_param(ARGS_MOCKCLASS ${_DRMOCK_FILE_REGEX_DEFAULT_OUTPUT})
     _drmock_optional_param(ARGS_IFILE "${ARGS_ICLASS}")
     _drmock_optional_param(ARGS_MOCKFILE "${ARGS_MOCKCLASS}")
 
@@ -230,13 +233,13 @@ function(drmock_library2)
     list(LENGTH ARGS_INPUT_CLASSES len_input_classes)
     if (${len_input_classes} EQUAL 0)
         foreach (_ RANGE 1 ${len_headers})
-            list(APPEND ARGS_INPUT_CLASSES "I([a-zA-Z0-9].*)")
+            list(APPEND ARGS_INPUT_CLASSES ${_DRMOCK_FILE_REGEX_DEFAULT_INPUT})
         endforeach()
     endif()
     list(LENGTH ARGS_OUTPUT_CLASSES len_output_classes)
     if (${len_output_classes} EQUAL 0)
         foreach (_ RANGE 1 ${len_headers})
-            list(APPEND ARGS_OUTPUT_CLASSES "\\1Mock")
+            list(APPEND ARGS_OUTPUT_CLASSES ${_DRMOCK_FILE_REGEX_DEFAULT_OUTPUT})
         endforeach()
     endif()
 
