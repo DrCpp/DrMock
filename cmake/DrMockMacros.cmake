@@ -166,6 +166,27 @@ function(drmock_library)
     _drmock_optional_param(ARGS_IFILE "${ARGS_ICLASS}")
     _drmock_optional_param(ARGS_MOCKFILE "${ARGS_MOCKCLASS}")
 
+    set(mock_header_paths)
+    set(mock_source_paths)
+    foreach (header ${ARGS_HEADERS})
+        _drmock_capture_filenames(
+            IFILE ${ARGS_IFILE}
+            MOCKFILE ${ARGS_MOCKFILE}
+            HEADER ${header}
+            OUTPUT_HEADER mock_header_file
+            OUTPUT_SOURCE mock_source_file)
+        _drmock_compute_path_from_filename(
+            HEADER ${header}
+            FILENAME ${mock_header_file}
+            PATH mock_header_path)
+        _drmock_compute_path_from_filename(
+            HEADER ${header}
+            FILENAME ${mock_source_file}
+            PATH mock_source_path)
+        list(APPEND mock_header_paths ${mock_header_path})
+        list(APPEND mock_source_paths ${mock_source_path})
+    endforeach()
+
     # Define a list to hold the paths of the source files.
     set(sources)
 
@@ -223,27 +244,6 @@ function(drmock_library)
                 /usr/lib/llvm-7/lib
         )
     endif()
-
-    set(mock_header_paths)
-    set(mock_source_paths)
-    foreach (header ${ARGS_HEADERS})
-        _drmock_capture_filenames(
-            IFILE ${ARGS_IFILE}
-            MOCKFILE ${ARGS_MOCKFILE}
-            HEADER ${header}
-            OUTPUT_HEADER mock_header_file
-            OUTPUT_SOURCE mock_source_file)
-        _drmock_compute_path_from_filename(
-            HEADER ${header}
-            FILENAME ${mock_header_file}
-            PATH mock_header_path)
-        _drmock_compute_path_from_filename(
-            HEADER ${header}
-            FILENAME ${mock_source_file}
-            PATH mock_source_path)
-        list(APPEND mock_header_paths ${mock_header_path})
-        list(APPEND mock_source_paths ${mock_source_path})
-    endforeach()
 
     foreach (header mock_header_path mock_source_path
              IN ZIP_LISTS ARGS_HEADERS mock_header_paths mock_source_paths)
