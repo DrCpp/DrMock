@@ -16,7 +16,7 @@
 # along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 
-macro(DrMockEnableQt)
+macro(drmock_enable_qt)
     cmake_policy(SET CMP0071 NEW)
     set(CMAKE_AUTOMOC ON)
 endmacro()

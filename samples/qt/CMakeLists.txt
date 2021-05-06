@@ -21,7 +21,7 @@ project(DrMockSampleQt)
 set(CMAKE_CXX_STANDARD 17)
 
 find_package(DrMock)
-DrMockEnableQt()
+drmock_enable_qt()
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
 add_subdirectory(src)
