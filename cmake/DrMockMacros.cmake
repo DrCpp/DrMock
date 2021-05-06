@@ -187,6 +187,30 @@ function(drmock_library)
         list(APPEND mock_source_paths ${mock_source_path})
     endforeach()
 
+    drmock_library2(TARGET ${ARGS_TARGET}
+                    HEADERS ${ARGS_HEADERS}
+                    MOCK_HEADER_PATHS ${mock_header_paths}
+                    MOCK_SOURCE_PATHS ${mock_source_paths}
+                    LIBS ${ARGS_LIBS}
+                    QTMODULES ${ARGS_QTMODULES}
+                    INCLUDE ${ARGS_INCLUDE}
+                    FRAMEWORKS ${ARGS_FRAMEWORKS}
+                    OPTIONS ${ARGS_OPTIONS})
+endfunction()
+
+
+function(drmock_library2)
+    cmake_parse_arguments(
+        ARGS
+        ""
+        "TARGET"
+        "HEADERS;MOCK_HEADER_PATHS;MOCK_SOURCE_PATHS;LIBS;QTMODULES;INCLUDE;FRAMEWORKS;OPTIONS"
+        ${ARGN}
+    )
+    _drmock_required_param(ARGS_TARGET
+        "drmock_library: TARGET parameter missing")
+    # TODO Add check that list lengths coincide!
+
     # Define a list to hold the paths of the source files.
     set(sources)
 
@@ -246,7 +270,7 @@ function(drmock_library)
     endif()
 
     foreach (header mock_header_path mock_source_path
-             IN ZIP_LISTS ARGS_HEADERS mock_header_paths mock_source_paths)
+             IN ZIP_LISTS ARGS_HEADERS ARGS_MOCK_HEADER_PATHS ARGS_MOCK_SOURCE_PATHS)
         ###################################
         # Path computations.
         ###################################
