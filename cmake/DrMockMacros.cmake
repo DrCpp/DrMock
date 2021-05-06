@@ -219,7 +219,7 @@ function(drmock_library2)
         ${ARGN}
     )
     _drmock_required_param(ARGS_TARGET
-        "drmock_library: TARGET parameter missing")
+        "drmock_library2: TARGET parameter missing")
 
     list(LENGTH ARGS_HEADERS len_headers)
     list(LENGTH ARGS_MOCK_HEADER_PATHS len_mock_header_paths)
