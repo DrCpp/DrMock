@@ -23,11 +23,6 @@
 #include <string>
 #include <vector>
 
-#ifdef DRMOCK_USE_QT
-#include <QObject>
-#include <QString>
-#endif
-
 #include <DrMock/mock/AbstractBehavior.h>
 #include <DrMock/mock/Behavior.h>
 #include <DrMock/mock/BehaviorQueue.h>
