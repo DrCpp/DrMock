@@ -27,7 +27,7 @@
 #include "TypeInfo.h"
 #include "TypeTraits.h"
 
-namespace drmock { namespace detail {
+namespace drutility { namespace detail {
 
 template<typename T, typename Enabled = void>
 class StreamIfStreamable;
@@ -93,6 +93,6 @@ struct PrintAll<T, Ts...>
   }
 };
 
-}} // namespace drmock::detail
+}} // namespace drutility::detail
 
 #endif /* DRMOCK_SRC_MOCK_DETAIL_DIAGNOSTICS_H */

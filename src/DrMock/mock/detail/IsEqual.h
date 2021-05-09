@@ -23,7 +23,7 @@
 #include <type_traits>
 
 #include "IIsEqual.h"
-#include "TypeTraits.h"
+#include "DrMock/utility/TypeTraits.h"
 
 namespace drmock { namespace detail {
 
@@ -78,9 +78,9 @@ struct IsEqual<
     T,
     T,
     typename std::enable_if<
-            not is_shared_ptr<T>::value
-        and not is_unique_ptr<T>::value
-        and not is_tuple<T>::value
+            not drutility::detail::is_shared_ptr<T>::value
+        and not drutility::detail::is_unique_ptr<T>::value
+        and not drutility::detail::is_tuple<T>::value
         and not std::is_pointer<T>::value
       >::type
   > : public IIsEqual<T>
@@ -107,8 +107,8 @@ struct IsEqual<
     T,
     U,
     typename std::enable_if<
-            is_shared_ptr<T>::value
-        and is_shared_ptr<U>::value
+            drutility::detail::is_shared_ptr<T>::value
+        and drutility::detail::is_shared_ptr<U>::value
         and std::is_base_of<typename T::element_type, typename U::element_type>::value
         and not std::is_same<T, U>::value
       >::type
@@ -130,8 +130,8 @@ struct IsEqual<
     T,
     U,
     typename std::enable_if<
-            is_unique_ptr<T>::value
-        and is_unique_ptr<U>::value
+            drutility::detail::is_unique_ptr<T>::value
+        and drutility::detail::is_unique_ptr<U>::value
         and std::is_base_of<typename T::element_type, typename U::element_type>::value
         and not std::is_same<T, U>::value
       >::type
@@ -158,8 +158,8 @@ struct IsEqual<
     T,
     T,
     typename std::enable_if<
-            is_shared_ptr<T>::value
-         or is_unique_ptr<T>::value
+            drutility::detail::is_shared_ptr<T>::value
+         or drutility::detail::is_unique_ptr<T>::value
       >::type
   >
     : public IIsEqual<T>
@@ -195,7 +195,7 @@ struct IsEqual<
     T,
     U,
     typename std::enable_if<
-        is_tuple<T>::value and is_tuple<U>::value
+        drutility::detail::is_tuple<T>::value and drutility::detail::is_tuple<U>::value
         and (std::tuple_size<T>::value == std::tuple_size<U>::value)
       >::type
   > : public IIsEqual<T>

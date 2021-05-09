@@ -16,7 +16,7 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "detail/Diagnostics.h"
+#include "DrMock/utility/Diagnostics.h"
 
 namespace drmock {
 
@@ -155,7 +155,7 @@ Method<Class, ReturnType, Args...>::call(const Args&... args)
 
   has_failed_ = true;
   error_msgs_.push_back({});
-  detail::PrintAll<Args...>{}(error_msgs_.back(), args...);
+  drutility::detail::PrintAll<Args...>{}(error_msgs_.back(), args...);
 
   if constexpr (std::is_default_constructible_v<DecayedReturnType>)
   {

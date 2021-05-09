@@ -22,7 +22,7 @@
 #include <string>
 
 #define DRMOCK_DECLARE_TYPE(Type) \
-namespace drmock { namespace detail { \
+namespace drutility { namespace detail { \
 template<> \
 struct TypeInfo<Type> \
 { \
@@ -42,7 +42,7 @@ struct TypeInfo<Type> \
 }}
 
 #define DRMOCK_DECLARE_TEMPLATE(Type) \
-namespace drmock { namespace detail { \
+namespace drutility { namespace detail { \
 template<> \
 struct TemplateInfo<Type> \
 { \
@@ -57,7 +57,7 @@ struct TemplateInfo<Type> \
 }; \
 }}
 
-namespace drmock { namespace detail {
+namespace drutility { namespace detail {
 
 template<template<typename...> class T>
 struct TemplateInfo
@@ -198,7 +198,7 @@ struct TypeInfo<T<Ts...>>
   }
 };
 
-}} // namespace drmock::detail
+}} // namespace drutility::detail
 
 DRMOCK_DECLARE_TYPE(short)
 DRMOCK_DECLARE_TYPE(unsigned short)

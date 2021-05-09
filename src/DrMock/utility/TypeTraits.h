@@ -23,7 +23,7 @@
 #include <memory>
 #include <type_traits>
 
-namespace drmock { namespace detail {
+namespace drutility { namespace detail {
 
 template<typename... Ts>
 struct is_tuple : std::false_type {};
@@ -61,6 +61,6 @@ struct is_output_streamable<
     std::void_t<decltype(std::declval<std::ostream&>() << std::declval<const T&>())>
  > : std::true_type {};
 
-}} // namespace drmock
+}} // namespace drutility::detail
 
 #endif /* DRMOCK_SRC_MOCK_TYPETRAITS_H */

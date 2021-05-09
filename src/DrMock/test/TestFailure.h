@@ -31,7 +31,7 @@
 #include <sstream>
 #include <string>
 
-#include "../mock/detail/Diagnostics.h"
+#include "../utility/Diagnostics.h"
 
 namespace drtest { namespace detail {
 
@@ -71,9 +71,9 @@ TestFailure::TestFailure(
   std::stringstream s{};
   s << std::endl;
   s << "    (" << std::move(lhs_expr) << ") " << std::endl;
-  s << "      " << drmock::detail::StreamIfStreamable<LhsType>{lhs} << std::endl;
+  s << "      " << drutility::detail::StreamIfStreamable<LhsType>{lhs} << std::endl;
   s << "    (expected " << op << ")" << std::endl;
-  s << "      " << drmock::detail::StreamIfStreamable<RhsType>{rhs} << std::endl;
+  s << "      " << drutility::detail::StreamIfStreamable<RhsType>{rhs} << std::endl;
   what_ = s.str();
 }
 
