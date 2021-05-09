@@ -22,6 +22,12 @@ along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 Released 2021/xx/xx
 
+* Reorganize project structure along the lines of
+  [vector-of-bool/pitchfork](gi thub.com/vector-of-bool/pitchfork)
+
+* Move utility methods that are used in `mock/` and `test/` to
+  `utility/`
+
 * Convert all CMake functions/macros from camelCase to snake_case
 
 * Clean up cmake/DrMockMacros.cmake
@@ -35,6 +41,8 @@ Released 2021/xx/xx
   now called, will be installed using pip in the future)
 
 * Remove broken (and superfluous) pkgconfig
+
+* Remove Qt includes from `Method.h`
 
 
 # DrMock 0.4.0
