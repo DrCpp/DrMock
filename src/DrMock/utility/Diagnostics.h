@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_MOCK_DETAIL_DIAGNOSTICS_H
-#define DRMOCK_SRC_MOCK_DETAIL_DIAGNOSTICS_H
+#ifndef DRMOCK_SRC_UTILITY_DIAGNOSTICS_H
+#define DRMOCK_SRC_UTILITY_DIAGNOSTICS_H
 
 #include <iostream>
 #include <sstream>
@@ -95,4 +95,4 @@ struct PrintAll<T, Ts...>
 
 }} // namespace drutility::detail
 
-#endif /* DRMOCK_SRC_MOCK_DETAIL_DIAGNOSTICS_H */
+#endif /* DRMOCK_SRC_UTILITY_DIAGNOSTICS_H */
