@@ -17,6 +17,7 @@ default:
 .PHONY: clean
 clean:
 	rm -fr build
+	cd samples && make clean
 
 .PHONY: install
 install:
