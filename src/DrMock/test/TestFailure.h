@@ -16,14 +16,6 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* FIXME
- *
- * Put drmock::detail::StreamIfStreamable into a neutral namespace, e.g.
- * drutil::StreamIfStreamable; by extension, move TypeTraits and
- * TypeInfo, there as well.
- *
- * FIXME */
-
 #ifndef DRMOCK_SRC_TEST_TESTFAILURE_H
 #define DRMOCK_SRC_TEST_TESTFAILURE_H
 
