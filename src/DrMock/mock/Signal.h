@@ -19,7 +19,7 @@
 #ifndef DRMOCK_SRC_MOCK_SIGNAL_H
 #define DRMOCK_SRC_MOCK_SIGNAL_H
 
-#include "AbstractSignal.h"
+#include <DrMock/mock/AbstractSignal.h>
 
 namespace drmock {
 

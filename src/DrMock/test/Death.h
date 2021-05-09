@@ -25,7 +25,7 @@
 #include <unistd.h>
 #endif
 
-#include "TestFailure.h"
+#include <DrMock/test/TestFailure.h>
 
 namespace drtest { namespace death {
 

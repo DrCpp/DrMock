@@ -23,7 +23,7 @@
 #include <sstream>
 #include <string>
 
-#include "../utility/Diagnostics.h"
+#include <DrMock/utility/Diagnostics.h>
 
 namespace drtest { namespace detail {
 

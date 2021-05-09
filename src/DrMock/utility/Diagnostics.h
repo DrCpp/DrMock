@@ -24,8 +24,8 @@
 #include <string>
 #include <vector>
 
-#include "TypeInfo.h"
-#include "TypeTraits.h"
+#include <DrMock/utility/TypeInfo.h>
+#include <DrMock/utility/TypeTraits.h>
 
 namespace drutility { namespace detail {
 

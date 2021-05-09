@@ -20,7 +20,7 @@
 
 #include <algorithm>
 
-#include "IMethod.h"
+#include <DrMock/mock/IMethod.h>
 
 namespace drmock {
 

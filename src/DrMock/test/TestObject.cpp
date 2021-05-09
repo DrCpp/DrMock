@@ -20,8 +20,8 @@
 
 #include <sstream>
 
-#include "ILogger.h"
-#include "TestFailure.h"
+#include <DrMock/test/ILogger.h>
+#include <DrMock/test/TestFailure.h>
 
 namespace drtest { namespace detail {
 

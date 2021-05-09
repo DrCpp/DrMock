@@ -20,8 +20,8 @@
 
 #include <sstream>
 
-#include "ILogger.h"
-#include "Singleton.tpp"
+#include <DrMock/test/ILogger.h>
+#include <DrMock/test/Singleton.tpp>
 
 namespace drtest { namespace detail {
 

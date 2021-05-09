@@ -23,7 +23,7 @@
 #include <sstream>
 #include <string>
 
-#include "Singleton.h"
+#include <DrMock/test/Singleton.h>
 
 namespace drtest { namespace detail {
 

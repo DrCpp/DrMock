@@ -24,8 +24,8 @@
 #include <unordered_set>
 #include <vector>
 
-#include "Singleton.h"
-#include "TestObject.h"
+#include <DrMock/test/Singleton.h>
+#include <DrMock/test/TestObject.h>
 
 namespace drtest { namespace detail {
 

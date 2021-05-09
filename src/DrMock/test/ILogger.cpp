@@ -18,6 +18,6 @@
 
 #include "ILogger.h"
 
-#include "Singleton.tpp"
+#include <DrMock/test/Singleton.tpp>
 
 template class drtest::detail::Singleton<drtest::detail::ILogger>;

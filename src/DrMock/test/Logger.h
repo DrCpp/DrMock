@@ -21,7 +21,7 @@
 
 #include <mutex>
 
-#include "ILogger.h"
+#include <DrMock/test/ILogger.h>
 
 namespace drtest { namespace detail {
 

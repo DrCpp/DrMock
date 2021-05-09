@@ -19,10 +19,10 @@
 #ifndef DRMOCK_SRC_TEST_TESTMACROS_H
 #define DRMOCK_SRC_TEST_TESTMACROS_H
 
-#include "Death.h"
-#include "FunctionInvoker.h"
-#include "Global.h"
-#include "TestFailure.h"
+#include <DrMock/test/Death.h>
+#include <DrMock/test/FunctionInvoker.h>
+#include <DrMock/test/Global.h>
+#include <DrMock/test/TestFailure.h>
 
 #define DRTEST_FETCH(Type, name) \
 Type name{drtest::detail::Singleton<drtest::detail::Global>::get()->fetchData<Type>(#name)}

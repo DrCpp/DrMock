@@ -28,12 +28,12 @@
 #include <QString>
 #endif
 
-#include "AbstractBehavior.h"
-#include "Behavior.h"
-#include "BehaviorQueue.h"
-#include "IMethod.h"
-#include "StateBehavior.h"
-#include "StateObject.h"
+#include <DrMock/mock/AbstractBehavior.h>
+#include <DrMock/mock/Behavior.h>
+#include <DrMock/mock/BehaviorQueue.h>
+#include <DrMock/mock/IMethod.h>
+#include <DrMock/mock/StateBehavior.h>
+#include <DrMock/mock/StateObject.h>
 
 namespace drmock {
 

@@ -16,7 +16,7 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "DrMock/utility/Diagnostics.h"
+#include <DrMock/utility/Diagnostics.h>
 
 namespace drmock {
 

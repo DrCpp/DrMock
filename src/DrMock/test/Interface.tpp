@@ -16,7 +16,7 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "Global.h"
+#include <DrMock/test/Global.h>
 
 namespace drtest {
 

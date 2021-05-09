@@ -24,8 +24,8 @@
 #include <utility>
 #include <variant>
 
-#include "detail/IIsTuplePackEqual.h"
-#include "AbstractSignal.h"
+#include <DrMock/mock/detail/IIsTuplePackEqual.h>
+#include <DrMock/mock/AbstractSignal.h>
 
 namespace drmock {
 

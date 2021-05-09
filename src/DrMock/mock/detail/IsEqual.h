@@ -22,8 +22,8 @@
 #include <memory>
 #include <type_traits>
 
-#include "IIsEqual.h"
-#include "DrMock/utility/TypeTraits.h"
+#include <DrMock/mock/detail/IIsEqual.h>
+#include <DrMock/utility/TypeTraits.h>
 
 namespace drmock { namespace detail {
 

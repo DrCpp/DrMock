@@ -19,8 +19,8 @@
 #ifndef DRMOCK_SRC_MOCK_DETAIL_ISTUPLEPACKEQUAL_H
 #define DRMOCK_SRC_MOCK_DETAIL_ISTUPLEPACKEQUAL_H
 
-#include "IIsTuplePackEqual.h"
-#include "IsEqual.h"
+#include <DrMock/mock/detail/IIsTuplePackEqual.h>
+#include <DrMock/mock/detail/IsEqual.h>
 
 namespace drmock { namespace detail {
 

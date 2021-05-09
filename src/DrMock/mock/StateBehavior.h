@@ -24,9 +24,9 @@
 #include <memory>
 #include <variant>
 
-#include "detail/IIsTuplePackEqual.h"
-#include "AbstractBehavior.h"
-#include "StateObject.h"
+#include <DrMock/mock/detail/IIsTuplePackEqual.h>
+#include <DrMock/mock/AbstractBehavior.h>
+#include <DrMock/mock/StateObject.h>
 
 namespace drmock {
 

@@ -24,9 +24,9 @@
 #include <variant>
 #include <vector>
 
-#include "detail/IIsTuplePackEqual.h"
-#include "AbstractBehavior.h"
-#include "Behavior.h"
+#include <DrMock/mock/detail/IIsTuplePackEqual.h>
+#include <DrMock/mock/AbstractBehavior.h>
+#include <DrMock/mock/Behavior.h>
 
 namespace drmock {
 

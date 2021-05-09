@@ -24,10 +24,10 @@
 #include <QTimer>
 #endif
 
-#include "FunctionInvoker.h"
-#include "Global.h"
-#include "ILogger.h"
-#include "Logger.h"
+#include <DrMock/test/FunctionInvoker.h>
+#include <DrMock/test/Global.h>
+#include <DrMock/test/ILogger.h>
+#include <DrMock/test/Logger.h>
 
 namespace drtest { namespace detail {
 
