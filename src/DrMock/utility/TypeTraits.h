@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_UTILITY_TYPETRAITS_H
-#define DRMOCK_SRC_UTILITY_TYPETRAITS_H
+#ifndef DRMOCK_SRC_DRMOCK_UTILITY_TYPETRAITS_H
+#define DRMOCK_SRC_DRMOCK_UTILITY_TYPETRAITS_H
 
 #include <functional>
 #include <memory>
@@ -63,4 +63,4 @@ struct is_output_streamable<
 
 }} // namespace drutility::detail
 
-#endif /* DRMOCK_SRC_UTILITY_TYPETRAITS_H */
+#endif /* DRMOCK_SRC_DRMOCK_UTILITY_TYPETRAITS_H */

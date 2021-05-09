@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_MOCK_UTIL_H
-#define DRMOCK_SRC_MOCK_UTIL_H
+#ifndef DRMOCK_SRC_DRMOCK_MOCK_UTIL_H
+#define DRMOCK_SRC_DRMOCK_MOCK_UTIL_H
 
 /* Utilities used in the generated source code of mock objects. */
 
@@ -41,4 +41,4 @@ auto&& moveIfNotCopyConstructible(T&& t)
 
 } // namespace drmock
 
-#endif /* DRMOCK_SRC_MOCK_UTIL_H */
+#endif /* DRMOCK_SRC_DRMOCK_MOCK_UTIL_H */

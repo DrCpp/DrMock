@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_MOCK_DETAIL_ISEQUAL_H
-#define DRMOCK_SRC_MOCK_DETAIL_ISEQUAL_H
+#ifndef DRMOCK_SRC_DRMOCK_MOCK_DETAIL_ISEQUAL_H
+#define DRMOCK_SRC_DRMOCK_MOCK_DETAIL_ISEQUAL_H
 
 #include <memory>
 #include <type_traits>
@@ -237,4 +237,4 @@ struct IsEqual<std::tuple<>, std::tuple<>> : public IIsEqual<std::tuple<>>
 
 }} // namespace drmock
 
-#endif /* DRMOCK_SRC_MOCK_DETAIL_ISEQUAL_H */
+#endif /* DRMOCK_SRC_DRMOCK_MOCK_DETAIL_ISEQUAL_H */

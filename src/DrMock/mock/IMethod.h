@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_MOCK_IMETHOD_H
-#define DRMOCK_SRC_MOCK_IMETHOD_H
+#ifndef DRMOCK_SRC_DRMOCK_MOCK_IMETHOD_H
+#define DRMOCK_SRC_DRMOCK_MOCK_IMETHOD_H
 
 #include <string>
 
@@ -34,4 +34,4 @@ public:
 
 } // namespace drmock
 
-#endif /* DRMOCK_SRC_MOCK_IMETHOD_H */
+#endif /* DRMOCK_SRC_DRMOCK_MOCK_IMETHOD_H */

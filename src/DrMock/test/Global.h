@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_TEST_GLOBAL_H
-#define DRMOCK_SRC_TEST_GLOBAL_H
+#ifndef DRMOCK_SRC_DRMOCK_TEST_GLOBAL_H
+#define DRMOCK_SRC_DRMOCK_TEST_GLOBAL_H
 
 #include <string>
 #include <unordered_map>
@@ -60,4 +60,4 @@ private:
 
 #include "Global.tpp"
 
-#endif /* DRMOCK_SRC_TEST_GLOBAL_H */
+#endif /* DRMOCK_SRC_DRMOCK_TEST_GLOBAL_H */

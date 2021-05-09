@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_MOCK_METHODCOLLECTION_H
-#define DRMOCK_SRC_MOCK_METHODCOLLECTION_H
+#ifndef DRMOCK_SRC_DRMOCK_MOCK_METHODCOLLECTION_H
+#define DRMOCK_SRC_DRMOCK_MOCK_METHODCOLLECTION_H
 
 #include <memory>
 #include <vector>
@@ -45,4 +45,4 @@ private:
 
 } // namespace drmock
 
-#endif /* DRMOCK_SRC_MOCK_METHODCOLLECTION_H */
+#endif /* DRMOCK_SRC_DRMOCK_MOCK_METHODCOLLECTION_H */

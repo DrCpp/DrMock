@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_TEST_TESTMAIN_H
-#define DRMOCK_SRC_TEST_TESTMAIN_H
+#ifndef DRMOCK_SRC_DRMOCK_TEST_TESTMAIN_H
+#define DRMOCK_SRC_DRMOCK_TEST_TESTMAIN_H
 
 #ifdef DRTEST_USE_QT
 #include <QCoreApplication>
@@ -61,4 +61,4 @@ main(int argc, char** argv)
   return static_cast<int>(GlobalSingleton::get()->num_failures());
 }
 
-#endif /* DRMOCK_SRC_TEST_TESTMAIN_H */
+#endif /* DRMOCK_SRC_DRMOCK_TEST_TESTMAIN_H */

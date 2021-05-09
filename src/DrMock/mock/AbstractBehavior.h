@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_MOCK_ABSTRACTBEHAVIOR_H
-#define DRMOCK_SRC_MOCK_ABSTRACTBEHAVIOR_H
+#ifndef DRMOCK_SRC_DRMOCK_MOCK_ABSTRACTBEHAVIOR_H
+#define DRMOCK_SRC_DRMOCK_MOCK_ABSTRACTBEHAVIOR_H
 
 #include <exception>
 #include <memory>
@@ -66,4 +66,4 @@ public:
 
 } // namespace
 
-#endif /* DRMOCK_SRC_MOCK_ABSTRACTBEHAVIOR_H */
+#endif /* DRMOCK_SRC_DRMOCK_MOCK_ABSTRACTBEHAVIOR_H */

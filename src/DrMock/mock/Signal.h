@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_MOCK_SIGNAL_H
-#define DRMOCK_SRC_MOCK_SIGNAL_H
+#ifndef DRMOCK_SRC_DRMOCK_MOCK_SIGNAL_H
+#define DRMOCK_SRC_DRMOCK_MOCK_SIGNAL_H
 
 #include <DrMock/mock/AbstractSignal.h>
 
@@ -54,4 +54,4 @@ private:
 
 #include "Signal.tpp"
 
-#endif /* DRMOCK_SRC_MOCK_SIGNAL_H */
+#endif /* DRMOCK_SRC_DRMOCK_MOCK_SIGNAL_H */

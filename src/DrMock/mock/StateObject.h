@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_MOCK_STATEOBJECT_H
-#define DRMOCK_SRC_MOCK_STATEOBJECT_H
+#ifndef DRMOCK_SRC_DRMOCK_MOCK_STATEOBJECT_H
+#define DRMOCK_SRC_DRMOCK_MOCK_STATEOBJECT_H
 
 #include <string>
 #include <unordered_map>
@@ -54,4 +54,4 @@ private:
 
 } // namespace drmock
 
-#endif /* DRMOCK_SRC_MOCK_STATEOBJECT_H */
+#endif /* DRMOCK_SRC_DRMOCK_MOCK_STATEOBJECT_H */

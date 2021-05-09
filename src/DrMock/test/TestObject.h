@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_TEST_TESTOBJECT_H
-#define DRMOCK_SRC_TEST_TESTOBJECT_H
+#ifndef DRMOCK_SRC_DRMOCK_TEST_TESTOBJECT_H
+#define DRMOCK_SRC_DRMOCK_TEST_TESTOBJECT_H
 
 #include <any>
 #include <functional>
@@ -70,4 +70,4 @@ private:
 
 #include "TestObject.tpp"
 
-#endif /* DRMOCK_SRC_TEST_TESTOBJECT_H */
+#endif /* DRMOCK_SRC_DRMOCK_TEST_TESTOBJECT_H */

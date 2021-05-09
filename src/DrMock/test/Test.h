@@ -16,11 +16,11 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_TEST_TEST_H
-#define DRMOCK_SRC_TEST_TEST_H
+#ifndef DRMOCK_SRC_DRMOCK_TEST_TEST_H
+#define DRMOCK_SRC_DRMOCK_TEST_TEST_H
 
 #include <DrMock/test/Interface.h>
 #include <DrMock/test/TestMacros.h>
 #include <DrMock/test/TestMain.h>
 
-#endif /* DRMOCK_SRC_TEST_TEST_H */
+#endif /* DRMOCK_SRC_DRMOCK_TEST_TEST_H */

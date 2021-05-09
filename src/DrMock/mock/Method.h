@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_MOCK_METHOD_H
-#define DRMOCK_SRC_MOCK_METHOD_H
+#ifndef DRMOCK_SRC_DRMOCK_MOCK_METHOD_H
+#define DRMOCK_SRC_DRMOCK_MOCK_METHOD_H
 
 #include <memory>
 #include <string>
@@ -122,4 +122,4 @@ private:
 
 #include "Method.tpp"
 
-#endif /* DRMOCK_SRC_MOCK_METHOD_H */
+#endif /* DRMOCK_SRC_DRMOCK_MOCK_METHOD_H */

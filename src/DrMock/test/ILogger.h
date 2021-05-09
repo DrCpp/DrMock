@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_TEST_ILOGGER_H
-#define DRMOCK_SRC_TEST_ILOGGER_H
+#ifndef DRMOCK_SRC_DRMOCK_TEST_ILOGGER_H
+#define DRMOCK_SRC_DRMOCK_TEST_ILOGGER_H
 
 #include <ostream>
 #include <sstream>
@@ -61,4 +61,4 @@ do { \
 #define DRTEST_LOG_WARN(msg) DRTEST_LOG("WARN", msg)
 #define DRTEST_LOG_CRIT(msg) DRTEST_LOG("CRIT", msg)
 
-#endif /* DRMOCK_SRC_TEST_ILOGGER_H */
+#endif /* DRMOCK_SRC_DRMOCK_TEST_ILOGGER_H */

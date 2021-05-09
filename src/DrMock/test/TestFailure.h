@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_TEST_TESTFAILURE_H
-#define DRMOCK_SRC_TEST_TESTFAILURE_H
+#ifndef DRMOCK_SRC_DRMOCK_TEST_TESTFAILURE_H
+#define DRMOCK_SRC_DRMOCK_TEST_TESTFAILURE_H
 
 #include <exception>
 #include <sstream>
@@ -71,4 +71,4 @@ TestFailure::TestFailure(
 
 }} // namespace drtest::detail
 
-#endif /* DRMOCK_SRC_TEST_TESTFAILURE_H */
+#endif /* DRMOCK_SRC_DRMOCK_TEST_TESTFAILURE_H */

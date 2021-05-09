@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_TEST_DEATH_H
-#define DRMOCK_SRC_TEST_DEATH_H
+#ifndef DRMOCK_SRC_DRMOCK_TEST_DEATH_H
+#define DRMOCK_SRC_DRMOCK_TEST_DEATH_H
 
 #include <csignal>
 
@@ -127,4 +127,4 @@ do \
   close(drtest::death::pipe_[1]); \
 } while(false)
 
-#endif /* DRMOCK_SRC_TEST_DEATH_H */
+#endif /* DRMOCK_SRC_DRMOCK_TEST_DEATH_H */

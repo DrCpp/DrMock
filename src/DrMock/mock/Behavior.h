@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_MOCK_BEHAVIOR_H
-#define DRMOCK_SRC_MOCK_BEHAVIOR_H
+#ifndef DRMOCK_SRC_DRMOCK_MOCK_BEHAVIOR_H
+#define DRMOCK_SRC_DRMOCK_MOCK_BEHAVIOR_H
 
 #include <memory>
 #include <optional>
@@ -121,4 +121,4 @@ private:
 
 #include "Behavior.tpp"
 
-#endif /* DRMOCK_SRC_MOCK_BEHAVIOR_H */
+#endif /* DRMOCK_SRC_DRMOCK_MOCK_BEHAVIOR_H */

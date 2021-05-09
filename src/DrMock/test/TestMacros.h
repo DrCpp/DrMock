@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_TEST_TESTMACROS_H
-#define DRMOCK_SRC_TEST_TESTMACROS_H
+#ifndef DRMOCK_SRC_DRMOCK_TEST_TESTMACROS_H
+#define DRMOCK_SRC_DRMOCK_TEST_TESTMACROS_H
 
 #include <DrMock/test/Death.h>
 #include <DrMock/test/FunctionInvoker.h>
@@ -98,4 +98,4 @@ do { \
   } \
 } while (false)
 
-#endif /* DRMOCK_SRC_TEST_TESTMACROS_H */
+#endif /* DRMOCK_SRC_DRMOCK_TEST_TESTMACROS_H */

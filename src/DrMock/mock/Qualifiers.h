@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_MOCK_QUALIFIERS_H
-#define DRMOCK_SRC_MOCK_QUALIFIERS_H
+#ifndef DRMOCK_SRC_DRMOCK_MOCK_QUALIFIERS_H
+#define DRMOCK_SRC_DRMOCK_MOCK_QUALIFIERS_H
 
 /* Utility structs used in the generated source code of mock objects. */
 
@@ -31,4 +31,4 @@ struct Volatile
 
 } // namespace drmock
 
-#endif /* DRMOCK_SRC_MOCK_QUALIFIERS_H */
+#endif /* DRMOCK_SRC_DRMOCK_MOCK_QUALIFIERS_H */

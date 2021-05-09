@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_TEST_INTERFACE_H
-#define DRMOCK_SRC_TEST_INTERFACE_H
+#ifndef DRMOCK_SRC_DRMOCK_TEST_INTERFACE_H
+#define DRMOCK_SRC_DRMOCK_TEST_INTERFACE_H
 
 #include <string>
 
@@ -30,4 +30,4 @@ template<typename... Ts> void addRow(const std::string& row, Ts&&... ts);
 
 #include "Interface.tpp"
 
-#endif /* DRMOCK_SRC_TEST_INTERFACE_H */
+#endif /* DRMOCK_SRC_DRMOCK_TEST_INTERFACE_H */

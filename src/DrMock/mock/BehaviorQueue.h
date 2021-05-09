@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_MOCK_BEHAVIORSTACK_H
-#define DRMOCK_SRC_MOCK_BEHAVIORSTACK_H
+#ifndef DRMOCK_SRC_DRMOCK_MOCK_BEHAVIORSTACK_H
+#define DRMOCK_SRC_DRMOCK_MOCK_BEHAVIORSTACK_H
 
 #include <exception>
 #include <memory>
@@ -94,4 +94,4 @@ private:
 
 #include "BehaviorQueue.tpp"
 
-#endif /* DRMOCK_SRC_MOCK_BEHAVIORSTACK_H */
+#endif /* DRMOCK_SRC_DRMOCK_MOCK_BEHAVIORSTACK_H */

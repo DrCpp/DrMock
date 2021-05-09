@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_TEST_SINGLETON_H
-#define DRMOCK_SRC_TEST_SINGLETON_H
+#ifndef DRMOCK_SRC_DRMOCK_TEST_SINGLETON_H
+#define DRMOCK_SRC_DRMOCK_TEST_SINGLETON_H
 
 #include <memory>
 #include <mutex>
@@ -38,4 +38,4 @@ private:
 
 }} // namespace drtest::detail
 
-#endif /* DRMOCK_SRC_TEST_SINGLETON_H */
+#endif /* DRMOCK_SRC_DRMOCK_TEST_SINGLETON_H */

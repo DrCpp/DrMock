@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_MOCK_MOCKMACROS_H
-#define DRMOCK_SRC_MOCK_MOCKMACROS_H
+#ifndef DRMOCK_SRC_DRMOCK_MOCK_MOCKMACROS_H
+#define DRMOCK_SRC_DRMOCK_MOCK_MOCKMACROS_H
 
 /* Mock-specific macros
  *
@@ -47,4 +47,4 @@ inline bool operator==(const cls&, const cls&) \
   return true; \
 } // Define trivial operator==.
 
-#endif /* DRMOCK_SRC_MOCK_MOCKMACROS_H */
+#endif /* DRMOCK_SRC_DRMOCK_MOCK_MOCKMACROS_H */

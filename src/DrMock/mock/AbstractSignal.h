@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_MOCK_ABSTRACTSIGNAL_H
-#define DRMOCK_SRC_MOCK_ABSTRACTSIGNAL_H
+#ifndef DRMOCK_SRC_DRMOCK_MOCK_ABSTRACTSIGNAL_H
+#define DRMOCK_SRC_DRMOCK_MOCK_ABSTRACTSIGNAL_H
 
 namespace drmock {
 
@@ -39,4 +39,4 @@ public:
 
 } // namespace drmock
 
-#endif /* DRMOCK_SRC_MOCK_ABSTRACTSIGNAL_H */
+#endif /* DRMOCK_SRC_DRMOCK_MOCK_ABSTRACTSIGNAL_H */

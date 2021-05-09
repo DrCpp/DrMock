@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_MOCK_STATEBEHAVIOR_H
-#define DRMOCK_SRC_MOCK_STATEBEHAVIOR_H
+#ifndef DRMOCK_SRC_DRMOCK_MOCK_STATEBEHAVIOR_H
+#define DRMOCK_SRC_DRMOCK_MOCK_STATEBEHAVIOR_H
 
 #include <exception>
 #include <map>
@@ -233,4 +233,4 @@ private:
 
 #include "StateBehavior.tpp"
 
-#endif /* DRMOCK_SRC_MOCK_STATEBEHAVIOR_H */
+#endif /* DRMOCK_SRC_DRMOCK_MOCK_STATEBEHAVIOR_H */

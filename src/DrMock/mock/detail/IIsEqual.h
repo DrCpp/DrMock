@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_MOCK_DETAIL_IISEQUAL_H
-#define DRMOCK_SRC_MOCK_DETAIL_IISEQUAL_H
+#ifndef DRMOCK_SRC_DRMOCK_MOCK_DETAIL_IISEQUAL_H
+#define DRMOCK_SRC_DRMOCK_MOCK_DETAIL_IISEQUAL_H
 
 namespace drmock { namespace detail {
 
@@ -32,4 +32,4 @@ public:
 
 }} // namespace drmock::detail
 
-#endif /* DRMOCK_SRC_MOCK_DETAIL_IISEQUAL_H */
+#endif /* DRMOCK_SRC_DRMOCK_MOCK_DETAIL_IISEQUAL_H */
