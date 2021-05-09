@@ -115,12 +115,6 @@ install(
 set_target_properties(${PROJECT_NAME} PROPERTIES EXPORT_NAME DrMock)
 
 install(
-    DIRECTORY pkgconfig/
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
-    FILES_MATCHING
-        PATTERN "*.pc"
-)
-install(
     DIRECTORY src/drmock/
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     FILES_MATCHING
