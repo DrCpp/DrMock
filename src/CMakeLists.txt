@@ -22,6 +22,7 @@ add_library(${PROJECT_NAME} SHARED
   utility/ILogger.cpp
   test/TestFailure.cpp
   test/Global.cpp
+  test/Interface.cpp
   test/TestObject.cpp
   test/FunctionInvoker.cpp
 )

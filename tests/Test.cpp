@@ -222,3 +222,54 @@ DRTEST_TEST(death_failure_wrong_raise)
 {
   DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT_DEATH(raise(SIGXFSZ), SIGSEGV));
 }
+
+DRTEST_TEST(compare_default_success)
+{
+  DRTEST_ASSERT_ALMOST_EQUAL(0.999999, 1.0);
+  DRTEST_ASSERT_ALMOST_EQUAL(999'999, 1'000'000);
+}
+
+DRTEST_TEST(compare_default_failure)
+{
+  DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT_ALMOST_EQUAL(0.9999, 1.0));
+  DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT_ALMOST_EQUAL(9'999, 10'000));
+}
+
+DRTEST_TEST(compare_custom_success)
+{
+  drtest::abs_tol(1.01);
+  DRTEST_ASSERT_ALMOST_EQUAL(2 + 2, 5);
+
+  drtest::abs_tol(0.0);
+  drtest::rel_tol(1.01);
+  DRTEST_ASSERT_ALMOST_EQUAL(50, 100);
+}
+
+DRTEST_TEST(compare_custom_invalid_values)
+{
+  DRTEST_ASSERT_THROW(drtest::abs_tol(-1.23), std::logic_error);
+  DRTEST_ASSERT_THROW(drtest::rel_tol(-1.23), std::logic_error);
+}
+
+DRTEST_TEST(compare_custom_failure)
+{
+  drtest::abs_tol(0.0);
+  drtest::rel_tol(0.0);
+  DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT_ALMOST_EQUAL(1, 1));
+  DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT_ALMOST_EQUAL(0.999999, 1.0));
+
+  drtest::abs_tol(1.01);
+  DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT_ALMOST_EQUAL(49, 100));
+
+  // This will fail, as `DRTEST_ASSERT_ALMOST_EQUAL` is not symmetric!
+  drtest::rel_tol(1.01);
+  DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT_ALMOST_EQUAL(100, 49));
+
+  drtest::abs_tol(0.0);
+  drtest::rel_tol(0.99);
+  DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT_ALMOST_EQUAL(100, 50));
+
+  drtest::abs_tol(0.99);
+  drtest::rel_tol(0.0);
+  DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT_ALMOST_EQUAL(1, 2));
+}

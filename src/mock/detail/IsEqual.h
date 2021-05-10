@@ -22,6 +22,7 @@
 #include <memory>
 #include <type_traits>
 
+#include "../IInvocable.h"
 #include "IIsEqual.h"
 #include "TypeTraits.h"
 
@@ -62,6 +63,12 @@ all i = 0 .. n, then
 
 (5) If T, U are `std::tuple<>` then `IsEqual<T, U>::operator()` always
 returns zero.
+
+(6) If T is an instance of `std::shared_ptr<IInvocable<U>>`, then
+
+  `IsEqual<T, U>{}(x, y)` returns `x->invoke(y)`;
+
+and vice versa if `U` is an instance of `std::shared_ptr<IInvocable<T>>`.
 
 Otherwise, IsEqual is undefined. Note that the five specializations are
 not implemented in numerical order.
@@ -232,6 +239,27 @@ struct IsEqual<std::tuple<>, std::tuple<>> : public IIsEqual<std::tuple<>>
   bool operator()(const std::tuple<>&, const std::tuple<>&) const override
   {
     return true;
+  }
+};
+
+/* ************************************
+ * (6)
+ * ************************************ */
+template<typename T>
+struct IsEqual<T, std::shared_ptr<IInvocable<T>>> : public IIsEqual<T, std::shared_ptr<IInvocable<T>>>
+{
+  bool operator()(const T& x, const std::shared_ptr<IInvocable<T>>& y) const override
+  {
+    return y->invoke(x);
+  }
+};
+
+template<typename T>
+struct IsEqual<std::shared_ptr<IInvocable<T>>, T> : public IIsEqual<std::shared_ptr<IInvocable<T>>, T>
+{
+  bool operator()(const std::shared_ptr<IInvocable<T>>& x, const T& y) const override
+  {
+    return IsEqual<T, std::shared_ptr<IInvocable<T>>>{}(y, x);
   }
 };
 

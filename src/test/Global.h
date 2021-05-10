@@ -24,6 +24,7 @@
 #include <unordered_set>
 #include <vector>
 
+#include "Compare.h"
 #include "TestObject.h"
 #include "../utility/Singleton.h"
 
@@ -40,6 +41,9 @@ public:
   template<typename... Ts> void addRow(const std::string& row, Ts&&... ts);
   template<typename T> T fetchData(const std::string& column);
   void runTestsAndLog();
+  template<typename T> std::shared_ptr<drmock::IInvocable<T>> almostEqual(T) const;
+  void abs_tol(double);
+  void rel_tol(double);
   std::size_t num_failures() const;
 
 private:

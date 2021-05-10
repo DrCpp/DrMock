@@ -98,4 +98,13 @@ do { \
   } \
 } while (false)
 
+#define DRTEST_ASSERT_ALMOST_EQUAL(actual, expected) \
+do { \
+  auto a = drtest::almostEqual(expected); \
+  if (not a->invoke(actual)) \
+  { \
+    throw drtest::detail::TestFailure{__LINE__, "not almost equal to", #actual, #expected, actual, expected}; \
+  } \
+} while (false)
+
 #endif /* DRMOCK_SRC_TEST_TESTMACROS_H */

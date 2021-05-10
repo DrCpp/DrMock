@@ -21,10 +21,15 @@
 
 #include <string>
 
+#include "../mock/IInvocable.h"
+
 namespace drtest {
 
 template<typename T> void addColumn(std::string);
 template<typename... Ts> void addRow(const std::string& row, Ts&&... ts);
+template<typename T> std::shared_ptr<drmock::IInvocable<T>> almostEqual(T);
+void abs_tol(double);
+void rel_tol(double);
 
 } // namespace drtest
 

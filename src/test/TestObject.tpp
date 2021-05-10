@@ -103,4 +103,11 @@ TestObject::fetchData(const std::string& column) const
   return std::any_cast<T>(std::get<std::any>(*value_it));
 }
 
+template<typename T>
+std::shared_ptr<drmock::IInvocable<T>>
+TestObject::almostEqual(T expected) const
+{
+  return std::make_shared<AlmostEqual<T>>(expected, abs_tol_, rel_tol_);
+}
+
 }} // namespaces

@@ -19,6 +19,7 @@
 #include "TestObject.h"
 
 #include <sstream>
+#include <stdexcept>
 
 #include "../utility/ILogger.h"
 #include "TestFailure.h"
@@ -143,6 +144,26 @@ std::size_t
 TestObject::num_failures() const
 {
   return failed_rows_.size();
+}
+
+void
+TestObject::abs_tol(double value)
+{
+  if (value < 0)
+  {
+    throw std::logic_error{"Absolute tolerance must be non-negative"};
+  }
+  abs_tol_ = value;
+}
+
+void
+TestObject::rel_tol(double value)
+{
+  if (value < 0)
+  {
+    throw std::logic_error{"Relative tolerance must be non-negative"};
+  }
+  rel_tol_ = value;
 }
 
 }} // namespaces

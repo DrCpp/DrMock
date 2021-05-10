@@ -21,13 +21,13 @@
 
 namespace drmock { namespace detail {
 
-template<typename Base>
+template<typename Base1, typename Base2 = Base1>
 class IIsEqual
 {
 public:
   virtual ~IIsEqual() = default;
 
-  virtual bool operator()(const Base& lhs, const Base& rhs) const = 0;
+  virtual bool operator()(const Base1& lhs, const Base2& rhs) const = 0;
 };
 
 }} // namespace drmock::detail

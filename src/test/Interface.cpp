@@ -1,4 +1,4 @@
-/* Copyright 2019 Ole Kliemann, Malte Kliemann
+/* Copyright 2021 Ole Kliemann, Malte Kliemann
  *
  * This file is part of DrMock.
  *
@@ -16,34 +16,18 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-namespace drtest { namespace detail {
+#include "Interface.h"
 
-template<typename T>
-void
-Global::addColumn(std::string column)
+namespace drtest {
+
+void rel_tol(double val)
 {
-  tests_[current_test_].addColumn<T>(std::move(column));
+  drutility::Singleton<detail::Global>::get()->rel_tol(val);
 }
 
-template<typename... Ts>
-void
-Global::addRow(const std::string& row, Ts&&... ts)
+void abs_tol(double val)
 {
-  tests_[current_test_].addRow(row, 0, std::forward<Ts>(ts)...);
+  drutility::Singleton<detail::Global>::get()->abs_tol(val);
 }
 
-template<typename T>
-T
-Global::fetchData(const std::string& column)
-{
-  return tests_[current_test_].fetchData<T>(column);
-}
-
-template<typename T>
-std::shared_ptr<drmock::IInvocable<T>>
-Global::almostEqual(T expected) const
-{
-  return tests_.at(current_test_).almostEqual(expected);
-}
-
-}} // namespaces
+} // namespace drtest
