@@ -246,7 +246,8 @@ struct IsEqual<std::tuple<>, std::tuple<>> : public IIsEqual<std::tuple<>>
  * (6)
  * ************************************ */
 template<typename T>
-struct IsEqual<T, std::shared_ptr<IInvocable<T>>> : public IIsEqual<T, std::shared_ptr<IInvocable<T>>>
+struct IsEqual<T, std::shared_ptr<IInvocable<T>>>
+  : public IIsEqual<T, std::shared_ptr<IInvocable<T>>>
 {
   bool operator()(const T& x, const std::shared_ptr<IInvocable<T>>& y) const override
   {
@@ -255,7 +256,8 @@ struct IsEqual<T, std::shared_ptr<IInvocable<T>>> : public IIsEqual<T, std::shar
 };
 
 template<typename T>
-struct IsEqual<std::shared_ptr<IInvocable<T>>, T> : public IIsEqual<std::shared_ptr<IInvocable<T>>, T>
+struct IsEqual<std::shared_ptr<IInvocable<T>>, T>
+  : public IIsEqual<std::shared_ptr<IInvocable<T>>, T>
 {
   bool operator()(const std::shared_ptr<IInvocable<T>>& x, const T& y) const override
   {

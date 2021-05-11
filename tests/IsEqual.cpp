@@ -362,3 +362,11 @@ DRTEST_TEST(derivedForBase)
   auto p2 = std::make_shared<B>(3, 4);
   DRTEST_ASSERT(not is_equal(p1, p2));
 }
+
+DRTEST_TEST(invocables)
+{
+  auto is_equal = detail::IsEqual<float, std::shared_ptr<IInvocable<float>>>{};
+  auto almost_equal_to_one = drtest::almostEqual(1.0f);
+  DRTEST_ASSERT(is_equal(0.999999f, almost_equal_to_one));
+  DRTEST_ASSERT(not is_equal(0.9999f, almost_equal_to_one));
+}
