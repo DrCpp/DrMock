@@ -19,6 +19,14 @@
 #ifndef DRMOCK_SRC_TEST_TESTOBJECT_H
 #define DRMOCK_SRC_TEST_TESTOBJECT_H
 
+// Set global default for absolute and relative tolerance.
+#ifndef DRTEST_ABS_TOL
+#define DRTEST_ABS_TOL 1e-06
+#endif
+#ifndef DRTEST_REL_TOL
+#define DRTEST_REL_TOL 1e-06
+#endif
+
 #include <any>
 #include <functional>
 #include <string>
@@ -69,8 +77,8 @@ private:
   std::function<void()> data_func_{};
   std::function<void()> test_func_{};
   std::vector<std::string> failed_rows_{};
-  float abs_tol_ = 1e-06;
-  float rel_tol_ = 1e-06;
+  float abs_tol_ = DRTEST_ABS_TOL;
+  float rel_tol_ = DRTEST_REL_TOL;
 };
 
 }} // namespaces
