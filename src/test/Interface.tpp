@@ -35,7 +35,7 @@ addRow(const std::string& row, Ts&&... ts)
 }
 
 template<typename T>
-std::shared_ptr<drmock::IInvocable<T>>
+std::shared_ptr<drmock::IExpect<T>>
 almostEqual(T expected)
 {
   return drutility::Singleton<detail::Global>::get()->almostEqual(expected);

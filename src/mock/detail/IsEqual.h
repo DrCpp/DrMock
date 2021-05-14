@@ -22,8 +22,7 @@
 #include <memory>
 #include <type_traits>
 
-#include "../IInvocable.h"
-#include "../Param.h"
+#include "../IExpect.h"
 #include "IIsEqual.h"
 #include "TypeTraits.h"
 
@@ -65,11 +64,11 @@ all i = 0 .. n, then
 (5) If T, U are `std::tuple<>` then `IsEqual<T, U>::operator()` always
 returns zero.
 
-(6) If T is an instance of `std::shared_ptr<IInvocable<U>>`, then
+(6) If T is an instance of `std::shared_ptr<IExpect<U>>`, then
 
   `IsEqual<T, U>{}(x, y)` returns `x->invoke(y)`;
 
-and vice versa if `U` is an instance of `std::shared_ptr<IInvocable<T>>`.
+and vice versa if `U` is an instance of `std::shared_ptr<IExpect<T>>`.
 
 Otherwise, IsEqual is undefined. Note that the five specializations are
 not implemented in numerical order.
@@ -247,47 +246,12 @@ struct IsEqual<std::tuple<>, std::tuple<>> : public IIsEqual<std::tuple<>>
  * (6)
  * ************************************ */
 template<typename T>
-struct IsEqual<std::shared_ptr<IInvocable<T>>, T>
-  : public IIsEqual<std::shared_ptr<IInvocable<T>>, T>
+struct IsEqual<std::shared_ptr<IExpect<T>>, T>
+  : public IIsEqual<std::shared_ptr<IExpect<T>>, T>
 {
-  bool operator()(const std::shared_ptr<IInvocable<T>>& x, const T& y) const override
+  bool operator()(const std::shared_ptr<IExpect<T>>& x, const T& y) const override
   {
     return x->invoke(y);
-  }
-};
-
-template<typename T>
-struct IsEqual<std::shared_ptr<IParam<T>>, T>
-  : public IIsEqual<std::shared_ptr<IParam<T>>, T>
-{
-  bool operator()(const std::shared_ptr<IParam<T>>& lhs, const T& rhs) const override
-  {
-    std::shared_ptr<Param<T>> param = std::dynamic_pointer_cast<Param<T>>(lhs);
-    std::shared_ptr<IInvocable<T>> invocable = std::dynamic_pointer_cast<IInvocable<T>>(lhs);
-    if (param)
-    {
-      return IsEqual<T>{}(param->get(), rhs);
-    }
-    else if (invocable)
-    {
-      return IsEqual<std::shared_ptr<IInvocable<T>>, T>{}(invocable, rhs);
-    }
-    throw 0;
-  }
-};
-
-// TODO What about IsEqual<shared_ptr<IInvocable<T>>, shared_ptr<T>>? We
-// should do the unpacking of the pointer, not the user! Check for base!
-template<typename T, typename U>
-struct IsEqual<std::shared_ptr<IParam<T>>, std::shared_ptr<U>>
-  : public IIsEqual<std::shared_ptr<IInvocable<T>>, std::shared_ptr<U>>
-{
-  bool operator()(
-      const std::shared_ptr<IInvocable<T>>& lhs,
-      const std::shared_ptr<T>& rhs
-    ) const override
-  {
-    return IsEqual<std::shared_ptr<IInvocable<T>>, T>{}(lhs, *rhs);
   }
 };
 

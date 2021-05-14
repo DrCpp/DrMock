@@ -55,7 +55,7 @@ public:
   template<typename T> T fetchData(const std::string& column) const;
   void prepareTestData();
   void runTest(bool verbose_logging = true);
-  template<typename T> std::shared_ptr<drmock::IInvocable<T>> almostEqual(T) const;
+  template<typename T> std::shared_ptr<drmock::IExpect<T>> almostEqual(T) const;
   void abs_tol(double);
   void rel_tol(double);
   std::size_t num_failures() const;

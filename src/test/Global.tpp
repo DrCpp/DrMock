@@ -40,7 +40,7 @@ Global::fetchData(const std::string& column)
 }
 
 template<typename T>
-std::shared_ptr<drmock::IInvocable<T>>
+std::shared_ptr<drmock::IExpect<T>>
 Global::almostEqual(T expected) const
 {
   return tests_.at(current_test_).almostEqual(expected);

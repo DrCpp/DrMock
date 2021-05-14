@@ -1,12 +1,12 @@
 #ifndef DRMOCK_SRC_TEST_COMPARE_H
 #define DRMOCK_SRC_TEST_COMPARE_H
 
-#include "../mock/IInvocable.h"
+#include "../mock/IExpect.h"
 
 namespace drtest {
 
 template<typename T>  // T may be any numerical type.
-class AlmostEqual : public drmock::IInvocable<T>
+class AlmostEqual : public drmock::IExpect<T>
 {
 public:
   AlmostEqual(T expected, double abs_tol, double rel_tol)

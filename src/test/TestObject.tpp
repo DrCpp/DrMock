@@ -104,7 +104,7 @@ TestObject::fetchData(const std::string& column) const
 }
 
 template<typename T>
-std::shared_ptr<drmock::IInvocable<T>>
+std::shared_ptr<drmock::IExpect<T>>
 TestObject::almostEqual(T expected) const
 {
   return std::make_shared<AlmostEqual<T>>(expected, abs_tol_, rel_tol_);
