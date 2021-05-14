@@ -365,8 +365,8 @@ DRTEST_TEST(derivedForBase)
 
 DRTEST_TEST(invocables)
 {
-  auto is_equal = detail::IsEqual<float, std::shared_ptr<IInvocable<float>>>{};
-  auto almost_equal_to_one = drtest::almostEqual(1.0f);
-  DRTEST_ASSERT(is_equal(0.999999f, almost_equal_to_one));
-  DRTEST_ASSERT(not is_equal(0.9999f, almost_equal_to_one));
+  auto is_equal = detail::IsEqual<std::shared_ptr<IParam<float>>, float>{};
+  std::shared_ptr<IParam<float>> almost_equal_to_one = drtest::almostEqual(1.0f);
+  DRTEST_ASSERT(is_equal(almost_equal_to_one, 0.999999f));
+  DRTEST_ASSERT(not is_equal(almost_equal_to_one, 0.9999f));
 }

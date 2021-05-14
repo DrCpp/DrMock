@@ -31,7 +31,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/subdirInc)
 set(regularHeaders
   IVoidFunc.h
   IFunc.h
-  IFloat.h
+#   IFloat.h
   ITemplate.h
   IOperator.h
   IQualifier.h
@@ -57,7 +57,7 @@ set(regularHeaders
 set(regularTests
   VoidFuncTest.cpp
   FuncTest.cpp
-  FloatTest.cpp
+  # FloatTest.cpp
   TemplateTest.cpp
   OperatorTest.cpp
   QualifierTest.cpp

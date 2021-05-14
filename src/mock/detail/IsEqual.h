@@ -23,6 +23,7 @@
 #include <type_traits>
 
 #include "../IInvocable.h"
+#include "../Param.h"
 #include "IIsEqual.h"
 #include "TypeTraits.h"
 
@@ -246,22 +247,47 @@ struct IsEqual<std::tuple<>, std::tuple<>> : public IIsEqual<std::tuple<>>
  * (6)
  * ************************************ */
 template<typename T>
-struct IsEqual<T, std::shared_ptr<IInvocable<T>>>
-  : public IIsEqual<T, std::shared_ptr<IInvocable<T>>>
-{
-  bool operator()(const T& x, const std::shared_ptr<IInvocable<T>>& y) const override
-  {
-    return y->invoke(x);
-  }
-};
-
-template<typename T>
 struct IsEqual<std::shared_ptr<IInvocable<T>>, T>
   : public IIsEqual<std::shared_ptr<IInvocable<T>>, T>
 {
   bool operator()(const std::shared_ptr<IInvocable<T>>& x, const T& y) const override
   {
-    return IsEqual<T, std::shared_ptr<IInvocable<T>>>{}(y, x);
+    return x->invoke(y);
+  }
+};
+
+template<typename T>
+struct IsEqual<std::shared_ptr<IParam<T>>, T>
+  : public IIsEqual<std::shared_ptr<IParam<T>>, T>
+{
+  bool operator()(const std::shared_ptr<IParam<T>>& lhs, const T& rhs) const override
+  {
+    std::shared_ptr<Param<T>> param = std::dynamic_pointer_cast<Param<T>>(lhs);
+    std::shared_ptr<IInvocable<T>> invocable = std::dynamic_pointer_cast<IInvocable<T>>(lhs);
+    if (param)
+    {
+      return IsEqual<T>{}(param->get(), rhs);
+    }
+    else if (invocable)
+    {
+      return IsEqual<std::shared_ptr<IInvocable<T>>, T>{}(invocable, rhs);
+    }
+    throw 0;
+  }
+};
+
+// TODO What about IsEqual<shared_ptr<IInvocable<T>>, shared_ptr<T>>? We
+// should do the unpacking of the pointer, not the user! Check for base!
+template<typename T, typename U>
+struct IsEqual<std::shared_ptr<IParam<T>>, std::shared_ptr<U>>
+  : public IIsEqual<std::shared_ptr<IInvocable<T>>, std::shared_ptr<U>>
+{
+  bool operator()(
+      const std::shared_ptr<IInvocable<T>>& lhs,
+      const std::shared_ptr<T>& rhs
+    ) const override
+  {
+    return IsEqual<std::shared_ptr<IInvocable<T>>, T>{}(lhs, *rhs);
   }
 };
 

@@ -1,10 +1,12 @@
 #ifndef DRMOCK_SRC_MOCK_IINVOCABLE_H
 #define DRMOCK_SRC_MOCK_IINVOCABLE_H
 
+#include "IParam.h"
+
 namespace drmock {
 
 template<typename T, typename Result = bool>
-class IInvocable
+class IInvocable : public IParam<T>
 {
 public:
   virtual ~IInvocable() = default;
