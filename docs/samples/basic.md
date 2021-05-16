@@ -467,3 +467,18 @@ Maybe `symbols.cpp` contains symbols required by a header included in
 `test.cpp`.
 Another common use-case is that of including `.qrc` files (Qt resource
 files) to the executable if they are required by the test.
+
+### Test names
+
+Any `snake_case` or `camelCase` name may be used for a test. Avoid
+any name containing `DRTEST` or `DRMOCK`, or `ALL_CAPS` in general.
+
+By default, test functions are stored in the namespace `test::`. If this
+is inconvenient for you, you can redefine the namespace by setting the
+macro `DRTEST_NAMESPACE` _before including_ `Test.h`:
+
+```cpp
+#define DRTEST_NAMESPACE mytest
+#include <DrMock/Test.h>
+```
+
