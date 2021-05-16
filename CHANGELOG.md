@@ -17,6 +17,21 @@ You should have received a copy of the GNU General Public License
 along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
+# DrMock 0.4.1
+
+Released 2021/05/16 (re-released 2021/05/21)
+
+### Added/Changed
+
+* Create new utility module
+
+### Fixed
+
+* Fix issue #5
+
+* Fix issue #7
+
+
 # DrMock 0.4.0
 
 Released 2020/08/16
