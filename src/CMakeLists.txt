@@ -18,12 +18,12 @@
 add_library(${PROJECT_NAME} SHARED
   mock/MethodCollection.cpp
   mock/StateObject.cpp
-  utility/Logger.cpp
   utility/ILogger.cpp
-  test/TestFailure.cpp
-  test/Global.cpp
-  test/TestObject.cpp
+  utility/Logger.cpp
   test/FunctionInvoker.cpp
+  test/Global.cpp
+  test/TestFailure.cpp
+  test/TestObject.cpp
 )
 
 # This alias is required for the internal use of the `DrMock_module`
