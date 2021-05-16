@@ -222,3 +222,10 @@ DRTEST_TEST(death_failure_wrong_raise)
 {
   DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT_DEATH(raise(SIGXFSZ), SIGSEGV));
 }
+
+// Test that a test may be called the same an a drtest interface
+// function; see issue #7 for details.
+DRTEST_TEST(addRow)
+{
+  DRTEST_ASSERT(true);
+}
