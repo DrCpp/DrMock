@@ -21,10 +21,14 @@
 
 #include <string>
 
+#include "Mark.h"
+
 namespace drtest {
 
 template<typename T> void addColumn(std::string);
 template<typename... Ts> void addRow(const std::string& row, Ts&&... ts);
+void mark(Mark);
+void skip();
 
 } // namespace drtest
 

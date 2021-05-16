@@ -42,6 +42,8 @@ public:
   void runTestsAndLog();
   std::size_t num_failures() const;
 
+  void mark(Mark);
+
 private:
   void addTest(std::string);
   void runTests();

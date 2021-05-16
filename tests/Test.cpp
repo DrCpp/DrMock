@@ -222,3 +222,9 @@ DRTEST_TEST(death_failure_wrong_raise)
 {
   DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT_DEATH(raise(SIGXFSZ), SIGSEGV));
 }
+
+DRTEST_TEST(skip)
+{
+  drtest::skip();
+  throw std::logic_error{"This is not supposed to happen!"};
+}

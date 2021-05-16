@@ -26,6 +26,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include "Mark.h"
+
 namespace drtest { namespace detail {
 
 class TestObject
@@ -46,6 +48,7 @@ public:
   void prepareTestData();
   void runTest(bool verbose_logging = true);
   std::size_t num_failures() const;
+  void mark(Mark m);
 
 private:
   void runOneTest(const std::string& row, bool verbose_logging);
@@ -64,6 +67,7 @@ private:
   std::function<void()> data_func_{};
   std::function<void()> test_func_{};
   std::vector<std::string> failed_rows_{};
+  Mark marks_ = Mark::None;
 };
 
 }} // namespaces

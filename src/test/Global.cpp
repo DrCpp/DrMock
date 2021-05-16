@@ -160,4 +160,10 @@ Global::runTestsAndLog()
   }
 }
 
+void
+Global::mark(Mark m)
+{
+  tests_[current_test_].mark(m);
+}
+
 }} // namespaces
