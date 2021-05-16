@@ -36,7 +36,7 @@ Released 2021/05/16
 
 Released 2020/08/16
 
-### Added/Changed:
+### Added/Changed
 
 * Add `DRTEST_ASSERT_DEATH` macro for death testing
 
@@ -46,7 +46,7 @@ Released 2020/08/16
 
 Released 2020/07/05
 
-### Added/Changed:
+### Added/Changed
 
 * Add `emits` method that allows `Method` objects to emit signals when
   called (for details, see the tutorials). Implementing this feature
@@ -81,7 +81,7 @@ Released 2020/07/05
 
 Released 2020/05/15
 
-### Added/Changed:
+### Added/Changed
 
 * Autodetect number of threads for compiling in Makefile
 
