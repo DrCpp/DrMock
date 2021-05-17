@@ -31,7 +31,14 @@ template<typename... Ts>
 void
 addRow(const std::string& row, Ts&&... ts)
 {
-  drutility::Singleton<detail::Global>::get()->addRow(row, std::forward<Ts>(ts)...);
+  drutility::Singleton<detail::Global>::get()->addRow({}, row, std::forward<Ts>(ts)...);
+}
+
+template<typename... Ts>
+void
+addRow(Mark mark, const std::string& row, Ts&&... ts)
+{
+  drutility::Singleton<detail::Global>::get()->addRow(mark, row, std::forward<Ts>(ts)...);
 }
 
 } // namespace drtest

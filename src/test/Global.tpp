@@ -27,9 +27,9 @@ Global::addColumn(std::string column)
 
 template<typename... Ts>
 void
-Global::addRow(const std::string& row, Ts&&... ts)
+Global::addRow(Mark mark, const std::string& row, Ts&&... ts)
 {
-  tests_[current_test_].addRow(row, 0, std::forward<Ts>(ts)...);
+  tests_[current_test_].addRow(mark, row, 0, std::forward<Ts>(ts)...);
 }
 
 template<typename T>

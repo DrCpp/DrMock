@@ -37,12 +37,10 @@ public:
   void addTestFunc(const std::string&, std::function<void()>);
   void addDataFunc(const std::string&, std::function<void()>);
   template<typename T> void addColumn(std::string);
-  template<typename... Ts> void addRow(const std::string& row, Ts&&... ts);
+  template<typename... Ts> void addRow(Mark mark, const std::string& row, Ts&&... ts);
   template<typename T> T fetchData(const std::string& column);
   void runTestsAndLog();
   std::size_t num_failures() const;
-
-  void mark(Mark);
 
 private:
   void addTest(std::string);

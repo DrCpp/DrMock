@@ -34,7 +34,24 @@ TestObject::addColumn(std::string column)
 
 template<typename T, typename... Ts>
 void
-TestObject::addRow(const std::string& row, std::size_t i, T&& t, Ts&&... ts)
+TestObject::addRow(
+    Mark mark,
+    const std::string& row,
+    std::size_t i,
+    T&& t, Ts&&... ts
+  )
+{
+  addRow(row, i, std::forward<T>(t), std::forward<Ts>(ts)...);
+  marks_[row] = mark;
+}
+
+template<typename T, typename... Ts>
+void
+TestObject::addRow(
+    const std::string& row,
+    std::size_t i,
+    T&& t, Ts&&... ts
+  )
 {
   if ((sizeof...(ts) + 1) > data_columns_.size())
   {

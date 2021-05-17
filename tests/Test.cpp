@@ -229,3 +229,22 @@ DRTEST_TEST(addRow)
 {
   DRTEST_ASSERT(true);
 }
+
+DRTEST_DATA(skip)
+{
+  drtest::addColumn<int>("lhs");
+  drtest::addColumn<int>("rhs");
+  drtest::addColumn<int>("expected");
+
+  drtest::addRow("row 1", 1, 1, 2);
+  drtest::addRow(drtest::Mark::Skip, "row 2", 2, 2, 5);
+}
+
+DRTEST_TEST(skip)
+{
+  DRTEST_FETCH(int, lhs);
+  DRTEST_FETCH(int, rhs);
+  DRTEST_FETCH(int, expected);
+  auto sum = lhs + rhs;
+  DRTEST_ASSERT_EQ(sum, expected);  // This will raise if row 2 is not skipped!
+}

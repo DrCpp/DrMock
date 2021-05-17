@@ -76,9 +76,10 @@ TestObject::runOneTest(const std::string& row, bool verbose_logging)
   {
     log("TEST", name_, row, -1, {});
   }
-  if (marks_ & Mark::Skip)
+  if (marks_[row] & Mark::Skip)
   {
     log("SKIP", name_, row, -1, {});
+    return;
   }
   try
   {
@@ -147,12 +148,6 @@ std::size_t
 TestObject::num_failures() const
 {
   return failed_rows_.size();
-}
-
-void
-TestObject::mark(Mark m)
-{
-  marks_ |= m;
 }
 
 }} // namespaces
