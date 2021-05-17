@@ -35,11 +35,11 @@ FunctionInvoker name##_data_pusher{[] () { drutility::Singleton<Global>::get()->
 void name##Data()
 
 #define DRTEST_TEST(name) \
-void name(); \
+void name##_DRTEST_GUARD(); \
 namespace drtest { namespace detail { \
-FunctionInvoker name##_test_pusher{[] () { drutility::Singleton<Global>::get()->addTestFunc(#name, &name); }}; \
+FunctionInvoker name##_test_pusher{[] () { drutility::Singleton<Global>::get()->addTestFunc(#name, & name##_DRTEST_GUARD); }}; \
 }} \
-void name()
+void name##_DRTEST_GUARD()
 
 #define DRTEST_ASSERT(p) \
 do { if (not (p)) throw drtest::detail::TestFailure{__LINE__, #p}; } while (false)

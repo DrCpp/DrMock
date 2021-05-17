@@ -467,3 +467,8 @@ Maybe `symbols.cpp` contains symbols required by a header included in
 `test.cpp`.
 Another common use-case is that of including `.qrc` files (Qt resource
 files) to the executable if they are required by the test.
+
+### Test names
+
+Test names must not contain the substring `DRTEST`; failing to follow
+this rule will result in compiler errors or undefined behavior.

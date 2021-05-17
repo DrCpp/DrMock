@@ -17,11 +17,26 @@ You should have received a copy of the GNU General Public License
 along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
+# DrMock 0.4.1
+
+Released 2021/05/16
+
+### Added/Changed
+
+* Create new utility module
+
+### Fixed
+
+* Fix issue #5
+
+* Fix issue #7
+
+
 # DrMock 0.4.0
 
 Released 2020/08/16
 
-### Added/Changed:
+### Added/Changed
 
 * Add `DRTEST_ASSERT_DEATH` macro for death testing
 
@@ -31,7 +46,7 @@ Released 2020/08/16
 
 Released 2020/07/05
 
-### Added/Changed:
+### Added/Changed
 
 * Add `emits` method that allows `Method` objects to emit signals when
   called (for details, see the tutorials). Implementing this feature
@@ -66,7 +81,7 @@ Released 2020/07/05
 
 Released 2020/05/15
 
-### Added/Changed:
+### Added/Changed
 
 * Autodetect number of threads for compiling in Makefile
 
