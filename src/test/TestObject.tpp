@@ -57,13 +57,13 @@ template<typename Tuple, std::size_t... Is>
 void
 TestObject::addRowImpl(const std::string& row, Tuple t, const std::index_sequence<Is...>&)
 {
-  (addEntry(row, Is, std::forward<std::tuple_element_t<Is, Tuple>>(std::get<Is>(t))),
+  (addRowImpl(row, Is, std::forward<std::tuple_element_t<Is, Tuple>>(std::get<Is>(t))),
    ...);
 }
 
 template<typename T>
 void
-TestObject::addEntry(const std::string& row, std::size_t col, T&& t)
+TestObject::addRowImpl(const std::string& row, std::size_t col, T&& t)
 {
   const std::string& column = data_columns_[col];
   auto type_it = data_column_types_.find(column);
