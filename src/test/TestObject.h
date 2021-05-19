@@ -47,15 +47,15 @@ public:
 private:
   void runOneTest(const std::string& row, bool verbose_logging);
 
-  // Add the contents of the tuple `t` specified by `Is...` to `row`.
-  // Shall only be alled from `addRow`.
+  // Add the elements of the tuple `t` specified by `Is...` to `row`.
+  // Shall only be called from `addRow`.
   template<typename Tuple, std::size_t... Is> void addRowImpl(
       const std::string& row,
       Tuple t,
       const std::index_sequence<Is...>&
     );
-  // Add the `t` to the entry (`row`, `col`) of the data matrix. Shall
-  // only be alled from `addRow`.
+  // Add `t` to the entry (`row`, `col`) of the data matrix. Shall only
+  // be called from `addRow`.
   template<typename T> void addRowImpl(const std::string& row, std::size_t col, T&& t);
 
   std::string name_{};
