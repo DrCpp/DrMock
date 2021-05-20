@@ -24,6 +24,10 @@
 #include "Global.h"
 #include "TestFailure.h"
 
+#ifndef DRTEST_NAMESPACE
+#define DRTEST_NAMESPACE test
+#endif
+
 #define DRTEST_FETCH(Type, name) \
 Type name{drutility::Singleton<drtest::detail::Global>::get()->fetchData<Type>(#name)}
 
@@ -35,11 +39,13 @@ FunctionInvoker name##_data_pusher{[] () { drutility::Singleton<Global>::get()->
 void name##Data()
 
 #define DRTEST_TEST(name) \
-void name##_DRTEST_GUARD(); \
+namespace DRTEST_NAMESPACE { \
+void name(); \
+} \
 namespace drtest { namespace detail { \
-FunctionInvoker name##_test_pusher{[] () { drutility::Singleton<Global>::get()->addTestFunc(#name, & name##_DRTEST_GUARD); }}; \
+FunctionInvoker name##_test_pusher{[] () { drutility::Singleton<Global>::get()->addTestFunc(#name, &DRTEST_NAMESPACE:: name); }}; \
 }} \
-void name##_DRTEST_GUARD()
+void DRTEST_NAMESPACE:: name()
 
 #define DRTEST_ASSERT(p) \
 do { if (not (p)) throw drtest::detail::TestFailure{__LINE__, #p}; } while (false)
