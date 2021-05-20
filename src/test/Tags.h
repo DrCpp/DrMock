@@ -5,7 +5,9 @@ namespace drtest {
 
 enum Tag
 {
-  none, skip, xfail
+  none = 0,
+  skip = (1 << 0),
+  xfail = (1 << 1)
 };
 
 } // namespace drtest

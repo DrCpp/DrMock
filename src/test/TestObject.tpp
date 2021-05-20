@@ -51,6 +51,7 @@ TestObject::addRow(const std::string& row, Ts&&... ts)
   }
   else
   {
+    tags_[row] = Tag::none;
     addRowImpl(
         row,
         std::forward_as_tuple(ts...),
