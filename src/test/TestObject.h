@@ -27,6 +27,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include "Tags.h"
+
 namespace drtest { namespace detail {
 
 class TestObject
@@ -68,6 +70,7 @@ private:
           std::string, // column
           std::any
         >> data_sets_{};
+  std::unordered_map<std::string, Tag> tags_{};  // row -> tags
   std::string current_row_{};
   std::function<void()> data_func_{};
   std::function<void()> test_func_{};
