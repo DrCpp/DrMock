@@ -76,14 +76,26 @@ TestObject::runOneTest(const std::string& row, bool verbose_logging)
   {
     log("TEST", name_, row, -1, {});
   }
+  if (tags_[row] & Tag::skip)
+  {
+    log("SKIP", name_, row, -1, {});
+    return;
+  }
   try
   {
     test_func_();
   }
   catch(const TestFailure& e)
   {
-    log("*FAIL", name_, row, e.line(), e.what());
-    failed_rows_.push_back(row);
+    if (tags_[row] & Tag::xfail)
+    {
+      log("XFAIL", name_, row, e.line(), e.what());
+    }
+    else
+    {
+      log("*FAIL", name_, row, e.line(), e.what());
+      failed_rows_.push_back(row);
+    }
     return;
   }
   catch(const std::logic_error& e)

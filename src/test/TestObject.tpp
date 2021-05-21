@@ -19,6 +19,8 @@
 #include <iostream>
 #include <stdexcept>
 
+#include "../utility/Tuples.h"
+
 namespace drtest { namespace detail {
 
 template<typename T>
@@ -37,6 +39,32 @@ void
 TestObject::addRow(const std::string& row, Ts&&... ts)
 {
   constexpr auto size = sizeof...(ts);
+  if constexpr(std::is_same_v<drutility::last_t<Ts...>, Tag>)
+  {
+    assert(size == (data_columns_.size() + 1));
+    tags_[row] = std::get<size-1>(std::forward_as_tuple(ts...));
+    addRowImpl(
+        row,
+        std::forward_as_tuple(ts...),
+        std::make_index_sequence<size - 1>{}
+      );
+  }
+  else
+  {
+    tags_[row] = Tag::none;
+    addRowImpl(
+        row,
+        std::forward_as_tuple(ts...),
+        std::make_index_sequence<size>{}
+      );
+  }
+}
+
+template<typename Tuple, std::size_t... Is>
+void
+TestObject::addRowImpl(const std::string& row, Tuple t, const std::index_sequence<Is...>&)
+{
+  constexpr auto size = sizeof...(Is);
   if (size > data_columns_.size())
   {
     throw std::logic_error{
@@ -46,17 +74,6 @@ TestObject::addRow(const std::string& row, Ts&&... ts)
       };
   }
   data_rows_.push_back(row);
-  addRowImpl(
-      row,
-      std::forward_as_tuple(ts...),
-      std::make_index_sequence<size>{}
-    );
-}
-
-template<typename Tuple, std::size_t... Is>
-void
-TestObject::addRowImpl(const std::string& row, Tuple&& t, const std::index_sequence<Is...>&)
-{
   (addRowImpl(row, Is, std::forward<std::tuple_element_t<Is, Tuple>>(std::get<Is>(t))),
    ...);
 }

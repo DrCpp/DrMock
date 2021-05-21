@@ -27,6 +27,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include "Tags.h"
+
 namespace drtest { namespace detail {
 
 class TestObject
@@ -51,7 +53,7 @@ private:
   // Shall only be called from `addRow`.
   template<typename Tuple, std::size_t... Is> void addRowImpl(
       const std::string& row,
-      Tuple&& t,
+      Tuple t,
       const std::index_sequence<Is...>&
     );
   // Add `t` to the entry (`row`, `col`) of the data matrix. Shall only
@@ -68,6 +70,7 @@ private:
           std::string, // column
           std::any
         >> data_sets_{};
+  std::unordered_map<std::string, Tag> tags_{};  // row -> tags
   std::string current_row_{};
   std::function<void()> data_func_{};
   std::function<void()> test_func_{};
