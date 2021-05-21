@@ -237,8 +237,8 @@ DRTEST_DATA(tags)
   drtest::addColumn<int>("expected");
 
   drtest::addRow("row 1", 1, 1, 2);
-  drtest::addRow("row 2", 2, 2, 5, drtest::Tag::skip);
-  drtest::addRow("row 3", 4, 4, 9, drtest::Tag::xfail);
+  drtest::addRow("row 2", 2, 2, 5, drtest::tags::skip);
+  drtest::addRow("row 3", 4, 4, 9, drtest::tags::xfail);
 }
 
 DRTEST_TEST(tags)
@@ -248,4 +248,16 @@ DRTEST_TEST(tags)
   DRTEST_FETCH(int, expected);
   auto sum = lhs + rhs;
   DRTEST_ASSERT_EQ(sum, expected);  // This will raise if row 2 or 3 are not skipped!
+}
+
+DRTEST_TEST(skip)
+{
+  drtest::skip();
+  throw std::logic_error{"this should never happen..."};
+}
+
+DRTEST_TEST(xfail)
+{
+  drtest::xfail();
+  DRTEST_ASSERT_EQ(2 + 2, 5);
 }

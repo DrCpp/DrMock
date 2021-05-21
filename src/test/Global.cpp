@@ -160,4 +160,10 @@ Global::runTestsAndLog()
   }
 }
 
+void
+Global::xfail()
+{
+  tests_[current_test_].xfail();
+}
+
 }} // namespaces

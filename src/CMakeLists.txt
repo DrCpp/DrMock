@@ -24,6 +24,8 @@ add_library(${PROJECT_NAME} SHARED
   test/Global.cpp
   test/TestObject.cpp
   test/FunctionInvoker.cpp
+  test/SkipTest.cpp
+  test/Interface.cpp
 )
 
 # This alias is required for the internal use of the `DrMock_module`

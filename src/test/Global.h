@@ -41,6 +41,7 @@ public:
   template<typename T> T fetchData(const std::string& column);
   void runTestsAndLog();
   std::size_t num_failures() const;
+  void xfail();
 
 private:
   void addTest(std::string);

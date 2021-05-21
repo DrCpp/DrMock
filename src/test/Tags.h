@@ -1,7 +1,7 @@
 #ifndef DRMOCK_SRC_TEST_TAG_H
 #define DRMOCK_SRC_TEST_TAG_H
 
-namespace drtest {
+namespace drtest { namespace tags {
 
 enum Tag
 {
@@ -10,6 +10,6 @@ enum Tag
   xfail = (1 << 1)
 };
 
-} // namespace drtest
+}} // namespace drtest::tags
 
 #endif /* DRMOCK_SRC_TEST_TAG_H */
