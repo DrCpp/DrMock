@@ -77,7 +77,7 @@ TestObject::runOneTest(const std::string& row, bool verbose_logging)
   {
     log("TEST", name_, row, -1, {});
   }
-  if (tags_[row] & tags::skip)
+  if ((tags_[row] & tags::skip) == tags::skip)
   {
     log("SKIP", name_, row, -1, {});
     return;
@@ -93,7 +93,7 @@ TestObject::runOneTest(const std::string& row, bool verbose_logging)
   }
   catch(const TestFailure& e)
   {
-    if (xfail_ or (tags_[row] & tags::xfail))
+    if (xfail_ or ((tags_[row] & tags::xfail) == tags::xfail))
     {
       log("XFAIL", name_, row, e.line(), e.what());
     }
@@ -170,9 +170,9 @@ TestObject::xfail()
 }
 
 void
-TestObject::tagRow(const std::string& row, tags::Tag tag)
+TestObject::tagRow(const std::string& row, tags tag)
 {
-  tags_[row] = static_cast<tags::Tag>(tags_[row] | tag);
+  tags_[row] |= tag;
 }
 
 }} // namespaces

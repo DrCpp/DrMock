@@ -46,7 +46,7 @@ public:
   void runTest(bool verbose_logging = true);
   std::size_t num_failures() const;
   void xfail();
-  void tagRow(const std::string& row, tags::Tag tag);
+  void tagRow(const std::string& row, tags tag);
 
 private:
   void runOneTest(const std::string& row, bool verbose_logging);
@@ -72,7 +72,7 @@ private:
           std::string, // column
           std::any
         >> data_sets_{};
-  std::unordered_map<std::string, tags::Tag> tags_{};  // row -> tags
+  std::unordered_map<std::string, tags> tags_{};  // row -> tags
   std::string current_row_{};
   std::function<void()> data_func_{};
   std::function<void()> test_func_{};

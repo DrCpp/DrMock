@@ -167,7 +167,7 @@ Global::xfail()
 }
 
 void
-Global::tagRow(const std::string& row, tags::Tag tag)
+Global::tagRow(const std::string& row, tags tag)
 {
   tests_[current_test_].tagRow(row, tag);
 }

@@ -39,7 +39,7 @@ void
 TestObject::addRow(const std::string& row, Ts&&... ts)
 {
   constexpr auto size = sizeof...(ts);
-  if constexpr(std::is_same_v<drutility::last_t<Ts...>, tags::Tag>)
+  if constexpr(std::is_same_v<drutility::last_t<Ts...>, tags>)
   {
     assert(size == (data_columns_.size() + 1));
     tags_[row] = std::get<size-1>(std::forward_as_tuple(ts...));

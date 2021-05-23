@@ -43,7 +43,7 @@ public:
   void runTestsAndLog();
   std::size_t num_failures() const;
   void xfail();
-  void tagRow(const std::string& row, tags::Tag tag);
+  void tagRow(const std::string& row, tags tag);
 
 private:
   void addTest(std::string);

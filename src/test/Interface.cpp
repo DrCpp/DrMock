@@ -5,7 +5,7 @@
 namespace drtest {
 
 void
-tagRow(const std::string& row, tags::Tag tag)
+tagRow(const std::string& row, tags tag)
 {
   drutility::Singleton<detail::Global>::get()->tagRow(row, tag);
 }
