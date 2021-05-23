@@ -169,4 +169,10 @@ TestObject::xfail()
   xfail_ = true;
 }
 
+void
+TestObject::tagRow(const std::string& row, tags::Tag tag)
+{
+  tags_[row] = static_cast<tags::Tag>(tags_[row] | tag);
+}
+
 }} // namespaces

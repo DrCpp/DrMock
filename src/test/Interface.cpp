@@ -5,6 +5,12 @@
 namespace drtest {
 
 void
+tagRow(const std::string& row, tags::Tag tag)
+{
+  drutility::Singleton<detail::Global>::get()->tagRow(row, tag);
+}
+
+void
 skip()
 {
   skip("");

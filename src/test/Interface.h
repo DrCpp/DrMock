@@ -21,10 +21,13 @@
 
 #include <string>
 
+#include "Tags.h"
+
 namespace drtest {
 
 template<typename T> void addColumn(std::string);
 template<typename... Ts> void addRow(const std::string& row, Ts&&... ts);
+void tagRow(const std::string& row, tags::Tag);
 void skip();
 void skip(std::string what);
 void xfail();

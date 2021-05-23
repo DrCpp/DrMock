@@ -46,6 +46,7 @@ public:
   void runTest(bool verbose_logging = true);
   std::size_t num_failures() const;
   void xfail();
+  void tagRow(const std::string& row, tags::Tag tag);
 
 private:
   void runOneTest(const std::string& row, bool verbose_logging);
