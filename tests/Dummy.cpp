@@ -45,7 +45,7 @@ Dummy::no_params_count() const
   return no_params_count_;
 }
 
-std::tuple<int, const QString*>
+std::tuple<int, QString>
 Dummy::multiple_params_value() const
 {
   return multiple_params_;
@@ -66,7 +66,7 @@ Dummy::no_params_slot()
 void
 Dummy::multiple_params_slot(int x, const QString& y)
 {
-  multiple_params_ = std::make_tuple(x, &y);
+  multiple_params_ = std::make_tuple(x, y);
 }
 
 void

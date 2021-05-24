@@ -42,41 +42,21 @@ DRTEST_TEST(invokeNoParametersQueuedConnection)
   DRTEST_ASSERT_EQ(dummy.no_params_count(), 1);
 }
 
-DRTEST_TEST(invokeWithParametersDirectConnection)
-{
-  Dummy dummy{Qt::DirectConnection};
-  auto n = 3;
-  QString str{"foo"};
-  Signal<Dummy, int, const QString&> signal{
-      &Dummy::multiple_params,
-      n, str
-    };
-  signal.invoke(&dummy);
-  auto [num, ptr] = dummy.multiple_params_value();
-  DRTEST_ASSERT_EQ(num, n);
-  // Expect no copy!
-  DRTEST_ASSERT(ptr);
-  DRTEST_ASSERT_EQ(ptr, &str);
-}
-
 DRTEST_TEST(invokeWithParametersQueuedConnection)
 {
   Dummy dummy{Qt::QueuedConnection};
-  auto n = 3;
+  auto num = 3;
   QString str{"foo"};
   Signal<Dummy, int, const QString&> signal{
       &Dummy::multiple_params,
-      n, str
+      num, str
     };
   signal.invoke(&dummy);
   QEventLoop event_loop{};
   event_loop.processEvents();
-  auto [num, ptr] = dummy.multiple_params_value();
-  DRTEST_ASSERT_EQ(num, n);
-  // Expect copy!
-  DRTEST_ASSERT(ptr);
-  DRTEST_ASSERT_NE(ptr, &str);
-  DRTEST_ASSERT_EQ(*ptr, str);
+  auto [num2, str2] = dummy.multiple_params_value();
+  DRTEST_ASSERT_EQ(num, num2);
+  DRTEST_ASSERT_EQ(str, str2);
 }
 
 DRTEST_TEST(invokeWithReferenceDirectConnection)

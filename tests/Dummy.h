@@ -34,7 +34,7 @@ public:
   Dummy(Qt::ConnectionType);
 
   unsigned int no_params_count() const;
-  std::tuple<int, const QString*> multiple_params_value() const;
+  std::tuple<int, QString> multiple_params_value() const;
   QString* pass_by_ref_value() const;
 
 public slots:
@@ -49,8 +49,8 @@ signals:
 
 private:
   unsigned int no_params_count_ = 0;
-  std::tuple<int, const QString*> multiple_params_{};
-  QString* pass_by_ref_{};
+  std::tuple<int, QString> multiple_params_{};
+  QString* pass_by_ref_;
 };
 
 } // namespace drmock
