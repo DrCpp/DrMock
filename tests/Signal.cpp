@@ -52,8 +52,6 @@ DRTEST_TEST(invokeWithParametersDirectConnection)
       n, str
     };
   signal.invoke(&dummy);
-  QEventLoop event_loop{};
-  event_loop.processEvents();
   auto [num, ptr] = dummy.multiple_params_value();
   DRTEST_ASSERT_EQ(num, n);
   // Expect no copy!
@@ -71,6 +69,8 @@ DRTEST_TEST(invokeWithParametersQueuedConnection)
       n, str
     };
   signal.invoke(&dummy);
+  QEventLoop event_loop{};
+  event_loop.processEvents();
   auto [num, ptr] = dummy.multiple_params_value();
   DRTEST_ASSERT_EQ(num, n);
   // Expect copy!
