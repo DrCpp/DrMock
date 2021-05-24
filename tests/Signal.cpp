@@ -37,6 +37,8 @@ DRTEST_TEST(invokeNoParametersQueuedConnection)
   Dummy dummy{Qt::QueuedConnection};
   Signal<Dummy> signal{&Dummy::no_params};
   signal.invoke(&dummy);
+  QEventLoop event_loop{};
+  event_loop.processEvents();
   DRTEST_ASSERT_EQ(dummy.no_params_count(), 1);
 }
 
@@ -47,9 +49,11 @@ DRTEST_TEST(invokeWithParametersDirectConnection)
   QString str{"foo"};
   Signal<Dummy, int, const QString&> signal{
       &Dummy::multiple_params,
-      3, str
+      n, str
     };
   signal.invoke(&dummy);
+  QEventLoop event_loop{};
+  event_loop.processEvents();
   auto [num, ptr] = dummy.multiple_params_value();
   DRTEST_ASSERT_EQ(num, n);
   // Expect no copy!
