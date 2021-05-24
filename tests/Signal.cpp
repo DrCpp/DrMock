@@ -39,7 +39,9 @@ DRTEST_TEST(invokeNoParameters)
 {
   Dummy dummy{};
   Signal<Dummy> signal{&Dummy::no_params};
+
   QSignalSpy spy{&dummy, &Dummy::no_params};
+  DRTEST_ASSERT(spy.isValid());
   DRTEST_ASSERT_EQ(spy.size(), 0);
 
   signal.invoke(&dummy);
@@ -60,10 +62,11 @@ DRTEST_TEST(invokeWithParameters)
       123, f, v
     };
   QSignalSpy spy{&dummy, &Dummy::multiple_params};
+  DRTEST_ASSERT(spy.isValid());
   DRTEST_ASSERT_EQ(spy.size(), 0);
 
   signal.invoke(&dummy);
-  if (spy.size() == 1)
+  if (spy.size() == 0)
   {
     spy.wait(100);
   }
@@ -76,6 +79,7 @@ DRTEST_TEST(invokeWithReference)
   std::string foo = "bar";
   Signal<Dummy, std::string&> signal{&Dummy::pass_by_ref, foo};
   QSignalSpy spy{&dummy, &Dummy::pass_by_ref};
+  DRTEST_ASSERT(spy.isValid());
   DRTEST_ASSERT_EQ(spy.size(), 0);
 
   QObject::connect(
@@ -84,7 +88,7 @@ DRTEST_TEST(invokeWithReference)
     );
 
   signal.invoke(&dummy);
-  if (spy.size() == 1)
+  if (spy.size() == 0)
   {
     spy.wait(100);
   }
