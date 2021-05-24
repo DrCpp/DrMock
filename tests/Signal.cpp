@@ -22,16 +22,7 @@
 #include "mock/Signal.h"
 #include "Dummy.h"
 
-// FIXME Check that the correct arguments are forwarded to the signal in
-// the tests below.
-
 using namespace drmock;
-
-template<typename ReturnType>
-using Result = std::pair<
-    std::shared_ptr<ReturnType>,
-    std::shared_ptr<AbstractSignal<Dummy>>
-  >;
 
 DRTEST_TEST(invokeNoParametersDirectConnection)
 {
