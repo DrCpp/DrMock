@@ -20,10 +20,59 @@
 
 namespace drmock {
 
-void
-Dummy::bazzify(std::string& x)
+Dummy::Dummy(Qt::ConnectionType connection_type)
 {
-  x = "baz";
+  QObject::connect(
+      this, &Dummy::no_params,
+      this, &Dummy::no_params_slot,
+      connection_type
+    );
+  QObject::connect(
+      this, &Dummy::multiple_params,
+      this, &Dummy::multiple_params_slot,
+      connection_type
+    );
+  QObject::connect(
+      this, &Dummy::pass_by_ref,
+      this, &Dummy::pass_by_ref_slot,
+      connection_type
+    );
+}
+
+unsigned int
+Dummy::no_params_count() const
+{
+  return no_params_count_;
+}
+
+std::tuple<int, const QString*>
+Dummy::multiple_params_value() const
+{
+  return multiple_params_;
+}
+
+std::string*
+Dummy::pass_by_ref_value() const
+{
+  return pass_by_ref_;
+}
+
+void
+Dummy::no_params_slot()
+{
+  no_params_count_++;
+}
+
+void
+Dummy::multiple_params_slot(int x, const QString& y)
+{
+  multiple_params_ = std::make_tuple(x, &y);
+}
+
+void
+Dummy::pass_by_ref_slot(std::string& s)
+{
+  pass_by_ref_ = &s;
 }
 
 } // namespace drmock

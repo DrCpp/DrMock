@@ -37,7 +37,7 @@ using Result = std::pair<
 
 DRTEST_TEST(invokeNoParameters)
 {
-  Dummy dummy{};
+  Dummy dummy{Qt::DirectConnection};
   Signal<Dummy> signal{&Dummy::no_params};
 
   QSignalSpy spy{&dummy, &Dummy::no_params};
@@ -54,12 +54,10 @@ DRTEST_TEST(invokeNoParameters)
 
 DRTEST_TEST(invokeWithParameters)
 {
-  Dummy dummy{};
-  float f = 1.23f;
-  std::vector<int> v = {1, 2, 3};
-  Signal<Dummy, int, float&, const std::vector<int>&> signal{
+  Dummy dummy{Qt::DirectConnection};
+  Signal<Dummy, int, const QString&> signal{
       &Dummy::multiple_params,
-      123, f, v
+      3, QString{"foo"}
     };
   QSignalSpy spy{&dummy, &Dummy::multiple_params};
   DRTEST_ASSERT(spy.isValid());
@@ -75,17 +73,12 @@ DRTEST_TEST(invokeWithParameters)
 
 DRTEST_TEST(invokeWithReference)
 {
-  Dummy dummy{};
+  Dummy dummy{Qt::DirectConnection};
   std::string foo = "bar";
   Signal<Dummy, std::string&> signal{&Dummy::pass_by_ref, foo};
   QSignalSpy spy{&dummy, &Dummy::pass_by_ref};
   DRTEST_ASSERT(spy.isValid());
   DRTEST_ASSERT_EQ(spy.size(), 0);
-
-  QObject::connect(
-      &dummy, &Dummy::pass_by_ref,
-      &dummy, &Dummy::bazzify
-    );
 
   signal.invoke(&dummy);
   if (spy.size() == 0)
@@ -93,5 +86,4 @@ DRTEST_TEST(invokeWithReference)
     spy.wait(100);
   }
   DRTEST_ASSERT_EQ(spy.size(), 1);
-  DRTEST_ASSERT_EQ(foo, "baz");
 }
