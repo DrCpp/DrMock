@@ -210,7 +210,6 @@ DRTEST_TEST(death_success)
   DRTEST_ASSERT_DEATH(raise(SIGCHLD), SIGCHLD);
   DRTEST_ASSERT_DEATH(raise(SIGABRT), SIGABRT);
   DRTEST_ASSERT_DEATH(volatile int* foo = nullptr; *foo =123, SIGSEGV);
-  DRTEST_ASSERT_DEATH(assert(false), SIGABRT);
 }
 
 DRTEST_TEST(death_failure_no_raise)
