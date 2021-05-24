@@ -18,7 +18,7 @@
 
 #include <QSignalSpy>
 
-#define DRTEST_USE_QT
+// #define DRTEST_USE_QT
 #define DRMOCK_USE_QT  // This is usually set by the mocker.
 #include "test/Test.h"
 #include "mock/Signal.h"
