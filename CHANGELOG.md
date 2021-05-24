@@ -17,6 +17,20 @@ You should have received a copy of the GNU General Public License
 along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
+
+# DrMock 0.4.2
+
+Released 2021/05/24
+
+### Fixed
+
+* Fix issue #9
+
+* Fix issue #10
+
+  - In particular, remove forwarding ctor from `Signal` class
+
+
 # DrMock 0.4.1
 
 Released 2021/05/16 (re-released 2021/05/21)

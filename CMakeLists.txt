@@ -23,7 +23,7 @@ cmake_minimum_required (VERSION 3.13)
 
 project(
   DrMock
-  VERSION 0.4.1
+  VERSION 0.4.2
   DESCRIPTION "C++17 testing and mocking framework"
   LANGUAGES CXX
 )
