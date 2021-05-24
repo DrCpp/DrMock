@@ -57,6 +57,7 @@ DRTEST_TEST(invokeWithParametersDirectConnection)
   auto [num, ptr] = dummy.multiple_params_value();
   DRTEST_ASSERT_EQ(num, n);
   // Expect no copy!
+  DRTEST_ASSERT(ptr);
   DRTEST_ASSERT_EQ(ptr, &str);
 }
 
@@ -73,6 +74,7 @@ DRTEST_TEST(invokeWithParametersQueuedConnection)
   auto [num, ptr] = dummy.multiple_params_value();
   DRTEST_ASSERT_EQ(num, n);
   // Expect copy!
+  DRTEST_ASSERT(ptr);
   DRTEST_ASSERT_NE(ptr, &str);
   DRTEST_ASSERT_EQ(*ptr, str);
 }
