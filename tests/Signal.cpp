@@ -67,7 +67,7 @@ DRTEST_TEST(invokeWithParametersQueuedConnection)
   QString str{"foo"};
   Signal<Dummy, int, const QString&> signal{
       &Dummy::multiple_params,
-      3, str
+      n, str
     };
   signal.invoke(&dummy);
   auto [num, ptr] = dummy.multiple_params_value();
