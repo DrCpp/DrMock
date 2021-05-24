@@ -51,7 +51,7 @@ Dummy::multiple_params_value() const
   return multiple_params_;
 }
 
-std::string*
+QString*
 Dummy::pass_by_ref_value() const
 {
   return pass_by_ref_;
@@ -70,7 +70,7 @@ Dummy::multiple_params_slot(int x, const QString& y)
 }
 
 void
-Dummy::pass_by_ref_slot(std::string& s)
+Dummy::pass_by_ref_slot(QString& s)
 {
   pass_by_ref_ = &s;
 }
