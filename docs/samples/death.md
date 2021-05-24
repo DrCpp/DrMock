@@ -97,3 +97,15 @@ Note that `SIGKILL`, `SIGSTOP` and `SIGUSR1` are not supported.
 
 Using `clone()`, `fork()`, `signal()` or multi-threading are not allowed
 when using `DRTEST_ASSERT_DEATH`.
+
+### Log messages
+
+Although `DRTEST_ASSERT_DEATH` may be used to catch `SIGABRT` raised by
+a failed assertion, it will not catch log messages sent by the `assert`
+macro. Depending on the implementation, even on a successful
+`DRTEST_ASSERT_DEATH`, you may receive a log message of the following
+kind:
+
+```cpp
+Assertion failed: (false), function death_success, file /path/to/test, line 213.
+```
