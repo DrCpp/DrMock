@@ -16,7 +16,7 @@ struct Invoke<
     T,
     T,
     std::enable_if_t<not is_tuple<T>::value>
-  > : public IInvoke<T>
+  > : public IInvoke<std::shared_ptr<IInvocable<T>>, T>
 {
   bool operator()(const std::shared_ptr<IInvocable<T>>& f, const T& t) const override
   {
@@ -28,24 +28,35 @@ struct Invoke<
 // struct Invoke<
 //     T,
 //     U,
-//     typename std::enable_if<
-//             is_shared_ptr<T>::value
-//         and is_shared_ptr<U>::value
-//         and std::is_base_of<typename T::element_type, typename U::element_type>::value
-//         and not std::is_same<T, U>::value
+//     typename std::enable_if_t<
+//         is_tuple<T>::value and is_tuple<U>::value
+//         and (std::tuple_size<T>::value == std::tuple_size<U>::value)
 //       >::type
 //   > : public IIsEqual<T>
 // {
-//   using ElemType = typename U::element_type;
-//   bool operator()(const std::shared_ptr<IInvocable<ElemType>>& lhs, const T& rhs) const override
+// public:
+//   bool operator()(const T& lhs, const T& rhs) const override
 //   {
-//     std::shared_ptr<ElemType> lhs_cast = std::dynamic_pointer_cast<ElemType>(lhs);
-//     std::shared_ptr<ElemType> rhs_cast = std::dynamic_pointer_cast<ElemType>(rhs);
-//     return (
-//         lhs_cast and rhs_cast and IsEqual<ElemType>{}(*lhs_cast, *rhs_cast)
+//     return impl(
+//         lhs,
+//         rhs,
+//         std::make_index_sequence<std::tuple_size<T>::value>{}
+//       );
+//   }
+// 
+// private:
+//   // Implementation detail of `operator()(const T&, const T&)`.
+//   template<std::size_t... Is>
+//   static bool impl(const T& lhs, const T& rhs, std::index_sequence<Is...>)
+//   {
+//     return (... and IsEqual<
+//             typename std::tuple_element<Is, T>::type,
+//             typename std::tuple_element<Is, U>::type
+//           >{}(std::get<Is>(lhs), std::get<Is>(rhs))
 //       );
 //   }
 // };
+
 
 
 }} // namespace drmock::detail

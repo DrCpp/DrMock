@@ -5,15 +5,15 @@
 
 namespace drmock { namespace detail {
 
-template<typename T>
+template<typename T1, typename T2>
 class IInvoke
 {
 public:
   virtual ~IInvoke() = default;
 
   virtual bool operator()(
-      const std::shared_ptr<IInvocable<T>>&,
-      const T&
+      const T1&,
+      const T2&
     ) const = 0;
 };
 
