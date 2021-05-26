@@ -73,6 +73,12 @@ TestObject::addRowImpl(const std::string& row, Tuple t, const std::index_sequenc
         "can only have " + std::to_string(data_columns_.size())
       };
   }
+  if (row.empty())
+  {
+    throw std::logic_error{
+        "adding row: \"" + row + "\"" + ": empty string not allowed as row name"
+      };
+  }
   if (std::find(data_rows_.begin(), data_rows_.end(), row) != data_rows_.end())
   {
     throw std::logic_error{

@@ -291,3 +291,10 @@ DRTEST_TEST(rowCollision)
   test.addRow<int>("row", 1);
   DRTEST_ASSERT_THROW(test.addRow<int>("row", 2), std::logic_error);
 }
+
+DRTEST_TEST(emptyRowName)
+{
+  drtest::detail::TestObject test{"test"};
+  test.addColumn<int>("col");
+  DRTEST_ASSERT_THROW(test.addRow<int>("", 1), std::logic_error);
+}
