@@ -73,6 +73,12 @@ TestObject::addRowImpl(const std::string& row, Tuple t, const std::index_sequenc
         "can only have " + std::to_string(data_columns_.size())
       };
   }
+  if (std::find(data_rows_.begin(), data_rows_.end(), row) != data_rows_.end())
+  {
+    throw std::logic_error{
+        "adding row: \"" + row + "\"" + ": row already present"
+      };
+  }
   data_rows_.push_back(row);
   (addRowImpl(row, Is, std::forward<std::tuple_element_t<Is, Tuple>>(std::get<Is>(t))),
    ...);

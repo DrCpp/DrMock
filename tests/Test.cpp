@@ -283,3 +283,11 @@ DRTEST_TEST(xfail)
   drtest::xfail();
   DRTEST_ASSERT_EQ(2 + 2, 5);
 }
+
+DRTEST_TEST(rowCollision)
+{
+  drtest::detail::TestObject test{"test"};
+  test.addColumn<int>("col");
+  test.addRow<int>("row", 1);
+  DRTEST_ASSERT_THROW(test.addRow<int>("row", 2), std::logic_error);
+}
