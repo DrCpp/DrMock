@@ -60,11 +60,11 @@ all i = 0 .. n, then
   and ...
   and IsEqual<T1, U1>{}(std::get<n>(t), std::get<n>(u))`.
 
-(5) If T, U are `std::tuple<>` then `IsEqual<T, U>::operator()` always
+(4') If T, U are `std::tuple<>` then `IsEqual<T, U>::operator()` always
 returns zero.
 
-Otherwise, IsEqual is undefined. Note that the five specializations are
-not implemented in numerical order.
+Otherwise, IsEqual is undefined. Note that the specializations may not
+be implemented in numerical order.
 */
 
 template<typename T, typename U = T, typename enable = void>
@@ -220,18 +220,6 @@ private:
             typename std::tuple_element<Is, U>::type
           >{}(std::get<Is>(lhs), std::get<Is>(rhs))
       );
-  }
-};
-
-/* ************************************
- * (5)
- * ************************************ */
-template<>
-struct IsEqual<std::tuple<>, std::tuple<>> : public IIsEqual<std::tuple<>>
-{
-  bool operator()(const std::tuple<>&, const std::tuple<>&) const override
-  {
-    return true;
   }
 };
 
