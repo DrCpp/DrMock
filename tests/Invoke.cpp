@@ -52,12 +52,15 @@ public:
   Invocable(bool result) : result_{result}, t_{} {}
   bool invoke(const T& t) const
   {
+    called_ = true;
     t_ = t;
     return result_;
   }
   T t() const { return t_; }
+  bool called() const { return called_; }
 
 private:
+  mutable bool called_ = false;
   bool result_;
   mutable T t_;
 };
@@ -75,10 +78,47 @@ DRTEST_TEST(basic)
   DRTEST_FETCH(bool, result);
   auto value = A{7};
 
-  auto invoke = detail::Invoke<A>{};
+  auto invoke = detail::Invoke<std::shared_ptr<IInvocable<A>>, A>{};
   auto invocable = std::make_shared<Invocable<A>>(result);
   DRTEST_ASSERT_EQ(invoke(invocable, value), result);
   DRTEST_ASSERT_EQ(invocable->t(), value);
+}
+
+DRTEST_DATA(flatTuple)
+{
+  drtest::addColumn<bool>("result1");
+  drtest::addColumn<bool>("result2");
+  drtest::addRow("tt", true, true);
+  drtest::addRow("tf", true, false);
+  drtest::addRow("ft", false, true);
+  drtest::addRow("ff", false, false);
+}
+
+DRTEST_TEST(flatTuple)
+{
+  DRTEST_FETCH(bool, result1);
+  DRTEST_FETCH(bool, result2);
+  auto value = std::make_tuple(A{1}, A{2});
+
+  auto invocable = std::make_tuple(
+      std::make_shared<Invocable<A>>(result1),
+      std::make_shared<Invocable<A>>(result2)
+    );
+  DRTEST_ASSERT_EQ(std::get<0>(invocable)->t().x(), A{0}.x());
+  DRTEST_ASSERT_EQ(std::get<1>(invocable)->t().x(), A{0}.x());
+  auto invoke = detail::Invoke<
+      std::tuple<
+          std::shared_ptr<IInvocable<A>>,
+          std::shared_ptr<IInvocable<A>>
+        >,
+      std::tuple<A, A>
+    >{};
+  DRTEST_ASSERT_EQ(invoke(invocable, value), result1*result2);
+  DRTEST_ASSERT_EQ(std::get<0>(invocable)->t(), A{1});
+  // Can't test this, due to short-circuit evaluation of fold expression
+  // in Invoke.
+  // DRTEST_ASSERT(std::get<1>(invocable)->called());
+  // DRTEST_ASSERT_EQ(std::get<1>(invocable)->t().x(), A{2}.x());
 }
 
 // DRTEST_DATA(recurseTuple)
