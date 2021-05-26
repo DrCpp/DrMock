@@ -42,6 +42,7 @@ DrMockTest(TESTS
   BehaviorQueue.cpp
   StateBehavior.cpp
   StateObject.cpp
+  Invoke.cpp
 )
 
 # Signal testing.

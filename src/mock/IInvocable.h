@@ -3,12 +3,12 @@
 
 namespace drmock {
 
-template<typename T, typename Result = bool>
+template<typename T>
 class IInvocable
 {
 public:
   virtual ~IInvocable() = default;
-  virtual Result invoke(const T&) const = 0;
+  virtual bool invoke(const T&) const = 0;
 };
 
 } // namespace drmock
