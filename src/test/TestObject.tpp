@@ -19,6 +19,8 @@
 #include <iostream>
 #include <stdexcept>
 
+#include "../utility/Compare.h"
+
 namespace drtest { namespace detail {
 
 template<typename T>
@@ -101,6 +103,13 @@ TestObject::fetchData(const std::string& column) const
   }
 
   return std::any_cast<T>(std::get<std::any>(*value_it));
+}
+
+template<typename T>
+bool
+TestObject::almostEqual(T actual, T expected) const
+{
+  return drutility::almost_equal(actual, expected);
 }
 
 }} // namespaces

@@ -34,4 +34,11 @@ addRow(const std::string& row, Ts&&... ts)
   drutility::Singleton<detail::Global>::get()->addRow(row, std::forward<Ts>(ts)...);
 }
 
+template<typename T>
+bool
+almostEqual(T actual, T expected)
+{
+  return drutility::Singleton<detail::Global>::get()->almostEqual(actual, expected);
+}
+
 } // namespace drtest

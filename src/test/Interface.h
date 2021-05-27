@@ -25,6 +25,7 @@ namespace drtest {
 
 template<typename T> void addColumn(std::string);
 template<typename... Ts> void addRow(const std::string& row, Ts&&... ts);
+template<typename T> bool almostEqual(T actual, T expected);
 
 } // namespace drtest
 

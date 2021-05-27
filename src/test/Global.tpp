@@ -39,4 +39,11 @@ Global::fetchData(const std::string& column)
   return tests_[current_test_].fetchData<T>(column);
 }
 
+template<typename T>
+bool
+Global::almostEqual(T actual, T expected)
+{
+  return tests_[current_test_].almostEqual(actual, expected);
+}
+
 }} // namespaces

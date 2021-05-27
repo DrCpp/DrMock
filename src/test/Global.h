@@ -41,6 +41,7 @@ public:
   template<typename T> T fetchData(const std::string& column);
   void runTestsAndLog();
   std::size_t num_failures() const;
+  template<typename T> bool almostEqual(T actual, T expected);
 
 private:
   void addTest(std::string);

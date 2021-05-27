@@ -104,4 +104,12 @@ do { \
   } \
 } while (false)
 
+#define DRTEST_ASSERT_ALMOST_EQUAL(actual, expected) \
+do { \
+  if (not drtest::almostEqual(actual, expected)) \
+  { \
+    throw drtest::detail::TestFailure{__LINE__, "~=", #actual, #expected, actual, expected}; \
+  } \
+} while (false)
+
 #endif /* DRMOCK_SRC_TEST_TESTMACROS_H */

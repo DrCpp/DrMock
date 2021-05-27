@@ -46,6 +46,7 @@ public:
   void prepareTestData();
   void runTest(bool verbose_logging = true);
   std::size_t num_failures() const;
+  template<typename T> bool almostEqual(T actual, T expected) const;
 
 private:
   void runOneTest(const std::string& row, bool verbose_logging);

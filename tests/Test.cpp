@@ -229,3 +229,18 @@ DRTEST_TEST(addRow)
 {
   DRTEST_ASSERT(true);
 }
+
+DRTEST_DATA(almost_equal_ok)
+{
+  drtest::addColumn<float>("actual");
+  drtest::addColumn<float>("expected");
+  drtest::addRow("small", 0.999999f, 1.0f);
+  drtest::addRow("large", 999'999.0f, 1'000'000.0f);
+}
+
+DRTEST_TEST(almost_equal_ok)
+{
+  DRTEST_FETCH(float, actual);
+  DRTEST_FETCH(float, expected);
+  DRTEST_ASSERT_ALMOST_EQUAL(actual, expected);
+}
