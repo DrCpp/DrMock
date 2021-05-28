@@ -26,6 +26,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include "../utility/Compare.h"
+
 namespace drtest { namespace detail {
 
 class TestObject
@@ -47,6 +49,8 @@ public:
   void runTest(bool verbose_logging = true);
   std::size_t num_failures() const;
   template<typename T> bool almostEqual(T actual, T expected) const;
+  void abs_tol(double value);
+  void rel_tol(double value);
 
 private:
   void runOneTest(const std::string& row, bool verbose_logging);
@@ -65,6 +69,9 @@ private:
   std::function<void()> data_func_{};
   std::function<void()> test_func_{};
   std::vector<std::string> failed_rows_{};
+
+  double abs_tol_ = DRTEST_ABS_TOL;
+  double rel_tol_ = DRTEST_REL_TOL;
 };
 
 }} // namespaces

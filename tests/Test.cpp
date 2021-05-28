@@ -230,17 +230,51 @@ DRTEST_TEST(addRow)
   DRTEST_ASSERT(true);
 }
 
-DRTEST_DATA(almost_equal_ok)
+DRTEST_DATA(almost_equal_default_ok)
 {
   drtest::addColumn<float>("actual");
   drtest::addColumn<float>("expected");
+  drtest::addRow("almost zero", 0.000001f, 0.0f);
   drtest::addRow("small", 0.999999f, 1.0f);
   drtest::addRow("large", 999'999.0f, 1'000'000.0f);
 }
 
-DRTEST_TEST(almost_equal_ok)
+DRTEST_TEST(almost_equal_default_ok)
 {
   DRTEST_FETCH(float, actual);
   DRTEST_FETCH(float, expected);
   DRTEST_ASSERT_ALMOST_EQUAL(actual, expected);
+}
+
+DRTEST_DATA(almost_equal_default_fail)
+{
+  drtest::addColumn<float>("actual");
+  drtest::addColumn<float>("expected");
+  drtest::addRow("almost zero", 0.0001f, 0.0f);
+  drtest::addRow("small", 0.9999f, 1.0f);
+  drtest::addRow("large", 9'999.0f, 10'000.0f);
+}
+
+DRTEST_TEST(almost_equal_default_fail)
+{
+  DRTEST_FETCH(float, actual);
+  DRTEST_FETCH(float, expected);
+  DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT_ALMOST_EQUAL(actual, expected));
+}
+
+DRTEST_TEST(almost_equal_custom)
+{
+  drtest::abs_tol(1.0);
+  DRTEST_ASSERT_ALMOST_EQUAL(2.0 + 2.0, 5.0);
+
+  drtest::rel_tol(1.0);
+  DRTEST_ASSERT_ALMOST_EQUAL(27, 50);
+
+  drtest::abs_tol(0.0);
+  drtest::rel_tol(0.0);
+  DRTEST_ASSERT_ALMOST_EQUAL(1.0, 1.0);
+
+  drtest::rel_tol(0.5);
+  DRTEST_ASSERT_ALMOST_EQUAL(50.0, 100.0);
+  DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT_ALMOST_EQUAL(100.0, 50.0));
 }

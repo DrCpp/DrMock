@@ -16,15 +16,6 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// Set global default for absolute and relative tolerance. All tolerance
-// specified in double.
-#ifndef DRTEST_ABS_TOL
-#define DRTEST_ABS_TOL 1e-06  // double
-#endif
-#ifndef DRTEST_REL_TOL
-#define DRTEST_REL_TOL 1e-06  // double
-#endif
-
 #include <cmath>
 #include <cstdlib>
 
@@ -34,7 +25,7 @@ template<typename T>
 bool
 almost_equal(T actual, T expected, T abs_tol, T rel_tol)
 {
-  return std::fabs(actual - expected) < (abs_tol + rel_tol*std::fabs(expected));
+  return std::fabs(actual - expected) <= (abs_tol + rel_tol*std::fabs(expected));
 }
 
 template<typename T>

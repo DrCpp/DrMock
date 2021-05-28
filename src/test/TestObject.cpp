@@ -145,4 +145,16 @@ TestObject::num_failures() const
   return failed_rows_.size();
 }
 
+void
+TestObject::abs_tol(double value)
+{
+  abs_tol_ = value;
+}
+
+void
+TestObject::rel_tol(double value)
+{
+  rel_tol_ = value;
+}
+
 }} // namespaces

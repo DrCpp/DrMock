@@ -109,7 +109,12 @@ template<typename T>
 bool
 TestObject::almostEqual(T actual, T expected) const
 {
-  return drutility::almost_equal(actual, expected);
+  return drutility::almost_equal(
+      actual,
+      expected,
+      static_cast<T>(abs_tol_),
+      static_cast<T>(rel_tol_)
+    );
 }
 
 }} // namespaces
