@@ -32,25 +32,15 @@ parameter pack, according to the rules specified in `IsEqual.h`.
 
 template<
     typename TupleTypeBase,
-    typename TupleTypeDerived = TupleTypeBase,
-    std::size_t I = 0
+    typename TupleTypeDerived = TupleTypeBase
   >
 struct IsTuplePackEqual;
-
-template<
-    std::size_t I,
-    typename TupleTypeBase,
-    typename TupleTypeDerived,
-    typename T,
-    typename... Ts
-  >
-struct IsTuplePackEqualImpl;
 
 template<
     typename... Bases,
     typename... Deriveds
   >
-struct IsTuplePackEqual<std::tuple<Bases...>, std::tuple<Deriveds...>, 0> final :
+struct IsTuplePackEqual<std::tuple<Bases...>, std::tuple<Deriveds...>> final :
     public IIsTuplePackEqual<Bases...>
 {
   bool operator() (
