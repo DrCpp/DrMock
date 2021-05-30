@@ -34,6 +34,7 @@ file(TO_CMAKE_PATH
 
 DrMockTest(TESTS
   Behavior.cpp
+  InvokeOnPack.cpp
   IsEqual.cpp
   Test.cpp
   Method.cpp
