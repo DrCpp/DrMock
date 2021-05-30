@@ -48,28 +48,27 @@ struct IsTuplePackEqual<std::tuple<Bases...>, std::tuple<Deriveds...>> final :
       const Bases&... pack
     ) override
   {
-    return impl<0>(tuple, std::make_tuple(std::reference_wrapper<const Bases>{pack}...));
+    return impl(
+        tuple,
+        std::make_tuple(std::reference_wrapper<const Bases>{pack}...),
+        std::make_index_sequence<sizeof...(Bases)>{}
+      );
   }
 
 private:
-  template<std::size_t I>
+  template<std::size_t... Is>
   bool impl(
       const std::tuple<Bases...>& lhs,
-      const std::tuple<std::reference_wrapper<const Bases>...>& rhs
+      const std::tuple<std::reference_wrapper<const Bases>...>& rhs,
+      const std::index_sequence<Is...>&
     )
   {
-    if constexpr (I < sizeof...(Bases))
-    {
-      IsEqual<
-          typename std::tuple_element<I, std::tuple<Bases...>>::type,
-          typename std::tuple_element<I, std::tuple<Deriveds...>>::type
-        > is_equal{};
-      return is_equal(std::get<I>(lhs), std::get<I>(rhs).get()) and impl<I + 1>(lhs, rhs);
-    }
-    else
-    {
-      return true;
-    }
+    return (
+        IsEqual<
+            std::tuple_element_t<Is, std::tuple<Bases...>>,
+            std::tuple_element_t<Is, std::tuple<Deriveds...>>
+          >{}(std::get<Is>(lhs), std::get<Is>(rhs)) and ...
+      );
   }
 };
 
