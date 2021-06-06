@@ -25,9 +25,9 @@ wrap_in_shared_equal(const std::shared_ptr<T>& ptr)
 
 template<typename Base, typename Derived>
 std::shared_ptr<ICompare<Base>>
-wrap_in_shared_equal(Base&& t)
+wrap_in_shared_equal(Base t)
 {
-  return std::make_shared<Equal<Base, Derived>>(std::forward<Base>(t));
+  return std::make_shared<Equal<Base, Derived>>(std::move(t));
 }
 
 template<typename Base, typename Derived = Base>
