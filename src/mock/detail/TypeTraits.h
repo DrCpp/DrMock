@@ -61,6 +61,18 @@ struct is_output_streamable<
     std::void_t<decltype(std::declval<std::ostream&>() << std::declval<const T&>())>
  > : std::true_type {};
 
+template<typename T1, typename T2>
+struct is_base_of_shared : std::false_type {};
+
+template<typename T1, typename T2>
+struct is_base_of_shared<std::shared_ptr<T1>, std::shared_ptr<T2>>
+{
+  static constexpr bool value = std::is_base_of_v<T1, T2>;
+};
+
+template<typename T1, typename T2>
+inline constexpr bool is_base_of_shared_v = is_base_of_shared<T1, T2>::value;
+
 }} // namespace drmock
 
 #endif /* DRMOCK_SRC_MOCK_TYPETRAITS_H */
