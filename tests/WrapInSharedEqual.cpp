@@ -17,16 +17,19 @@
 */
 
 #include "test/Test.h"
-#include "mock/Equal.h"
+#include "mock/detail/InvokeOnPack.h"
+#include "mock/detail/WrapInSharedEqual.h"
 
-using namespace drmock;
+using namespace drmock::detail;
 
 DRTEST_TEST(wrap_in_equal)
 {
-  auto eq = wrap_in_shared_equal<int>(123);
-  DRTEST_ASSERT(eq->invoke(123));
-  DRTEST_ASSERT(not eq->invoke(234));
-  auto eq2 = wrap_in_shared_equal<int>(eq);
-  DRTEST_ASSERT(eq2->invoke(123));
-  DRTEST_ASSERT(not eq2->invoke(234));
+  WrapInSharedEqual<std::tuple<int>> wrapper{};
+  auto eq = wrapper.wrap(123);
+  auto eq2 = wrapper.wrap(std::get<0>(eq));
+  auto invoke_on_pack = InvokeOnPack<std::tuple<int>>{};
+  DRTEST_ASSERT(invoke_on_pack(eq, 123));
+  DRTEST_ASSERT(invoke_on_pack(eq2, 123));
+  DRTEST_ASSERT(not invoke_on_pack(eq, 234));
+  DRTEST_ASSERT(not invoke_on_pack(eq2, 234));
 }

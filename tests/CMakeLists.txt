@@ -34,7 +34,6 @@ file(TO_CMAKE_PATH
 
 DrMockTest(TESTS
   Behavior.cpp
-  Equal.cpp
   InvokeOnPack.cpp
   IsEqual.cpp
   Test.cpp
@@ -44,6 +43,7 @@ DrMockTest(TESTS
   BehaviorQueue.cpp
   StateBehavior.cpp
   StateObject.cpp
+  WrapInSharedEqual.cpp
 )
 
 # Signal testing.

@@ -69,7 +69,10 @@ public:
   std::enable_if_t<(std::tuple_size_v<T> > 0), Behavior&> expects();
 
   // Set the expected arguments, return value, emit or thrown exception.
+  // Note: Non-template overload is always prefered according to the C++
+  // spec.
   Behavior& expects(Args...);
+  template<typename... Ts> Behavior& expects2(Ts&&...);
   template<typename T> Behavior& returns(T&&);
   template<typename E> Behavior& throws(E&&);
   template<typename... SigArgs> Behavior& emits(
