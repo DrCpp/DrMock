@@ -11,30 +11,6 @@
 
 namespace drmock { namespace detail {
 
-// Check if `T` is a `ICompare<Base>`.
-template<typename T, typename Base>
-struct is_compare
-{
-  static constexpr bool value = std::is_base_of_v<ICompare<Base>, T>;
-};
-
-template<typename T, typename Base>
-inline constexpr bool is_compare_v = is_compare<T, Base>::value;
-
-template<typename Base, typename Derived = Base>
-std::shared_ptr<ICompare<Base>>
-wrap_in_shared_equal(expect_t<Base>&& var)
-{
-  if (std::holds_alternative<Base>(var))
-  {
-    return std::make_shared<Equal<Base, Derived>>(std::get<Base>(var));
-  }
-  else
-  {
-    return std::get<std::shared_ptr<ICompare<Base>>>(var);
-  }
-}
-
 template<typename Base, typename Derived = Base>
 struct WrapInSharedEqual;
 
@@ -47,6 +23,21 @@ struct WrapInSharedEqual<std::tuple<Bases...>, std::tuple<Deriveds...>> : public
   wrap(expect_t<Bases>&&... pack)
   {
     return std::make_tuple(wrap_in_shared_equal<Bases, Deriveds>(std::forward<expect_t<Bases>>(pack))...);
+  }
+
+private:
+  template<typename Base, typename Derived = Base>
+  std::shared_ptr<ICompare<Base>>
+  wrap_in_shared_equal(expect_t<Base>&& var)
+  {
+    if (std::holds_alternative<Base>(var))
+    {
+      return std::make_shared<Equal<Base, Derived>>(std::get<Base>(var));
+    }
+    else
+    {
+      return std::get<std::shared_ptr<ICompare<Base>>>(var);
+    }
   }
 };
 
