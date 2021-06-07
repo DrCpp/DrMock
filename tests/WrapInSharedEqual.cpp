@@ -27,21 +27,21 @@ DRTEST_TEST(wrap_builtin)
 {
   detail::WrapInSharedEqual<std::tuple<int, float, std::string>> wrapper{};
   auto invoke_on_pack = detail::InvokeOnPack<std::tuple<int, float, std::string>>{};
-  auto eq1 = wrapper.wrap(123, 1.23, "foo");
+  auto eq1 = wrapper.wrap(123, 1.23f, "foo");
   auto eq2 = wrapper.wrap(std::get<0>(eq1), std::get<1>(eq1), std::get<2>(eq1));  // Rewrap.
   auto eq3 = wrapper.wrap(123, std::make_shared<Equal<float>>(1.23), "foo");  // Mixed.
-  DRTEST_ASSERT(invoke_on_pack(eq1, 123, 1.23, "foo"));
-  DRTEST_ASSERT(invoke_on_pack(eq2, 123, 1.23, "foo"));
-  DRTEST_ASSERT(invoke_on_pack(eq3, 123, 1.23, "foo"));
-  DRTEST_ASSERT(not invoke_on_pack(eq1, 234, 1.23, "foo"));
-  DRTEST_ASSERT(not invoke_on_pack(eq1, 123, 2.34, "foo"));
-  DRTEST_ASSERT(not invoke_on_pack(eq1, 123, 1.23, "bar"));
-  DRTEST_ASSERT(not invoke_on_pack(eq2, 234, 1.23, "foo"));
-  DRTEST_ASSERT(not invoke_on_pack(eq2, 123, 2.34, "foo"));
-  DRTEST_ASSERT(not invoke_on_pack(eq2, 123, 1.23, "bar"));
-  DRTEST_ASSERT(not invoke_on_pack(eq3, 234, 1.23, "foo"));
-  DRTEST_ASSERT(not invoke_on_pack(eq3, 123, 2.34, "foo"));
-  DRTEST_ASSERT(not invoke_on_pack(eq3, 123, 1.23, "bar"));
+  DRTEST_ASSERT(invoke_on_pack(eq1, 123, 1.23f, "foo"));
+  DRTEST_ASSERT(invoke_on_pack(eq2, 123, 1.23f, "foo"));
+  DRTEST_ASSERT(invoke_on_pack(eq3, 123, 1.23f, "foo"));
+  DRTEST_ASSERT(not invoke_on_pack(eq1, 234, 1.23f, "foo"));
+  DRTEST_ASSERT(not invoke_on_pack(eq1, 123, 2.34f, "foo"));
+  DRTEST_ASSERT(not invoke_on_pack(eq1, 123, 1.23f, "bar"));
+  DRTEST_ASSERT(not invoke_on_pack(eq2, 234, 1.23f, "foo"));
+  DRTEST_ASSERT(not invoke_on_pack(eq2, 123, 2.34f, "foo"));
+  DRTEST_ASSERT(not invoke_on_pack(eq2, 123, 1.23f, "bar"));
+  DRTEST_ASSERT(not invoke_on_pack(eq3, 234, 1.23f, "foo"));
+  DRTEST_ASSERT(not invoke_on_pack(eq3, 123, 2.34f, "foo"));
+  DRTEST_ASSERT(not invoke_on_pack(eq3, 123, 1.23f, "bar"));
 }
 
 class A
