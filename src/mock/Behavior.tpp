@@ -16,7 +16,9 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include "detail/InvokeOnPack.h"
 #include "detail/IsTuplePackEqual.h"
+#include "detail/WrapInSharedEqual.h"
 #include "Signal.h"
 
 namespace drmock {
@@ -32,7 +34,8 @@ Behavior<Class, ReturnType, Args...>::Behavior(
     std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal
   )
 :
-  is_tuple_pack_equal_{std::move(is_tuple_pack_equal)}
+  is_tuple_pack_equal_{std::move(is_tuple_pack_equal)},
+  wrap_in_shared_equal_{std::make_shared<detail::WrapInSharedEqual<std::tuple<Args...>>>()}
 {}
 
 template<typename Class, typename ReturnType, typename... Args>
@@ -61,7 +64,8 @@ Behavior<Class, ReturnType, Args...>::expects(Args... args)
         "Behavior object already configured. Please check your mock object configuration."
       };
   }
-  expect_.emplace(std::move(args)...);
+  // expect_.emplace(std::move(args)...);
+  expect2_ = wrap_in_shared_equal_->wrap(std::move(args)...);
   return *this;
 }
 
@@ -188,6 +192,10 @@ Behavior<Class, ReturnType, Args...>::polymorphic()
       std::tuple<Args...>,
       std::tuple<Deriveds...>
     >>();
+  wrap_in_shared_equal_ = std::make_shared<detail::WrapInSharedEqual<
+      std::tuple<Args...>,
+      std::tuple<Deriveds...>
+    >>();
   return *this;
 }
 
@@ -195,9 +203,10 @@ template<typename Class, typename ReturnType, typename... Args>
 bool
 Behavior<Class, ReturnType, Args...>::match(const Args&... args) const
 {
-  if (expect_)
+  if (expect2_)
   {
-    return (*is_tuple_pack_equal_)(*expect_, args...);
+    auto invoke_on_pack = detail::InvokeOnPack<std::tuple<std::decay_t<Args>...>>{};
+    return invoke_on_pack(*expect2_, args...);
   }
   else
   {

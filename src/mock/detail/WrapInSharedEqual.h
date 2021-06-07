@@ -32,11 +32,11 @@ private:
   {
     if (std::holds_alternative<Base>(var))
     {
-      return std::make_shared<Equal<Base, Derived>>(std::get<Base>(var));
+      return std::make_shared<Equal<Base, Derived>>(std::get<Base>(std::forward<expect_t<Base>>(var)));
     }
     else
     {
-      return std::get<std::shared_ptr<ICompare<Base>>>(var);
+      return std::get<std::shared_ptr<ICompare<Base>>>(std::forward<expect_t<Base>>(var));
     }
   }
 };

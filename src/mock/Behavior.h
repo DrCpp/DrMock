@@ -24,6 +24,7 @@
 #include <variant>
 
 #include "detail/IIsTuplePackEqual.h"
+#include "detail/IWrapInSharedEqual.h"
 #include "AbstractSignal.h"
 
 namespace drmock {
@@ -110,6 +111,7 @@ public:
 
 private:
   std::optional<std::tuple<Args...>> expect_{};
+  std::optional<std::tuple<std::shared_ptr<ICompare<Args>>...>> expect2_{};
   Result result_{};
   std::exception_ptr exception_{};
   unsigned int times_min_ = 1;
@@ -117,6 +119,7 @@ private:
   unsigned int num_calls_ = 0;  // Number of productions made.
   bool persists_ = false;
   std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal_{};
+  std::shared_ptr<detail::IWrapInSharedEqual<Args...>> wrap_in_shared_equal_{};
 };
 
 } // namespace
