@@ -24,8 +24,9 @@
 #include <memory>
 #include <variant>
 
-#include "detail/IIsTuplePackEqual.h"
+#include "detail/IWrapInSharedEqual.h"
 #include "AbstractBehavior.h"
+#include "detail/InvokeOnPack.h"
 #include "StateObject.h"
 
 namespace drmock {
@@ -53,7 +54,7 @@ changed by calling by and determine the return value of call().
 
         slot1     is equal to slot2,
         oldState1 is equal to oldState2, and
-        input1... is equal to input2... (using `is_tuple_pack_equal_`),
+        input1... is equal to input2... (using `wrap_in_shared_equal_`),
 
       except if `oldState` is the wildcard state `"*"`.
 
@@ -111,7 +112,7 @@ changed by calling by and determine the return value of call().
   A vector is used instead of a map/unordered_map to prevent the need for
   an operator</std::hash.
 
-* The sole purpose of `is_tuple_pack_equal_` is to be used as argument
+* The sole purpose of `wrap_in_shared_equal_` is to be used as argument
   of AbstractBehavior::setIsEqual whenever the AbstractBehavior changes.
 */
 
@@ -130,7 +131,7 @@ public:
     );
   StateBehavior(
       std::shared_ptr<StateObject>,
-      std::shared_ptr<detail::IIsTuplePackEqual<Args...>>
+      std::shared_ptr<detail::IWrapInSharedEqual<Args...>>
     );
 
   // Add transition for default slot (resp. `slot`). Throws according to
@@ -185,9 +186,9 @@ public:
       SigArgs&&...
     );
 
-  // Setter for `is_tuple_pack_equal_`.
+  // Setter for `wrap_in_shared_equal_`.
   template<typename... Deriveds> StateBehavior& polymorphic();
-  void setIsEqual(std::shared_ptr<detail::IIsTuplePackEqual<Args...>>) override;
+  void setIsEqual(std::shared_ptr<detail::IWrapInSharedEqual<Args...>>) override;
 
   virtual std::variant<
       std::monostate,
@@ -209,7 +210,7 @@ private:
     );
 
   std::shared_ptr<StateObject> state_object_;
-  std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal_{};
+  std::shared_ptr<detail::IWrapInSharedEqual<Args...>> wrap_in_shared_equal_{};
   std::string slot_{};
   std::map<
       std::string,
@@ -223,10 +224,10 @@ private:
       std::string,
       std::map<
           std::string,
-          std::vector<std::pair<std::tuple<Args...>, std::string>>
+          std::vector<std::pair<std::tuple<std::shared_ptr<ICompare<Args>>...>, std::string>>
         >
-    > transitions_{};
-  // slot -> { state -> { (input, target) } }
+    > transitions_{};  // slot -> { state -> { (input, target) } }
+  detail::InvokeOnPack<std::tuple<Args...>> invoke_on_pack_{};
 };
 
 } // namespace drmock

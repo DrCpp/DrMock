@@ -16,7 +16,7 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "detail/IsTuplePackEqual.h"
+#include "detail/WrapInSharedEqual.h"
 
 #include "Signal.h"
 
@@ -27,7 +27,7 @@ StateBehavior<Class, ReturnType, Args...>::StateBehavior()
 :
   StateBehavior{
       std::make_shared<StateObject>(),
-      std::make_shared<detail::IsTuplePackEqual<std::tuple<Args...>>>()
+      std::make_shared<detail::WrapInSharedEqual<std::tuple<Args...>>>()
     }
 {}
 
@@ -38,18 +38,18 @@ StateBehavior<Class, ReturnType, Args...>::StateBehavior(
 :
   StateBehavior{
       state_object,
-      std::make_shared<detail::IsTuplePackEqual<std::tuple<Args...>>>()
+      std::make_shared<detail::WrapInSharedEqual<std::tuple<Args...>>>()
     }
 {}
 
 template<typename Class, typename ReturnType, typename... Args>
 StateBehavior<Class, ReturnType, Args...>::StateBehavior(
     std::shared_ptr<StateObject> state_object,
-    std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal
+    std::shared_ptr<detail::IWrapInSharedEqual<Args...>> wrap_in_shared_equal
   )
 :
   state_object_{state_object},
-  is_tuple_pack_equal_{is_tuple_pack_equal}
+  wrap_in_shared_equal_{wrap_in_shared_equal}
 {}
 
 template<typename Class, typename ReturnType, typename... Args>
@@ -91,20 +91,20 @@ StateBehavior<Class, ReturnType, Args...>::transition(
   auto& map = transitions_[slot];  // state -> { (input..., target ) }
   auto& vec = map[current_state];  // { (input..., target) }
 
-  // Check for conflicts... A conflict arises if there are two
-  // transitions that match the same (slot, current_state, input...).
-  for (const auto& q : vec)
-  {
-    if ( (*is_tuple_pack_equal_)(q.first, input...) )
-    {
-      throw std::runtime_error{"Transition conflict."};
-    }
-  }
+  // // Check for conflicts... A conflict arises if there are two
+  // // transitions that match the same (slot, current_state, input...).
+  // for (const auto& q : vec)
+  // {
+  //   if ( invoke_on_pack_(q.first, input...) )
+  //   {
+  //     throw std::runtime_error{"Transition conflict."};
+  //   }
+  // }
 
   // If all checks out, add the transition.
   vec.push_back(
       std::make_pair(
-          std::make_tuple(std::move(input)...),
+          wrap_in_shared_equal_->wrap(std::move(input)...),
           std::move(new_state)
         )
     );
@@ -116,7 +116,7 @@ template<typename... Deriveds>
 StateBehavior<Class, ReturnType, Args...>&
 StateBehavior<Class, ReturnType, Args...>::polymorphic()
 {
-  is_tuple_pack_equal_ = std::make_shared<detail::IsTuplePackEqual<
+  wrap_in_shared_equal_ = std::make_shared<detail::WrapInSharedEqual<
       std::tuple<Args...>,
       std::tuple<Deriveds...>
     >>();
@@ -126,10 +126,10 @@ StateBehavior<Class, ReturnType, Args...>::polymorphic()
 template<typename Class, typename ReturnType, typename... Args>
 void
 StateBehavior<Class, ReturnType, Args...>::setIsEqual(
-    std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal
+    std::shared_ptr<detail::IWrapInSharedEqual<Args...>> wrap_in_shared_equal
   )
 {
-  is_tuple_pack_equal_ = std::move(is_tuple_pack_equal);
+  wrap_in_shared_equal_ = std::move(wrap_in_shared_equal);
 }
 
 template<typename Class, typename ReturnType, typename... Args>
@@ -260,7 +260,7 @@ StateBehavior<Class, ReturnType, Args...>::call(const Args&... args)
       auto& vec = map.at("*");  // { (input..., target) }
       for (const auto& p : vec)
       {
-        if ( (*is_tuple_pack_equal_)(p.first, args...) )
+        if ( invoke_on_pack_(p.first, args...) )
         {
           new_state = p.second;
           found_match = true;
@@ -273,7 +273,7 @@ StateBehavior<Class, ReturnType, Args...>::call(const Args&... args)
       auto& vec = map.at(current_state);  // { (input..., target) }
       for (const auto& p : vec)
       {
-        if ( (*is_tuple_pack_equal_)(p.first, args...) )
+        if ( invoke_on_pack_(p.first, args...) )
         {
           new_state = p.second;
           found_match = true;

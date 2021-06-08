@@ -23,7 +23,7 @@
 #include <optional>
 #include <variant>
 
-#include "detail/IIsTuplePackEqual.h"
+#include "detail/InvokeOnPack.h"
 #include "detail/IWrapInSharedEqual.h"
 #include "AbstractSignal.h"
 
@@ -63,7 +63,7 @@ public:
                    >;
 
   Behavior();
-  Behavior(std::shared_ptr<detail::IIsTuplePackEqual<Args...>>);
+  Behavior(std::shared_ptr<detail::IWrapInSharedEqual<Args...>>);
 
   // Reset the expected arguments.
   template<typename T = std::tuple<Args...>>
@@ -73,7 +73,6 @@ public:
   // Note: Non-template overload is always prefered according to the C++
   // spec.
   Behavior& expects(Args...);
-  template<typename... Ts> Behavior& expects2(Ts&&...);
   template<typename T> Behavior& returns(T&&);
   template<typename E> Behavior& throws(E&&);
   template<typename... SigArgs> Behavior& emits(
@@ -93,7 +92,7 @@ public:
 
   // Setters for is_tuple_pack_equal_.
   template<typename... Deriveds> Behavior& polymorphic();
-  void setIsEqual(std::shared_ptr<detail::IIsTuplePackEqual<Args...>>);
+  void setIsEqual(std::shared_ptr<detail::IWrapInSharedEqual<Args...>>);
 
   // Check if this is persistent (i.e. still has productions left or
   // persists).
@@ -110,16 +109,15 @@ public:
   std::variant<Result, std::exception_ptr> produce();
 
 private:
-  std::optional<std::tuple<Args...>> expect_{};
-  std::optional<std::tuple<std::shared_ptr<ICompare<Args>>...>> expect2_{};
+  std::optional<std::tuple<std::shared_ptr<ICompare<Args>>...>> expect_{};
   Result result_{};
   std::exception_ptr exception_{};
   unsigned int times_min_ = 1;
   unsigned int times_max_ = 1;
   unsigned int num_calls_ = 0;  // Number of productions made.
   bool persists_ = false;
-  std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal_{};
   std::shared_ptr<detail::IWrapInSharedEqual<Args...>> wrap_in_shared_equal_{};
+  detail::InvokeOnPack<std::tuple<Args...>> invoke_on_pack_{};
 };
 
 } // namespace

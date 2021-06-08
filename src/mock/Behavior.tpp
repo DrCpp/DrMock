@@ -16,8 +16,6 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "detail/InvokeOnPack.h"
-#include "detail/IsTuplePackEqual.h"
 #include "detail/WrapInSharedEqual.h"
 #include "Signal.h"
 
@@ -26,16 +24,15 @@ namespace drmock {
 template<typename Class, typename ReturnType, typename... Args>
 Behavior<Class, ReturnType, Args...>::Behavior()
 :
-  Behavior{std::make_shared<detail::IsTuplePackEqual<std::tuple<Args...>>>()}
+  Behavior{std::make_shared<detail::WrapInSharedEqual<std::tuple<Args...>>>()}
 {}
 
 template<typename Class, typename ReturnType, typename... Args>
 Behavior<Class, ReturnType, Args...>::Behavior(
-    std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal
+    std::shared_ptr<detail::IWrapInSharedEqual<Args...>> wrap_in_shared_equal
   )
 :
-  is_tuple_pack_equal_{std::move(is_tuple_pack_equal)},
-  wrap_in_shared_equal_{std::make_shared<detail::WrapInSharedEqual<std::tuple<Args...>>>()}
+  wrap_in_shared_equal_{std::move(wrap_in_shared_equal)}
 {}
 
 template<typename Class, typename ReturnType, typename... Args>
@@ -64,8 +61,7 @@ Behavior<Class, ReturnType, Args...>::expects(Args... args)
         "Behavior object already configured. Please check your mock object configuration."
       };
   }
-  // expect_.emplace(std::move(args)...);
-  expect2_ = wrap_in_shared_equal_->wrap(std::move(args)...);
+  expect_ = wrap_in_shared_equal_->wrap(std::move(args)...);
   return *this;
 }
 
@@ -188,10 +184,6 @@ template<typename... Deriveds>
 Behavior<Class, ReturnType, Args...>&
 Behavior<Class, ReturnType, Args...>::polymorphic()
 {
-  is_tuple_pack_equal_ = std::make_shared<detail::IsTuplePackEqual<
-      std::tuple<Args...>,
-      std::tuple<Deriveds...>
-    >>();
   wrap_in_shared_equal_ = std::make_shared<detail::WrapInSharedEqual<
       std::tuple<Args...>,
       std::tuple<Deriveds...>
@@ -203,10 +195,9 @@ template<typename Class, typename ReturnType, typename... Args>
 bool
 Behavior<Class, ReturnType, Args...>::match(const Args&... args) const
 {
-  if (expect2_)
+  if (expect_)
   {
-    auto invoke_on_pack = detail::InvokeOnPack<std::tuple<std::decay_t<Args>...>>{};
-    return invoke_on_pack(*expect2_, args...);
+    return invoke_on_pack_(*expect_, args...);
   }
   else
   {
@@ -239,10 +230,10 @@ Behavior<Class, ReturnType, Args...>::produce()
 template<typename Class, typename ReturnType, typename... Args>
 void
 Behavior<Class, ReturnType, Args...>::setIsEqual(
-    std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal
+    std::shared_ptr<detail::IWrapInSharedEqual<Args...>> wrap_in_shared_equal
   )
 {
-  is_tuple_pack_equal_ = std::move(is_tuple_pack_equal);
+  wrap_in_shared_equal_ = std::move(wrap_in_shared_equal);
 }
 
 } // namespace

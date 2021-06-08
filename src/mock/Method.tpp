@@ -42,10 +42,10 @@ template<typename Class, typename ReturnType, typename... Args>
 Method<Class, ReturnType, Args...>::Method(std::string name, std::shared_ptr<StateObject> state_object)
 :
   name_{std::move(name)},
-  is_tuple_pack_equal_{std::make_shared<detail::IsTuplePackEqual<std::tuple<Args...>>>()},
+  wrap_in_shared_equal_{std::make_shared<detail::WrapInSharedEqual<std::tuple<Args...>>>()},
   state_object_{std::move(state_object)},
   state_behavior_{},
-  behavior_queue_{std::make_shared<BehaviorQueue<Class, ReturnType, Args...>>(is_tuple_pack_equal_)},
+  behavior_queue_{std::make_shared<BehaviorQueue<Class, ReturnType, Args...>>(wrap_in_shared_equal_)},
   behavior_{behavior_queue_}
 {}
 
@@ -55,7 +55,7 @@ Method<Class, ReturnType, Args...>::io()
 {
   if (not behavior_queue_)
   {
-    behavior_queue_ = std::make_shared<BehaviorQueue<Class, ReturnType, Args...>>(is_tuple_pack_equal_);
+    behavior_queue_ = std::make_shared<BehaviorQueue<Class, ReturnType, Args...>>(wrap_in_shared_equal_);
   }
   behavior_ = behavior_queue_;
   return *behavior_queue_;
@@ -83,7 +83,7 @@ Method<Class, ReturnType, Args...>::state()
   {
     state_behavior_ = std::make_shared<StateBehavior<Class, ReturnType, Args...>>(
         state_object_,
-        is_tuple_pack_equal_
+        wrap_in_shared_equal_
       );
   }
   behavior_ = state_behavior_;
@@ -95,17 +95,17 @@ template<typename... Deriveds>
 void
 Method<Class, ReturnType, Args...>::polymorphic()
 {
-  is_tuple_pack_equal_ = std::make_shared<detail::IsTuplePackEqual<
+  wrap_in_shared_equal_ = std::make_shared<detail::WrapInSharedEqual<
       std::tuple<Args...>,
       std::tuple<Deriveds...>
     >>();
   if (behavior_queue_)
   {
-    behavior_queue_->setIsEqual(is_tuple_pack_equal_);
+    behavior_queue_->setIsEqual(wrap_in_shared_equal_);
   }
   if (state_behavior_)
   {
-    state_behavior_->setIsEqual(is_tuple_pack_equal_);
+    state_behavior_->setIsEqual(wrap_in_shared_equal_);
   }
 }
 

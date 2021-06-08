@@ -291,12 +291,8 @@ private:
 
 DRTEST_TEST(polymorphicPureVirtual)
 {
-  Behavior<Dummy, void, std::shared_ptr<Interface>, std::shared_ptr<Interface>> b{
-      std::make_shared<detail::IsTuplePackEqual<
-            std::tuple<std::shared_ptr<Interface>, std::shared_ptr<Interface>>,
-            std::tuple<std::shared_ptr<Implementation>, std::shared_ptr<Implementation>>
-          >>()
-    };
+  Behavior<Dummy, void, std::shared_ptr<Interface>, std::shared_ptr<Interface>> b{};
+  b.polymorphic<std::shared_ptr<Implementation>, std::shared_ptr<Implementation>>();
   b.expects(std::make_shared<Implementation>(1), std::make_shared<Implementation>(2));
   DRTEST_ASSERT(
       not b.match(std::make_shared<Implementation>(2), std::make_shared<Implementation>(1))

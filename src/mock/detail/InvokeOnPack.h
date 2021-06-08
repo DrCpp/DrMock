@@ -32,7 +32,7 @@ struct InvokeOnPack<std::tuple<Bases...>>
   bool operator() (
       const std::tuple<std::shared_ptr<ICompare<Bases>>...>& tuple,
       const Bases&... pack
-    )
+    ) const
   {
     return impl(
         tuple,
@@ -47,7 +47,7 @@ private:
       const std::tuple<std::shared_ptr<ICompare<Bases>>...>& lhs,
       const std::tuple<std::reference_wrapper<const Bases>...>& rhs,
       const std::index_sequence<Is...>&
-    )
+    ) const
   {
     return (std::get<Is>(lhs)->invoke(std::get<Is>(rhs)) and ...);
   }
