@@ -19,6 +19,7 @@
 #include <string>
 
 #include "test/Test.h"
+#include "mock/AlmostEqual.h"
 #include "mock/Behavior.h"
 
 // FIXME Check that the correct arguments are forwarded to the signal in
@@ -380,4 +381,17 @@ DRTEST_TEST(overrideThrowWithEmit)
       b.emits(&Dummy::f, 1, 2.3f, 4.56),
       std::runtime_error
     );
+}
+
+DRTEST_TEST(expectMixedComplexBehaviorPolymorphic)
+{
+  Behavior<Dummy, void, std::string, float, std::shared_ptr<Interface>> b{};
+  b.polymorphic<std::string, float, std::shared_ptr<Implementation>>();
+  auto poly1 = std::make_shared<Implementation>(2);
+  auto poly2 = std::make_shared<Implementation>(3);
+  b.expects("foo", almost_equal(1.0f), poly1);
+  DRTEST_ASSERT(b.match("foo", 0.999999f, poly1));
+  DRTEST_ASSERT(not b.match("foo", 0.9999f, poly1));
+  DRTEST_ASSERT(not b.match("foo", 0.999999f, poly1));
+  DRTEST_ASSERT(not b.match("foo", 0.9999f, poly2));
 }
