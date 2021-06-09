@@ -53,7 +53,7 @@ Behavior<Class, ReturnType, Args...>::expects()
 
 template<typename Class, typename ReturnType, typename... Args>
 Behavior<Class, ReturnType, Args...>&
-Behavior<Class, ReturnType, Args...>::expects(Args... args)
+Behavior<Class, ReturnType, Args...>::expects(detail::expect_t<Args>... args)
 {
   if (expect_.has_value())
   {

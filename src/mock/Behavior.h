@@ -72,7 +72,7 @@ public:
   // Set the expected arguments, return value, emit or thrown exception.
   // Note: Non-template overload is always prefered according to the C++
   // spec.
-  Behavior& expects(Args...);
+  Behavior& expects(detail::expect_t<Args>...);
   template<typename T> Behavior& returns(T&&);
   template<typename E> Behavior& throws(E&&);
   template<typename... SigArgs> Behavior& emits(

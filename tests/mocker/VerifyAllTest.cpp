@@ -25,7 +25,7 @@ DRTEST_TEST(fails)
 {
   VerifyAllMock foo{};
   foo.mock.f().push().expects(1).times(1);
-  foo.mock.g().push().expects(1.23, 4.56).times(1);
+  foo.mock.g().push().expects(1.23f, 4.56).times(1);
 
   // Call only `f`.
   foo.f(1);
@@ -38,7 +38,7 @@ DRTEST_TEST(succeeds)
 {
   VerifyAllMock foo{};
   foo.mock.f().push().expects(1).times(1);
-  foo.mock.g().push().expects(1.23, 4.56).times(1);
+  foo.mock.g().push().expects(1.23f, 4.56).times(1);
 
   // Call both methods.
   foo.f(1);
