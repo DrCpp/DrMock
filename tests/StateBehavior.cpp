@@ -482,17 +482,6 @@ DRTEST_TEST(polymorphic)
   DRTEST_COMPARE(*sp, 1);
 }
 
-DRTEST_TEST(transitionFailure)
-{
-  auto so = std::make_shared<StateObject>();
-  StateBehavior<Dummy, int, int> b{so};
-  b.transition("", "state1", 0);
-  DRTEST_ASSERT_THROW(
-      (b.transition("", "state2", 0)),
-      std::runtime_error
-    );
-}
-
 DRTEST_TEST(wildcardOverride)
 {
   auto so = std::make_shared<StateObject>();
@@ -547,17 +536,6 @@ DRTEST_TEST(wildcardResult)
   DRTEST_ASSERT(std::holds_alternative<Result<int>>(result));
   cast = std::get<Result<int>>(result).first;
   DRTEST_ASSERT_EQ(*cast, 999);
-}
-
-DRTEST_TEST(pushingMultipleWildcardTransitions)
-{
-  auto so = std::make_shared<StateObject>();
-  StateBehavior<Dummy, int, int> b{so};
-  b.transition("*", "state1", 0);
-  DRTEST_ASSERT_THROW(
-      b.transition("*", "state1", 0),
-      std::runtime_error
-    );
 }
 
 DRTEST_TEST(overridingPreviousResultWithThrow)
