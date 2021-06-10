@@ -392,6 +392,5 @@ DRTEST_TEST(expectMixedComplexBehaviorPolymorphic)
   b.expects("foo", almost_equal(1.0f), poly1);
   DRTEST_ASSERT(b.match("foo", 0.999999f, poly1));
   DRTEST_ASSERT(not b.match("foo", 0.9999f, poly1));
-  DRTEST_ASSERT(not b.match("foo", 0.999999f, poly1));
   DRTEST_ASSERT(not b.match("foo", 0.9999f, poly2));
 }
