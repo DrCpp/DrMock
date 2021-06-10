@@ -65,13 +65,14 @@ public:
   Behavior();
   Behavior(std::shared_ptr<detail::IWrapInSharedEqual<Args...>>);
 
-  // Reset the expected arguments.
+  // Expect any argument.
   template<typename T = std::tuple<Args...>>
   std::enable_if_t<(std::tuple_size_v<T> > 0), Behavior&> expects();
 
   // Set the expected arguments, return value, emit or thrown exception.
   // Note: Non-template overload is always prefered according to the C++
   // spec.
+
   Behavior& expects(detail::expect_t<Args>...);
   template<typename T> Behavior& returns(T&&);
   template<typename E> Behavior& throws(E&&);
