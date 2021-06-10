@@ -250,26 +250,37 @@ DRTEST_TEST(pointerDerived)
 
 DRTEST_TEST(polymorphic)
 {
-  Behavior<Dummy, void, std::shared_ptr<Base>, std::shared_ptr<Base>> b{};
-  b.expects(std::make_shared<Derived>(1, 2), std::make_shared<Derived>(2, 2));
-  DRTEST_ASSERT(
-      not b.match(std::make_shared<Derived>(10, 2), std::make_shared<Derived>(10, 2))
-    ); // does not match because the base type is compared and the x don't match
+  {
+    Behavior<Dummy, void, std::shared_ptr<Base>, std::shared_ptr<Base>> b{};
+    b.expects(std::make_shared<Derived>(1, 2), std::make_shared<Derived>(2, 2));
+    DRTEST_ASSERT(
+        not b.match(std::make_shared<Derived>(10, 2), std::make_shared<Derived>(10, 2))
+      ); // does not match because the base type is compared and the x don't match
+  }
 
-  b.polymorphic<std::shared_ptr<Derived>, std::shared_ptr<Derived>>();
-  DRTEST_ASSERT(
-      b.match(std::make_shared<Derived>(10, 2), std::make_shared<Derived>(10, 2))
-    );
+  {
+    Behavior<Dummy, void, std::shared_ptr<Base>, std::shared_ptr<Base>> b{};
+    b.polymorphic<std::shared_ptr<Derived>, std::shared_ptr<Derived>>();
+    DRTEST_ASSERT(
+        b.match(std::make_shared<Derived>(10, 2), std::make_shared<Derived>(10, 2))
+      );
+  }
 
-  b.polymorphic<std::shared_ptr<Base>, std::shared_ptr<Derived>>();
-  DRTEST_ASSERT(
-      b.match(std::make_shared<Derived>(1, 10), std::make_shared<Derived>(10, 2))
-    );
+  {
+    Behavior<Dummy, void, std::shared_ptr<Base>, std::shared_ptr<Base>> b{};
+    b.polymorphic<std::shared_ptr<Base>, std::shared_ptr<Derived>>();
+    DRTEST_ASSERT(
+        b.match(std::make_shared<Derived>(1, 10), std::make_shared<Derived>(10, 2))
+      );
+  }
 
-  b.polymorphic<std::shared_ptr<Derived>, std::shared_ptr<Base>>();
-  DRTEST_ASSERT(
-      b.match(std::make_shared<Derived>(10, 2), std::make_shared<Derived>(2, 10))
-    );
+  {
+    Behavior<Dummy, void, std::shared_ptr<Base>, std::shared_ptr<Base>> b{};
+    b.polymorphic<std::shared_ptr<Derived>, std::shared_ptr<Base>>();
+    DRTEST_ASSERT(
+        b.match(std::make_shared<Derived>(10, 2), std::make_shared<Derived>(2, 10))
+      );
+  }
 }
 
 class Interface
@@ -305,20 +316,26 @@ DRTEST_TEST(polymorphicPureVirtual)
 
 DRTEST_TEST(polymorphicPureVirtualDefaultConstructor)
 {
-  Behavior<Dummy, void, std::shared_ptr<Interface>, std::shared_ptr<Interface>> b{};
-  b.expects(std::make_shared<Implementation>(1), std::make_shared<Implementation>(2));
-  DRTEST_ASSERT_THROW(
-      b.match(std::make_shared<Implementation>(1), std::make_shared<Implementation>(2)),
-      std::logic_error
-    );
+  {
+    Behavior<Dummy, void, std::shared_ptr<Interface>, std::shared_ptr<Interface>> b{};
+    b.expects(std::make_shared<Implementation>(1), std::make_shared<Implementation>(2));
+    DRTEST_ASSERT_THROW(
+        b.match(std::make_shared<Implementation>(1), std::make_shared<Implementation>(2)),
+        std::logic_error
+      );
+  }
 
-  b.polymorphic<std::shared_ptr<Implementation>, std::shared_ptr<Implementation>>();
-  DRTEST_ASSERT(
-      not b.match(std::make_shared<Implementation>(2), std::make_shared<Implementation>(1))
-    );
-  DRTEST_ASSERT(
-      b.match(std::make_shared<Implementation>(1), std::make_shared<Implementation>(2))
-    );
+  {
+    Behavior<Dummy, void, std::shared_ptr<Interface>, std::shared_ptr<Interface>> b{};
+    b.polymorphic<std::shared_ptr<Implementation>, std::shared_ptr<Implementation>>();
+    b.expects(std::make_shared<Implementation>(1), std::make_shared<Implementation>(2));
+    DRTEST_ASSERT(
+        not b.match(std::make_shared<Implementation>(2), std::make_shared<Implementation>(1))
+      );
+    DRTEST_ASSERT(
+        b.match(std::make_shared<Implementation>(1), std::make_shared<Implementation>(2))
+      );
+  }
 }
 
 DRTEST_TEST(overrideSpecificExceptWithExceptAll)
