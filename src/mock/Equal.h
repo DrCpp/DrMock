@@ -26,6 +26,13 @@ private:
   Base expected_;
 };
 
+template<typename Base, typename Derived>
+std::shared_ptr<Equal<Base, Derived>>
+equal(Base expected)
+{
+  return std::make_shared<Equal<Base, Derived>>(std::move(expected));
+}
+
 } // namespace drmock
 
 #endif /* DRMOCK_SRC_MOCK_EQUAL_H */
