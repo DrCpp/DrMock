@@ -394,3 +394,11 @@ DRTEST_TEST(expectMixedComplexBehaviorPolymorphic)
   DRTEST_ASSERT(not b.match("foo", 0.9999f, poly1));
   DRTEST_ASSERT(not b.match("foo", 0.9999f, poly2));
 }
+
+DRTEST_TEST(uniquePtr)
+{
+  Behavior<Dummy, void, std::unique_ptr<Interface>> b{};
+  b.polymorphic<std::unique_ptr<Implementation>>();
+  b.expects(std::make_unique<Implementation>(2));
+  DRTEST_ASSERT(b.match(std::make_unique<Implementation>(2)));
+}
