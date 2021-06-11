@@ -59,23 +59,14 @@ template<typename... Deriveds>
 void
 BehaviorQueue<Class, ReturnType, Args...>::polymorphic()
 {
-  setIsEqual(std::make_shared<detail::WrapInSharedEqual<
+  wrap_in_shared_equal_ = std::make_shared<detail::WrapInSharedEqual<
       std::tuple<Args...>,
       std::tuple<Deriveds...>
-    >>());
-}
-
-template<typename Class, typename ReturnType, typename... Args>
-void
-BehaviorQueue<Class, ReturnType, Args...>::setIsEqual(
-    std::shared_ptr<detail::IWrapInSharedEqual<Args...>> wrap_in_shared_equal
-  )
-{
+    >>();
   for (auto& b : behaviors_)
   {
-    b.setIsEqual(wrap_in_shared_equal);
+    b.template polymorphic<Deriveds...>();
   }
-  wrap_in_shared_equal_ = std::move(wrap_in_shared_equal);
 }
 
 template<typename Class, typename ReturnType, typename... Args>

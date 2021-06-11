@@ -188,7 +188,6 @@ public:
 
   // Setter for `wrap_in_shared_equal_`.
   template<typename... Deriveds> StateBehavior& polymorphic();
-  void setIsEqual(std::shared_ptr<detail::IWrapInSharedEqual<Args...>>) override;
 
   virtual std::variant<
       std::monostate,

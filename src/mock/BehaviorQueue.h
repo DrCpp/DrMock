@@ -73,7 +73,6 @@ public:
   // Set `wrap_in_shared_equal_` and call `setIsEqual` for *all* elements
   // of the queue.
   template<typename... Deriveds> void polymorphic();
-  void setIsEqual(std::shared_ptr<detail::IWrapInSharedEqual<Args...>>) override;
 
   virtual std::variant<
       std::monostate,

@@ -101,11 +101,11 @@ Method<Class, ReturnType, Args...>::polymorphic()
     >>();
   if (behavior_queue_)
   {
-    behavior_queue_->setIsEqual(wrap_in_shared_equal_);
+    behavior_queue_->template polymorphic<Deriveds...>();
   }
   if (state_behavior_)
   {
-    state_behavior_->setIsEqual(wrap_in_shared_equal_);
+    state_behavior_->template polymorphic<Deriveds...>();
   }
 }
 

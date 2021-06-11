@@ -236,13 +236,4 @@ Behavior<Class, ReturnType, Args...>::produce()
   }
 }
 
-template<typename Class, typename ReturnType, typename... Args>
-void
-Behavior<Class, ReturnType, Args...>::setIsEqual(
-    std::shared_ptr<detail::IWrapInSharedEqual<Args...>> wrap_in_shared_equal
-  )
-{
-  wrap_in_shared_equal_ = std::move(wrap_in_shared_equal);
-}
-
 } // namespace

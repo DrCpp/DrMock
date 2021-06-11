@@ -94,7 +94,6 @@ public:
 
   // Setters for is_tuple_pack_equal_.
   template<typename... Deriveds> Behavior& polymorphic();
-  void setIsEqual(std::shared_ptr<detail::IWrapInSharedEqual<Args...>>);
 
   // Check if this is persistent (i.e. still has productions left or
   // persists).

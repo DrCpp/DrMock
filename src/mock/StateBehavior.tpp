@@ -124,15 +124,6 @@ StateBehavior<Class, ReturnType, Args...>::polymorphic()
 }
 
 template<typename Class, typename ReturnType, typename... Args>
-void
-StateBehavior<Class, ReturnType, Args...>::setIsEqual(
-    std::shared_ptr<detail::IWrapInSharedEqual<Args...>> wrap_in_shared_equal
-  )
-{
-  wrap_in_shared_equal_ = std::move(wrap_in_shared_equal);
-}
-
-template<typename Class, typename ReturnType, typename... Args>
 template<typename T>
 StateBehavior<Class, ReturnType, Args...>&
 StateBehavior<Class, ReturnType, Args...>::returns(
