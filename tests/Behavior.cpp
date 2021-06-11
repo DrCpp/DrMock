@@ -434,3 +434,48 @@ DRTEST_TEST(uniquePtr)
   b.expects(std::make_unique<Implementation>(2));
   DRTEST_ASSERT(b.match(std::make_unique<Implementation>(2)));
 }
+
+DRTEST_TEST(convenienceExpectPolymorphic)
+{
+  {
+    Behavior<Dummy, void, std::shared_ptr<Base>, std::shared_ptr<Base>> b{};
+    b.expects<std::shared_ptr<Derived>, std::shared_ptr<Derived>>(
+        std::make_shared<Derived>(1, 2), std::make_shared<Derived>(2, 2)
+      );
+    DRTEST_ASSERT(
+        b.match(std::make_shared<Derived>(10, 2), std::make_shared<Derived>(10, 2))
+      );
+    DRTEST_ASSERT(
+        not b.match(std::make_shared<Derived>(1, 10), std::make_shared<Derived>(10, 3))
+      );
+    DRTEST_ASSERT(
+        not b.match(std::make_shared<Derived>(1, 11), std::make_shared<Derived>(10, 3))
+      );
+  }
+
+  {
+    Behavior<Dummy, void, std::shared_ptr<Base>, std::shared_ptr<Base>> b{};
+    b.expects<std::shared_ptr<Base>, std::shared_ptr<Derived>>(
+        std::make_shared<Derived>(1, 2), std::make_shared<Derived>(2, 2)
+      );
+    DRTEST_ASSERT(
+        b.match(std::make_shared<Derived>(1, 10), std::make_shared<Derived>(10, 2))
+      );
+    DRTEST_ASSERT(
+        not b.match(std::make_shared<Derived>(1, 10), std::make_shared<Derived>(10, 3))
+      );
+  }
+
+  {
+    Behavior<Dummy, void, std::shared_ptr<Base>, std::shared_ptr<Base>> b{};
+    b.expects<std::shared_ptr<Derived>, std::shared_ptr<Base>>(
+        std::make_shared<Derived>(1, 2), std::make_shared<Derived>(2, 2)
+      );
+    DRTEST_ASSERT(
+        b.match(std::make_shared<Derived>(10, 2), std::make_shared<Derived>(2, 10))
+      );
+    DRTEST_ASSERT(
+        not b.match(std::make_shared<Derived>(10, 3), std::make_shared<Derived>(2, 10))
+      );
+  }
+}

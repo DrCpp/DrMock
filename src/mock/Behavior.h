@@ -74,6 +74,7 @@ public:
   // spec.
 
   Behavior& expects(detail::expect_t<Args>...);
+  template<typename... Ts> Behavior& expects(detail::expect_t<Args>...);
   template<typename T> Behavior& returns(T&&);
   template<typename E> Behavior& throws(E&&);
   template<typename... SigArgs> Behavior& emits(

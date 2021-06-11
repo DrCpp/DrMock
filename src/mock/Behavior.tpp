@@ -65,6 +65,15 @@ Behavior<Class, ReturnType, Args...>::expects(detail::expect_t<Args>... args)
   return *this;
 }
 
+template<typename Class, typename ReturnType, typename...Args>
+template<typename... Ts>
+Behavior<Class, ReturnType, Args...>&
+Behavior<Class, ReturnType, Args...>::expects(detail::expect_t<Args>... args)
+{
+  polymorphic<Ts...>();
+  return expects(std::move(args)...);
+}
+
 template<typename Class, typename ReturnType, typename... Args>
 template<typename T>
 Behavior<Class, ReturnType, Args...>&
