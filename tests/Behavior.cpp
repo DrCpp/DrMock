@@ -261,24 +261,39 @@ DRTEST_TEST(polymorphic)
   {
     Behavior<Dummy, void, std::shared_ptr<Base>, std::shared_ptr<Base>> b{};
     b.polymorphic<std::shared_ptr<Derived>, std::shared_ptr<Derived>>();
+    b.expects(std::make_shared<Derived>(1, 2), std::make_shared<Derived>(2, 2));
     DRTEST_ASSERT(
         b.match(std::make_shared<Derived>(10, 2), std::make_shared<Derived>(10, 2))
+      );
+    DRTEST_ASSERT(
+        not b.match(std::make_shared<Derived>(1, 10), std::make_shared<Derived>(10, 3))
+      );
+    DRTEST_ASSERT(
+        not b.match(std::make_shared<Derived>(1, 11), std::make_shared<Derived>(10, 3))
       );
   }
 
   {
     Behavior<Dummy, void, std::shared_ptr<Base>, std::shared_ptr<Base>> b{};
     b.polymorphic<std::shared_ptr<Base>, std::shared_ptr<Derived>>();
+    b.expects(std::make_shared<Derived>(1, 2), std::make_shared<Derived>(2, 2));
     DRTEST_ASSERT(
         b.match(std::make_shared<Derived>(1, 10), std::make_shared<Derived>(10, 2))
+      );
+    DRTEST_ASSERT(
+        not b.match(std::make_shared<Derived>(1, 10), std::make_shared<Derived>(10, 3))
       );
   }
 
   {
     Behavior<Dummy, void, std::shared_ptr<Base>, std::shared_ptr<Base>> b{};
     b.polymorphic<std::shared_ptr<Derived>, std::shared_ptr<Base>>();
+    b.expects(std::make_shared<Derived>(1, 2), std::make_shared<Derived>(2, 2));
     DRTEST_ASSERT(
         b.match(std::make_shared<Derived>(10, 2), std::make_shared<Derived>(2, 10))
+      );
+    DRTEST_ASSERT(
+        not b.match(std::make_shared<Derived>(10, 3), std::make_shared<Derived>(2, 10))
       );
   }
 }
