@@ -64,7 +64,7 @@ StateBehavior<Class, ReturnType, Args...>::transition(
       wrap_in_shared_equal_,
       "",
       current_state,
-      new_state,
+      std::move(new_state),
       std::move(input)...
     );
 }
@@ -80,6 +80,42 @@ StateBehavior<Class, ReturnType, Args...>::transition(
 {
   return transition(
       wrap_in_shared_equal_,
+      slot,
+      current_state,
+      std::move(new_state),
+      std::move(input)...
+    );
+}
+
+template<typename Class, typename ReturnType, typename... Args>
+template<typename... Deriveds>
+StateBehavior<Class, ReturnType, Args...>&
+StateBehavior<Class, ReturnType, Args...>::transition(
+    const std::string& current_state,
+    std::string new_state,
+    Args... input
+  )
+{
+  return transition<Deriveds...>(
+      "",
+      current_state,
+      std::move(new_state),
+      std::move(input)...
+    );
+}
+
+template<typename Class, typename ReturnType, typename... Args>
+template<typename... Deriveds>
+StateBehavior<Class, ReturnType, Args...>&
+StateBehavior<Class, ReturnType, Args...>::transition(
+    const std::string& slot,
+    const std::string& current_state,
+    std::string new_state,
+    Args... input
+  )
+{
+  return transition(
+      std::make_shared<detail::WrapInSharedEqual<std::tuple<Args...>, std::tuple<Deriveds...>>>(),
       slot,
       current_state,
       std::move(new_state),

@@ -147,6 +147,20 @@ public:
       std::string new_state,
       Args... input
     );
+  // Convenience function for one-time polymorphic specification.
+  template<typename... Deriveds>
+  StateBehavior& transition(
+      const std::string& current_state,
+      std::string new_state,
+      Args... input
+    );
+  template<typename... Deriveds>
+  StateBehavior& transition(
+      const std::string& slot,
+      const std::string& current_state,
+      std::string new_state,
+      Args... input
+    );
 
   // Add entry to result table - see above for details.
   //
