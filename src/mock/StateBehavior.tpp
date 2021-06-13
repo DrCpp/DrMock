@@ -114,6 +114,10 @@ StateBehavior<Class, ReturnType, Args...>::transition(
     Args... input
   )
 {
+  static_assert(
+      detail::is_base_of_tuple_v<std::tuple<std::decay_t<Args>...>, std::tuple<std::decay_t<Deriveds>...>>,
+      "Specified impossible polymorphic setting"
+    );
   return transition(
       std::make_shared<detail::WrapInSharedEqual<std::tuple<Args...>, std::tuple<Deriveds...>>>(),
       slot,
@@ -128,6 +132,10 @@ template<typename... Deriveds>
 StateBehavior<Class, ReturnType, Args...>&
 StateBehavior<Class, ReturnType, Args...>::polymorphic()
 {
+  static_assert(
+      detail::is_base_of_tuple_v<std::tuple<std::decay_t<Args>...>, std::tuple<std::decay_t<Deriveds>...>>,
+      "Specified impossible polymorphic setting"
+    );
   wrap_in_shared_equal_ = std::make_shared<detail::WrapInSharedEqual<
       std::tuple<Args...>,
       std::tuple<Deriveds...>
