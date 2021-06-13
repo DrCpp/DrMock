@@ -16,6 +16,7 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include "detail/TypeInfo.h"
 #include "detail/WrapInSharedEqual.h"
 #include "Signal.h"
 
@@ -193,6 +194,13 @@ template<typename... Deriveds>
 Behavior<Class, ReturnType, Args...>&
 Behavior<Class, ReturnType, Args...>::polymorphic()
 {
+  // "Specified impossible polymorphic setting. Expected base of: "
+  // + "(" + detail::TypeInfo<Args...>::name() + "), received: "
+  // + "(" + detail::TypeInfo<Deriveds...>::name() + ")";
+  static_assert(
+      detail::is_base_of_tuple_v<std::tuple<std::decay_t<Args>...>, std::tuple<std::decay_t<Deriveds>...>>,
+      "Specified impossible polymorphic setting"
+    );
   wrap_in_shared_equal_ = std::make_shared<detail::WrapInSharedEqual<
       std::tuple<Args...>,
       std::tuple<Deriveds...>
