@@ -38,7 +38,6 @@ DrMockTest(TESTS
   IsEqual.cpp
   Test.cpp
   Method.cpp
-  IsTuplePackEqual.cpp
   MethodCollection.cpp
   BehaviorQueue.cpp
   StateBehavior.cpp
