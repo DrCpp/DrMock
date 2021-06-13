@@ -64,7 +64,7 @@ struct is_output_streamable<
 template<typename T1, typename T2>
 struct is_base_of_smart_ptr
 {
-  static constexpr bool value = std::is_base_of_v<T1, T2>;
+  static constexpr bool value = std::is_same_v<T1, T2> or std::is_base_of_v<T1, T2>;
 };
 
 template<typename T1, typename T2>

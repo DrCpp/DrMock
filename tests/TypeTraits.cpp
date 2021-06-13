@@ -25,6 +25,21 @@ class Other {};
 
 using namespace drmock::detail;
 
+DRTEST_TEST(is_base_of_smart_pointer_no_class)
+{
+  DRTEST_ASSERT((is_base_of_smart_ptr_v<float, float>));
+  DRTEST_ASSERT((not is_base_of_smart_ptr_v<float, int>));
+}
+
+DRTEST_TEST(is_base_of_smart_pointer_no_ptr)
+{
+  DRTEST_ASSERT((is_base_of_smart_ptr_v<Base, Base>));
+  DRTEST_ASSERT((is_base_of_smart_ptr_v<Base, Derived>));
+  DRTEST_ASSERT((not is_base_of_smart_ptr_v<Derived, Base>));
+  DRTEST_ASSERT((not is_base_of_smart_ptr_v<Other, Base>));
+  DRTEST_ASSERT((not is_base_of_smart_ptr_v<Base, Other>));
+}
+
 DRTEST_TEST(is_base_of_smart_pointer_shared)
 {
   using base = std::shared_ptr<Base>;
