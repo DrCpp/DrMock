@@ -55,18 +55,18 @@ StateBehavior<Class, ReturnType, Args...>::StateBehavior(
 template<typename Class, typename ReturnType, typename... Args>
 StateBehavior<Class, ReturnType, Args...>&
 StateBehavior<Class, ReturnType, Args...>::transition(
-    std::string current_state,
+    const std::string& current_state,
     std::string new_state,
     Args... input
   )
 {
-  transition(
+  return transition(
+      wrap_in_shared_equal_,
       "",
-      std::move(current_state),
-      std::move(new_state),
+      current_state,
+      new_state,
       std::move(input)...
     );
-  return *this;
 }
 
 template<typename Class, typename ReturnType, typename... Args>
@@ -78,37 +78,13 @@ StateBehavior<Class, ReturnType, Args...>::transition(
     Args... input
   )
 {
-  // Throw if the new_state is the wildcard symbol `"*"`.
-  if (new_state == "*")
-  {
-    throw std::runtime_error{"* not allowed as target state."};
-  }
-
-  // Register the slot in the `StateObject`.
-  state_object_->get(slot);
-
-  // Get the transitions for this slot.
-  auto& map = transitions_[slot];  // state -> { (input..., target ) }
-  auto& vec = map[current_state];  // { (input..., target) }
-
-  // // Check for conflicts... A conflict arises if there are two
-  // // transitions that match the same (slot, current_state, input...).
-  // for (const auto& q : vec)
-  // {
-  //   if ( invoke_on_pack_(q.first, input...) )
-  //   {
-  //     throw std::runtime_error{"Transition conflict."};
-  //   }
-  // }
-
-  // If all checks out, add the transition.
-  vec.push_back(
-      std::make_pair(
-          wrap_in_shared_equal_->wrap(std::move(input)...),
-          std::move(new_state)
-        )
+  return transition(
+      wrap_in_shared_equal_,
+      slot,
+      current_state,
+      std::move(new_state),
+      std::move(input)...
     );
-  return *this;
 }
 
 template<typename Class, typename ReturnType, typename... Args>
@@ -381,6 +357,49 @@ StateBehavior<Class, ReturnType, Args...>::updateResultSlot(
   // If none of this is true, set the return result, but don't delete
   // the emit result in the process!
   results_[state] = Result{return_ptr, signal_ptr};
+}
+
+template<typename Class, typename ReturnType, typename... Args>
+StateBehavior<Class, ReturnType, Args...>&
+StateBehavior<Class, ReturnType, Args...>::transition(
+    const std::shared_ptr<detail::IWrapInSharedEqual<Args...>>& wrap_in_shared_equal,
+    const std::string& slot,
+    const std::string& current_state,
+    std::string new_state,
+    Args... input
+  )
+{
+  // Throw if the new_state is the wildcard symbol `"*"`.
+  if (new_state == "*")
+  {
+    throw std::runtime_error{"* not allowed as target state."};
+  }
+
+  // Register the slot in the `StateObject`.
+  state_object_->get(slot);
+
+  // Get the transitions for this slot.
+  auto& map = transitions_[slot];  // state -> { (input..., target ) }
+  auto& vec = map[current_state];  // { (input..., target) }
+
+  // // Check for conflicts... A conflict arises if there are two
+  // // transitions that match the same (slot, current_state, input...).
+  // for (const auto& q : vec)
+  // {
+  //   if ( invoke_on_pack_(q.first, input...) )
+  //   {
+  //     throw std::runtime_error{"Transition conflict."};
+  //   }
+  // }
+
+  // If all checks out, add the transition.
+  vec.push_back(
+      std::make_pair(
+          wrap_in_shared_equal->wrap(std::move(input)...),
+          std::move(new_state)
+        )
+    );
+  return *this;
 }
 
 } // namespace drmock

@@ -137,7 +137,7 @@ public:
   // Add transition for default slot (resp. `slot`). Throws according to
   // the rules above.
   StateBehavior& transition(
-      std::string current_state,
+      const std::string& current_state,
       std::string new_state,
       Args... input
     );
@@ -206,6 +206,15 @@ private:
       const std::string& state,
       std::shared_ptr<std::decay_t<ReturnType>> rtn,
       std::shared_ptr<AbstractSignal<Class>> signal
+    );
+
+  // Implementation detail of public `transition` methods.
+  StateBehavior& transition(
+      const std::shared_ptr<detail::IWrapInSharedEqual<Args...>>& wrap_in_shared_equal,
+      const std::string& slot,
+      const std::string& current_state,
+      std::string new_state,
+      Args... input
     );
 
   std::shared_ptr<StateObject> state_object_;
