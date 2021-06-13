@@ -43,6 +43,7 @@ DrMockTest(TESTS
   BehaviorQueue.cpp
   StateBehavior.cpp
   StateObject.cpp
+  TypeTraits.cpp
   WrapInSharedEqual.cpp
 )
 
