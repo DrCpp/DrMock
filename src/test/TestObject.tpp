@@ -19,6 +19,8 @@
 #include <iostream>
 #include <stdexcept>
 
+#include "../utility/Tuples.h"
+
 namespace drtest { namespace detail {
 
 template<typename T>
@@ -32,25 +34,67 @@ TestObject::addColumn(std::string column)
     });
 }
 
-template<typename T, typename... Ts>
+template<typename... Ts>
 void
-TestObject::addRow(const std::string& row, std::size_t i, T&& t, Ts&&... ts)
+TestObject::addRow(const std::string& row, Ts&&... ts)
 {
-  if ((sizeof...(ts) + 1) > data_columns_.size())
+  constexpr auto size = sizeof...(ts);
+  if constexpr(std::is_same_v<drutility::last_t<Ts...>, tags>)
+  {
+    assert(size == (data_columns_.size() + 1));
+    tags_[row] = std::get<size-1>(std::forward_as_tuple(ts...));
+    addRowImpl(
+        row,
+        std::forward_as_tuple(ts...),
+        std::make_index_sequence<size - 1>{}
+      );
+  }
+  else
+  {
+    tags_[row] = tags::none;
+    addRowImpl(
+        row,
+        std::forward_as_tuple(ts...),
+        std::make_index_sequence<size>{}
+      );
+  }
+}
+
+template<typename Tuple, std::size_t... Is>
+void
+TestObject::addRowImpl(const std::string& row, Tuple t, const std::index_sequence<Is...>&)
+{
+  constexpr auto size = sizeof...(Is);
+  if (size > data_columns_.size())
   {
     throw std::logic_error{
         "adding row: \"" + row + "\"" +
-        ": with " + std::to_string((sizeof...(ts) + 1)) + " columns, " +
+        ": with " + std::to_string(size) + " columns, " +
         "can only have " + std::to_string(data_columns_.size())
       };
   }
-
-  if (i == 0)
+  if (row.empty())
   {
-    data_rows_.push_back(row);
+    throw std::logic_error{
+        "adding row: \"" + row + "\"" + ": empty string not allowed as row name"
+      };
   }
+  if (std::find(data_rows_.begin(), data_rows_.end(), row) != data_rows_.end())
+  {
+    throw std::logic_error{
+        "adding row: \"" + row + "\"" + ": row already present"
+      };
+  }
+  data_rows_.push_back(row);
+  (addRowImpl(row, Is, std::forward<std::tuple_element_t<Is, Tuple>>(std::get<Is>(t))),
+   ...);
+}
 
-  const std::string& column = data_columns_[i];
+template<typename T>
+void
+TestObject::addRowImpl(const std::string& row, std::size_t col, T&& t)
+{
+  const std::string& column = data_columns_[col];
   auto type_it = data_column_types_.find(column);
   if (type_it == data_column_types_.end())
   {
@@ -71,11 +115,6 @@ TestObject::addRow(const std::string& row, std::size_t i, T&& t, Ts&&... ts)
   }
 
   data_sets_[row].insert({column, std::make_any<T>(std::forward<T>(t))});
-
-  if constexpr(sizeof...(ts) != 0)
-  {
-    addRow(row, i + 1, std::forward<Ts>(ts)...);
-  }
 }
 
 template<typename T>

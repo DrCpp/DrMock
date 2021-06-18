@@ -24,6 +24,7 @@
 #include <unordered_set>
 #include <vector>
 
+#include "Tags.h"
 #include "TestObject.h"
 #include "../utility/Singleton.h"
 
@@ -41,6 +42,8 @@ public:
   template<typename T> T fetchData(const std::string& column);
   void runTestsAndLog();
   std::size_t num_failures() const;
+  void xfail();
+  void tagRow(const std::string& row, tags tag);
 
 private:
   void addTest(std::string);

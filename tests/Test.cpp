@@ -229,3 +229,72 @@ DRTEST_TEST(addRow)
 {
   DRTEST_ASSERT(true);
 }
+
+DRTEST_DATA(tags)
+{
+  drtest::addColumn<int>("lhs");
+  drtest::addColumn<int>("rhs");
+  drtest::addColumn<int>("expected");
+
+  drtest::addRow("row 1", 1, 1, 2);
+  drtest::addRow("row 2", 2, 2, 5, drtest::tags::skip);
+  drtest::addRow("row 3", 4, 4, 9, drtest::tags::xfail);
+}
+
+DRTEST_TEST(tags)
+{
+  DRTEST_FETCH(int, lhs);
+  DRTEST_FETCH(int, rhs);
+  DRTEST_FETCH(int, expected);
+  auto sum = lhs + rhs;
+  DRTEST_ASSERT_EQ(sum, expected);  // This will raise if row 2 or 3 are not skipped!
+}
+
+DRTEST_DATA(tagRow)
+{
+  drtest::addColumn<int>("lhs");
+  drtest::addColumn<int>("rhs");
+  drtest::addColumn<int>("expected");
+
+  drtest::addRow("row 1", 1, 1, 2);
+  drtest::addRow("row 2", 2, 2, 5);
+  drtest::addRow("row 3", 4, 4, 9, drtest::tags::skip);
+  drtest::tagRow("row 2", drtest::tags::skip);
+  drtest::tagRow("row 3", drtest::tags::xfail);
+}
+
+DRTEST_TEST(tagRow)
+{
+  DRTEST_FETCH(int, lhs);
+  DRTEST_FETCH(int, rhs);
+  DRTEST_FETCH(int, expected);
+  auto sum = lhs + rhs;
+  DRTEST_ASSERT_EQ(sum, expected);  // This will raise if row 2 or 3 are not skipped!
+}
+
+DRTEST_TEST(skip)
+{
+  drtest::skip();
+  throw std::logic_error{"this should never happen..."};
+}
+
+DRTEST_TEST(xfail)
+{
+  drtest::xfail();
+  DRTEST_ASSERT_EQ(2 + 2, 5);
+}
+
+DRTEST_TEST(rowCollision)
+{
+  drtest::detail::TestObject test{"test"};
+  test.addColumn<int>("col");
+  test.addRow<int>("row", 1);
+  DRTEST_ASSERT_THROW(test.addRow<int>("row", 2), std::logic_error);
+}
+
+DRTEST_TEST(emptyRowName)
+{
+  drtest::detail::TestObject test{"test"};
+  test.addColumn<int>("col");
+  DRTEST_ASSERT_THROW(test.addRow<int>("", 1), std::logic_error);
+}
