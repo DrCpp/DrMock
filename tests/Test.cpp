@@ -86,9 +86,7 @@ DRTEST_TEST(assert_operator)
 
 DRTEST_DATA(test_with_data_1)
 {
-  drtest::addColumn<std::string>("col1");
-  drtest::addColumn<int>("col2");
-  drtest::addColumn<double>("col3");
+  drtest::addColumns<std::string, int, double>("col1", "col2", "col3");
 
   drtest::addRow(
       "row 1",
