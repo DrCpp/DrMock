@@ -17,6 +17,20 @@ You should have received a copy of the GNU General Public License
 along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
+# DrMock 0.5.0
+
+Released 2021/xx/xx
+
+### Added/Changed
+
+* Add tags to `drtest`
+
+* Add floating point comparison macro `DRTEST_ASSERT_ALMOST_EQUAL` to
+  `drtest`
+
+* Add complex behaviors to `drmock`
+
+
 # DrMock 0.4.1
 
 Released 2021/05/16 (re-released 2021/05/21)

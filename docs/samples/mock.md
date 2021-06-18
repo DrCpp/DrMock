@@ -1012,7 +1012,7 @@ DrMockModule(
   A regex that describes the pattern that matches the project's
   interface header filenames. The regex must contain exactly one
   capture group that captures the unadorned filename. The default
-  value is ``I([a-zA-Z0-9].*)"`.
+  value is `I([a-zA-Z0-9].*)"`.
 
 ##### MOCKFILE
   A string that describes the pattern that the project's mock object
@@ -1120,6 +1120,96 @@ class Foo
 #ifdef DRMOCK
 DRMOCK_DUMMY(Foo)
 #endif
+```
+
+### Complex behaviors
+
+As of version `0.5`, it is possible to define more complex expected
+behaviors. For example, you can expect a floating point number to be
+almost equal to an expected value. This is done by using an object of
+abstract type `template<typename Base> ICompare<Base>`:
+
+```cpp
+template<typename Base>
+class ICompare
+{
+public:
+  virtual ~ICompare() = default;
+  virtual bool invoke(const Base&) const = 0;
+};
+```
+
+The `c->invoke(actual)` checks if `actual` is _equivalent_ to the
+expected object determined by `c`. For example, here's the
+implementation for equality:
+
+```cpp
+template<typename Base, typename Derived = Base>
+class Equal : public ICompare<Base>
+{
+public:
+  Equal(Base expected)
+  :
+    expected_{std::move(expected)}
+  {}
+
+  bool
+  invoke(const Base& actual) const override
+  {
+    auto is_equal = detail::IsEqual<Base, Derived>{};
+    return is_equal(expected_, actual);
+  }
+
+private:
+  Base expected_;
+};
+```
+
+Given a behavior with `Args...`, methods like `expects` can now be
+called with any combination of `Args...` or
+`std::shared_ptr<ICompare<Args>>...`. **DrMock** also provides
+convenience constructors for the default
+`std::shared_ptr<ICompare<Base>>` objects. For example, when mocking a
+method `void f(std::string, float)`, the user can now do this:
+
+```cpp
+b.expects("foo", drmock::almost_equal(1.0f));
+```
+
+This expects the arguments to be `"foo"` and a floating point number
+almost equal to `1.0f`.
+
+Regarding `almost_equal`, the method of comparison is the same as that
+defined in the chapter [basic.md](basic.md). The precision of the
+comparison may be set using 
+
+```cpp
+template<typename T> drmock::almost_equal(T expected, T abs_tol, T rel_tol)
+```
+
+or by `#define`-ing `DRTEST_*_TOL`, as described in
+[basic.md](basic.md). Beware of using the correct types! The following
+call is not allowed:
+
+```cpp
+b.expects("foo", drmock::almost_equal(1.0));  // Using double, not float...
+```
+
+Failing to following this rule will lead to a potentially confusing
+error message like this:
+
+```shell
+/Users/malte/drmock/tests/Behavior.cpp:424:5: error: no matching member function for call to 'expects'
+  b.expects("foo", almost_equal(1.0), poly1);
+  ~~^~~~~~~
+/Users/malte/drmock/src/mock/Behavior.h:76:13: note: candidate function not viable: no known conversion from 'std::shared_ptr<ICompare<double>>' to 'detail::expect_t<float>' (aka 'variant<float, std::shared_ptr<ICompare<float>>>') for 2nd argument
+  Behavior& expects(detail::expect_t<Args>...);
+            ^
+/Users/malte/drmock/src/mock/Behavior.h:77:38: note: candidate function template not viable: no known conversion from 'std::shared_ptr<ICompare<double>>' to 'detail::expect_t<float>' (aka 'variant<float, std::shared_ptr<ICompare<float>>>') for 2nd argument
+  template<typename... Ts> Behavior& expects(detail::expect_t<Args>...);
+                                     ^
+/Users/malte/drmock/src/mock/Behavior.h:70:59: note: candidate function template not viable: requires 0 arguments, but 3 were provided
+  std::enable_if_t<(std::tuple_size_v<T> > 0), Behavior&> expects();
 ```
 
 ## Fine print: Interface
