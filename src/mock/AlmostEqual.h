@@ -19,6 +19,8 @@
 #ifndef DRMOCK_SRC_MOCK_ALMOST_EQUAL_H
 #define DRMOCK_SRC_MOCK_ALMOST_EQUAL_H
 
+#include <memory>
+
 #include "ICompare.h"
 #include "../utility/Compare.h"
 

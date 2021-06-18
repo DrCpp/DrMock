@@ -1,3 +1,5 @@
+#include "mock/AlmostEqual.h"
+#include "mock/ICompare.h"
 #include "mock/Method.h"
 #include "mock/MethodCollection.h"
 #include "mock/MockMacros.h"
