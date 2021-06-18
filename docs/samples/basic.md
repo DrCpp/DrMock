@@ -236,6 +236,17 @@ adds three columns for integer entries (`"lhs"`, `"rhs"` and
 _unique_ name for each column. The name must satisfy the same rules as
 all C++ variable names.
 
+As of version `0.5`, you can also use the utility function `addColumns`
+to get the same result:
+
+```cpp
+DRTEST_DATA(someTestWithTable)
+{
+  drtest::addColumns<int, int, int, std::string>("lhs", "rhs", "expected", "randomStuff");
+
+  // ...
+}
+
 After adding the columns, the `drtest::addRow` function may then be used
 to populate the table:
 ```cpp
@@ -374,6 +385,101 @@ Change the test table so that the test check if `2 + 2 == 4` instead of
 100% tests passed, 0 tests failed out of 1
 
 Total Test time (real) =   0.01 sec
+```
+
+## Utilties
+
+As of version `0.5`, **DrMock** offers `xfail` and `skip` tags for
+tests. A row can be tagged by appending the tag to the `addRow` call, or
+by calling `tagRow` seperately:
+
+```cpp
+DRTEST_DATA(someTestWithTable)
+{
+  // ...
+
+  drtest::addRow(
+      "This test will be skipped",
+      2,
+      2,
+      4,
+      std::string{"..."},
+      drtest::tags::skip
+    );
+  drtest::addRow(
+      "This test is expected to fail",
+      -2,
+      -2,
+      4,
+      std::string{"0>0"}
+    );
+  drtest::tagRow("This test is expected to fail", drtest::tags::xfail);
+}
+```
+
+Add the above to the file and run `ctest` with `--verbose`. You will see
+the following result:
+
+```shell
+test 1
+    Start 1: basicTest
+
+1: Test command: /Users/malte/drmock/samples/basic/build/basicTest
+1: Test timeout computed to be: 10000000
+1: TEST   someTest
+1: PASS   someTest
+1: TEST   anotherTest
+1: PASS   anotherTest
+1: TEST   exceptionTest
+1: PASS   exceptionTest
+1: TEST   someTestWithTable, Small numbers
+1: PASS   someTestWithTable, Small numbers
+1: TEST   someTestWithTable, Large numbers
+1: PASS   someTestWithTable, Large numbers
+1: TEST   someTestWithTable, This test fails
+1: PASS   someTestWithTable, This test fails
+1: TEST   someTestWithTable, This test will be skipped
+1: SKIP   someTestWithTable, This test will be skipped
+1: TEST   someTestWithTable, This test is expected to fail
+1: XFAIL  someTestWithTable, This test is expected to fail (134): 
+1:     (lhs + rhs) 
+1:       -4
+1:     (expected ==)
+1:       4
+1: 
+1: ****************
+1: ALL PASS
+1/1 Test #1: basicTest ........................   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.01 sec
+```
+
+A test without a corresponding `DRTEST_DATA(...)` can also be skipped or
+xfailed by calling `drtest::skip()` or `drtest::xfail()`. Note that the
+placement of the call is important. Place `drtest::xfail` somewhere
+before the call or assertion that is expected to fail and `drtest::skip`
+at the point at which you want to skip to the next test:
+
+```cpp
+DRTEST_TEST(...)
+{
+  /* statements */;  // These will be executed and may cause failure.
+  drtest::skip();
+  // This will not be executed.
+}
+```
+
+Note that `xfail` currently exists the test after the first failure:
+
+```cpp
+DRTEST_TEST(...)
+{
+  drtest::xfail();
+  DRTEST_ASSERT_EQ(2 + 2, 5);
+  /* Do something... */;  // Will not be executed!
+}
 ```
 
 ## Caveats
