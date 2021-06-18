@@ -482,3 +482,10 @@ macro `DRTEST_NAMESPACE` _before including_ `Test.h`:
 #include <DrMock/Test.h>
 ```
 
+### Row names
+
+Any `snake_case` or `camelCase` name may be used as row name, with the
+exception of the emtpy string. Avoid any name containing `DRTEST` or
+`DRMOCK`, or `ALL_CAPS` in general.
+
+Furthermore, duplicate row names are not allowed.

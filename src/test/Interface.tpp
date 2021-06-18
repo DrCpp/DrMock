@@ -29,6 +29,13 @@ addColumn(std::string column)
 
 template<typename... Ts>
 void
+addColumns(detail::Replace<Ts, std::string>... columns)
+{
+  (addColumn<Ts>(columns), ...);
+}
+
+template<typename... Ts>
+void
 addRow(const std::string& row, Ts&&... ts)
 {
   drutility::Singleton<detail::Global>::get()->addRow(row, std::forward<Ts>(ts)...);

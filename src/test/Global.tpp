@@ -29,7 +29,7 @@ template<typename... Ts>
 void
 Global::addRow(const std::string& row, Ts&&... ts)
 {
-  tests_[current_test_].addRow(row, 0, std::forward<Ts>(ts)...);
+  tests_[current_test_].addRow(row, std::forward<Ts>(ts)...);
 }
 
 template<typename T>

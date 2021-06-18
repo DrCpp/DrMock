@@ -24,6 +24,7 @@
 #include <unordered_set>
 #include <vector>
 
+#include "Tags.h"
 #include "TestObject.h"
 #include "../utility/Singleton.h"
 
@@ -44,6 +45,8 @@ public:
   template<typename T> bool almostEqual(T actual, T expected);
   void abs_tol(double value);
   void rel_tol(double value);
+  void xfail();
+  void tagRow(const std::string& row, tags tag);
 
 private:
   void addTest(std::string);
