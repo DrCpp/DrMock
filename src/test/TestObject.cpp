@@ -164,6 +164,18 @@ TestObject::num_failures() const
 }
 
 void
+TestObject::abs_tol(double value)
+{
+  abs_tol_ = value;
+}
+
+void
+TestObject::rel_tol(double value)
+{
+  rel_tol_ = value;
+}
+
+void
 TestObject::xfail()
 {
   xfail_ = true;

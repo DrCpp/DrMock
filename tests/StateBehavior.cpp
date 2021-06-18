@@ -453,44 +453,51 @@ struct std::hash<Derived>
 
 DRTEST_TEST(polymorphic)
 {
-  auto so = std::make_shared<StateObject>();
-  StateBehavior<Dummy, int, std::shared_ptr<Base>, std::shared_ptr<Base>> b{so};
-  b.transition("", "state1", std::make_shared<Derived>(1, 2), std::make_shared<Derived>(2, 2));
+  {
+    auto so = std::make_shared<StateObject>();
+    StateBehavior<Dummy, int, std::shared_ptr<Base>, std::shared_ptr<Base>> b{so};
+    b.transition("", "state1", std::make_shared<Derived>(1, 2), std::make_shared<Derived>(2, 2));
+    b.returns("state1", 1);
+    // No polymorphism.
+    auto result = b.call(std::make_shared<Derived>(10, 2), std::make_shared<Derived>(10, 2));
+    DRTEST_ASSERT(std::holds_alternative<std::monostate>(result));
+  }
 
-  b.returns("state1", 1);
+  {
+    auto so = std::make_shared<StateObject>();
+    StateBehavior<Dummy, int, std::shared_ptr<Base>, std::shared_ptr<Base>> b{so};
+    b.polymorphic<std::shared_ptr<Derived>, std::shared_ptr<Derived>>();
+    b.transition("", "state1", std::make_shared<Derived>(1, 2), std::make_shared<Derived>(2, 2));
+    b.returns("state1", 1);
+    auto result = b.call(std::make_shared<Derived>(10, 2), std::make_shared<Derived>(10, 2));
+    DRTEST_ASSERT(std::holds_alternative<Result<int>>(result));
+    auto sp = std::get<Result<int>>(result).first;
+    DRTEST_COMPARE(*sp, 1);
+  }
 
-  // No polymorphism.
-  auto result = b.call(std::make_shared<Derived>(10, 2), std::make_shared<Derived>(10, 2));
-  DRTEST_ASSERT(std::holds_alternative<std::monostate>(result));
+  {
+    auto so = std::make_shared<StateObject>();
+    StateBehavior<Dummy, int, std::shared_ptr<Base>, std::shared_ptr<Base>> b{so};
+    b.polymorphic<std::shared_ptr<Base>, std::shared_ptr<Derived>>();
+    b.transition("", "state1", std::make_shared<Derived>(1, 2), std::make_shared<Derived>(2, 2));
+    b.returns("state1", 1);
+    auto result = b.call(std::make_shared<Derived>(1, 10), std::make_shared<Derived>(10, 2));
+    DRTEST_ASSERT(std::holds_alternative<Result<int>>(result));
+    auto sp = std::get<Result<int>>(result).first;
+    DRTEST_COMPARE(*sp, 1);
+  }
 
-  b.polymorphic<std::shared_ptr<Derived>, std::shared_ptr<Derived>>();
-  result = b.call(std::make_shared<Derived>(10, 2), std::make_shared<Derived>(10, 2));
-  DRTEST_ASSERT(std::holds_alternative<Result<int>>(result));
-  auto sp = std::get<Result<int>>(result).first;
-  DRTEST_COMPARE(*sp, 1);
-
-  b.polymorphic<std::shared_ptr<Base>, std::shared_ptr<Derived>>();
-  result = b.call(std::make_shared<Derived>(1, 10), std::make_shared<Derived>(10, 2));
-  DRTEST_ASSERT(std::holds_alternative<Result<int>>(result));
-  sp = std::get<Result<int>>(result).first;
-  DRTEST_COMPARE(*sp, 1);
-
-  b.polymorphic<std::shared_ptr<Derived>, std::shared_ptr<Base>>();
-  result = b.call(std::make_shared<Derived>(10, 2), std::make_shared<Derived>(2, 10));
-  DRTEST_ASSERT(std::holds_alternative<Result<int>>(result));
-  sp = std::get<Result<int>>(result).first;
-  DRTEST_COMPARE(*sp, 1);
-}
-
-DRTEST_TEST(transitionFailure)
-{
-  auto so = std::make_shared<StateObject>();
-  StateBehavior<Dummy, int, int> b{so};
-  b.transition("", "state1", 0);
-  DRTEST_ASSERT_THROW(
-      (b.transition("", "state2", 0)),
-      std::runtime_error
-    );
+  {
+    auto so = std::make_shared<StateObject>();
+    StateBehavior<Dummy, int, std::shared_ptr<Base>, std::shared_ptr<Base>> b{so};
+    b.polymorphic<std::shared_ptr<Derived>, std::shared_ptr<Base>>();
+    b.transition("", "state1", std::make_shared<Derived>(1, 2), std::make_shared<Derived>(2, 2));
+    b.returns("state1", 1);
+    auto result = b.call(std::make_shared<Derived>(10, 2), std::make_shared<Derived>(2, 10));
+    DRTEST_ASSERT(std::holds_alternative<Result<int>>(result));
+    auto sp = std::get<Result<int>>(result).first;
+    DRTEST_COMPARE(*sp, 1);
+  }
 }
 
 DRTEST_TEST(wildcardOverride)
@@ -547,17 +554,6 @@ DRTEST_TEST(wildcardResult)
   DRTEST_ASSERT(std::holds_alternative<Result<int>>(result));
   cast = std::get<Result<int>>(result).first;
   DRTEST_ASSERT_EQ(*cast, 999);
-}
-
-DRTEST_TEST(pushingMultipleWildcardTransitions)
-{
-  auto so = std::make_shared<StateObject>();
-  StateBehavior<Dummy, int, int> b{so};
-  b.transition("*", "state1", 0);
-  DRTEST_ASSERT_THROW(
-      b.transition("*", "state1", 0),
-      std::runtime_error
-    );
 }
 
 DRTEST_TEST(overridingPreviousResultWithThrow)
@@ -644,4 +640,40 @@ DRTEST_TEST(overridingThrowsWithThrows)
   StateBehavior<Dummy, void> b{};
   b.throws("", std::logic_error{""});
   DRTEST_ASSERT_THROW(b.throws("", std::logic_error{""}), std::runtime_error);
+}
+
+DRTEST_TEST(convenienceTransitionPolymorphic)
+{
+  auto so = std::make_shared<StateObject>();
+  StateBehavior<Dummy, int, std::shared_ptr<Base>, std::shared_ptr<Base>> b{so};
+
+  // Use polymorphic first.
+  b.polymorphic<std::shared_ptr<Base>, std::shared_ptr<Derived>>();
+  b.transition("", "state1", std::make_shared<Derived>(1, 2), std::make_shared<Derived>(2, 2));
+  b.returns("state1", 1);
+  auto result = b.call(std::make_shared<Derived>(1, 10), std::make_shared<Derived>(10, 2));
+  DRTEST_ASSERT(std::holds_alternative<Result<int>>(result));
+  auto sp = std::get<Result<int>>(result).first;
+  DRTEST_COMPARE(*sp, 1);
+
+  // Check that the exception works.
+  b.transition<std::shared_ptr<Base>, std::shared_ptr<Derived>>(
+      "state1",
+      "state2",
+      std::make_shared<Derived>(3, 4),
+      std::make_shared<Derived>(5, 6)
+    );
+  b.returns("state2", 2);
+  result = b.call(std::make_shared<Derived>(3, 40), std::make_shared<Derived>(50, 6));
+  DRTEST_ASSERT(std::holds_alternative<Result<int>>(result));
+  sp = std::get<Result<int>>(result).first;
+  DRTEST_COMPARE(*sp, 2);
+
+  // Check that the default specified by polymorphic is still in use.
+  b.transition("state2", "state3", std::make_shared<Derived>(1, 2), std::make_shared<Derived>(2, 2));
+  b.returns("state3", 3);
+  result = b.call(std::make_shared<Derived>(1, 10), std::make_shared<Derived>(10, 2));
+  DRTEST_ASSERT(std::holds_alternative<Result<int>>(result));
+  sp = std::get<Result<int>>(result).first;
+  DRTEST_COMPARE(*sp, 3);
 }

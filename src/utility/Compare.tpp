@@ -1,4 +1,4 @@
-/* Copyright 2019 Ole Kliemann, Malte Kliemann
+/* Copyright 2021 Ole Kliemann, Malte Kliemann
  *
  * This file is part of DrMock.
  *
@@ -16,20 +16,28 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef MOCK_DETAIL_IISTUPLEPACKEQUAL_H
-#define MOCK_DETAIL_IISTUPLEPACKEQUAL_H
+#include <cmath>
+#include <cstdlib>
 
-namespace drmock { namespace detail {
+namespace drutility {
 
-template<typename... Ts>
-struct IIsTuplePackEqual
+template<typename T>
+bool
+almost_equal(T actual, T expected, T abs_tol, T rel_tol)
 {
-  virtual bool operator() (
-      const std::tuple<Ts...>&,
-      const Ts&...
-    ) = 0;
-};
+  return std::fabs(actual - expected) <= (abs_tol + rel_tol*std::fabs(expected));
+}
 
-}} // namespaces
+template<typename T>
+bool
+almost_equal(T actual, T expected)
+{
+  return almost_equal(
+      actual,
+      expected,
+      static_cast<T>(DRTEST_ABS_TOL),
+      static_cast<T>(DRTEST_REL_TOL)
+    );
+}
 
-#endif /* MOCK_DETAIL_IISTUPLEPACKEQUAL_H */
+} // namespace drutility

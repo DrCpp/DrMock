@@ -24,7 +24,7 @@
 #include <variant>
 #include <vector>
 
-#include "detail/IIsTuplePackEqual.h"
+#include "detail/IWrapInSharedEqual.h"
 #include "AbstractBehavior.h"
 #include "Behavior.h"
 
@@ -49,7 +49,7 @@ searched from front to back for a matching element.
   Behavior instance never leaves the queue. Instead, the _front_ of the
   queue is determined by the first element that still persists.
 
-* The sole purpose of `is_tuple_pack_equal_` is to be used as argument
+* The sole purpose of `wrap_in_shared_equal_` is to be used as argument
   of Behavior::setIsEqual whenever new elements are pushed onto the
   queue.
 */
@@ -64,16 +64,15 @@ class BehaviorQueue final : public AbstractBehavior<Class, ReturnType, Args...>
 
 public:
   BehaviorQueue();
-  BehaviorQueue(std::shared_ptr<detail::IIsTuplePackEqual<Args...>>);
+  BehaviorQueue(std::shared_ptr<detail::IWrapInSharedEqual<Args...>>);
 
   Behavior<Class, ReturnType, Args...>& push();
   Behavior<Class, ReturnType, Args...>& back();
   void enforce_order(bool);
 
-  // Set `is_tuple_pack_equal_` and call `setIsEqual` for *all* elements
+  // Set `wrap_in_shared_equal_` and call `setIsEqual` for *all* elements
   // of the queue.
   template<typename... Deriveds> void polymorphic();
-  void setIsEqual(std::shared_ptr<detail::IIsTuplePackEqual<Args...>>) override;
 
   virtual std::variant<
       std::monostate,
@@ -85,7 +84,7 @@ public:
   bool is_exhausted() const;
 
 private:
-  std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal_{};
+  std::shared_ptr<detail::IWrapInSharedEqual<Args...>> wrap_in_shared_equal_{};
   std::vector<Behavior<Class, ReturnType, Args...>> behaviors_{};
   bool enforce_order_ = true;
 };

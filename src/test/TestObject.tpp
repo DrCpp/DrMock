@@ -19,6 +19,7 @@
 #include <iostream>
 #include <stdexcept>
 
+#include "../utility/Compare.h"
 #include "../utility/Tuples.h"
 
 namespace drtest { namespace detail {
@@ -140,6 +141,18 @@ TestObject::fetchData(const std::string& column) const
   }
 
   return std::any_cast<T>(std::get<std::any>(*value_it));
+}
+
+template<typename T>
+bool
+TestObject::almostEqual(T actual, T expected) const
+{
+  return drutility::almost_equal(
+      actual,
+      expected,
+      static_cast<T>(abs_tol_),
+      static_cast<T>(rel_tol_)
+    );
 }
 
 }} // namespaces

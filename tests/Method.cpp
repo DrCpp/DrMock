@@ -255,17 +255,26 @@ private:
 
 DRTEST_TEST(polymorphicPureVirtual)
 {
-  Method<Dummy, void, std::shared_ptr<Interface>, std::shared_ptr<Interface>> m{"test"};
-  m.push()
-      .expects(std::make_shared<Implementation>(1), std::make_shared<Implementation>(2))
-      .times(2);
-  DRTEST_ASSERT_THROW(
-      m.call(std::make_shared<Implementation>(1), std::make_shared<Implementation>(2)),
-      std::logic_error
-    );
+  {
+    Method<Dummy, void, std::shared_ptr<Interface>, std::shared_ptr<Interface>> m{"test"};
+    m.push()
+        .expects(std::make_shared<Implementation>(1), std::make_shared<Implementation>(2))
+        .times(1);
+    DRTEST_ASSERT_THROW(
+        m.call(std::make_shared<Implementation>(1), std::make_shared<Implementation>(2)),
+        std::logic_error
+      );
+  }
 
-  m.polymorphic<std::shared_ptr<Implementation>, std::shared_ptr<Implementation>>();
-  m.call(std::make_shared<Implementation>(1), std::make_shared<Implementation>(2));
-  m.call(std::make_shared<Implementation>(2), std::make_shared<Implementation>(1));
-  DRTEST_ASSERT(not m.verify());
+  {
+    Method<Dummy, void, std::shared_ptr<Interface>, std::shared_ptr<Interface>> m{"test"};
+    m.polymorphic<std::shared_ptr<Implementation>, std::shared_ptr<Implementation>>();
+    m.push()
+        .expects(std::make_shared<Implementation>(1), std::make_shared<Implementation>(2))
+        .times(1);
+    m.call(std::make_shared<Implementation>(1), std::make_shared<Implementation>(2));
+    DRTEST_ASSERT(m.verify());
+    m.call(std::make_shared<Implementation>(2), std::make_shared<Implementation>(1));
+    DRTEST_ASSERT(not m.verify());
+  }
 }

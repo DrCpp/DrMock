@@ -27,6 +27,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "../utility/Compare.h"
 #include "Tags.h"
 
 namespace drtest { namespace detail {
@@ -45,6 +46,9 @@ public:
   void prepareTestData();
   void runTest(bool verbose_logging = true);
   std::size_t num_failures() const;
+  template<typename T> bool almostEqual(T actual, T expected) const;
+  void abs_tol(double value);
+  void rel_tol(double value);
   void xfail();
   void tagRow(const std::string& row, tags tag);
 
@@ -77,6 +81,9 @@ private:
   std::function<void()> data_func_{};
   std::function<void()> test_func_{};
   std::vector<std::string> failed_rows_{};
+
+  double abs_tol_ = DRTEST_ABS_TOL;
+  double rel_tol_ = DRTEST_REL_TOL;
   bool xfail_{false};
 };
 

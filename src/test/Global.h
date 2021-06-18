@@ -42,6 +42,9 @@ public:
   template<typename T> T fetchData(const std::string& column);
   void runTestsAndLog();
   std::size_t num_failures() const;
+  template<typename T> bool almostEqual(T actual, T expected);
+  void abs_tol(double value);
+  void rel_tol(double value);
   void xfail();
   void tagRow(const std::string& row, tags tag);
 

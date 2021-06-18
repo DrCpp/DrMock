@@ -61,6 +61,58 @@ struct is_output_streamable<
     std::void_t<decltype(std::declval<std::ostream&>() << std::declval<const T&>())>
  > : std::true_type {};
 
+template<typename T1, typename T2>
+struct is_base_of_smart_ptr
+{
+  static constexpr bool value = std::is_same_v<T1, T2> or std::is_base_of_v<T1, T2>;
+};
+
+template<typename T1, typename T2>
+struct is_base_of_smart_ptr<std::shared_ptr<T1>, std::shared_ptr<T2>>
+{
+  static constexpr bool value = std::is_base_of_v<T1, T2>;
+};
+
+template<typename T1, typename T2>
+struct is_base_of_smart_ptr<std::unique_ptr<T1>, std::unique_ptr<T2>>
+{
+  static constexpr bool value = std::is_base_of_v<T1, T2>;
+};
+
+template<typename T1, typename T2>
+inline constexpr bool is_base_of_smart_ptr_v = is_base_of_smart_ptr<T1, T2>::value;
+
+template<typename T1, typename T2, bool enable>
+struct is_base_of_tuple_impl;
+
+template<typename... Ts1, typename... Ts2>
+struct is_base_of_tuple_impl<std::tuple<Ts1...>, std::tuple<Ts2...>, false>
+{
+  static constexpr bool value = false;
+};
+
+template<typename... Ts1, typename... Ts2>
+struct is_base_of_tuple_impl<std::tuple<Ts1...>, std::tuple<Ts2...>, true>
+{
+  static constexpr bool value = (is_base_of_smart_ptr_v<Ts1, Ts2> and ...);
+};
+
+template<typename T1, typename T2>
+struct is_base_of_tuple : std::false_type {};
+
+template<typename... Ts1, typename... Ts2>
+struct is_base_of_tuple<std::tuple<Ts1...>, std::tuple<Ts2...>>
+{
+  static constexpr bool value = is_base_of_tuple_impl<
+      std::tuple<Ts1...>,
+      std::tuple<Ts2...>,
+      (sizeof...(Ts1) == sizeof...(Ts2))
+    >::value;
+};
+
+template<typename T1, typename T2>
+inline constexpr bool is_base_of_tuple_v = is_base_of_tuple<T1, T2>::value;
+
 }} // namespace drmock
 
 #endif /* DRMOCK_SRC_MOCK_TYPETRAITS_H */

@@ -26,7 +26,7 @@
 #include <variant>
 
 #include "AbstractSignal.h"
-#include "detail/IIsTuplePackEqual.h"
+#include "detail/IWrapInSharedEqual.h"
 
 namespace drmock {
 
@@ -52,9 +52,6 @@ class AbstractBehavior
 public:
   virtual ~AbstractBehavior() = default;
 
-  virtual void setIsEqual(
-      std::shared_ptr<detail::IIsTuplePackEqual<Args...>>
-    ) = 0;
   virtual std::variant<
       std::monostate,
       std::pair<
