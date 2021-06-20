@@ -231,7 +231,7 @@ mock of `IWarehouse` is placed in the same namespace as its interface.
 ```cpp
 auto warehouse = std::make_shared<drmock::samples::WarehouseMock>();
 warehouse->mock.remove().push()
-    .expects("foo", 2)
+    .expects("foo", 2u)
     .times(1)
     .return(true);
 ```
@@ -287,7 +287,7 @@ places an order for two units of foo, but this time the call will fail:
 ```cpp
 auto warehouse = std::make_shared<drmock::samples::WarehouseMock>();
 warehouse->mock.remove().push()
-    .expects("foo", 2)
+    .expects("foo", 2u)
     .times(1)
     .return(false);
 ```
@@ -427,7 +427,7 @@ does that mean? Here are the cliff notes:
 For example,
 ```cpp
 warehouse->mock.remove().push()
-    .expects("foo", 2)
+    .expects("foo", 2u)
     .times(1)
     .return(true);
 ```
@@ -653,7 +653,7 @@ DRTEST_TEST(timesRange)
   int x;
 
   foo->mock.f().push()
-      .expects("foo", 123)
+      .expects("foo", 123u)
       .times(1, 3)
       .returns(5);
 
@@ -689,7 +689,7 @@ DRTEST_TEST(timesExact)
   int x;
 
   foo->mock.f().push()
-      .expects("foo", 123)
+      .expects("foo", 123u)
       .times(2)
       .returns(5);
 
@@ -719,11 +719,11 @@ DRTEST_TEST(enforceOrder)
   auto foo = std::make_shared<FooMock>();
 
   foo->mock.f().push()
-      .expects("foo", 123)
+      .expects("foo", 123u)
       .times(1)
       .returns(1);
   foo->mock.f().push()
-      .expects("bar", 456)
+      .expects("bar", 456u)
       .times(1)
       .returns(2);
 
@@ -782,7 +782,7 @@ DRTEST_TEST(overload)
   bar->mock.f<int>().push()
       .expects(3).returns(3);
   bar->mock.f<float, std::vector<int>, drmock::Const>().push()
-      .expects(0.0f, {}).returns(4);
+      .expects(0.0f, std::vector<int>{1, 2, 3}).returns(4);
 
   DRTEST_ASSERT_EQ(
       bar->f(),
@@ -797,7 +797,7 @@ DRTEST_TEST(overload)
       3
     );
   DRTEST_ASSERT_EQ(
-      bar->f(0.0f, {}),
+      bar->f(0.0f, std::vector<int>{1, 2 ,3}),
       4
     );
 }
