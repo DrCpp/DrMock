@@ -22,45 +22,44 @@
 include(${CMAKE_SOURCE_DIR}/cmake/DrMockMacros.cmake)
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
-# Path to the generator script.
-file(TO_CMAKE_PATH
-  ${CMAKE_SOURCE_DIR}/python/DrMockGenerator
-  pathToMocker
-)
+file(TO_CMAKE_PATH ${CMAKE_SOURCE_DIR}/python/DrMockGenerator pathToMocker)
+
 
 #######################################
 # Test Core.
 #######################################
 
-DrMockTest(TESTS
-  Behavior.cpp
-  InvokeOnPack.cpp
-  IsEqual.cpp
-  Test.cpp
-  Method.cpp
-  MethodCollection.cpp
-  BehaviorQueue.cpp
-  StateBehavior.cpp
-  StateObject.cpp
-  TypeTraits.cpp
-  WrapInSharedEqual.cpp
+drmock_test(TESTS
+    Behavior.cpp
+    BehaviorQueue.cpp
+    InvokeOnPack.cpp
+    IsEqual.cpp
+    Method.cpp
+    MethodCollection.cpp
+    StateBehavior.cpp
+    StateObject.cpp
+    Test.cpp
+    TypeTraits.cpp
+    WrapInSharedEqual.cpp
 )
 
 # Signal testing.
 if (${Qt5_FOUND})
-  add_library(DrMockSignalDummy SHARED Dummy.cpp)
-  target_link_libraries(DrMockSignalDummy Qt5::Core Qt5::Test)
-  DrMockTest(
-    TESTS Signal.cpp
-    LIBS DrMockSignalDummy
-  )
+    add_library(DrMockSignalDummy SHARED Dummy.cpp)
+    target_link_libraries(DrMockSignalDummy Qt5::Core Qt5::Test)
+    drmock_test(
+        TESTS Signal.cpp
+        LIBS DrMockSignalDummy
+    )
 endif()
+
 
 #######################################
 # Test generator.
 #######################################
 
 add_subdirectory(mocker)
+
 
 #######################################
 # Test macros

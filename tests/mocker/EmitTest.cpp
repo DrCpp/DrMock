@@ -16,7 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "test/Test.h"
+#define DRTEST_USE_QT  // For QSignalSpy!
+#include <DrMock/Test.h>
 #include "mock/EmitMock.h"
 
 #include <QSignalSpy>

@@ -16,9 +16,9 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "test/Test.h"
-
 #include <iostream>
+
+#include <DrMock/Test.h>
 
 DRTEST_TEST(initTestCase)
 {

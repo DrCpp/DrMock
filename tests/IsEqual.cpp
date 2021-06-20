@@ -16,9 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "test/Test.h"
-
-#include "mock/detail/IsEqual.h"
+#include <DrMock/Test.h>
+#include <DrMock/mock/detail/IsEqual.h>
 
 using namespace drmock;
 

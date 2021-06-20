@@ -25,7 +25,7 @@
 #include "mock/Qualifiers.h"
 #include "mock/Util.h"
 
-extern template class drmock::Method<void>;
+extern template class DrMock::Method<void>;
 
 namespace drmock { namespace mock_implementations {
 
@@ -52,7 +52,7 @@ public:
   }
 };
 
-}}} // namespace drmock::mock_implementations
+}}} // namespace DrMock::mock_implementations
 
 namespace outer { namespace inner {
 
@@ -60,7 +60,7 @@ class VoidFuncMock final : public IVoidFunc
 {
 
 public:
-  mutable drmock::mock_implementations::DRTEST_Object_IVoidFunc mock{};
+  mutable DrMock::mock_implementations::DRTEST_Object_IVoidFunc mock{};
   void f() override
   {
     mock.f().call();

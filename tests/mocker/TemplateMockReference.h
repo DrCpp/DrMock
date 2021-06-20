@@ -110,7 +110,7 @@ public:
   }
 };
 
-}}} // namespace drmock::mock_implementations
+}}} // namespace DrMock::mock_implementations
 
 namespace outer { namespace inner {
 
@@ -118,13 +118,13 @@ template<typename T, typename ... Ts>
 class TemplateMock final : public ITemplate<T, Ts ...>
 {
 public:
-  mutable drmock::mock_implementations::DRTEST_Object_ITemplate<T, Ts ...> mock{};
+  mutable DrMock::mock_implementations::DRTEST_Object_ITemplate<T, Ts ...> mock{};
 
   std :: tuple < T , T , Ts ... > hTemplate(T && a0, const int & a1, Ts * const ... a2) override
   {
     auto& result = *mock.hTemplate().call(std::move(a0), a1, std::move(a2) ...);
     return std::forward<std :: tuple < T , T , Ts ... >>(
-        drmock::moveIfNotCopyConstructible(result)
+        DrMock::moveIfNotCopyConstructible(result)
       );
   }
   void fTemplate(const Ts & ... a0) override
@@ -135,7 +135,7 @@ public:
   {
     auto& result = *mock.gTemplate().call(a0, std::move(a1) ...);
     return std::forward<bool>(
-        drmock::moveIfNotCopyConstructible(result)
+        DrMock::moveIfNotCopyConstructible(result)
       );
   }
 };

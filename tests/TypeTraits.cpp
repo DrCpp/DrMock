@@ -16,14 +16,14 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "test/Test.h"
-#include "mock/detail/TypeTraits.h"
+#include <DrMock/Test.h>
+#include <DrMock/utility/detail/TypeTraits.h>
 
 class Base {};
 class Derived : public Base {};
 class Other {};
 
-using namespace drmock::detail;
+using namespace drutility::detail;
 
 DRTEST_TEST(is_base_of_smart_pointer_no_class)
 {

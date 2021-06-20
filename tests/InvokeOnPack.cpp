@@ -16,10 +16,10 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "test/Test.h"
-#include "mock/detail/InvokeOnPack.h"
-#include "mock/Equal.h"
-#include "mock/ICompare.h"
+#include <DrMock/Test.h>
+#include <DrMock/mock/detail/InvokeOnPack.h>
+#include <DrMock/mock/Equal.h>
+#include <DrMock/mock/ICompare.h>
 
 using namespace drmock;
 

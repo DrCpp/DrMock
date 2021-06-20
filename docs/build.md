@@ -34,10 +34,10 @@ see below for details).
 ### Using the Makefile
 
 In the source directory, do `make`, then `make install`. This will
-install the **DrMock** cmake package into `{SOURCE_DIR}/prefix`. Move
+install the **DrMock** cmake package into `build/install`. Move
 the contents of that folder wherever you please. For example,
 ```
-rsync -a prefix/ /usr/local
+rsync -a build/install/ /usr/local
 ```
 
 The `make` call also configures and builds the python script

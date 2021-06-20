@@ -30,7 +30,7 @@
 public: \
   template<typename... DRTEST_Ts> auto& Name() \
   { \
-    return Name##_dispatch(drmock::TypeContainer<DRTEST_Ts...>{}); \
+    return Name##_dispatch(DrMock::TypeContainer<DRTEST_Ts...>{}); \
   }
 
 #define DRTEST_MO_METHOD_OVERLOAD(ResultType, Name, Id) \
@@ -38,7 +38,7 @@ private: \
   std::shared_ptr< \
       typename detail::MethodDecayedArgs<ResultType>::type \
     > Id{std::make_shared<typename detail::MethodDecayedArgs<ResultType>::type>()}; \
-  auto& Name##_dispatch(drmock::TypeContainer<>) { return *Id; }
+  auto& Name##_dispatch(DrMock::TypeContainer<>) { return *Id; }
 
 #define DRTEST_MO_METHOD_NO_OVERLOAD(...) DRTEST_MO_METHOD_OVERLOAD(__VA_ARGS__)
 
@@ -47,28 +47,28 @@ private: \
   std::shared_ptr< \
       typename detail::MethodDecayedArgs<ResultType>::type \
     > Id{std::make_shared<typename detail::MethodDecayedArgs<ResultType>::type>()}; \
-  auto& Name##_dispatch(drmock::TypeContainer<drmock::Const>) { return *Id; }
+  auto& Name##_dispatch(DrMock::TypeContainer<DrMock::Const>) { return *Id; }
 
 #define DRTEST_MO_METHOD_OVERLOAD_ARGS(ResultType, Name, Id, ...) \
 private: \
   std::shared_ptr< \
       typename detail::MethodDecayedArgs<ResultType, __VA_ARGS__>::type \
     > Id{std::make_shared<typename detail::MethodDecayedArgs<ResultType, __VA_ARGS__>::type>()}; \
-  auto& Name##_dispatch(drmock::TypeContainer<__VA_ARGS__>) { return *Id; } \
+  auto& Name##_dispatch(DrMock::TypeContainer<__VA_ARGS__>) { return *Id; } \
 
 #define DRTEST_MO_METHOD_OVERLOAD_ARGS_CONST(ResultType, Name, Id, ...) \
 private: \
   std::shared_ptr< \
       typename detail::MethodDecayedArgs<ResultType, __VA_ARGS__>::type \
     > Id{std::make_shared<typename detail::MethodDecayedArgs<ResultType, __VA_ARGS__>::type>()}; \
-  auto& Name##_dispatch(drmock::TypeContainer<__VA_ARGS__, drmock::Const>) { return *Id; } \
+  auto& Name##_dispatch(DrMock::TypeContainer<__VA_ARGS__, DrMock::Const>) { return *Id; } \
 
 #define DRTEST_MO_METHOD_NO_OVERLOAD_ARGS(ResultType, Name, Id, ...) \
 private: \
   std::shared_ptr< \
       typename detail::MethodDecayedArgs<ResultType, __VA_ARGS__>::type \
     > Id{std::make_shared<typename detail::MethodDecayedArgs<ResultType, __VA_ARGS__>::type>()}; \
-  auto& Name##_dispatch(drmock::TypeContainer<>) { return *Id; } \
+  auto& Name##_dispatch(DrMock::TypeContainer<>) { return *Id; } \
 
 #define DRTEST_MO_METHOD_RETURN(ResultType, Statement) \
   auto& result = Statement; \
@@ -293,7 +293,7 @@ template<typename T, typename... Ts>
 class ExampleMock : public IExample<T, Ts...>
 {
 public:
-  mutable drmock::mock_implementations::ExampleMockObject<T, Ts...> mock{};
+  mutable DrMock::mock_implementations::ExampleMockObject<T, Ts...> mock{};
 
   virtual void funcVoid0()
   {
@@ -327,7 +327,7 @@ public:
 
   virtual void funcOverloadConst() const
   {
-    mock.template funcOverloadConst<drmock::Const>().call();
+    mock.template funcOverloadConst<DrMock::Const>().call();
   }
 
   virtual std::vector<std::string>& funcOverloadConstDifferentReturn()
@@ -347,7 +347,7 @@ public:
   {
      DRTEST_MO_METHOD_RETURN(
          const std::vector<std::string>&,
-         *mock.template funcOverloadConstDifferentReturn<drmock::Const>().call()
+         *mock.template funcOverloadConstDifferentReturn<DrMock::Const>().call()
        );
   }
 
