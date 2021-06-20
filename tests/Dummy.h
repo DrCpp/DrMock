@@ -29,13 +29,28 @@ namespace drmock {
 class Dummy : public QObject
 {
   Q_OBJECT
+
+public:
+  Dummy(Qt::ConnectionType);
+
+  unsigned int no_params_count() const;
+  std::tuple<int, QString> multiple_params_value() const;
+  QString* pass_by_ref_value() const;
+
 public slots:
-  void bazzify(std::string&);
+  void no_params_slot();
+  void multiple_params_slot(int, const QString&);
+  void pass_by_ref_slot(QString&);
 
 signals:
-  void pass_by_ref(std::string&);
-  void multiple_params(int, float&, const std::vector<int>&);
   void no_params();
+  void multiple_params(int, const QString&);
+  void pass_by_ref(QString&);
+
+private:
+  unsigned int no_params_count_ = 0;
+  std::tuple<int, QString> multiple_params_{};
+  QString* pass_by_ref_;
 };
 
 } // namespace drmock

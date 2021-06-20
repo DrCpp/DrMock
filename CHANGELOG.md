@@ -19,7 +19,7 @@ along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 # DrMock 0.5.0
 
-Released 2021/xx/xx
+Released 2021/06/20
 
 ### Added/Changed
 
@@ -45,6 +45,19 @@ Released 2021/xx/xx
 * Fix issue #16
 
 * Fix issue #15
+
+
+# DrMock 0.4.2
+
+Released 2021/05/24
+
+### Fixed
+
+* Fix issue #6
+
+* Fix issue #10
+
+  - In particular, remove forwarding ctor from `Signal` class
 
 
 # DrMock 0.4.1
