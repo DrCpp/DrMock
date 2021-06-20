@@ -55,7 +55,7 @@ DRTEST_TEST(timesRange)
   int x;
 
   foo->mock.f().push()
-      .expects("foo", 123)
+      .expects("foo", 123u)
       .times(1, 3)
       .returns(5);
 
@@ -89,7 +89,7 @@ DRTEST_TEST(timesExact)
   int x;
 
   foo->mock.f().push()
-      .expects("foo", 123)
+      .expects("foo", 123u)
       .times(2)
       .returns(5);
 
@@ -117,11 +117,11 @@ DRTEST_TEST(enforceOrder)
   auto foo = std::make_shared<FooMock>();
 
   foo->mock.f().push()
-      .expects("foo", 123)
+      .expects("foo", 123u)
       .times(1)
       .returns(1);
   foo->mock.f().push()
-      .expects("bar", 456)
+      .expects("bar", 456u)
       .times(1)
       .returns(2);
 
