@@ -23,12 +23,28 @@ Released 2021/xx/xx
 
 ### Added/Changed
 
-* Add tags to `drtest`
+* Add `xfail` and `skil` tags to `drtest`
 
 * Add floating point comparison macro `DRTEST_ASSERT_ALMOST_EQUAL` to
   `drtest`
 
 * Add complex behaviors to `drmock`
+
+* Add convenience function `addColumns`
+
+* Add convenience functions `template<typename... Deriveds> expect`
+  and `template<typename... Deriveds>`
+
+* Change polymorphism behavior (`polymorphic` only applies to `expect`
+  and `transition` calls following `polymorphic`)
+
+* Remove `setIsEqual` from `AbstractBehavior`
+
+### Fixed
+
+* Fix issue #16
+
+* Fix issue #15
 
 
 # DrMock 0.4.1

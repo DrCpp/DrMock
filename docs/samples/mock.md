@@ -851,10 +851,10 @@ at least if `bool operator==(const Foo&) const` is not deleted
 
 ### Polymorphism
 
-If an interface's method accepts an `std::shared_ptr<B>` or
-`std::unique_ptr<B>` with abstract pointee type `B`, then the `Method`
-object must be informed informed which derived type to expect using the
-`polymorphic` method.
+If an interface's method accepts an `std::shared_ptr<Base>` or
+`std::unique_ptr<Base>` with abstract pointee type `Base`, then the
+`Method` object must be informed informed which derived type to expect
+using the `polymorphic` method.
 
 For example,
 ```cpp
@@ -891,6 +891,15 @@ foo->mock.func().expects(
     std::make_shared<Derived>(/* ... */)
   );
 ```
+
+**Beware!** As of version `0.5`, the `polymorphic` call only applies to
+`expects` and `transition` calls made _after_ the polymorphic call.
+
+Furthermore, as of version `0.5`, **DrMock** offers convenience
+functions `template<typename... Deriveds> expect` and
+`template<typename... Deriveds> transition` which call the default
+`expect` or `transition`, but make an exception to the currently defined
+polymorphic setting.
 
 ### Operators
 
