@@ -21,6 +21,7 @@
 #include <sstream>
 
 #include "../utility/ILogger.h"
+#include "SkipTest.h"
 #include "TestFailure.h"
 
 namespace drtest { namespace detail {
@@ -76,14 +77,31 @@ TestObject::runOneTest(const std::string& row, bool verbose_logging)
   {
     log("TEST", name_, row, -1, {});
   }
+  if ((tags_[row] & tags::skip) == tags::skip)
+  {
+    log("SKIP", name_, row, -1, {});
+    return;
+  }
   try
   {
     test_func_();
   }
+  catch(const SkipTest& e)
+  {
+    log("SKIP", name_, row, -1, {});
+    return;
+  }
   catch(const TestFailure& e)
   {
-    log("*FAIL", name_, row, e.line(), e.what());
-    failed_rows_.push_back(row);
+    if (xfail_ or ((tags_[row] & tags::xfail) == tags::xfail))
+    {
+      log("XFAIL", name_, row, e.line(), e.what());
+    }
+    else
+    {
+      log("*FAIL", name_, row, e.line(), e.what());
+      failed_rows_.push_back(row);
+    }
     return;
   }
   catch(const std::logic_error& e)
@@ -143,6 +161,30 @@ std::size_t
 TestObject::num_failures() const
 {
   return failed_rows_.size();
+}
+
+void
+TestObject::abs_tol(double value)
+{
+  abs_tol_ = value;
+}
+
+void
+TestObject::rel_tol(double value)
+{
+  rel_tol_ = value;
+}
+
+void
+TestObject::xfail()
+{
+  xfail_ = true;
+}
+
+void
+TestObject::tagRow(const std::string& row, tags tag)
+{
+  tags_[row] |= tag;
 }
 
 }} // namespaces

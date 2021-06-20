@@ -1,4 +1,4 @@
-/* Copyright 2019 Ole Kliemann, Malte Kliemann
+/* Copyright 2021 Ole Kliemann, Malte Kliemann
  *
  * This file is part of DrMock.
  *
@@ -16,20 +16,25 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef MOCK_DETAIL_IISTUPLEPACKEQUAL_H
-#define MOCK_DETAIL_IISTUPLEPACKEQUAL_H
+#ifndef DRMOCK_SRC_TEST_SKIP_TEST_H
+#define DRMOCK_SRC_TEST_SKIP_TEST_H
 
-namespace drmock { namespace detail {
+#include <stdexcept>
+#include <string>
 
-template<typename... Ts>
-struct IIsTuplePackEqual
+namespace drtest {
+
+class SkipTest : public std::exception
 {
-  virtual bool operator() (
-      const std::tuple<Ts...>&,
-      const Ts&...
-    ) = 0;
+public:
+  SkipTest(std::string expr);
+
+  const char* what() const noexcept override;
+
+private:
+  std::string what_{};
 };
 
-}} // namespaces
+} // namespace drtest
 
-#endif /* MOCK_DETAIL_IISTUPLEPACKEQUAL_H */
+#endif /* DRMOCK_SRC_TEST_SKIP_TEST_H */

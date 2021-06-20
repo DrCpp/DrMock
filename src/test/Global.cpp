@@ -160,4 +160,28 @@ Global::runTestsAndLog()
   }
 }
 
+void
+Global::abs_tol(double value)
+{
+  tests_[current_test_].abs_tol(value);
+}
+
+void
+Global::rel_tol(double value)
+{
+  tests_[current_test_].rel_tol(value);
+}
+
+void
+Global::xfail()
+{
+  tests_[current_test_].xfail();
+}
+
+void
+Global::tagRow(const std::string& row, tags tag)
+{
+  tests_[current_test_].tagRow(row, tag);
+}
+
 }} // namespaces

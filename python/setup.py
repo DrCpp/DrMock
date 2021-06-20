@@ -20,7 +20,7 @@ from setuptools import setup
 setup(
     name = "DrMockGenerator",
     author = "Ole Kliemann, Malte Kliemann",
-    version = "0.4.2",
+    version = "0.5.0",
     scripts = ["DrMockGenerator"],
     packages = ["mocker"],
     include_package_data = True,

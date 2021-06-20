@@ -1,4 +1,4 @@
-/* Copyright 2020 Ole Kliemann, Malte Kliemann
+/* Copyright 2021 Ole Kliemann, Malte Kliemann
  *
  * This file is part of DrMock.
  *
@@ -16,33 +16,19 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "test/Test.h"
-#include "mock/VerifyAllMock.h"
+#ifndef DRMOCK_SRC_MOCK_ICOMPARE_H
+#define DRMOCK_SRC_MOCK_ICOMPARE_H
 
-using namespace outer::inner;
+namespace drmock {
 
-DRTEST_TEST(fails)
+template<typename Base>
+class ICompare
 {
-  VerifyAllMock foo{};
-  foo.mock.f().push().expects(1).times(1);
-  foo.mock.g().push().expects(1.23f, 4.56).times(1);
+public:
+  virtual ~ICompare() = default;
+  virtual bool invoke(const Base&) const = 0;
+};
 
-  // Call only `f`.
-  foo.f(1);
+} // namespace drmock
 
-  // Should fail as `g` was not called as expected.
-  DRTEST_ASSERT_TEST_FAIL(DRTEST_VERIFY_MOCK(foo.mock));
-}
-
-DRTEST_TEST(succeeds)
-{
-  VerifyAllMock foo{};
-  foo.mock.f().push().expects(1).times(1);
-  foo.mock.g().push().expects(1.23f, 4.56).times(1);
-
-  // Call both methods.
-  foo.f(1);
-  foo.g(1.23, 4.56);
-
-  DRTEST_VERIFY_MOCK(foo.mock);
-}
+#endif /* DRMOCK_SRC_MOCK_ICOMPARE_H */

@@ -34,14 +34,16 @@ file(TO_CMAKE_PATH
 
 DrMockTest(TESTS
   Behavior.cpp
+  InvokeOnPack.cpp
   IsEqual.cpp
   Test.cpp
   Method.cpp
-  IsTuplePackEqual.cpp
   MethodCollection.cpp
   BehaviorQueue.cpp
   StateBehavior.cpp
   StateObject.cpp
+  TypeTraits.cpp
+  WrapInSharedEqual.cpp
 )
 
 # Signal testing.

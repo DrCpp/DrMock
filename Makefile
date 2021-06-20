@@ -20,5 +20,5 @@ clean:
 	cd python && make clean
 
 .PHONY: install
-install:
+install: default
 	cd build && make install && cd ..

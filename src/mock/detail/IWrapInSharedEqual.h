@@ -1,4 +1,4 @@
-/* Copyright 2020 Ole Kliemann, Malte Kliemann
+/* Copyright 2021 Ole Kliemann, Malte Kliemann
  *
  * This file is part of DrMock.
  *
@@ -16,33 +16,29 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "test/Test.h"
-#include "mock/VerifyAllMock.h"
+#ifndef DRMOCK_SRC_MOCK_DETAIL_IWRAPPINSHAREDEQUAL_H
+#define DRMOCK_SRC_MOCK_DETAIL_IWRAPPINSHAREDEQUAL_H
 
-using namespace outer::inner;
+#include <memory>
+#include <tuple>
+#include <variant>
 
-DRTEST_TEST(fails)
+#include "../ICompare.h"
+
+namespace drmock { namespace detail {
+
+template<typename T>
+using expect_t = std::variant<T, std::shared_ptr<ICompare<T>>>;
+
+template<typename... Bases>
+class IWrapInSharedEqual
 {
-  VerifyAllMock foo{};
-  foo.mock.f().push().expects(1).times(1);
-  foo.mock.g().push().expects(1.23f, 4.56).times(1);
+public:
+  virtual ~IWrapInSharedEqual() = default;
+  virtual std::tuple<std::shared_ptr<ICompare<Bases>>...>
+  wrap(expect_t<Bases>&&... pack) = 0;
+};
 
-  // Call only `f`.
-  foo.f(1);
+}} // namespace drmock::detail
 
-  // Should fail as `g` was not called as expected.
-  DRTEST_ASSERT_TEST_FAIL(DRTEST_VERIFY_MOCK(foo.mock));
-}
-
-DRTEST_TEST(succeeds)
-{
-  VerifyAllMock foo{};
-  foo.mock.f().push().expects(1).times(1);
-  foo.mock.g().push().expects(1.23f, 4.56).times(1);
-
-  // Call both methods.
-  foo.f(1);
-  foo.g(1.23, 4.56);
-
-  DRTEST_VERIFY_MOCK(foo.mock);
-}
+#endif /* DRMOCK_SRC_MOCK_DETAIL_IWRAPPINSHAREDEQUAL_H */

@@ -17,6 +17,35 @@ You should have received a copy of the GNU General Public License
 along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
+# DrMock 0.5.0
+
+Released 2021/06/20
+
+### Added/Changed
+
+* Add `xfail` and `skil` tags to `drtest`
+
+* Add floating point comparison macro `DRTEST_ASSERT_ALMOST_EQUAL` to
+  `drtest`
+
+* Add complex behaviors to `drmock`
+
+* Add convenience function `addColumns`
+
+* Add convenience functions `template<typename... Deriveds> expect`
+  and `template<typename... Deriveds>`
+
+* Change polymorphism behavior (`polymorphic` only applies to `expect`
+  and `transition` calls following `polymorphic`)
+
+* Remove `setIsEqual` from `AbstractBehavior`
+
+### Fixed
+
+* Fix issue #16
+
+* Fix issue #15
+
 
 # DrMock 0.4.2
 

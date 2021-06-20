@@ -1,4 +1,4 @@
-/* Copyright 2020 Ole Kliemann, Malte Kliemann
+/* Copyright 2021 Ole Kliemann, Malte Kliemann
  *
  * This file is part of DrMock.
  *
@@ -16,33 +16,25 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "test/Test.h"
-#include "mock/VerifyAllMock.h"
+#ifndef DRMOCK_SRC_UTILITY_COMPARE_H
+#define DRMOCK_SRC_UTILITY_COMPARE_H
 
-using namespace outer::inner;
+// Set global default for absolute and relative tolerance. All tolerance
+// specified in double.
+#ifndef DRTEST_ABS_TOL
+#define DRTEST_ABS_TOL 1e-06  // double
+#endif
+#ifndef DRTEST_REL_TOL
+#define DRTEST_REL_TOL 1e-06  // double
+#endif
 
-DRTEST_TEST(fails)
-{
-  VerifyAllMock foo{};
-  foo.mock.f().push().expects(1).times(1);
-  foo.mock.g().push().expects(1.23f, 4.56).times(1);
+namespace drutility {
 
-  // Call only `f`.
-  foo.f(1);
+template<typename T> bool almost_equal(T actual, T expected, T abs_tol, T rel_tol);
+template<typename T> bool almost_equal(T actual, T expected);
 
-  // Should fail as `g` was not called as expected.
-  DRTEST_ASSERT_TEST_FAIL(DRTEST_VERIFY_MOCK(foo.mock));
-}
+} // namespace drutility
 
-DRTEST_TEST(succeeds)
-{
-  VerifyAllMock foo{};
-  foo.mock.f().push().expects(1).times(1);
-  foo.mock.g().push().expects(1.23f, 4.56).times(1);
+#include "Compare.tpp"
 
-  // Call both methods.
-  foo.f(1);
-  foo.g(1.23, 4.56);
-
-  DRTEST_VERIFY_MOCK(foo.mock);
-}
+#endif /* DRMOCK_SRC_UTILITY_COMPARE_H */
