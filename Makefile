@@ -38,5 +38,5 @@ clean:
 	cd samples && make clean
 
 .PHONY: install
-install: default
+install:
 	cd build && make install && cd ..
