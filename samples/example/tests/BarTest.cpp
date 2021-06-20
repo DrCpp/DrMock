@@ -34,7 +34,7 @@ DRTEST_TEST(overload)
       .expects(3)
       .returns(3);
   bar->mock.f<float, std::vector<int>, drmock::Const>().push()
-      .expects(0.0f, {})
+      .expects(0.0f, std::vector<int>{1, 2, 3})
       .returns(4);
 
   DRTEST_ASSERT_EQ(
@@ -50,7 +50,7 @@ DRTEST_TEST(overload)
       3
     );
   DRTEST_ASSERT_EQ(
-      bar->f(0.0f, {}),
+      bar->f(0.0f, std::vector<int>{1, 2, 3}),
       4
     );
 }
