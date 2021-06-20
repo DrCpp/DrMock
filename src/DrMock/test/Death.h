@@ -19,7 +19,9 @@
 #ifndef DRMOCK_SRC_DRMOCK_TEST_DEATH_H
 #define DRMOCK_SRC_DRMOCK_TEST_DEATH_H
 
+#include <cassert>
 #include <csignal>
+#include <string.h>
 
 #if defined(__unix__) || defined(__APPLE__)
 #include <unistd.h>
@@ -29,7 +31,7 @@
 
 namespace drtest { namespace death {
 
-static int pipe_[2];
+[[maybe_unused]] static int pipe_[2];
 volatile std::sig_atomic_t atomic_pipe_;  // Self-pipe write end; required due to https://en.cppreference.com/w/c/program/signal
 
 #if defined(__unix__) || defined(__APPLE__)
@@ -97,7 +99,7 @@ do \
   } \
   else \
   { \
-    assert(PIPE_BUF >= 4); \
+    /* assert(PIPE_BUF >= 4); */\
     std::vector<char> buffer(4); \
     if (!read(drtest::death::pipe_[0], buffer.data(), 4)) \
     { \

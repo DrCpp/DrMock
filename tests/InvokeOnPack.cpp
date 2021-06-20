@@ -1,4 +1,4 @@
-/* Copyright 2019 Ole Kliemann, Malte Kliemann
+/* Copyright 2021 Ole Kliemann, Malte Kliemann
  *
  * This file is part of DrMock.
  *
@@ -16,51 +16,44 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <DrMock/test/Test.h>
-#include <DrMock/mock/detail/IsTuplePackEqual.h>
+#include <DrMock/Test.h>
+#include <DrMock/mock/detail/InvokeOnPack.h>
+#include <DrMock/mock/Equal.h>
+#include <DrMock/mock/ICompare.h>
 
-using namespace drmock::detail;
+using namespace drmock;
 
 DRTEST_TEST(testStandard)
 {
-  IsTuplePackEqual<std::tuple<int, std::string>> is_tuple_pack_equal{};
-  DRTEST_ASSERT(is_tuple_pack_equal(
-      std::make_tuple<int, std::string>(12, "12"),
-      12, std::string{"12"}
-    ));
-  DRTEST_ASSERT(not is_tuple_pack_equal(
-      std::make_tuple<int, std::string>(12, "12"),
-      13, std::string{"12"}
-    ));
-  DRTEST_ASSERT(not is_tuple_pack_equal(
-      std::make_tuple<int, std::string>(12, "12"),
-      12, std::string{"13"}
-    ));
+  detail::InvokeOnPack<std::tuple<int, std::string>> invoke_on_pack{};
+  auto equal1 = std::make_shared<Equal<int>>(12);
+  auto equal2 = std::make_shared<Equal<std::string>>("12");
+  auto t = std::make_tuple(equal1, equal2);
+  DRTEST_ASSERT(invoke_on_pack(t, 12, std::string{"12"}));
+  DRTEST_ASSERT(not invoke_on_pack(t, 13, std::string{"12"}));
+  DRTEST_ASSERT(not invoke_on_pack(t, 12, std::string{"13"}));
 }
 
 DRTEST_TEST(testNonPolymorphicPointer)
 {
-  IsTuplePackEqual<std::tuple<
+  detail::InvokeOnPack<std::tuple<
       std::shared_ptr<int>,
       std::unique_ptr<int>,
       int*
-    >> is_tuple_pack_equal{};
-  DRTEST_ASSERT(is_tuple_pack_equal(
-      std::make_tuple(
-          std::make_shared<int>(12),
-          std::make_unique<int>(13),
-          new int{14}
-        ),
+    >> invoke_on_pack{};
+  auto t = std::make_tuple(
+          std::make_shared<Equal<std::shared_ptr<int>>>(std::make_shared<int>(12)),
+          std::make_shared<Equal<std::unique_ptr<int>>>(std::make_unique<int>(13)),
+          std::make_shared<Equal<int*>>(new int{14})
+        );
+  DRTEST_ASSERT(invoke_on_pack(
+      t,
       std::make_shared<int>(12),
       std::make_unique<int>(13),
       new int{14}
     ));
-  DRTEST_ASSERT(not is_tuple_pack_equal(
-      std::make_tuple(
-          std::make_shared<int>(12),
-          std::make_unique<int>(13),
-          new int{14}
-        ),
+  DRTEST_ASSERT(not invoke_on_pack(
+      t,
       std::make_shared<int>(12),
       std::make_unique<int>(14),
       new int{13}
@@ -91,20 +84,16 @@ private:
 DRTEST_TEST(testPolymorphicPointer)
 {
   {
-    IsTuplePackEqual<
+    detail::InvokeOnPack<
         std::tuple<
             std::shared_ptr<A>,
             std::unique_ptr<A>
-          >,
-        std::tuple<
-            std::shared_ptr<A>,
-            std::unique_ptr<B>
           >
-      > is_tuple_pack_equal{};
-    DRTEST_ASSERT(is_tuple_pack_equal(
+      > invoke_on_pack{};
+    DRTEST_ASSERT(invoke_on_pack(
         std::make_tuple(
-            std::make_shared<A>(12),
-            std::unique_ptr<A>(new B{1, 2})
+            std::make_shared<Equal<std::shared_ptr<A>>>(std::make_shared<A>(12)),
+            std::make_shared<Equal<std::unique_ptr<A>, std::unique_ptr<B>>>(std::unique_ptr<B>(new B{1, 2}))
           ),
         std::make_shared<A>(12),
         std::unique_ptr<A>(new B{2, 2})
@@ -112,20 +101,16 @@ DRTEST_TEST(testPolymorphicPointer)
   }
 
   {
-    IsTuplePackEqual<
+    detail::InvokeOnPack<
         std::tuple<
             std::shared_ptr<A>,
             std::unique_ptr<A>
-          >,
-        std::tuple<
-            std::shared_ptr<B>,
-            std::unique_ptr<A>
           >
-      > is_tuple_pack_equal{};
-    DRTEST_ASSERT(is_tuple_pack_equal(
+      > invoke_on_pack{};
+    DRTEST_ASSERT(invoke_on_pack(
         std::make_tuple(
-            std::shared_ptr<A>(new B{1, 2}),
-            std::make_unique<A>(12)
+            std::make_shared<Equal<std::shared_ptr<A>, std::shared_ptr<B>>>(std::shared_ptr<B>(new B{1, 2})),
+            std::make_shared<Equal<std::unique_ptr<A>>>(std::make_unique<A>(12))
           ),
         std::shared_ptr<A>(new B{2, 2}),
         std::make_unique<A>(12)
@@ -135,16 +120,22 @@ DRTEST_TEST(testPolymorphicPointer)
 
 DRTEST_TEST(testEmptyTuple)
 {
-  IsTuplePackEqual<std::tuple<>> is_tuple_pack_equal{};
-  DRTEST_ASSERT(is_tuple_pack_equal(std::tuple<>{}));
+  detail::InvokeOnPack<std::tuple<>> invoke_on_pack{};
+  DRTEST_ASSERT(invoke_on_pack(std::tuple<>{}));
 }
 
 DRTEST_TEST(derivedForBase)
 {
-  IsTuplePackEqual<std::tuple<std::shared_ptr<A>>> is_tuple_pack_equal{};
+  detail::InvokeOnPack<std::tuple<std::shared_ptr<A>>> invoke_on_pack{};
   auto p1 = std::make_shared<B>(1, 2);
   auto p2 = std::make_shared<B>(3, 4);
   auto p1_2 = std::make_shared<B>(1, 2);
-  DRTEST_ASSERT(not is_tuple_pack_equal(std::make_tuple<std::shared_ptr<A>>(p1), p2));
-  DRTEST_ASSERT(is_tuple_pack_equal(std::make_tuple<std::shared_ptr<A>>(p1), p1_2));
+  DRTEST_ASSERT(not invoke_on_pack(
+      std::make_tuple(std::make_shared<Equal<std::shared_ptr<A>>>(p1)),
+      p2
+    ));
+  DRTEST_ASSERT(invoke_on_pack(
+      std::make_tuple(std::make_shared<Equal<std::shared_ptr<A>>>(p1)),
+      p1_2
+    ));
 }

@@ -24,7 +24,8 @@
 #include <utility>
 #include <variant>
 
-#include <DrMock/mock/detail/IIsTuplePackEqual.h>
+#include <DrMock/mock/detail/InvokeOnPack.h>
+#include <DrMock/mock/detail/IWrapInSharedEqual.h>
 #include <DrMock/mock/AbstractSignal.h>
 
 namespace drmock {
@@ -63,14 +64,18 @@ public:
                    >;
 
   Behavior();
-  Behavior(std::shared_ptr<detail::IIsTuplePackEqual<Args...>>);
+  Behavior(std::shared_ptr<detail::IWrapInSharedEqual<Args...>>);
 
-  // Reset the expected arguments.
+  // Expect any argument.
   template<typename T = std::tuple<Args...>>
   std::enable_if_t<(std::tuple_size_v<T> > 0), Behavior&> expects();
 
   // Set the expected arguments, return value, emit or thrown exception.
-  Behavior& expects(Args...);
+  // Note: Non-template overload is always prefered according to the C++
+  // spec.
+
+  Behavior& expects(detail::expect_t<Args>...);
+  template<typename... Ts> Behavior& expects(detail::expect_t<Args>...);
   template<typename T> Behavior& returns(T&&);
   template<typename E> Behavior& throws(E&&);
   template<typename... SigArgs> Behavior& emits(
@@ -90,7 +95,6 @@ public:
 
   // Setters for is_tuple_pack_equal_.
   template<typename... Deriveds> Behavior& polymorphic();
-  void setIsEqual(std::shared_ptr<detail::IIsTuplePackEqual<Args...>>);
 
   // Check if this is persistent (i.e. still has productions left or
   // persists).
@@ -107,14 +111,15 @@ public:
   std::variant<Result, std::exception_ptr> produce();
 
 private:
-  std::optional<std::tuple<Args...>> expect_{};
+  std::optional<std::tuple<std::shared_ptr<ICompare<Args>>...>> expect_{};
   Result result_{};
   std::exception_ptr exception_{};
   unsigned int times_min_ = 1;
   unsigned int times_max_ = 1;
   unsigned int num_calls_ = 0;  // Number of productions made.
   bool persists_ = false;
-  std::shared_ptr<detail::IIsTuplePackEqual<Args...>> is_tuple_pack_equal_{};
+  std::shared_ptr<detail::IWrapInSharedEqual<Args...>> wrap_in_shared_equal_{};
+  detail::InvokeOnPack<std::tuple<Args...>> invoke_on_pack_{};
 };
 
 } // namespace

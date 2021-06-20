@@ -16,16 +16,16 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_DRMOCK_TEST_ILOGGER_H
-#define DRMOCK_SRC_DRMOCK_TEST_ILOGGER_H
+#ifndef DRMOCK_SRC_DRMOCK_UTILITY_ILOGGER_H
+#define DRMOCK_SRC_DRMOCK_UTILITY_ILOGGER_H
 
 #include <ostream>
 #include <sstream>
 #include <string>
 
-#include <DrMock/test/Singleton.h>
+#include <DrMock/utility/Singleton.h>
 
-namespace drtest { namespace detail {
+namespace drutility {
 
 class ILogger
 {
@@ -40,12 +40,12 @@ public:
     ) = 0;
 };
 
-}} // namespace drtest::detail
+} // namespace drutility
 
-#define DRTEST_LOG(category, msg) \
+#define DRUTILITY_LOG(category, msg) \
 do { \
   try { \
-    drtest::detail::Singleton<drtest::detail::ILogger>::get()->logMessage( \
+    drutility::Singleton<drutility::ILogger>::get()->logMessage( \
         true, \
         category, \
         __FUNCTION__, \
@@ -56,9 +56,9 @@ do { \
    catch(...) \
    {} \
 } while (false)
-#define DRTEST_LOG_DEBUG(msg) DRTEST_LOG("DEBUG", msg)
-#define DRTEST_LOG_INFO(msg) DRTEST_LOG("INFO", msg)
-#define DRTEST_LOG_WARN(msg) DRTEST_LOG("WARN", msg)
-#define DRTEST_LOG_CRIT(msg) DRTEST_LOG("CRIT", msg)
+#define DRUTILITY_LOG_DEBUG(msg) DRUTILITY_LOG("DEBUG", msg)
+#define DRUTILITY_LOG_INFO(msg) DRUTILITY_LOG("INFO", msg)
+#define DRUTILITY_LOG_WARN(msg) DRUTILITY_LOG("WARN", msg)
+#define DRUTILITY_LOG_CRIT(msg) DRUTILITY_LOG("CRIT", msg)
 
-#endif /* DRMOCK_SRC_DRMOCK_TEST_ILOGGER_H */
+#endif /* DRMOCK_SRC_DRMOCK_UTILITY_ILOGGER_H */

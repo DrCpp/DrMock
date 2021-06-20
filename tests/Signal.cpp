@@ -16,78 +16,55 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <QSignalSpy>
-
 #define DRTEST_USE_QT
 #define DRMOCK_USE_QT  // This is usually set by the mocker.
-#include <DrMock/test/Test.h>
+#include <DrMock/Test.h>
 #include <DrMock/mock/Signal.h>
 #include "Dummy.h"
 
-// FIXME Check that the correct arguments are forwarded to the signal in
-// the tests below.
-
 using namespace drmock;
 
-template<typename ReturnType>
-using Result = std::pair<
-    std::shared_ptr<ReturnType>,
-    std::shared_ptr<AbstractSignal<Dummy>>
-  >;
-
-DRTEST_TEST(invokeNoParameters)
+DRTEST_TEST(invokeNoParametersDirectConnection)
 {
-  Dummy dummy{};
+  Dummy dummy{Qt::DirectConnection};
   Signal<Dummy> signal{&Dummy::no_params};
-  QSignalSpy spy{&dummy, &Dummy::no_params};
-  DRTEST_ASSERT_EQ(spy.size(), 0);
-
   signal.invoke(&dummy);
-  if (spy.size() == 0)
-  {
-    spy.wait(100);
-  }
-  DRTEST_ASSERT_EQ(spy.size(), 1);
+  DRTEST_ASSERT_EQ(dummy.no_params_count(), 1);
 }
 
-DRTEST_TEST(invokeWithParameters)
+DRTEST_TEST(invokeNoParametersQueuedConnection)
 {
-  Dummy dummy{};
-  float f = 1.23f;
-  std::vector<int> v = {1, 2, 3};
-  Signal<Dummy, int, float&, const std::vector<int>&> signal{
+  Dummy dummy{Qt::QueuedConnection};
+  Signal<Dummy> signal{&Dummy::no_params};
+  signal.invoke(&dummy);
+  QEventLoop event_loop{};
+  event_loop.processEvents();
+  DRTEST_ASSERT_EQ(dummy.no_params_count(), 1);
+}
+
+DRTEST_TEST(invokeWithParametersQueuedConnection)
+{
+  Dummy dummy{Qt::QueuedConnection};
+  auto num = 3;
+  QString str{"foo"};
+  Signal<Dummy, int, const QString&> signal{
       &Dummy::multiple_params,
-      123, f, v
+      num, str
     };
-  QSignalSpy spy{&dummy, &Dummy::multiple_params};
-  DRTEST_ASSERT_EQ(spy.size(), 0);
-
   signal.invoke(&dummy);
-  if (spy.size() == 1)
-  {
-    spy.wait(100);
-  }
-  DRTEST_ASSERT_EQ(spy.size(), 1);
+  QEventLoop event_loop{};
+  event_loop.processEvents();
+  auto [num2, str2] = dummy.multiple_params_value();
+  DRTEST_ASSERT_EQ(num, num2);
+  DRTEST_ASSERT_EQ(str, str2);
 }
 
-DRTEST_TEST(invokeWithReference)
+DRTEST_TEST(invokeWithReferenceDirectConnection)
 {
-  Dummy dummy{};
-  std::string foo = "bar";
-  Signal<Dummy, std::string&> signal{&Dummy::pass_by_ref, foo};
-  QSignalSpy spy{&dummy, &Dummy::pass_by_ref};
-  DRTEST_ASSERT_EQ(spy.size(), 0);
-
-  QObject::connect(
-      &dummy, &Dummy::pass_by_ref,
-      &dummy, &Dummy::bazzify
-    );
-
+  Dummy dummy{Qt::DirectConnection};
+  QString foo = "bar";
+  Signal<Dummy, QString&> signal{&Dummy::pass_by_ref, foo};
   signal.invoke(&dummy);
-  if (spy.size() == 1)
-  {
-    spy.wait(100);
-  }
-  DRTEST_ASSERT_EQ(spy.size(), 1);
-  DRTEST_ASSERT_EQ(foo, "baz");
+  auto ptr = dummy.pass_by_ref_value();
+  DRTEST_ASSERT_EQ(ptr, &foo);
 }

@@ -236,6 +236,17 @@ adds three columns for integer entries (`"lhs"`, `"rhs"` and
 _unique_ name for each column. The name must satisfy the same rules as
 all C++ variable names.
 
+As of version `0.5`, you can also use the utility function `addColumns`
+to get the same result:
+
+```cpp
+DRTEST_DATA(someTestWithTable)
+{
+  drtest::addColumns<int, int, int, std::string>("lhs", "rhs", "expected", "randomStuff");
+
+  // ...
+}
+
 After adding the columns, the `drtest::addRow` function may then be used
 to populate the table:
 ```cpp
@@ -376,6 +387,149 @@ Change the test table so that the test check if `2 + 2 == 4` instead of
 Total Test time (real) =   0.01 sec
 ```
 
+## Tags
+
+As of version `0.5`, **DrMock** offers `xfail` and `skip` tags for
+tests. A row can be tagged by appending the tag to the `addRow` call, or
+by calling `tagRow` seperately:
+
+```cpp
+DRTEST_DATA(someTestWithTable)
+{
+  // ...
+
+  drtest::addRow(
+      "This test will be skipped",
+      2,
+      2,
+      4,
+      std::string{"..."},
+      drtest::tags::skip
+    );
+  drtest::addRow(
+      "This test is expected to fail",
+      -2,
+      -2,
+      4,
+      std::string{"0>0"}
+    );
+  drtest::tagRow("This test is expected to fail", drtest::tags::xfail);
+}
+```
+
+Add the above to the file and run `ctest` with `--verbose`. You will see
+the following result:
+
+```shell
+test 1
+    Start 1: basicTest
+
+1: Test command: /Users/malte/drmock/samples/basic/build/basicTest
+1: Test timeout computed to be: 10000000
+1: TEST   someTest
+1: PASS   someTest
+1: TEST   anotherTest
+1: PASS   anotherTest
+1: TEST   exceptionTest
+1: PASS   exceptionTest
+1: TEST   someTestWithTable, Small numbers
+1: PASS   someTestWithTable, Small numbers
+1: TEST   someTestWithTable, Large numbers
+1: PASS   someTestWithTable, Large numbers
+1: TEST   someTestWithTable, This test fails
+1: PASS   someTestWithTable, This test fails
+1: TEST   someTestWithTable, This test will be skipped
+1: SKIP   someTestWithTable, This test will be skipped
+1: TEST   someTestWithTable, This test is expected to fail
+1: XFAIL  someTestWithTable, This test is expected to fail (134): 
+1:     (lhs + rhs) 
+1:       -4
+1:     (expected ==)
+1:       4
+1: 
+1: ****************
+1: ALL PASS
+1/1 Test #1: basicTest ........................   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.01 sec
+```
+
+A test without a corresponding `DRTEST_DATA(...)` can also be skipped or
+xfailed by calling `drtest::skip()` or `drtest::xfail()`. Note that the
+placement of the call is important. Place `drtest::xfail` somewhere
+before the call or assertion that is expected to fail and `drtest::skip`
+at the point at which you want to skip to the next test:
+
+```cpp
+DRTEST_TEST(...)
+{
+  /* statements */;  // These will be executed and may cause failure.
+  drtest::skip();
+  // This will not be executed.
+}
+```
+
+Note that `xfail` currently exists the test after the first failure:
+
+```cpp
+DRTEST_TEST(...)
+{
+  drtest::xfail();
+  DRTEST_ASSERT_EQ(2 + 2, 5);
+  /* Do something... */;  // Will not be executed!
+}
+```
+
+## Floating point comparison
+
+As of version `0.5`, **DrMock** offers a macro for floating point
+comparison, whose "signature" is the following:
+
+```cpp
+template<typename T>
+DRTEST_ASSERT_ALMOST_EQUAL(T actual, T expected)
+```
+
+We expect `T` to be `float`, `double` or `long double`. The macro
+performs the following check:
+
+```
+|actual - expected| <= abs_tol + rel_tol*|expected|
+```
+
+The values `abs_tol` and `rel_tol` are called _absolute_ and _relative
+tolerance_, resp. They are, by default, equal to `1e-06`, but may be set
+for an entire test file by `#define`-ing the macros `DRTEST_ABS_TOL` and
+`DRTEST_REL_TOL` resp., _before including_ the master header `Test.h`:
+
+```cpp
+#define DRTEST_ABS_TOL 1e-03
+#define DRTEST_REL_TOL 0
+#include "Test.h"
+```
+
+They may also be set for individual tests by using `drtest::abs_tol` and
+`drtest::rel_tol` functions _inside the test_ (thus overriding the default
+or the definition using the `#define` directive). For example:
+
+```cpp
+DRTEST_TEST(almost_equal_custom)
+{
+  DRTEST_ASSERT_ALMOST_EQUAL(0.000001f, 0.0f);  // Uses default/values set by #define.
+
+  drtest::abs_tol(1.0);
+  DRTEST_ASSERT_ALMOST_EQUAL(2.0 + 2.0, 5.0);
+
+  // Note that this check is not a symmetric function in
+  // `(actual, expected)`, unless `rel_tol` is zero.
+  drtest::rel_tol(0.5);
+  DRTEST_ASSERT_ALMOST_EQUAL(50.0, 100.0);
+  DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT_ALMOST_EQUAL(100.0, 50.0));
+}
+```
+
 ## Caveats
 
 ### Commas in macro arguments
@@ -467,3 +621,43 @@ Maybe `symbols.cpp` contains symbols required by a header included in
 `test.cpp`.
 Another common use-case is that of including `.qrc` files (Qt resource
 files) to the executable if they are required by the test.
+
+### Test names
+
+Any `snake_case` or `camelCase` name may be used for a test. Avoid
+any name containing `DRTEST` or `DRMOCK`, or `ALL_CAPS` in general.
+
+By default, test functions are stored in the namespace `test::`. If this
+is inconvenient for you, you can redefine the namespace by setting the
+macro `DRTEST_NAMESPACE` _before including_ `Test.h`:
+
+```cpp
+#define DRTEST_NAMESPACE mytest
+#include <DrMock/Test.h>
+```
+
+### Row names
+
+Any `snake_case` or `camelCase` name may be used as row name, with the
+exception of the emtpy string. Avoid any name containing `DRTEST` or
+`DRMOCK`, or `ALL_CAPS` in general.
+
+Furthermore, duplicate row names are not allowed.
+
+### Implicit conversions of number types
+
+Beware of implicit conversions when using the macros! For example, use
+`DRTEST_ASSERT_ALMOST_EQUAL(0.9, 1.0)` instead of
+`DRTEST_ASSERT_ALMOST_EQUAL(0.9, 1)`. Otherwise, you might end up with an error similar to this one:
+
+```shell
+/Users/malte/drmock/tests/Test.cpp:347:3: error: no matching function for call to 'almostEqual'
+  DRTEST_ASSERT_ALMOST_EQUAL(0.9, 1);
+  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/malte/drmock/src/test/TestMacros.h:109:11: note: expanded from macro 'DRTEST_ASSERT_ALMOST_EQUAL'
+  if (not drtest::almostEqual(actual, expected)) \
+          ^~~~~~~~~~~~~~~~~~~
+/Users/malte/drmock/src/test/Interface.tpp:46:1: note: candidate template ignored: deduced conflicting types for parameter 'T' ('double' vs. 'int')
+almostEqual(T actual, T expected)
+^
+```

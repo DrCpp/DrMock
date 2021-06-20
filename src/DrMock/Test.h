@@ -16,4 +16,7 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <DrMock/test/Test.h>
+#include <DrMock/test/Interface.h>
+#include <DrMock/test/TestMacros.h>
+#include <DrMock/test/TestMain.h>
+#include <DrMock/test/Logger.h>

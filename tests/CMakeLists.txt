@@ -29,17 +29,18 @@ file(TO_CMAKE_PATH ${CMAKE_SOURCE_DIR}/python/DrMockGenerator pathToMocker)
 # Test Core.
 #######################################
 
-drmock_test(
-    TESTS
+drmock_test(TESTS
     Behavior.cpp
-    IsEqual.cpp
-    Test.cpp
-    Method.cpp
-    IsTuplePackEqual.cpp
-    MethodCollection.cpp
     BehaviorQueue.cpp
+    InvokeOnPack.cpp
+    IsEqual.cpp
+    Method.cpp
+    MethodCollection.cpp
     StateBehavior.cpp
     StateObject.cpp
+    Test.cpp
+    TypeTraits.cpp
+    WrapInSharedEqual.cpp
 )
 
 # Signal testing.

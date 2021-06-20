@@ -1,4 +1,4 @@
-/* Copyright 2019 Ole Kliemann, Malte Kliemann
+/* Copyright 2021 Ole Kliemann, Malte Kliemann
  *
  * This file is part of DrMock.
  *
@@ -16,11 +16,5 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_DRMOCK_TEST_TEST_H
-#define DRMOCK_SRC_DRMOCK_TEST_TEST_H
-
-#include <DrMock/test/Interface.h>
-#include <DrMock/test/TestMacros.h>
-#include <DrMock/test/TestMain.h>
-
-#endif /* DRMOCK_SRC_DRMOCK_TEST_TEST_H */
+#include <DrMock/utility/Logger.h>
+#include <DrMock/utility/Singleton.tpp>

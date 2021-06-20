@@ -19,7 +19,7 @@
 #include <string>
 #include <memory>
 
-#include <DrMock/test/Test.h>
+#include <DrMock/Test.h>
 #include <DrMock/mock/BehaviorQueue.h>
 
 using namespace drmock;

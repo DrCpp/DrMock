@@ -17,8 +17,7 @@ You should have received a copy of the GNU General Public License
 along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
-
-# DrMock 1.0.0
+# DrMock 0.6.0
 
 Released 2021/xx/xx
 
@@ -45,11 +44,69 @@ Released 2021/xx/xx
 * Remove Qt includes from `Method.h`
 
 
+# DrMock 0.5.0
+
+Released 2021/06/20
+
+### Added/Changed
+
+* Add `xfail` and `skil` tags to `drtest`
+
+* Add floating point comparison macro `DRTEST_ASSERT_ALMOST_EQUAL` to
+  `drtest`
+
+* Add complex behaviors to `drmock`
+
+* Add convenience function `addColumns`
+
+* Add convenience functions `template<typename... Deriveds> expect`
+  and `template<typename... Deriveds>`
+
+* Change polymorphism behavior (`polymorphic` only applies to `expect`
+  and `transition` calls following `polymorphic`)
+
+* Remove `setIsEqual` from `AbstractBehavior`
+
+### Fixed
+
+* Fix issue #16
+
+* Fix issue #15
+
+
+# DrMock 0.4.2
+
+Released 2021/05/24
+
+### Fixed
+
+* Fix issue #6
+
+* Fix issue #10
+
+  - In particular, remove forwarding ctor from `Signal` class
+
+
+# DrMock 0.4.1
+
+Released 2021/05/16 (re-released 2021/05/21)
+
+### Added/Changed
+
+* Create new utility module
+
+### Fixed
+
+* Fix issue #5
+
+* Fix issue #7
+
+
 # DrMock 0.4.0
 
 Released 2020/08/16
 
-### Added/Changed:
+### Added/Changed
 
 * Add `DRTEST_ASSERT_DEATH` macro for death testing
 
@@ -58,7 +115,7 @@ Released 2020/08/16
 
 Released 2020/07/05
 
-### Added/Changed:
+### Added/Changed
 
 * Add `emits` method that allows `Method` objects to emit signals when
   called (for details, see the tutorials). Implementing this feature
@@ -92,7 +149,7 @@ Released 2020/07/05
 
 Released 2020/05/15
 
-### Added/Changed:
+### Added/Changed
 
 * Autodetect number of threads for compiling in Makefile
 

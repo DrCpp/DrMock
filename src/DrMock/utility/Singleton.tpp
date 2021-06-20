@@ -16,20 +16,40 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef MOCK_DETAIL_IISTUPLEPACKEQUAL_H
-#define MOCK_DETAIL_IISTUPLEPACKEQUAL_H
+#include "Singleton.h"
 
-namespace drmock { namespace detail {
+namespace drutility {
 
-template<typename... Ts>
-struct IIsTuplePackEqual
+template<typename T>
+std::shared_ptr<T>
+Singleton<T>::get()
 {
-  virtual bool operator() (
-      const std::tuple<Ts...>&,
-      const Ts&...
-    ) = 0;
-};
+  std::lock_guard lck{Singleton<T>::mtx_()};
+  return Singleton<T>::p_();
+}
 
-}} // namespaces
+template<typename T>
+void
+Singleton<T>::set(std::shared_ptr<T> p)
+{
+  std::lock_guard lck{Singleton<T>::mtx_()};
+  Singleton<T>::p_() = std::move(p);
+}
 
-#endif /* MOCK_DETAIL_IISTUPLEPACKEQUAL_H */
+template<typename T>
+std::mutex&
+Singleton<T>::mtx_()
+{
+  static std::mutex mtx{};
+  return mtx;
+}
+
+template<typename T>
+std::shared_ptr<T>&
+Singleton<T>::p_()
+{
+  static std::shared_ptr<T> p{};
+  return p;
+}
+
+} // namespace drutility

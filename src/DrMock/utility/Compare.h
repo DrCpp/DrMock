@@ -1,4 +1,4 @@
-/* Copyright 2019 Ole Kliemann, Malte Kliemann
+/* Copyright 2021 Ole Kliemann, Malte Kliemann
  *
  * This file is part of DrMock.
  *
@@ -16,40 +16,25 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "Singleton.h"
+#ifndef DRMOCK_SRC_DRMOCK_UTILITY_COMPARE_H
+#define DRMOCK_SRC_DRMOCK_UTILITY_COMPARE_H
 
-namespace drtest { namespace detail {
+// Set global default for absolute and relative tolerance. All tolerance
+// specified in double.
+#ifndef DRTEST_ABS_TOL
+#define DRTEST_ABS_TOL 1e-06  // double
+#endif
+#ifndef DRTEST_REL_TOL
+#define DRTEST_REL_TOL 1e-06  // double
+#endif
 
-template<typename T>
-std::shared_ptr<T>
-Singleton<T>::get()
-{
-  std::lock_guard lck{Singleton<T>::mtx_()};
-  return Singleton<T>::p_();
-}
+namespace drutility {
 
-template<typename T>
-void
-Singleton<T>::set(std::shared_ptr<T> p)
-{
-  std::lock_guard lck{Singleton<T>::mtx_()};
-  Singleton<T>::p_() = std::move(p);
-}
+template<typename T> bool almost_equal(T actual, T expected, T abs_tol, T rel_tol);
+template<typename T> bool almost_equal(T actual, T expected);
 
-template<typename T>
-std::mutex&
-Singleton<T>::mtx_()
-{
-  static std::mutex mtx{};
-  return mtx;
-}
+} // namespace drutility
 
-template<typename T>
-std::shared_ptr<T>&
-Singleton<T>::p_()
-{
-  static std::shared_ptr<T> p{};
-  return p;
-}
+#include "Compare.tpp"
 
-}} // namespace drtest::detail
+#endif /* DRMOCK_SRC_DRMOCK_UTILITY_COMPARE_H */

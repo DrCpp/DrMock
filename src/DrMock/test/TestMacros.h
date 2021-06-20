@@ -24,22 +24,28 @@
 #include <DrMock/test/Global.h>
 #include <DrMock/test/TestFailure.h>
 
+#ifndef DRTEST_NAMESPACE
+#define DRTEST_NAMESPACE test
+#endif
+
 #define DRTEST_FETCH(Type, name) \
-Type name{drtest::detail::Singleton<drtest::detail::Global>::get()->fetchData<Type>(#name)}
+Type name{drutility::Singleton<drtest::detail::Global>::get()->fetchData<Type>(#name)}
 
 #define DRTEST_DATA(name) \
 void name##Data(); \
 namespace drtest { namespace detail { \
-FunctionInvoker name##_data_pusher{[] () { Singleton<Global>::get()->addDataFunc(#name, &name##Data); }}; \
+FunctionInvoker name##_data_pusher{[] () { drutility::Singleton<Global>::get()->addDataFunc(#name, &name##Data); }}; \
 }} \
 void name##Data()
 
 #define DRTEST_TEST(name) \
+namespace DRTEST_NAMESPACE { \
 void name(); \
+} \
 namespace drtest { namespace detail { \
-FunctionInvoker name##_test_pusher{[] () { Singleton<Global>::get()->addTestFunc(#name, &name); }}; \
+FunctionInvoker name##_test_pusher{[] () { drutility::Singleton<Global>::get()->addTestFunc(#name, &DRTEST_NAMESPACE:: name); }}; \
 }} \
-void name()
+void DRTEST_NAMESPACE:: name()
 
 #define DRTEST_ASSERT(p) \
 do { if (not (p)) throw drtest::detail::TestFailure{__LINE__, #p}; } while (false)
@@ -95,6 +101,14 @@ do { \
   if (not m.verify()) \
   { \
     throw drtest::detail::TestFailure{__LINE__, m.makeFormattedErrorString()}; \
+  } \
+} while (false)
+
+#define DRTEST_ASSERT_ALMOST_EQUAL(actual, expected) \
+do { \
+  if (not drtest::almostEqual(actual, expected)) \
+  { \
+    throw drtest::detail::TestFailure{__LINE__, "~=", #actual, #expected, actual, expected}; \
   } \
 } while (false)
 

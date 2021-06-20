@@ -1,4 +1,4 @@
-/* Copyright 2019 Ole Kliemann, Malte Kliemann
+/* Copyright 2021 Ole Kliemann, Malte Kliemann
  *
  * This file is part of DrMock.
  *
@@ -16,26 +16,25 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_DRMOCK_TEST_SINGLETON_H
-#define DRMOCK_SRC_DRMOCK_TEST_SINGLETON_H
+#ifndef DRMOCK_SRC_TEST_SKIP_TEST_H
+#define DRMOCK_SRC_TEST_SKIP_TEST_H
 
-#include <memory>
-#include <mutex>
+#include <stdexcept>
+#include <string>
 
-namespace drtest { namespace detail {
+namespace drtest {
 
-template<typename T>
-class Singleton
+class SkipTest : public std::exception
 {
 public:
-  static std::shared_ptr<T> get();
-  static void set(std::shared_ptr<T>);
+  SkipTest(std::string expr);
+
+  const char* what() const noexcept override;
 
 private:
-  static std::mutex& mtx_();
-  static std::shared_ptr<T>& p_();
+  std::string what_{};
 };
 
-}} // namespace drtest::detail
+} // namespace drtest
 
-#endif /* DRMOCK_SRC_DRMOCK_TEST_SINGLETON_H */
+#endif /* DRMOCK_SRC_TEST_SKIP_TEST_H */

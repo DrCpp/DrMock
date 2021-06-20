@@ -16,14 +16,16 @@
 # along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 add_library(${PROJECT_NAME} SHARED
-    drmock/mock/MethodCollection.cpp
-    drmock/mock/StateObject.cpp
-    drmock/test/Logger.cpp
-    drmock/test/ILogger.cpp
-    drmock/test/TestFailure.cpp
-    drmock/test/Global.cpp
-    drmock/test/TestObject.cpp
-    drmock/test/FunctionInvoker.cpp
+    DrMock/mock/MethodCollection.cpp
+    DrMock/mock/StateObject.cpp
+    DrMock/test/FunctionInvoker.cpp
+    DrMock/test/Global.cpp
+    DrMock/test/Interface.cpp
+    DrMock/test/SkipTest.cpp
+    DrMock/test/TestFailure.cpp
+    DrMock/test/TestObject.cpp
+    DrMock/utility/Logger.cpp
+    DrMock/utility/ILogger.cpp
 )
 
 # This alias is required for the internal use of the `DrMock_module`

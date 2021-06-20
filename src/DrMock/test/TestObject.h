@@ -23,8 +23,12 @@
 #include <functional>
 #include <string>
 #include <typeindex>
+#include <tuple>
 #include <unordered_map>
 #include <vector>
+
+#include <DrMock/utility/Compare.h>
+#include <DrMock/test/Tags.h>
 
 namespace drtest { namespace detail {
 
@@ -37,18 +41,30 @@ public:
   void setTestFunc(std::function<void()>);
   void setDataFunc(std::function<void()>);
   template<typename T> void addColumn(std::string);
-  template<typename T, typename... Ts> void addRow(
-      const std::string& row,
-      std::size_t i,
-      T&& t, Ts&&... ts
-    );
+  template<typename... Ts> void addRow(const std::string& row, Ts&&... ts);
   template<typename T> T fetchData(const std::string& column) const;
   void prepareTestData();
   void runTest(bool verbose_logging = true);
   std::size_t num_failures() const;
+  template<typename T> bool almostEqual(T actual, T expected) const;
+  void abs_tol(double value);
+  void rel_tol(double value);
+  void xfail();
+  void tagRow(const std::string& row, tags tag);
 
 private:
   void runOneTest(const std::string& row, bool verbose_logging);
+
+  // Add the elements of the tuple `t` specified by `Is...` to `row`.
+  // Shall only be called from `addRow`.
+  template<typename Tuple, std::size_t... Is> void addRowImpl(
+      const std::string& row,
+      Tuple t,
+      const std::index_sequence<Is...>&
+    );
+  // Add `t` to the entry (`row`, `col`) of the data matrix. Shall only
+  // be called from `addRow`.
+  template<typename T> void addRowImpl(const std::string& row, std::size_t col, T&& t);
 
   std::string name_{};
   std::vector<std::string> data_columns_{};
@@ -60,10 +76,15 @@ private:
           std::string, // column
           std::any
         >> data_sets_{};
+  std::unordered_map<std::string, tags> tags_{};  // row -> tags
   std::string current_row_{};
   std::function<void()> data_func_{};
   std::function<void()> test_func_{};
   std::vector<std::string> failed_rows_{};
+
+  double abs_tol_ = DRTEST_ABS_TOL;
+  double rel_tol_ = DRTEST_REL_TOL;
+  bool xfail_{false};
 };
 
 }} // namespaces

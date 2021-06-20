@@ -29,7 +29,7 @@ template<typename... Ts>
 void
 Global::addRow(const std::string& row, Ts&&... ts)
 {
-  tests_[current_test_].addRow(row, 0, std::forward<Ts>(ts)...);
+  tests_[current_test_].addRow(row, std::forward<Ts>(ts)...);
 }
 
 template<typename T>
@@ -37,6 +37,13 @@ T
 Global::fetchData(const std::string& column)
 {
   return tests_[current_test_].fetchData<T>(column);
+}
+
+template<typename T>
+bool
+Global::almostEqual(T actual, T expected)
+{
+  return tests_[current_test_].almostEqual(actual, expected);
 }
 
 }} // namespaces

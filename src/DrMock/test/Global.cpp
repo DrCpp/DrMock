@@ -20,12 +20,12 @@
 
 #include <sstream>
 
-#include <DrMock/test/ILogger.h>
-#include <DrMock/test/Singleton.tpp>
+#include <DrMock/utility/ILogger.h>
+#include <DrMock/utility/Singleton.tpp>
+
+template class drutility::Singleton<drtest::detail::Global>;
 
 namespace drtest { namespace detail {
-
-template class Singleton<Global>;
 
 Global::Global()
 :
@@ -130,7 +130,7 @@ Global::runTestsAndLog()
 {
   runTests();
 
-  Singleton<ILogger>::get()->logMessage(
+  drutility::Singleton<drutility::ILogger>::get()->logMessage(
       false,
       "",
       "",
@@ -140,7 +140,7 @@ Global::runTestsAndLog()
   std::size_t failed = num_failures();
   if (failed == 0)
   {
-    Singleton<ILogger>::get()->logMessage(
+    drutility::Singleton<drutility::ILogger>::get()->logMessage(
         false,
         "",
         "",
@@ -150,7 +150,7 @@ Global::runTestsAndLog()
   }
   else
   {
-    Singleton<ILogger>::get()->logMessage(
+    drutility::Singleton<drutility::ILogger>::get()->logMessage(
         false,
         "",
         "",
@@ -158,6 +158,30 @@ Global::runTestsAndLog()
         std::stringstream{} << failed << " FAILED"
      );
   }
+}
+
+void
+Global::abs_tol(double value)
+{
+  tests_[current_test_].abs_tol(value);
+}
+
+void
+Global::rel_tol(double value)
+{
+  tests_[current_test_].rel_tol(value);
+}
+
+void
+Global::xfail()
+{
+  tests_[current_test_].xfail();
+}
+
+void
+Global::tagRow(const std::string& row, tags tag)
+{
+  tests_[current_test_].tagRow(row, tag);
 }
 
 }} // namespaces

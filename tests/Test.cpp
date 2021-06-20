@@ -18,7 +18,7 @@
 
 #include <iostream>
 
-#include <DrMock/test/Test.h>
+#include <DrMock/Test.h>
 
 DRTEST_TEST(initTestCase)
 {
@@ -86,9 +86,7 @@ DRTEST_TEST(assert_operator)
 
 DRTEST_DATA(test_with_data_1)
 {
-  drtest::addColumn<std::string>("col1");
-  drtest::addColumn<int>("col2");
-  drtest::addColumn<double>("col3");
+  drtest::addColumns<std::string, int, double>("col1", "col2", "col3");
 
   drtest::addRow(
       "row 1",
@@ -210,7 +208,6 @@ DRTEST_TEST(death_success)
   DRTEST_ASSERT_DEATH(raise(SIGCHLD), SIGCHLD);
   DRTEST_ASSERT_DEATH(raise(SIGABRT), SIGABRT);
   DRTEST_ASSERT_DEATH(volatile int* foo = nullptr; *foo =123, SIGSEGV);
-  DRTEST_ASSERT_DEATH(assert(false), SIGABRT);
 }
 
 DRTEST_TEST(death_failure_no_raise)
@@ -221,4 +218,129 @@ DRTEST_TEST(death_failure_no_raise)
 DRTEST_TEST(death_failure_wrong_raise)
 {
   DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT_DEATH(raise(SIGXFSZ), SIGSEGV));
+}
+
+// Test that a test may be called the same an a drtest interface
+// function; see issue #7 for details.
+DRTEST_TEST(addRow)
+{
+  DRTEST_ASSERT(true);
+}
+
+DRTEST_DATA(almost_equal_default_ok)
+{
+  drtest::addColumn<float>("actual");
+  drtest::addColumn<float>("expected");
+  drtest::addRow("almost zero", 0.000001f, 0.0f);
+  drtest::addRow("small", 0.999999f, 1.0f);
+  drtest::addRow("large", 999'999.0f, 1'000'000.0f);
+}
+
+DRTEST_TEST(almost_equal_default_ok)
+{
+  DRTEST_FETCH(float, actual);
+  DRTEST_FETCH(float, expected);
+  DRTEST_ASSERT_ALMOST_EQUAL(actual, expected);
+}
+
+DRTEST_DATA(almost_equal_default_fail)
+{
+  drtest::addColumn<float>("actual");
+  drtest::addColumn<float>("expected");
+  drtest::addRow("almost zero", 0.0001f, 0.0f);
+  drtest::addRow("small", 0.9999f, 1.0f);
+  drtest::addRow("large", 9'999.0f, 10'000.0f);
+}
+
+DRTEST_TEST(almost_equal_default_fail)
+{
+  DRTEST_FETCH(float, actual);
+  DRTEST_FETCH(float, expected);
+  DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT_ALMOST_EQUAL(actual, expected));
+}
+
+DRTEST_TEST(almost_equal_custom)
+{
+  drtest::abs_tol(1.0);
+  DRTEST_ASSERT_ALMOST_EQUAL(2.0 + 2.0, 5.0);
+
+  drtest::rel_tol(1.0);
+  DRTEST_ASSERT_ALMOST_EQUAL(27, 50);
+
+  drtest::abs_tol(0.0);
+  drtest::rel_tol(0.0);
+  DRTEST_ASSERT_ALMOST_EQUAL(1.0, 1.0);
+
+  drtest::rel_tol(0.5);
+  DRTEST_ASSERT_ALMOST_EQUAL(50.0, 100.0);
+  DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT_ALMOST_EQUAL(100.0, 50.0));
+}
+
+DRTEST_DATA(tags)
+{
+  drtest::addColumn<int>("lhs");
+  drtest::addColumn<int>("rhs");
+  drtest::addColumn<int>("expected");
+
+  drtest::addRow("row 1", 1, 1, 2);
+  drtest::addRow("row 2", 2, 2, 5, drtest::tags::skip);
+  drtest::addRow("row 3", 4, 4, 9, drtest::tags::xfail);
+}
+
+DRTEST_TEST(tags)
+{
+  DRTEST_FETCH(int, lhs);
+  DRTEST_FETCH(int, rhs);
+  DRTEST_FETCH(int, expected);
+  auto sum = lhs + rhs;
+  DRTEST_ASSERT_EQ(sum, expected);  // This will raise if row 2 or 3 are not skipped!
+}
+
+DRTEST_DATA(tagRow)
+{
+  drtest::addColumn<int>("lhs");
+  drtest::addColumn<int>("rhs");
+  drtest::addColumn<int>("expected");
+
+  drtest::addRow("row 1", 1, 1, 2);
+  drtest::addRow("row 2", 2, 2, 5);
+  drtest::addRow("row 3", 4, 4, 9, drtest::tags::skip);
+  drtest::tagRow("row 2", drtest::tags::skip);
+  drtest::tagRow("row 3", drtest::tags::xfail);
+}
+
+DRTEST_TEST(tagRow)
+{
+  DRTEST_FETCH(int, lhs);
+  DRTEST_FETCH(int, rhs);
+  DRTEST_FETCH(int, expected);
+  auto sum = lhs + rhs;
+  DRTEST_ASSERT_EQ(sum, expected);  // This will raise if row 2 or 3 are not skipped!
+}
+
+DRTEST_TEST(skip)
+{
+  drtest::skip();
+  throw std::logic_error{"this should never happen..."};
+}
+
+DRTEST_TEST(xfail)
+{
+  drtest::xfail();
+  DRTEST_ASSERT_EQ(2 + 2, 5);
+}
+
+DRTEST_TEST(rowCollision)
+{
+  drtest::detail::TestObject test{"test"};
+  test.addColumn<int>("col");
+  test.addRow<int>("row", 1);
+  DRTEST_ASSERT_THROW(test.addRow<int>("row", 2), std::logic_error);
+}
+
+DRTEST_TEST(emptyRowName)
+{
+  drtest::detail::TestObject test{"test"};
+  test.addColumn<int>("col");
+  DRTEST_ASSERT_THROW(test.addRow<int>("", 1), std::logic_error);
 }

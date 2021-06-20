@@ -39,7 +39,7 @@ template<typename Parent, typename... Args>
 class Signal final : public AbstractSignal<Parent>
 {
 public:
-  Signal(void (Parent::*)(Args...), Args&&...);
+  Signal(void (Parent::*)(Args...), Args...);
   void invoke(Parent*) override;
 
 private:

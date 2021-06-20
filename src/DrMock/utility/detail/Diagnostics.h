@@ -16,16 +16,16 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_DRMOCK_UTILITY_DIAGNOSTICS_H
-#define DRMOCK_SRC_DRMOCK_UTILITY_DIAGNOSTICS_H
+#ifndef DRMOCK_SRC_DRMOCK_UTILITY_DETAIL_DIAGNOSTICS_H
+#define DRMOCK_SRC_DRMOCK_UTILITY_DETAIL_DIAGNOSTICS_H
 
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
 
-#include <DrMock/utility/TypeInfo.h>
-#include <DrMock/utility/TypeTraits.h>
+#include <DrMock/utility/detail/TypeInfo.h>
+#include <DrMock/utility/detail/TypeTraits.h>
 
 namespace drutility { namespace detail {
 
@@ -95,4 +95,4 @@ struct PrintAll<T, Ts...>
 
 }} // namespace drutility::detail
 
-#endif /* DRMOCK_SRC_DRMOCK_UTILITY_DIAGNOSTICS_H */
+#endif /* DRMOCK_SRC_DRMOCK_UTILITY_DETAIL_DIAGNOSTICS_H */

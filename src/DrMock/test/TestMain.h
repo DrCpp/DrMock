@@ -26,22 +26,22 @@
 
 #include <DrMock/test/FunctionInvoker.h>
 #include <DrMock/test/Global.h>
-#include <DrMock/test/ILogger.h>
-#include <DrMock/test/Logger.h>
+#include <DrMock/utility/ILogger.h>
+#include <DrMock/utility/Logger.h>
 
 namespace drtest { namespace detail {
 
-FunctionInvoker initGlobal{[] () { Singleton<Global>::set(std::make_shared<Global>()); }};
+FunctionInvoker initGlobal{[] () { drutility::Singleton<Global>::set(std::make_shared<Global>()); }};
 
 }} // namespaces
 
 int
 main(int argc, char** argv)
 {
-  using ILogger = drtest::detail::ILogger;
-  using Logger = drtest::detail::Logger;
-  using GlobalSingleton = drtest::detail::Singleton<drtest::detail::Global>;
-  using LoggerSingleton = drtest::detail::Singleton<ILogger>;
+  using ILogger = drutility::ILogger;
+  using Logger = drutility::Logger;
+  using GlobalSingleton = drutility::Singleton<drtest::detail::Global>;
+  using LoggerSingleton = drutility::Singleton<ILogger>;
 
   LoggerSingleton::set(std::make_shared<Logger>());
 
