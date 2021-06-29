@@ -24,11 +24,12 @@
 #include <variant>
 
 #include <DrMock/mock/ICompare.h>
+#include <DrMock/mock/detail/Variant.h>
 
 namespace drmock { namespace detail {
 
 template<typename T>
-using expect_t = std::variant<T, std::shared_ptr<ICompare<T>>>;
+using expect_t = Variant<T, std::shared_ptr<ICompare<T>>>;
 
 template<typename... Bases>
 class IWrapInSharedEqual

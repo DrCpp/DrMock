@@ -17,7 +17,7 @@
 
 cmake_minimum_required(VERSION 3.10)
 
-DrMockModule(
+drmock_library(
   TARGET DrMockSampleExampleMocked
   HEADERS
     IFoo.h

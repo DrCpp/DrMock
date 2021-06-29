@@ -48,13 +48,13 @@ private:
   std::shared_ptr<ICompare<Base>>
   wrap_in_shared_equal(expect_t<Base>&& var)
   {
-    if (std::holds_alternative<Base>(var))
+    if (var.template holds_alternative<Base>())
     {
-      return std::make_shared<Equal<Base, Derived>>(std::get<Base>(std::forward<expect_t<Base>>(var)));
+      return std::make_shared<Equal<Base, Derived>>(std::forward<expect_t<Base>>(var).template get<Base>());
     }
     else
     {
-      return std::get<std::shared_ptr<ICompare<Base>>>(std::forward<expect_t<Base>>(var));
+      return std::forward<expect_t<Base>>(var).template get<std::shared_ptr<ICompare<Base>>>();
     }
   }
 };

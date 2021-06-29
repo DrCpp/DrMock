@@ -28,7 +28,12 @@ template<typename Base, typename Derived = Base>
 class Equal : public ICompare<Base>
 {
 public:
-  Equal(Base expected)
+  Equal(const Base& expected)
+  :
+    expected_{expected}
+  {}
+
+  Equal(Base&& expected)
   :
     expected_{std::move(expected)}
   {}
