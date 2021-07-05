@@ -15,18 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
-#######################################
 # Manually setup macros, includes, paths.
-#######################################
-
 include(${CMAKE_SOURCE_DIR}/cmake/DrMockMacros.cmake)
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
-
-#######################################
 # Test Core.
-#######################################
-
 drmock_test(TESTS
     Behavior.cpp
     BehaviorQueue.cpp
@@ -41,7 +34,7 @@ drmock_test(TESTS
     WrapInSharedEqual.cpp
 )
 
-# Signal testing.
+# Test Signal.
 if (${Qt5_FOUND})
     add_library(DrMockSignalDummy SHARED Dummy.cpp)
     target_link_libraries(DrMockSignalDummy Qt5::Core Qt5::Test)
@@ -51,16 +44,5 @@ if (${Qt5_FOUND})
     )
 endif()
 
-
-#######################################
-# Test generator.
-#######################################
-
 add_subdirectory(mocker)
-
-
-#######################################
-# Test macros
-#######################################
-
-add_subdirectory(macros)
+add_subdirectory(integration)
