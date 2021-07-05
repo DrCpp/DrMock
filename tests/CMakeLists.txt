@@ -44,5 +44,4 @@ if (${Qt5_FOUND})
     )
 endif()
 
-add_subdirectory(mocker)
 add_subdirectory(integration)
