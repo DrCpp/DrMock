@@ -22,8 +22,6 @@
 include(${CMAKE_SOURCE_DIR}/cmake/DrMockMacros.cmake)
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
-file(TO_CMAKE_PATH ${CMAKE_SOURCE_DIR}/python/DrMockGenerator pathToMocker)
-
 
 #######################################
 # Test Core.
