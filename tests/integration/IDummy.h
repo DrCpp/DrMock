@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_TESTS_MOCKER_IDUMMY_H
-#define DRMOCK_TESTS_MOCKER_IDUMMY_H
+#ifndef DRMOCK_TESTS_INTEGRATION_IDUMMY_H
+#define DRMOCK_TESTS_INTEGRATION_IDUMMY_H
 
 namespace outer { namespace inner {
 
@@ -45,4 +45,4 @@ public:
 
 }} // namespace outer::inner
 
-#endif /* DRMOCK_TESTS_MOCKER_IDUMMY_H */
+#endif /* DRMOCK_TESTS_INTEGRATION_IDUMMY_H */

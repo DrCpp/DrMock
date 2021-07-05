@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_TESTS_MOCKER_IEMITS_H
-#define DRMOCK_TESTS_MOCKER_IEMITS_H
+#ifndef DRMOCK_TESTS_INTEGRATION_IEMIT_H
+#define DRMOCK_TESTS_INTEGRATION_IEMIT_H
 
 #include <string>
 #include <vector>
@@ -43,4 +43,4 @@ signals:
 
 }} // namespace outer::inner
 
-#endif /* DRMOCK_TESTS_MOCKER_IEMITS_H */
+#endif /* DRMOCK_TESTS_INTEGRATION_IEMIT_H */

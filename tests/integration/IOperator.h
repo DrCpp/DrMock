@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_TESTS_MOCKER_IOPERATOR_H
-#define DRMOCK_TESTS_MOCKER_IOPERATOR_H
+#ifndef DRMOCK_TESTS_INTEGRATION_IOPERATOR_H
+#define DRMOCK_TESTS_INTEGRATION_IOPERATOR_H
 
 #include <vector>
 
@@ -28,11 +28,13 @@ class IOperator
 public:
   virtual ~IOperator() = default;
 
-  virtual bool operator            ==(const int& x) = 0;
+  // The spacing here is intended to throw the generator off-guard as
+  // much as possible!
+  virtual bool operator           ==(const int& x) = 0;
   virtual void operator +(std::vector<int>& x) = 0;
   virtual int operator( )(int, float, double* const) = 0;
 };
 
 }} // namespace outer::inner
 
-#endif /* DRMOCK_TESTS_MOCKER_IOPERATOR_H */
+#endif /* DRMOCK_TESTS_INTEGRATION_IOPERATOR_H */

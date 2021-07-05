@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_TESTS_MOCKER_IABSTRACT_H
-#define DRMOCK_TESTS_MOCKER_IABSTRACT_H
+#ifndef DRMOCK_TESTS_INTEGRATION_IABSTRACT_H
+#define DRMOCK_TESTS_INTEGRATION_IABSTRACT_H
 
 #include <memory>
 
@@ -37,4 +37,4 @@ public:
 
 }} // namespace outer::inner
 
-#endif /* DRMOCK_TESTS_MOCKER_IABSTRACT_H */
+#endif /* DRMOCK_TESTS_INTEGRATION_IABSTRACT_H */

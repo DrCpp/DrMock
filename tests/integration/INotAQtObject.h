@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_TESTS_MOCKER_INOTAQTOBJECT_H
-#define DRMOCK_TESTS_MOCKER_INOTAQTOBJECT_H
+#ifndef DRMOCK_TESTS_INTEGRATION_INOTAQTOBJECT_H
+#define DRMOCK_TESTS_INTEGRATION_INOTAQTOBJECT_H
 
 namespace outer { namespace inner {
 
@@ -30,4 +30,4 @@ public:
 
 }} // namespace outer::inner
 
-#endif /* DRMOCK_TESTS_MOCKER_INOTAQTOBJECT_H */
+#endif /* DRMOCK_TESTS_INTEGRATION_INOTAQTOBJECT_H */

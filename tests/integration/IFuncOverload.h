@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_TESTS_MOCKER_IFUNCOVERLOAD_H
-#define DRMOCK_TESTS_MOCKER_IFUNCOVERLOAD_H
+#ifndef DRMOCK_TESTS_INTEGRATION_IFUNCOVERLOAD_H
+#define DRMOCK_TESTS_INTEGRATION_IFUNCOVERLOAD_H
 
 #include <string>
 #include <memory>
@@ -39,4 +39,4 @@ public:
 
 }} // namespace outer::inner
 
-#endif /* DRMOCK_TESTS_MOCKER_IFUNCOVERLOAD_H */
+#endif /* DRMOCK_TESTS_INTEGRATION_IFUNCOVERLOAD_H */

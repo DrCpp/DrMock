@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_TESTS_MOCKER_ITEMPLATEOVERLOAD_H
-#define DRMOCK_TESTS_MOCKER_ITEMPLATEOVERLOAD_H
+#ifndef DRMOCK_TESTS_INTEGRATION_ITEMPLATEOVERLOAD_H
+#define DRMOCK_TESTS_INTEGRATION_ITEMPLATEOVERLOAD_H
 
 #include <tuple>
 
@@ -37,4 +37,4 @@ public:
 
 }} // namespace outer::inner
 
-#endif /* DRMOCK_TESTS_MOCKER_ITEMPLATEOVERLOAD_H */
+#endif /* DRMOCK_TESTS_INTEGRATION_ITEMPLATEOVERLOAD_H */

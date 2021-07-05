@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_TESTS_MOCKER_FOO_H
-#define DRMOCK_SRC_TESTS_MOCKER_FOO_H
+#ifndef DRMOCK_TESTS_INTEGRATION_FOO_H
+#define DRMOCK_TESTS_INTEGRATION_FOO_H
 
 namespace foo { namespace bar {
 
@@ -29,4 +29,4 @@ public:
 
 }} // namespace foo::bar
 
-#endif /* DRMOCK_SRC_TESTS_MOCKER_FOO_H */
+#endif /* DRMOCK_TESTS_INTEGRATION_FOO_H */

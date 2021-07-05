@@ -19,6 +19,9 @@
 #include <DrMock/Test.h>
 #include "mock/subdir/SubdirMock.h"
 
+// This test checks that the generator properly mocks files from sub
+// directories.
+
 using namespace outer::inner;
 
 DRTEST_TEST(fails)

@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_TESTS_MOCKER_IQUALIFIEROVERLOAD_H
-#define DRMOCK_TESTS_MOCKER_IQUALIFIEROVERLOAD_H
+#ifndef DRMOCK_TESTS_INTEGRATION_IQUALIFIEROVERLOAD_H
+#define DRMOCK_TESTS_INTEGRATION_IQUALIFIEROVERLOAD_H
 
 #include <string>
 #include <vector>
@@ -42,4 +42,4 @@ public:
 
 }} // namespace outer::inner
 
-#endif /* DRMOCK_TESTS_MOCKER_IQUALIFIEROVERLOAD_H */
+#endif /* DRMOCK_TESTS_INTEGRATION_IQUALIFIEROVERLOAD_H */

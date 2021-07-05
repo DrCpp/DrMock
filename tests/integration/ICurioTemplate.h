@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_TESTS_MOCKER_ICURIOTEMPLATE_H
-#define DRMOCK_TESTS_MOCKER_ICURIOTEMPLATE_H
+#ifndef DRMOCK_TESTS_INTEGRATION_ICURIOTEMPLATE_H
+#define DRMOCK_TESTS_INTEGRATION_ICURIOTEMPLATE_H
 
 #include <string>
 #include <memory>
@@ -57,4 +57,4 @@ public:
 
 }} // namespace outer::inner
 
-#endif /* DRMOCK_TESTS_MOCKER_ICURIOTEMPLATE_H */
+#endif /* DRMOCK_TESTS_INTEGRATION_ICURIOTEMPLATE_H */

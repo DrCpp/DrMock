@@ -16,11 +16,11 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_TESTS_MOCKER_IINCLUDE_H
-#define DRMOCK_TESTS_MOCKER_IINCLUDE_H
+#ifndef DRMOCK_TESTS_INTEGRATION_IINCLUDE_H
+#define DRMOCK_TESTS_INTEGRATION_IINCLUDE_H
 
 #include "subdir/SubdirDummy.h"
-#include "Bar.h"
+#include "SubdirDummyInclude.h"
 
 namespace outer { namespace inner {
 
@@ -34,4 +34,4 @@ public:
 
 }} // namespace outer::inner
 
-#endif /* DRMOCK_TESTS_MOCKER_IINCLUDE_H */
+#endif /* DRMOCK_TESTS_INTEGRATION_IINCLUDE_H */

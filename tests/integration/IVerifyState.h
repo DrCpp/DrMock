@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_TESTS_MCOKER_IVERIFYSTATE_H
-#define DRMOCK_TESTS_MCOKER_IVERIFYSTATE_H
+#ifndef DRMOCK_TESTS_INTEGRATION_IVERIFYSTATE_H
+#define DRMOCK_TESTS_INTEGRATION_IVERIFYSTATE_H
 
 namespace outer { namespace inner {
 
@@ -32,4 +32,4 @@ public:
 
 }} // namespace outer::inner
 
-#endif /* DRMOCK_TESTS_MCOKER_IVERIFYSTATE_H */
+#endif /* DRMOCK_TESTS_INTEGRATION_IVERIFYSTATE_H */

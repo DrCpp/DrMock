@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_TESTS_MOCKER_IVOIDFUNC_H
-#define DRMOCK_TESTS_MOCKER_IVOIDFUNC_H
+#ifndef DRMOCK_TESTS_INTEGRATION_IVOIDFUNC_H
+#define DRMOCK_TESTS_INTEGRATION_IVOIDFUNC_H
 
 namespace outer { namespace inner {
 
@@ -31,4 +31,4 @@ public:
 
 }} // namespace outer::inner
 
-#endif /* DRMOCK_TESTS_MOCKER_IVOIDFUNC_H */
+#endif /* DRMOCK_TESTS_INTEGRATION_IVOIDFUNC_H */

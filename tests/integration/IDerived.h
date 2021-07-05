@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_TESTS_MOCKER_IDERIVED_H
-#define DRMOCK_TESTS_MOCKER_IDERIVED_H
+#ifndef DRMOCK_TESTS_INTEGRATION_IDERIVED_H
+#define DRMOCK_TESTS_INTEGRATION_IDERIVED_H
 
 #include "Foo.h"
 
@@ -33,4 +33,4 @@ public:
 
 }} // namespace outer::inner
 
-#endif /* DRMOCK_TESTS_MOCKER_IDERIVED_H */
+#endif /* DRMOCK_TESTS_INTEGRATION_IDERIVED_H */

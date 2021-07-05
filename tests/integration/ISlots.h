@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_TESTS_MOCKER_ISLOTS_H
-#define DRMOCK_TESTS_MOCKER_ISLOTS_H
+#ifndef DRMOCK_TESTS_INTEGRATION_ISLOTS_H
+#define DRMOCK_TESTS_INTEGRATION_ISLOTS_H
 
 #include <QObject>
 
@@ -36,4 +36,4 @@ public slots:
 
 }} // namespace outer::inner
 
-#endif /* DRMOCK_TESTS_MOCKER_ISLOTS_H */
+#endif /* DRMOCK_TESTS_INTEGRATION_ISLOTS_H */

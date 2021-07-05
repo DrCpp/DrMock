@@ -16,9 +16,9 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_TESTS_MACROS_FOO_H
-#define DRMOCK_TESTS_MACROS_FOO_H
+#ifndef DRMOCK_TESTS_INTEGRATION_RESOURCES_FOO_H
+#define DRMOCK_TESTS_INTEGRATION_RESOURCES_FOO_H
 
 int foo();
 
-#endif /* DRMOCK_TESTS_MACROS_FOO_H */
+#endif /* DRMOCK_TESTS_INTEGRATION_RESOURCES_FOO_H */
