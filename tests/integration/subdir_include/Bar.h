@@ -16,4 +16,4 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-class SubDirBar {};
+class SubdirDummyInclude {};

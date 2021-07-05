@@ -19,7 +19,7 @@
 #ifndef DRMOCK_TESTS_MOCKER_IINCLUDE_H
 #define DRMOCK_TESTS_MOCKER_IINCLUDE_H
 
-#include "subdir/Bar.h"
+#include "subdir/SubdirDummy.h"
 #include "Bar.h"
 
 namespace outer { namespace inner {

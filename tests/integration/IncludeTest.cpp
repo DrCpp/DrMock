@@ -24,8 +24,8 @@ using namespace outer::inner;
 DRTEST_TEST(include)
 {
   // Check if the dummy classes are properly included.
-  (void)SubDirBar{};
-  (void)SubDirIncBar{};
+  (void)SubdirDummy{};
+  (void)SubdirDummyInclude{};
 }
 
 DRTEST_TEST(fails)

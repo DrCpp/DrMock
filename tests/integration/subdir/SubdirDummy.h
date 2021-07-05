@@ -16,21 +16,9 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "Bar.h"
+#ifndef DRMOCK_TESTS_INTEGRATION_SUBDIR_SUBDIRDUMMY_H
+#define DRMOCK_TESTS_INTEGRATION_SUBDIR_SUBDIRDUMMY_H
 
-#ifndef DRMOCK_TESTS_MOCKER_SUBDIR_IBAR_H
-#define DRMOCK_TESTS_MOCKER_SUBDIR_IBAR_H
+class SubdirDummy {};
 
-namespace outer { namespace inner {
-
-class IBar
-{
-public:
-  virtual ~IBar() = default;
-
-  virtual void f() = 0;
-};
-
-}} // namespace outer::inner
-
-#endif /* DRMOCK_TESTS_MOCKER_SUBDIR_IBAR_H */
+#endif /* DRMOCK_TESTS_INTEGRATION_SUBDIR_SUBDIRDUMMY_H */

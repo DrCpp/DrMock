@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
+# Check that the resources parameter works correctly.
 drmock_test(
   TESTS
     Resources.cpp
@@ -28,7 +29,7 @@ drmock_test(
 
 # Include one of the subdirs. `IncludeTest.cpp` checks that this
 # inclusion is passed down to the generator.
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/subdirInc)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/subdir_include)
 
 # Put all headers/tests that can be used without Qt here!
 set(regularHeaders
@@ -53,7 +54,7 @@ set(regularHeaders
     IVerifyState.h
     IExample.h
     IVerifyAll.h
-    subdir/IBar.h
+    subdir/ISubdir.h
 )
 
 set(regularTests

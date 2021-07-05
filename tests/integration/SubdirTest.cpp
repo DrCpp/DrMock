@@ -17,19 +17,19 @@
 */
 
 #include <DrMock/Test.h>
-#include "mock/subdir/BarMock.h"
+#include "mock/subdir/SubdirMock.h"
 
 using namespace outer::inner;
 
 DRTEST_TEST(fails)
 {
   {
-    BarMock mock{};
+    SubdirMock mock{};
     DRTEST_ASSERT(mock.mock.verify());
   }
 
   {
-    BarMock mock{};
+    SubdirMock mock{};
     DRTEST_ASSERT(mock.mock.f().verify());
     mock.f();
     DRTEST_ASSERT(not mock.mock.verify());
@@ -39,7 +39,7 @@ DRTEST_TEST(fails)
 
 DRTEST_TEST(succeeds)
 {
-  BarMock mock{};
+  SubdirMock mock{};
   DRTEST_ASSERT(mock.mock.verify());
 
   mock.mock.f().push()

@@ -16,4 +16,23 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-class SubDirIncBar {};
+#ifndef DRMOCK_TESTS_INTEGRATION_SUBDIR_ISUBDIR_H
+#define DRMOCK_TESTS_INTEGRATION_SUBDIR_ISUBDIR_H
+
+// We make this include to check that our mocker handles relative
+// includes correctly.
+#include "SubdirDummy.h"
+
+namespace outer { namespace inner {
+
+class ISubdir
+{
+public:
+  virtual ~ISubdir() = default;
+
+  virtual void f() = 0;
+};
+
+}} // namespace outer::inner
+
+#endif /* DRMOCK_TESTS_INTEGRATION_SUBDIR_ISUBDIR_H */
