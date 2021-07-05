@@ -18,7 +18,7 @@
 
 #include <DrMock/Test.h>
 
-#include "Foo.h"
+#include "resources/Foo.h"
 
 // Test that the symbol `foo` is found.
 DRTEST_TEST(resource)

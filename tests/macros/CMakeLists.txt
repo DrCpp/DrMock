@@ -17,7 +17,7 @@
 
 drmock_test(
   TESTS
-    resources/Resources.cpp
+    Resources.cpp
   RESOURCES
     resources/Foo.cpp
 )
