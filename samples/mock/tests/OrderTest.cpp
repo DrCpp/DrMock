@@ -29,7 +29,7 @@ DRTEST_TEST(success)
   // `"foo"` and should return `true` (indicating that those units are
   // available).
   warehouse->mock.remove().push()
-      .expects("foo", 2u)  // Expected arguments.
+      .expects("foo", 2)  // Expected arguments.
       .times(1)  // Expect **one** call only.
       .returns(true);  // Return value.
 
@@ -49,7 +49,7 @@ DRTEST_TEST(failure)
   // `"foo"` and should return `false` (indicating that those units are
   // not available).
   warehouse->mock.remove().push()
-      .expects("foo", 2u)  // Expected arguments.
+      .expects("foo", 2)  // Expected arguments.
       .times(1)  // Expect **one** call only.
       .returns(false);  // Return value.
 

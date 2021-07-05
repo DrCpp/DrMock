@@ -653,7 +653,7 @@ DRTEST_TEST(timesRange)
   int x;
 
   foo->mock.f().push()
-      .expects("foo", 123u)
+      .expects("foo", 123)
       .times(1, 3)
       .returns(5);
 
@@ -689,7 +689,7 @@ DRTEST_TEST(timesExact)
   int x;
 
   foo->mock.f().push()
-      .expects("foo", 123u)
+      .expects("foo", 123)
       .times(2)
       .returns(5);
 
@@ -719,11 +719,11 @@ DRTEST_TEST(enforceOrder)
   auto foo = std::make_shared<FooMock>();
 
   foo->mock.f().push()
-      .expects("foo", 123u)
+      .expects("foo", 123)
       .times(1)
       .returns(1);
   foo->mock.f().push()
-      .expects("bar", 456u)
+      .expects("bar", 456)
       .times(1)
       .returns(2);
 
@@ -782,7 +782,7 @@ DRTEST_TEST(overload)
   bar->mock.f<int>().push()
       .expects(3).returns(3);
   bar->mock.f<float, std::vector<int>, drmock::Const>().push()
-      .expects(0.0f, std::vector<int>{1, 2, 3}).returns(4);
+      .expects(0.0f, {1, 2, 3}).returns(4);
 
   DRTEST_ASSERT_EQ(
       bar->f(),
@@ -797,7 +797,7 @@ DRTEST_TEST(overload)
       3
     );
   DRTEST_ASSERT_EQ(
-      bar->f(0.0f, std::vector<int>{1, 2 ,3}),
+      bar->f(0.0f, {1, 2 ,3}),
       4
     );
 }

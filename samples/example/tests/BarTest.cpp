@@ -50,7 +50,7 @@ DRTEST_TEST(overload)
       3
     );
   DRTEST_ASSERT_EQ(
-      bar->f(0.0f, std::vector<int>{1, 2, 3}),
+      bar->f(0.0f, {1, 2, 3}),
       4
     );
 }

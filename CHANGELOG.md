@@ -43,6 +43,9 @@ Released 2021/xx/xx
 
 * Remove Qt includes from `Method.h`
 
+* Add `Variant` class to revert interface change of `expects` and
+  `transition` which made using initializer-lists impossible
+
 
 # DrMock 0.5.0
 
