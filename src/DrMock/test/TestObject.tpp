@@ -16,6 +16,7 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include <cassert>
 #include <iostream>
 #include <stdexcept>
 
