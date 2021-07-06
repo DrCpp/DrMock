@@ -16,29 +16,24 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_TESTS_INTEGRATION_IFUNC_H
-#define DRMOCK_TESTS_INTEGRATION_IFUNC_H
+#ifndef DRMOCK_TESTS_INTEGRATION_IFUNCOVERLOADNOTABSTRACT_H
+#define DRMOCK_TESTS_INTEGRATION_IFUNCOVERLOADNOTABSTRACT_H
 
-#include <memory>
 #include <string>
-#include <unordered_map>
-#include <vector>
 
 namespace outer { namespace inner {
 
-class IFunc
+class IFuncOverload
 {
 public:
-  virtual ~IFunc() = default;
+  virtual ~IFuncOverload() = default;
 
-  virtual void fParameters(int, std::vector<float>) = 0;
-  virtual std::vector<float> gParameters(
-      const std::shared_ptr<std::unordered_map<int, std::string>>& test_name,
-      float,
-      std::string
-    ) = 0;
+  virtual void funcOverloadLvalueRvalueAndConst(const std::string&) = 0;
+  virtual void funcOverloadLvalueRvalueAndConst(std::string&) = 0;
+  virtual bool funcOverloadLvalueRvalueAndConst(const std::string&&) = 0;
+  virtual bool funcOverloadLvalueRvalueAndConst(std::string&&) = 0;
 };
 
 }} // namespace outer::inner
 
-#endif /* DRMOCK_TESTS_INTEGRATION_IFUNC_H */
+#endif /* DRMOCK_TESTS_INTEGRATION_IFUNCOVERLOADNOTABSTRACT_H */

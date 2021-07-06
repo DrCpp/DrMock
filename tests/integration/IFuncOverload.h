@@ -20,9 +20,6 @@
 #define DRMOCK_TESTS_INTEGRATION_IFUNCOVERLOAD_H
 
 #include <string>
-#include <memory>
-#include <unordered_map>
-#include <vector>
 
 namespace outer { namespace inner {
 

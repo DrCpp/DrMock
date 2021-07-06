@@ -46,6 +46,9 @@ Released 2021/xx/xx
 * Add `Variant` class to revert interface change of `expects` and
   `transition` which made using initializer-lists impossible
 
+* Allow mocking non-abstract classes. In particular, users are no longer
+  required to seperate interface and implementation into multiple
+  classes
 
 # DrMock 0.5.0
 

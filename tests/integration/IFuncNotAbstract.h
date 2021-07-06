@@ -1,4 +1,4 @@
-/* Copyright 2019 Ole Kliemann, Malte Kliemann
+/* Copyright 2021 Ole Kliemann, Malte Kliemann
  *
  * This file is part of DrMock.
  *
@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_TESTS_INTEGRATION_IFUNC_H
-#define DRMOCK_TESTS_INTEGRATION_IFUNC_H
+#ifndef DRMOCK_TESTS_INTEGRATION_IFUNCNOTABSTRACT_H
+#define DRMOCK_TESTS_INTEGRATION_IFUNCNOTABSTRACT_H
 
 #include <memory>
 #include <string>
@@ -26,19 +26,35 @@
 
 namespace outer { namespace inner {
 
-class IFunc
+class IFuncNotAbstract
 {
 public:
-  virtual ~IFunc() = default;
+  IFuncNotAbstract() = default;
 
-  virtual void fParameters(int, std::vector<float>) = 0;
+  virtual void fParameters(int, std::vector<float>)
+  {
+  }
+
   virtual std::vector<float> gParameters(
       const std::shared_ptr<std::unordered_map<int, std::string>>& test_name,
       float,
       std::string
-    ) = 0;
+    )
+  {
+    return {1.0f, 2.0f};
+  }
+
+  virtual int virtualMethodNotPure()
+  {
+    return 12;
+  }
+
+  int notVirtual()
+  {
+    return 12;
+  }
 };
 
 }} // namespace outer::inner
 
-#endif /* DRMOCK_TESTS_INTEGRATION_IFUNC_H */
+#endif /* DRMOCK_TESTS_INTEGRATION_IFUNCNOTABSTRACT_H */
