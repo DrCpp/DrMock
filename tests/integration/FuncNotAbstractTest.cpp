@@ -104,4 +104,15 @@ DRTEST_TEST(success)
   }
 }
 
-// TODO Test polymorphic reference!
+int passthru(IFuncNotAbstract& obj)
+{
+  return obj.virtualMethodNotPure();
+}
+
+DRTEST_TEST(polymorphicReference)
+{
+  FuncNotAbstractMock mock{};
+  auto value = 34;
+  mock.mock.virtualMethodNotPure().push().returns(value).times(1);
+  DRTEST_ASSERT(passthru(mock) == 34);
+}
