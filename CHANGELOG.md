@@ -50,6 +50,9 @@ Released 2021/xx/xx
   required to seperate interface and implementation into multiple
   classes
 
+* Remove need for `DRMOCK_USE_QT` macro
+
+
 # DrMock 0.5.0
 
 Released 2021/06/20
