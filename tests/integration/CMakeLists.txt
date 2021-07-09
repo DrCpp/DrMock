@@ -40,6 +40,7 @@ drmock_library(
         IFuncNotAbstract.h
         INoDefaultCtor.h
         ITemplate.h
+        IAccessSpec.h
         IOperator.h
         IQualifier.h
         IVoidFuncOverload.h
@@ -72,6 +73,7 @@ drmock_test(
         FuncNotAbstractTest.cpp
         NoDefaultCtorTest.cpp
         TemplateTest.cpp
+        AccessSpecTest.cpp
         OperatorTest.cpp
         QualifierTest.cpp
         VoidFuncOverloadTest.cpp
