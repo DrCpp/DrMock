@@ -152,4 +152,11 @@ DRTEST_TEST(success)
     DRTEST_ASSERT(mock.mock.verify());
     DRTEST_ASSERT(mock.mock.funcNonCopyableResult().verify());
   }
+
+  // Check that calling the static function does not result in failure.
+  {
+    CurioMock mock{};
+    DRTEST_ASSERT_EQ(mock.staticFunc(), 34);
+    DRTEST_ASSERT(mock.mock.verify());
+  }
 }

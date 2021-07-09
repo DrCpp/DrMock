@@ -51,6 +51,10 @@ public:
   virtual void funcNonCopyableArg(std::unique_ptr<int>) = 0;
   virtual std::unique_ptr<int> funcNonCopyableResult() = 0;
   virtual std::unique_ptr<int>& funcNonCopyableResultAsReference() = 0;
+  static int staticFunc()
+  {
+    return 34;
+  }
 };
 
 }} // namespace outer::inner
