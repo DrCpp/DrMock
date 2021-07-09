@@ -38,6 +38,7 @@ drmock_library(
         IVoidFunc.h
         IFunc.h
         IFuncNotAbstract.h
+        INoDefaultCtor.h
         ITemplate.h
         IOperator.h
         IQualifier.h
@@ -69,6 +70,7 @@ drmock_test(
         VoidFuncTest.cpp
         FuncTest.cpp
         FuncNotAbstractTest.cpp
+        NoDefaultCtorTest.cpp
         TemplateTest.cpp
         OperatorTest.cpp
         QualifierTest.cpp
