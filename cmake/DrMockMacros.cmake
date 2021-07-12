@@ -365,11 +365,13 @@ function(drmock_library2)
         list(APPEND command ${path_from_working_dir_to_output_header})
         list(APPEND command --input-class \"${input_class}\")
         list(APPEND command --output-class \"${output_class}\")
+        list(APPEND command --clang-library-file ${DRMOCK_LIBCLANG_PATH})
+        # Note: Compiler flags _must_ follow the ``--flags`` argument!
+        list(APPEND command --flags)
+        list(APPEND command "--std=c++${CMAKE_CXX_STANDARD}")
+        list(APPEND command ${ARGS_OPTIONS})
         list(APPEND command ${generator_option_include_directory})
         list(APPEND command ${generator_option_iframework})
-        list(APPEND command "--std=c++${CMAKE_CXX_STANDARD}")
-        list(APPEND command --clang-library-file ${DRMOCK_LIBCLANG_PATH})
-        list(APPEND command ${ARGS_OPTIONS})
         add_custom_command(
             OUTPUT
                 ${mock_header_path}
