@@ -18,6 +18,7 @@
 
 #include <iostream>
 
+#define USING_DRTEST
 #include <DrMock/Test.h>
 
 DRTEST_TEST(initTestCase)
@@ -343,4 +344,26 @@ DRTEST_TEST(emptyRowName)
   drtest::detail::TestObject test{"test"};
   test.addColumn<int>("col");
   DRTEST_ASSERT_THROW(test.addRow<int>("", 1), std::logic_error);
+}
+
+DATA(usingMacro)
+{
+  drtest::addColumns<int, int, int>("lhs", "rhs", "expected");
+  drtest::addRow("row 1", 2, 2, 4);
+}
+
+TEST(usingMacro)
+{
+  FETCH(int, lhs);
+  FETCH(int, rhs);
+  FETCH(int, expected);
+  ASSERT(true);
+  ASSERT_EQ(lhs + rhs, expected);
+  ASSERT_LE(4, 5);
+  ASSERT_LT(4, 5);
+  ASSERT_GE(5, 4);
+  ASSERT_GT(5, 4);
+  ASSERT_THROW(throw std::runtime_error{""};, std::runtime_error);
+  ASSERT_TEST_FAIL(ASSERT_EQ(false, true));
+  ASSERT_ALMOST_EQUAL(0.999999, 1.0);
 }
