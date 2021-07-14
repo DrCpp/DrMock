@@ -42,6 +42,7 @@ find_library(
     HINTS
         /Library/Developer/CommandLineTools/usr
         /usr/lib/llvm-7/lib
+        C:\\Program Files\\LLVM\\bin
 )
 message(STATUS LIBCLANG_PATH=${LIBCLANG_PATH})
 if (NOT LIBCLANG_PATH)
