@@ -19,6 +19,9 @@ along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 # DrMock
 
+![Linux](https://github.com/DrCpp/drmock-generator/actions/workflows/linux.yml/badge.svg)
+![macOS](https://github.com/DrCpp/drmock-generator/actions/workflows/macos.yml/badge.svg)
+
 **DrMock** is a testing and mocking framework for C++17 that offers unique
 features for mock object configuration.
 
