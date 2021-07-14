@@ -1,4 +1,4 @@
-name: Linux (install, test)
+name: macOS (install, test)
 on:
   push:
     branches:
@@ -12,17 +12,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  linux:
-    runs-on: ubuntu-latest
+  macos:
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
       - uses: jurplel/install-qt-action@v2
       - uses: lukka/get-cmake@latest
-      - name: Install libclang
-        run: |
-          sudo apt-get update
-          sudo apt-get install libclang-7-dev
       - name: Install drmock-generator
         run: pip install drmock-generator
       - name: Compile drmock
@@ -31,4 +27,4 @@ jobs:
           make
           ctest --output-on-failure
         env:
-          DRMOCK_QT_PATH: $Qt5_Dir
+          DRMOCK_QT_PATH: /Users/runner/work/DrMock/Qt/5.15.2/clang_64

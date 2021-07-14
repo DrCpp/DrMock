@@ -56,7 +56,7 @@ if (DEFINED ENV{DRMOCK_QT_PATH})
             Core
             Test
     )
-    message(STATUS QT_PATH=$ENV{DRMOCK_QT_PATH})
+    message(STATUS DRMOCK_QT_PATH=$ENV{DRMOCK_QT_PATH})
     if (${Qt5_FOUND})
         # Set CMP0071 to NEW so that generated files are automoc'ed.
         cmake_policy(SET CMP0071 NEW)
