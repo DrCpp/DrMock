@@ -1,0 +1,36 @@
+name: Linux (install, test)
+on:
+  push:
+    branches:
+    - master
+    - develop
+    - workflows
+  pull_request:
+    branches:
+    - master
+    - develop
+  workflow_dispatch:
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          version: 5.15.4
+      - uses: jurplel/install-qt-action@v2
+      - uses: lukka/get-cmake@latest
+      - name: Install libclang
+        run: |
+          sudo apt-get update
+          sudo apt-get install libclang-7-dev
+      - name: Install drmock-generator
+        run: pip install drmock-generator
+      - name: Compile drmock
+        run: |
+          cmake . -DCMAKE_INSTALL_PREFIX=install -DCMAKE_PREFIX_PATH=${DRMOCK_QT_PATH}
+          make
+          ctest --output-on-failure
+        env:
+          DRMOCK_QT_PATH: $Qt5_Dir
