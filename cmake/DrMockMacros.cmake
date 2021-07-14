@@ -153,7 +153,7 @@ endfunction()
 #     `HEADERS`. Default value is undefined (treated as empty list).
 #
 # OPTIONS
-#     A list of additional options passed to `drmock-gen`.
+#     A list of additional options passed to `drmock-generator`.
 
 function(drmock_library)
     cmake_parse_arguments(
@@ -360,7 +360,7 @@ function(drmock_library2)
 
         # Call the mocker command.
         set(command)
-        list(APPEND command drmock-gen)
+        list(APPEND command drmock-generator)
         list(APPEND command ${absolute_path_to_header})
         list(APPEND command ${path_from_working_dir_to_output_header})
         list(APPEND command --input-class \"${input_class}\")
