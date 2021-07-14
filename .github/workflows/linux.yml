@@ -4,7 +4,7 @@ on:
     branches:
     - master
     - develop
-    - workflows
+    - rc-0.6
   pull_request:
     branches:
     - master
