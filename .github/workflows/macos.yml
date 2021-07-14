@@ -27,4 +27,4 @@ jobs:
           make
           ctest --output-on-failure
         env:
-          DRMOCK_QT_PATH: /Users/runner/work/DrMock/Qt/5.15.2/clang_64
+          DRMOCK_QT_PATH: /Users/runner/work/DrMock/Qt/5.15.2/clang_64  # For some reason, we have to kick macOS a little...

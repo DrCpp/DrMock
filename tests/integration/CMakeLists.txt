@@ -18,7 +18,7 @@
 # Check that the resources parameter works correctly.
 drmock_test(
     TESTS
-        Resources.cpp
+        ResourcesFile.cpp
     RESOURCES
         resources/Foo.cpp
 )
