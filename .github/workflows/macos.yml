@@ -5,6 +5,7 @@ on:
     - master
     - develop
     - rc-0.6
+    - windows
   pull_request:
     branches:
     - master

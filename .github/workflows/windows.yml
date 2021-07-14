@@ -1,4 +1,4 @@
-name: Linux (install, test)
+name: Windows (install, test)
 on:
   push:
     branches:
@@ -13,17 +13,18 @@ on:
   workflow_dispatch:
 
 jobs:
-  linux:
-    runs-on: ubuntu-latest
+  windows:
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
       - uses: jurplel/install-qt-action@v2
       - uses: lukka/get-cmake@latest
+      - uses: crazy-max/ghaction-chocolatey@v1
+        with:
+          args: -h
       - name: Install libclang
-        run: |
-          sudo apt-get update
-          sudo apt-get install libclang-7-dev
+        run: choco install llvm
       - name: Install drmock-generator
         run: pip install drmock-generator
       - name: Compile drmock
