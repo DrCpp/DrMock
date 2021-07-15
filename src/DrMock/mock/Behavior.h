@@ -111,7 +111,7 @@ public:
   std::variant<Result, std::exception_ptr> produce();
 
 private:
-  std::optional<std::tuple<std::shared_ptr<ICompare<Args>>...>> expect_{};
+  std::optional<std::tuple<std::shared_ptr<IMatcher<Args>>...>> expect_{};
   Result result_{};
   std::exception_ptr exception_{};
   unsigned int times_min_ = 1;

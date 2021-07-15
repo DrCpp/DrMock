@@ -21,13 +21,13 @@
 
 #include <memory>
 
-#include <DrMock/mock/ICompare.h>
+#include <DrMock/mock/IMatcher.h>
 #include <DrMock/utility/Compare.h>
 
 namespace drmock {
 
 template<typename T>
-class AlmostEqual : public ICompare<T>
+class AlmostEqual : public IMatcher<T>
 {
 public:
   AlmostEqual(T expected)
@@ -52,14 +52,14 @@ private:
 
 // Convenience function for quickly creating a shared object.
 template<typename T>
-std::shared_ptr<ICompare<T>>
+std::shared_ptr<IMatcher<T>>
 almost_equal(T expected)
 {
   return std::make_shared<AlmostEqual<T>>(expected);
 }
 
 template<typename T>
-std::shared_ptr<ICompare<T>>
+std::shared_ptr<IMatcher<T>>
 almost_equal(T expected, T abs_tol, T rel_tol)
 {
   return std::make_shared<AlmostEqual<T>>(expected, abs_tol, rel_tol);

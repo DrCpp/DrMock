@@ -16,19 +16,19 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_MOCK_ICOMPARE_H
-#define DRMOCK_SRC_MOCK_ICOMPARE_H
+#ifndef DRMOCK_SRC_DRMOCK_MOCK_IMATCHER_H
+#define DRMOCK_SRC_DRMOCK_MOCK_IMATCHER_H
 
 namespace drmock {
 
 template<typename Base>
-class ICompare
+class IMatcher
 {
 public:
-  virtual ~ICompare() = default;
+  virtual ~IMatcher() = default;
   virtual bool invoke(const Base&) const = 0;
 };
 
 } // namespace drmock
 
-#endif /* DRMOCK_SRC_MOCK_ICOMPARE_H */
+#endif /* DRMOCK_SRC_DRMOCK_MOCK_IMATCHER_H */

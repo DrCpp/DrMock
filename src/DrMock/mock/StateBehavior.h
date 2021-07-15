@@ -246,7 +246,7 @@ private:
       std::string,
       std::map<
           std::string,
-          std::vector<std::pair<std::tuple<std::shared_ptr<ICompare<Args>>...>, std::string>>
+          std::vector<std::pair<std::tuple<std::shared_ptr<IMatcher<Args>>...>, std::string>>
         >
     > transitions_{};  // slot -> { state -> { (input, target) } }
   detail::InvokeOnPack<std::tuple<Args...>> invoke_on_pack_{};

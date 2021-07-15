@@ -19,7 +19,7 @@
 #ifndef DRMOCK_SRC_DRMOCK_MOCK_DETAIL_INVOKEONPACK_H
 #define DRMOCK_SRC_DRMOCK_MOCK_DETAIL_INVOKEONPACK_H
 
-#include <DrMock/mock/ICompare.h>
+#include <DrMock/mock/IMatcher.h>
 
 namespace drmock { namespace detail {
 
@@ -30,7 +30,7 @@ template<typename... Bases>
 struct InvokeOnPack<std::tuple<Bases...>>
 {
   bool operator() (
-      const std::tuple<std::shared_ptr<ICompare<Bases>>...>& tuple,
+      const std::tuple<std::shared_ptr<IMatcher<Bases>>...>& tuple,
       const Bases&... pack
     ) const
   {
@@ -44,7 +44,7 @@ struct InvokeOnPack<std::tuple<Bases...>>
 private:
   template<std::size_t... Is>
   bool impl(
-      const std::tuple<std::shared_ptr<ICompare<Bases>>...>& lhs,
+      const std::tuple<std::shared_ptr<IMatcher<Bases>>...>& lhs,
       const std::tuple<std::reference_wrapper<const Bases>...>& rhs,
       const std::index_sequence<Is...>&
     ) const

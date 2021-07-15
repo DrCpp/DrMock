@@ -19,7 +19,7 @@
 #include <DrMock/Test.h>
 #include <DrMock/mock/detail/InvokeOnPack.h>
 #include <DrMock/mock/Equal.h>
-#include <DrMock/mock/ICompare.h>
+#include <DrMock/mock/IMatcher.h>
 
 using namespace drmock;
 

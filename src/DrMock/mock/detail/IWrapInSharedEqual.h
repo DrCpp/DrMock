@@ -23,20 +23,20 @@
 #include <tuple>
 #include <variant>
 
-#include <DrMock/mock/ICompare.h>
+#include <DrMock/mock/IMatcher.h>
 #include <DrMock/mock/detail/Variant.h>
 
 namespace drmock { namespace detail {
 
 template<typename T>
-using expect_t = Variant<T, std::shared_ptr<ICompare<T>>>;
+using expect_t = Variant<T, std::shared_ptr<IMatcher<T>>>;
 
 template<typename... Bases>
 class IWrapInSharedEqual
 {
 public:
   virtual ~IWrapInSharedEqual() = default;
-  virtual std::tuple<std::shared_ptr<ICompare<Bases>>...>
+  virtual std::tuple<std::shared_ptr<IMatcher<Bases>>...>
   wrap(expect_t<Bases>&&... pack) = 0;
 };
 

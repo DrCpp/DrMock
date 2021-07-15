@@ -25,7 +25,7 @@
 
 #include <DrMock/mock/detail/IWrapInSharedEqual.h>
 #include <DrMock/mock/Equal.h>
-#include <DrMock/mock/ICompare.h>
+#include <DrMock/mock/IMatcher.h>
 
 namespace drmock { namespace detail {
 
@@ -37,7 +37,7 @@ struct WrapInSharedEqual<std::tuple<Bases...>, std::tuple<Deriveds...>> : public
 {
   static_assert(sizeof...(Bases) == sizeof...(Deriveds));
 
-  std::tuple<std::shared_ptr<ICompare<Bases>>...>
+  std::tuple<std::shared_ptr<IMatcher<Bases>>...>
   wrap(expect_t<Bases>&&... pack)
   {
     return std::make_tuple(wrap_in_shared_equal<Bases, Deriveds>(std::forward<expect_t<Bases>>(pack))...);
@@ -45,7 +45,7 @@ struct WrapInSharedEqual<std::tuple<Bases...>, std::tuple<Deriveds...>> : public
 
 private:
   template<typename Base, typename Derived = Base>
-  std::shared_ptr<ICompare<Base>>
+  std::shared_ptr<IMatcher<Base>>
   wrap_in_shared_equal(expect_t<Base>&& var)
   {
     if (var.template holds_alternative<Base>())
@@ -54,7 +54,7 @@ private:
     }
     else
     {
-      return std::forward<expect_t<Base>>(var).template get<std::shared_ptr<ICompare<Base>>>();
+      return std::forward<expect_t<Base>>(var).template get<std::shared_ptr<IMatcher<Base>>>();
     }
   }
 };

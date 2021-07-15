@@ -19,13 +19,13 @@
 #ifndef DRMOCK_SRC_MOCK_EQUAL_H
 #define DRMOCK_SRC_MOCK_EQUAL_H
 
-#include <DrMock/mock/ICompare.h>
+#include <DrMock/mock/IMatcher.h>
 #include <DrMock/mock/detail/IsEqual.h>
 
 namespace drmock {
 
 template<typename Base, typename Derived = Base>
-class Equal : public ICompare<Base>
+class Equal : public IMatcher<Base>
 {
 public:
   Equal(const Base& expected)
