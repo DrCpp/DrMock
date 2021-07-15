@@ -19,35 +19,33 @@ along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 # DrMock
 
+Copyright 2019 Ole Kliemann, Malte Kliemann
+
+![Windows](https://github.com/DrCpp/drmock-generator/actions/workflows/windows.yml/badge.svg)
 ![Linux](https://github.com/DrCpp/drmock-generator/actions/workflows/linux.yml/badge.svg)
 ![macOS](https://github.com/DrCpp/drmock-generator/actions/workflows/macos.yml/badge.svg)
 
-**DrMock** is a testing and mocking framework for C++17 that offers unique
-features for mock object configuration.
 
-### Announcments
+## Table of Contents
 
-Release v0.5.x is now available. For details, see
-[changelog](CHANGELOG.md).
+[Introduction to **DrMock**](introduction-to-drmock)
 
-### Getting started
 
-* [Short introduction](docs/introduction.md) to **DrMock**
+## Introduction to **DrMock**
 
-* [Build guide](docs/build.md)
-
-* [Tutorials](docs/tutorial.md)
-
-* [Cookbook](docs/cookbook.md), a collection of common design patterns for **DrMock**
+**DrMock** is a C++17 testing and mocking framework for Windows, Linux
+and macOS.
 
 ### Features
 
 * Unit test framework
-* On-the-fly mock object source code generation
-* Unique method of configuring mock objects by state
-* Qt5 compatible
+* On-the-fly mock object source code generation at compile time
+* State machine-like mock objects
+* Qt5 integration
 
-Testing and mocking with **DrMock** looks like this:
+
+### Example
+
 ```cpp
 DRTEST_TEST(launch)
 {
@@ -67,62 +65,57 @@ DRTEST_TEST(launch)
       .transition("allThrustersOn",  "leftThrusterOn",      false);
   rocket->mock.launch().state()
       .transition("",                "failure")
-      .transition("*",               "liftOff");
+      .transition("*",               "liftOff");  // "*" = catch-all
 
-  // Check that the pad launches the rocket *after* enabling a thruster.
+  // Check that the pad launches the rocket with at least one thruster enabled.
   drmock::samples::LaunchPad launch_pad{rocket};
   launch_pad.launch();
   DRTEST_ASSERT(rocket->mock.verifyState("liftOff"));
 }
 ```
-Note that it doesn't matter how many times the thrusters are switched on
-and off, only the state of `rocket` after the test matters. **DrMock**
-allows tests to be designed without a particular implementation in mind.
 
-For details, see [here](docs/samples/states.md).
+**Note.** Only the state of `rocket` after the test matters. It's fine
+to keep toggeling the thrusters as long as at least one is enabled at
+launch. **DrMock** allows tests to be designed without a particular
+implementation in mind.
 
-## Requirements
 
-### Supported platforms
+## Building **DrMock**
 
-**DrMock** is current supported on the following platforms:
+See [BUILD.md] for instructions.
 
-* Linux
-* macOS
 
-### Build requirements
+## Getting started
 
-The basic requirements for building and running **DrMock** are:
+* [A brief introduction](BRIEF.md)
 
-* [CMake](https://cmake.org) (at least 3.17)
+* [Tutorial](docs/tutorial.md)
 
-* A C++17-standard-compliant compiler
 
-* [libclang](http://llvm.org/git/clang) (at least 6.0.0)
+### Documentation
 
-* [Python3.7](https://www.python.org)
+* [Cookbook](docs/cookbook.md), a collection of common design patterns for **DrMock**
 
-The following Python3 packages are automatically installed during build:
+* [Specification](docs/drmock.md)
 
-* [Clang Python bindings](https://github.com/llvm-mirror/clang/tree/master/bindings/python)
-  (at least 6.0.0)
-
-* [python3-setuptools](https://pypi.org/project/setuptools) (at least 41.4.0)
-
-* [wheel](https://pythonwheels.com) (at least 0.32.3)
 
 ## Contributing to **DrMock**
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Projects that use **DrMock**
-
-* [DrAutomaton](https://github.com/DrCpp/DrAutomaton), Qt-based cellular automaton library
 
 ## Acknowledgments
 
 During the configuration of **DrMock**'s build system, we have profited
-greatly from P. Arias'
-[It's Time To Do CMake Right](https://pabloariasal.github.io/2018/02/19/its-time-to-do-cmake-right/)
-and D. Berner's
-[Cmake line by line - creating a header-only library](http://dominikberner.ch/cmake-interface-lib/).
+greatly from the following sources:
+
+- P. Arias: [It's Time To Do CMake Right](https://pabloariasal.github.io/2018/02/19/its-time-to-do-cmake-right/)
+- D. Berner: [Cmake line by line - creating a header-only library](http://dominikberner.ch/cmake-interface-lib/).
+
+### Projects that use **DrMock**
+
+* [DrAutomaton](https://github.com/DrCpp/DrAutomaton), Qt5-based cellular automaton library
+
+
+[BUILD.md]: BUILD.md
+[BRIEF.md]: BRIEF.md
