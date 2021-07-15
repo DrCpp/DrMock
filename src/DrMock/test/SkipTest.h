@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_TEST_SKIP_TEST_H
-#define DRMOCK_SRC_TEST_SKIP_TEST_H
+#ifndef DRMOCK_SRC_DRMOCK_TEST_SKIPTEST_H
+#define DRMOCK_SRC_DRMOCK_TEST_SKIPTEST_H
 
 #include <stdexcept>
 #include <string>
@@ -37,4 +37,4 @@ private:
 
 } // namespace drtest
 
-#endif /* DRMOCK_SRC_TEST_SKIP_TEST_H */
+#endif /* DRMOCK_SRC_DRMOCK_TEST_SKIPTEST_H */

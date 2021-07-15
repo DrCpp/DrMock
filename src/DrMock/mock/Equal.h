@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_MOCK_EQUAL_H
-#define DRMOCK_SRC_MOCK_EQUAL_H
+#ifndef DRMOCK_SRC_DRMOCK_MOCK_EQUAL_H
+#define DRMOCK_SRC_DRMOCK_MOCK_EQUAL_H
 
 #include <DrMock/mock/IMatcher.h>
 #include <DrMock/mock/detail/IsEqual.h>
@@ -58,4 +58,4 @@ equal(Base expected)
 
 } // namespace drmock
 
-#endif /* DRMOCK_SRC_MOCK_EQUAL_H */
+#endif /* DRMOCK_SRC_DRMOCK_MOCK_EQUAL_H */

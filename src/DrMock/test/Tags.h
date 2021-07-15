@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_TEST_TAG_H
-#define DRMOCK_SRC_TEST_TAG_H
+#ifndef DRMOCK_SRC_DRMOCK_TEST_TAGS_H
+#define DRMOCK_SRC_DRMOCK_TEST_TAGS_H
 
 namespace drtest {
 
@@ -63,4 +63,4 @@ operator&=(tags& lhs, tags rhs)
 
 } // namespace drtest
 
-#endif /* DRMOCK_SRC_TEST_TAG_H */
+#endif /* DRMOCK_SRC_DRMOCK_TEST_TAGS_H */

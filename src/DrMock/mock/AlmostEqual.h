@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_MOCK_ALMOST_EQUAL_H
-#define DRMOCK_SRC_MOCK_ALMOST_EQUAL_H
+#ifndef DRMOCK_SRC_DRMOCK_MOCK_ALMOSTEQUAL_H
+#define DRMOCK_SRC_DRMOCK_MOCK_ALMOSTEQUAL_H
 
 #include <memory>
 
@@ -67,4 +67,4 @@ almost_equal(T expected, T abs_tol, T rel_tol)
 
 } // namespace drmock
 
-#endif /* DRMOCK_SRC_MOCK_ALMOST_EQUAL_H */
+#endif /* DRMOCK_SRC_DRMOCK_MOCK_ALMOSTEQUAL_H */
