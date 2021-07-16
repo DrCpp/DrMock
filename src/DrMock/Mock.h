@@ -16,6 +16,7 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include <DrMock/mock/IMatcher.h>
 #include <DrMock/mock/Method.h>
 #include <DrMock/mock/MethodCollection.h>
 #include <DrMock/mock/MockMacros.h>
