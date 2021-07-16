@@ -39,7 +39,7 @@ public:
   {}
 
   bool
-  invoke(const Base& actual) const override
+  match(const Base& actual) const override
   {
     auto is_equal = detail::IsEqual<Base, Derived>{};
     return is_equal(expected_, actual);

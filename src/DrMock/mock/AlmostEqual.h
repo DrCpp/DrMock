@@ -39,7 +39,7 @@ public:
     expected_{expected}, abs_tol_{abs_tol}, rel_tol_{rel_tol}
   {}
 
-  bool invoke(const T& actual) const override
+  bool match(const T& actual) const override
   {
     return drutility::almost_equal(actual, expected_, abs_tol_, rel_tol_);
   }

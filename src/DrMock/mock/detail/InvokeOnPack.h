@@ -49,7 +49,7 @@ private:
       const std::index_sequence<Is...>&
     ) const
   {
-    return (std::get<Is>(lhs)->invoke(std::get<Is>(rhs)) and ...);
+    return (std::get<Is>(lhs)->match(std::get<Is>(rhs)) and ...);
   }
 };
 

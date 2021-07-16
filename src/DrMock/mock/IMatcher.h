@@ -26,7 +26,7 @@ class IMatcher
 {
 public:
   virtual ~IMatcher() = default;
-  virtual bool invoke(const Base&) const = 0;
+  virtual bool match(const Base&) const = 0;
 };
 
 } // namespace drmock
