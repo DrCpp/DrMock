@@ -40,9 +40,8 @@ Abstract class template that represents a method's behavior. The
 
 (3) std::exception_ptr (the method has thrown)
 
-The produced output is decided by comparing the input with
-implementation specific data. The comparison method is set using the
-`setIsEqual()` method.
+The produced output is decided by matching the input with
+implementation specific data.
 */
 
 template<typename Class, typename Result, typename... Args>
