@@ -33,32 +33,26 @@ namespace drmock {
 
 /* StateBehavior
 
-(See also: AbstractBehavior.) Holds a StateObject, whose states are
-changed by calling by and determine the return value of call().
+(See also: `AbstractBehavior`.) Holds a StateObject, whose states are
+changed by `AbstractBehavior::call()` and determine the return value of
+`AbstractBehavior::call()`.
 
 * The entries of the _transition table_ take the following form:
 
-    (slot, oldState, tuple(input...), newState)
+    (slot, old_state, matcher, new_state)
 
-  Read: "On `input...`, transition `slot` from `oldState` (if that is its
-  state) to `newState`."
+  Read: "On `call(input...)`, if `matcher->match(input)` and `old_state`
+  matches the state of `slot`, then transition `slot` to `new_state`."
+  If this occurs, we say that the `(old_state, input...)` matches the
+  entry of the transition table.
 
-  A special state is the wildcard state `"*"`, which acts as a fallthru
-  state (see below).
+  Two states _match_ if they are equal as strings or if one of them is
+  `"*"` (the catch-all state, see below).
 
-* The transition table may never have any inconsitencies. Therefore, if
-  a transition is pushed that violates the following rules, an exception
-  is thrown:
-
-  (1) There may be no two entries with
-
-        slot1     is equal to slot2,
-        oldState1 is equal to oldState2, and
-        input1... is equal to input2... (using `wrap_in_shared_equal_`),
-
-      except if `oldState` is the wildcard state `"*"`.
-
-  (2) The wildcard state `"*"` may never occur as `newState`.
+  Beware of inconsistencies in the transition table. It is possible that
+  `(old_state, input...)` matches multiple entries of the transition
+  table with the same slot (this depends on the `matcher`). If this is
+  the case, the transition that is executed is undefined.
 
 * The return/result value of call() is determined by a _result slot_.
   The _return/result table_ is simply
@@ -66,12 +60,12 @@ changed by calling by and determine the return value of call().
     map: state (of result slot) -> (return value, emit)
 
 * The result table may never have any inconsitencies. Therefore, if
-  a transition is pushed that violates the following rules, an exception
-  is thrown:
+  a transition is pushed that violates the following rule, an exception
+  is thrown: 
 
   (1) There may be not two entries with
 
-        state1 is equal to state2.
+        `state1` is equal to `state2`.
 
       An entry with state equal to `"*"` is allowed, even alongside
       other entries (see below).
@@ -80,40 +74,30 @@ changed by calling by and determine the return value of call().
 
   (1) For every slot, find a matching entry
 
-        (slot, oldState, tuple(input...), newState)
+        (slot, old_state, matcher, new_state)
 
-      of the transition table (i.e. `slot` and `input...` match and
-      `oldState` is equal to `state_object_->get(slot)`). If found,
-      set the slot's state to `newState`.
+      of the transition table. If found, set the slot's state to
+      `new_state`.
 
       If no matching transition is found, search the wildcard
       transitions for a matching entry:
 
-        (slot, "*", tuple(input...), newState)
+        (slot, "*", matcher, new_state)
 
-      (i.e. `slot` and `input...` match). If found, set the slot's state
-      to `newState`.
+      If found, set the slot's state to `new_state`.
 
   (2) Take the (new) state of the result slot and look it up in the
-      result table. If a result (return value of exception pointer) is
-      found, return that. If no result is found, check if a return
-      statement for the wildcard state `"*"` exists. If yes, then return
-      its result. (In other words, concrete entries that precedence over
-      the wildcard state, which acts as a "catch-all".) Otherwise, if
-      the result type is void, return {}. Else, return an
-      `std::monostate`.
+      result table:
 
-*** Implementation details: ***
+      - If the result type is void, return {}.
+      - Otherwise, if a result (return value or exception pointer) is
+        found, return it. If no result is found, check if a return
+        statement for the wildcard state `"*"` exists and, if so, return
+        the result.
+      - Otherwise, return `std::monotstate{}`.
 
-* The transition table is implemented as follows:
-
-    map: slot -> { map: oldState -> { vector : (input..., newState) } }
-
-  A vector is used instead of a map/unordered_map to prevent the need for
-  an operator</std::hash.
-
-* The sole purpose of `wrap_in_shared_equal_` is to be used as argument
-  of AbstractBehavior::setIsEqual whenever the AbstractBehavior changes.
+The above does not take into account Qt signals. Please refer to the
+implementation for details.
 */
 
 template<typename Class, typename ReturnType, typename... Args>
@@ -126,9 +110,7 @@ public:
                    >;
 
   StateBehavior();
-  StateBehavior(
-      std::shared_ptr<StateObject>
-    );
+  StateBehavior(std::shared_ptr<StateObject>);
   StateBehavior(
       std::shared_ptr<StateObject>,
       std::shared_ptr<detail::IWrapInSharedEqual<Args...>>
