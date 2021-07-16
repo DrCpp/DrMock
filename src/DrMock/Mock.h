@@ -16,6 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include <DrMock/mock/AlmostEqual.h>
+#include <DrMock/mock/Equal.h>
 #include <DrMock/mock/IMatcher.h>
 #include <DrMock/mock/Method.h>
 #include <DrMock/mock/MethodCollection.h>
