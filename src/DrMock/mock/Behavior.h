@@ -24,7 +24,7 @@
 #include <utility>
 #include <variant>
 
-#include <DrMock/mock/detail/InvokeOnPack.h>
+#include <DrMock/mock/detail/MatchPack.h>
 #include <DrMock/mock/detail/IWrapInSharedEqual.h>
 #include <DrMock/mock/AbstractSignal.h>
 
@@ -119,7 +119,7 @@ private:
   unsigned int num_calls_ = 0;  // Number of productions made.
   bool persists_ = false;
   std::shared_ptr<detail::IWrapInSharedEqual<Args...>> wrap_in_shared_equal_{};
-  detail::InvokeOnPack<std::tuple<Args...>> invoke_on_pack_{};
+  detail::MatchPack<std::tuple<Args...>> match_pack_{};
 };
 
 } // namespace

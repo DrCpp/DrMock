@@ -16,18 +16,18 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_DRMOCK_MOCK_DETAIL_INVOKEONPACK_H
-#define DRMOCK_SRC_DRMOCK_MOCK_DETAIL_INVOKEONPACK_H
+#ifndef DRMOCK_SRC_DRMOCK_MOCK_DETAIL_MATCHPACK_H
+#define DRMOCK_SRC_DRMOCK_MOCK_DETAIL_MATCHPACK_H
 
 #include <DrMock/mock/IMatcher.h>
 
 namespace drmock { namespace detail {
 
 template<typename Bases>
-struct InvokeOnPack;
+struct MatchPack;
 
 template<typename... Bases>
-struct InvokeOnPack<std::tuple<Bases...>>
+struct MatchPack<std::tuple<Bases...>>
 {
   bool operator() (
       const std::tuple<std::shared_ptr<IMatcher<Bases>>...>& tuple,
@@ -55,4 +55,4 @@ private:
 
 }} // namespace drmock::detail
 
-#endif /* DRMOCK_SRC_DRMOCK_MOCK_DETAIL_INVOKEONPACK_H */
+#endif /* DRMOCK_SRC_DRMOCK_MOCK_DETAIL_MATCHPACK_H */

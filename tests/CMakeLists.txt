@@ -23,7 +23,7 @@ include_directories(${CMAKE_SOURCE_DIR}/src)
 drmock_test(TESTS
     Behavior.cpp
     BehaviorQueue.cpp
-    InvokeOnPack.cpp
+    MatchPack.cpp
     IsEqual.cpp
     Method.cpp
     MethodCollection.cpp

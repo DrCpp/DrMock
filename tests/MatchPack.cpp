@@ -17,7 +17,7 @@
 */
 
 #include <DrMock/Test.h>
-#include <DrMock/mock/detail/InvokeOnPack.h>
+#include <DrMock/mock/detail/MatchPack.h>
 #include <DrMock/mock/Equal.h>
 #include <DrMock/mock/IMatcher.h>
 
@@ -25,34 +25,34 @@ using namespace drmock;
 
 DRTEST_TEST(testStandard)
 {
-  detail::InvokeOnPack<std::tuple<int, std::string>> invoke_on_pack{};
+  detail::MatchPack<std::tuple<int, std::string>> match_pack{};
   auto equal1 = std::make_shared<Equal<int>>(12);
   auto equal2 = std::make_shared<Equal<std::string>>("12");
   auto t = std::make_tuple(equal1, equal2);
-  DRTEST_ASSERT(invoke_on_pack(t, 12, std::string{"12"}));
-  DRTEST_ASSERT(not invoke_on_pack(t, 13, std::string{"12"}));
-  DRTEST_ASSERT(not invoke_on_pack(t, 12, std::string{"13"}));
+  DRTEST_ASSERT(match_pack(t, 12, std::string{"12"}));
+  DRTEST_ASSERT(not match_pack(t, 13, std::string{"12"}));
+  DRTEST_ASSERT(not match_pack(t, 12, std::string{"13"}));
 }
 
 DRTEST_TEST(testNonPolymorphicPointer)
 {
-  detail::InvokeOnPack<std::tuple<
+  detail::MatchPack<std::tuple<
       std::shared_ptr<int>,
       std::unique_ptr<int>,
       int*
-    >> invoke_on_pack{};
+    >> match_pack{};
   auto t = std::make_tuple(
           std::make_shared<Equal<std::shared_ptr<int>>>(std::make_shared<int>(12)),
           std::make_shared<Equal<std::unique_ptr<int>>>(std::make_unique<int>(13)),
           std::make_shared<Equal<int*>>(new int{14})
         );
-  DRTEST_ASSERT(invoke_on_pack(
+  DRTEST_ASSERT(match_pack(
       t,
       std::make_shared<int>(12),
       std::make_unique<int>(13),
       new int{14}
     ));
-  DRTEST_ASSERT(not invoke_on_pack(
+  DRTEST_ASSERT(not match_pack(
       t,
       std::make_shared<int>(12),
       std::make_unique<int>(14),
@@ -84,13 +84,13 @@ private:
 DRTEST_TEST(testPolymorphicPointer)
 {
   {
-    detail::InvokeOnPack<
+    detail::MatchPack<
         std::tuple<
             std::shared_ptr<A>,
             std::unique_ptr<A>
           >
-      > invoke_on_pack{};
-    DRTEST_ASSERT(invoke_on_pack(
+      > match_pack{};
+    DRTEST_ASSERT(match_pack(
         std::make_tuple(
             std::make_shared<Equal<std::shared_ptr<A>>>(std::make_shared<A>(12)),
             std::make_shared<Equal<std::unique_ptr<A>, std::unique_ptr<B>>>(std::unique_ptr<B>(new B{1, 2}))
@@ -101,13 +101,13 @@ DRTEST_TEST(testPolymorphicPointer)
   }
 
   {
-    detail::InvokeOnPack<
+    detail::MatchPack<
         std::tuple<
             std::shared_ptr<A>,
             std::unique_ptr<A>
           >
-      > invoke_on_pack{};
-    DRTEST_ASSERT(invoke_on_pack(
+      > match_pack{};
+    DRTEST_ASSERT(match_pack(
         std::make_tuple(
             std::make_shared<Equal<std::shared_ptr<A>, std::shared_ptr<B>>>(std::shared_ptr<B>(new B{1, 2})),
             std::make_shared<Equal<std::unique_ptr<A>>>(std::make_unique<A>(12))
@@ -120,21 +120,21 @@ DRTEST_TEST(testPolymorphicPointer)
 
 DRTEST_TEST(testEmptyTuple)
 {
-  detail::InvokeOnPack<std::tuple<>> invoke_on_pack{};
-  DRTEST_ASSERT(invoke_on_pack(std::tuple<>{}));
+  detail::MatchPack<std::tuple<>> match_pack{};
+  DRTEST_ASSERT(match_pack(std::tuple<>{}));
 }
 
 DRTEST_TEST(derivedForBase)
 {
-  detail::InvokeOnPack<std::tuple<std::shared_ptr<A>>> invoke_on_pack{};
+  detail::MatchPack<std::tuple<std::shared_ptr<A>>> match_pack{};
   auto p1 = std::make_shared<B>(1, 2);
   auto p2 = std::make_shared<B>(3, 4);
   auto p1_2 = std::make_shared<B>(1, 2);
-  DRTEST_ASSERT(not invoke_on_pack(
+  DRTEST_ASSERT(not match_pack(
       std::make_tuple(std::make_shared<Equal<std::shared_ptr<A>>>(p1)),
       p2
     ));
-  DRTEST_ASSERT(invoke_on_pack(
+  DRTEST_ASSERT(match_pack(
       std::make_tuple(std::make_shared<Equal<std::shared_ptr<A>>>(p1)),
       p1_2
     ));

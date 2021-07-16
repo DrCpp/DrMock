@@ -26,7 +26,7 @@
 
 #include <DrMock/mock/detail/IWrapInSharedEqual.h>
 #include <DrMock/mock/AbstractBehavior.h>
-#include <DrMock/mock/detail/InvokeOnPack.h>
+#include <DrMock/mock/detail/MatchPack.h>
 #include <DrMock/mock/StateObject.h>
 
 namespace drmock {
@@ -231,7 +231,7 @@ private:
           std::vector<std::pair<std::tuple<std::shared_ptr<IMatcher<Args>>...>, std::string>>
         >
     > transitions_{};  // slot -> { state -> { (input, target) } }
-  detail::InvokeOnPack<std::tuple<Args...>> invoke_on_pack_{};
+  detail::MatchPack<std::tuple<Args...>> match_pack_{};
 };
 
 } // namespace drmock

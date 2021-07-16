@@ -214,7 +214,7 @@ Behavior<Class, ReturnType, Args...>::match(const Args&... args) const
 {
   if (expect_)
   {
-    return invoke_on_pack_(*expect_, args...);
+    return match_pack_(*expect_, args...);
   }
   else
   {

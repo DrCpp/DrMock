@@ -270,7 +270,7 @@ StateBehavior<Class, ReturnType, Args...>::call(const Args&... args)
       auto& vec = map.at("*");  // { (input..., target) }
       for (const auto& p : vec)
       {
-        if ( invoke_on_pack_(p.first, args...) )
+        if ( match_pack_(p.first, args...) )
         {
           new_state = p.second;
           found_match = true;
@@ -283,7 +283,7 @@ StateBehavior<Class, ReturnType, Args...>::call(const Args&... args)
       auto& vec = map.at(current_state);  // { (input..., target) }
       for (const auto& p : vec)
       {
-        if ( invoke_on_pack_(p.first, args...) )
+        if ( match_pack_(p.first, args...) )
         {
           new_state = p.second;
           found_match = true;
@@ -429,7 +429,7 @@ StateBehavior<Class, ReturnType, Args...>::transition(
   // // transitions that match the same (slot, current_state, input...).
   // for (const auto& q : vec)
   // {
-  //   if ( invoke_on_pack_(q.first, input...) )
+  //   if ( match_pack_(q.first, input...) )
   //   {
   //     throw std::runtime_error{"Transition conflict."};
   //   }
