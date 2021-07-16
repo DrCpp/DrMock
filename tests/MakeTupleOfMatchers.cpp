@@ -19,13 +19,13 @@
 #include <DrMock/Test.h>
 #include <DrMock/mock/Equal.h>
 #include <DrMock/mock/detail/MatchPack.h>
-#include <DrMock/mock/detail/WrapInSharedEqual.h>
+#include <DrMock/mock/detail/MakeTupleOfMatchers.h>
 
 using namespace drmock;
 
 DRTEST_TEST(wrap_builtin)
 {
-  detail::WrapInSharedEqual<std::tuple<int, float, std::string>> wrapper{};
+  detail::MakeTupleOfMatchers<std::tuple<int, float, std::string>> wrapper{};
   auto match_pack = detail::MatchPack<std::tuple<int, float, std::string>>{};
   auto eq1 = wrapper.wrap(123, 1.23f, "foo");
   auto eq2 = wrapper.wrap(std::get<0>(eq1), std::get<1>(eq1), std::get<2>(eq1));  // Rewrap.
@@ -96,7 +96,7 @@ DRTEST_TEST(wrap_shared_polymorphic)
   DRTEST_FETCH(std::shared_ptr<A>, expected3);
   DRTEST_FETCH(bool, result);
 
-  detail::WrapInSharedEqual<
+  detail::MakeTupleOfMatchers<
       std::tuple<std::shared_ptr<A>, std::shared_ptr<A>, std::shared_ptr<A>>,
       std::tuple<std::shared_ptr<B>, std::shared_ptr<B>, std::shared_ptr<B>>
     > wrapper{};

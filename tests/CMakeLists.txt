@@ -31,7 +31,7 @@ drmock_test(TESTS
     StateObject.cpp
     Test.cpp
     TypeTraits.cpp
-    WrapInSharedEqual.cpp
+    MakeTupleOfMatchers.cpp
 )
 
 # Test Signal.

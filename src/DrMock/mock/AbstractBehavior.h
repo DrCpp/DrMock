@@ -25,7 +25,7 @@
 #include <variant>
 
 #include <DrMock/mock/AbstractSignal.h>
-#include <DrMock/mock/detail/IWrapInSharedEqual.h>
+#include <DrMock/mock/detail/IMakeTupleOfMatchers.h>
 
 namespace drmock {
 

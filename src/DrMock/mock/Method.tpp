@@ -42,7 +42,7 @@ template<typename Class, typename ReturnType, typename... Args>
 Method<Class, ReturnType, Args...>::Method(std::string name, std::shared_ptr<StateObject> state_object)
 :
   name_{std::move(name)},
-  wrap_in_shared_equal_{std::make_shared<detail::WrapInSharedEqual<std::tuple<Args...>>>()},
+  wrap_in_shared_equal_{std::make_shared<detail::MakeTupleOfMatchers<std::tuple<Args...>>>()},
   state_object_{std::move(state_object)},
   state_behavior_{},
   behavior_queue_{std::make_shared<BehaviorQueue<Class, ReturnType, Args...>>(wrap_in_shared_equal_)},
@@ -95,7 +95,7 @@ template<typename... Deriveds>
 void
 Method<Class, ReturnType, Args...>::polymorphic()
 {
-  wrap_in_shared_equal_ = std::make_shared<detail::WrapInSharedEqual<
+  wrap_in_shared_equal_ = std::make_shared<detail::MakeTupleOfMatchers<
       std::tuple<Args...>,
       std::tuple<Deriveds...>
     >>();

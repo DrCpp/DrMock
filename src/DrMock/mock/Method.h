@@ -102,7 +102,7 @@ public:
 
 private:
   std::string name_{};
-  std::shared_ptr<detail::IWrapInSharedEqual<Args...>> wrap_in_shared_equal_{};
+  std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>> wrap_in_shared_equal_{};
   std::shared_ptr<StateObject> state_object_{};
   std::shared_ptr<StateBehavior<Class, ReturnType, Args...>> state_behavior_{};
   std::shared_ptr<BehaviorQueue<Class, ReturnType, Args...>> behavior_queue_{};

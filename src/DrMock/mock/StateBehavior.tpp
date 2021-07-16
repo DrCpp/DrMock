@@ -16,7 +16,7 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <DrMock/mock/detail/WrapInSharedEqual.h>
+#include <DrMock/mock/detail/MakeTupleOfMatchers.h>
 #include <DrMock/mock/Signal.h>
 
 namespace drmock {
@@ -26,7 +26,7 @@ StateBehavior<Class, ReturnType, Args...>::StateBehavior()
 :
   StateBehavior{
       std::make_shared<StateObject>(),
-      std::make_shared<detail::WrapInSharedEqual<std::tuple<Args...>>>()
+      std::make_shared<detail::MakeTupleOfMatchers<std::tuple<Args...>>>()
     }
 {}
 
@@ -37,14 +37,14 @@ StateBehavior<Class, ReturnType, Args...>::StateBehavior(
 :
   StateBehavior{
       state_object,
-      std::make_shared<detail::WrapInSharedEqual<std::tuple<Args...>>>()
+      std::make_shared<detail::MakeTupleOfMatchers<std::tuple<Args...>>>()
     }
 {}
 
 template<typename Class, typename ReturnType, typename... Args>
 StateBehavior<Class, ReturnType, Args...>::StateBehavior(
     std::shared_ptr<StateObject> state_object,
-    std::shared_ptr<detail::IWrapInSharedEqual<Args...>> wrap_in_shared_equal
+    std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>> wrap_in_shared_equal
   )
 :
   state_object_{state_object},
@@ -118,7 +118,7 @@ StateBehavior<Class, ReturnType, Args...>::transition(
       "Specified impossible polymorphic setting"
     );
   return transition(
-      std::make_shared<detail::WrapInSharedEqual<std::tuple<Args...>, std::tuple<Deriveds...>>>(),
+      std::make_shared<detail::MakeTupleOfMatchers<std::tuple<Args...>, std::tuple<Deriveds...>>>(),
       slot,
       current_state,
       std::move(new_state),
@@ -135,7 +135,7 @@ StateBehavior<Class, ReturnType, Args...>::polymorphic()
       drutility::detail::is_base_of_tuple_v<std::tuple<std::decay_t<Args>...>, std::tuple<std::decay_t<Deriveds>...>>,
       "Specified impossible polymorphic setting"
     );
-  wrap_in_shared_equal_ = std::make_shared<detail::WrapInSharedEqual<
+  wrap_in_shared_equal_ = std::make_shared<detail::MakeTupleOfMatchers<
       std::tuple<Args...>,
       std::tuple<Deriveds...>
     >>();
@@ -405,7 +405,7 @@ StateBehavior<Class, ReturnType, Args...>::updateResultSlot(
 template<typename Class, typename ReturnType, typename... Args>
 StateBehavior<Class, ReturnType, Args...>&
 StateBehavior<Class, ReturnType, Args...>::transition(
-    const std::shared_ptr<detail::IWrapInSharedEqual<Args...>>& wrap_in_shared_equal,
+    const std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>>& wrap_in_shared_equal,
     const std::string& slot,
     const std::string& current_state,
     std::string new_state,

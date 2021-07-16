@@ -21,12 +21,12 @@ namespace drmock {
 template<typename Class, typename ReturnType, typename... Args>
 BehaviorQueue<Class, ReturnType, Args...>::BehaviorQueue()
 :
-  BehaviorQueue{std::make_shared<detail::WrapInSharedEqual<std::tuple<Args...>>>()}
+  BehaviorQueue{std::make_shared<detail::MakeTupleOfMatchers<std::tuple<Args...>>>()}
 {}
 
 template<typename Class, typename ReturnType, typename... Args>
 BehaviorQueue<Class, ReturnType, Args...>::BehaviorQueue(
-    std::shared_ptr<detail::IWrapInSharedEqual<Args...>> wrap_in_shared_equal
+    std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>> wrap_in_shared_equal
   )
 :
   wrap_in_shared_equal_{std::move(wrap_in_shared_equal)}
@@ -59,7 +59,7 @@ template<typename... Deriveds>
 void
 BehaviorQueue<Class, ReturnType, Args...>::polymorphic()
 {
-  wrap_in_shared_equal_ = std::make_shared<detail::WrapInSharedEqual<
+  wrap_in_shared_equal_ = std::make_shared<detail::MakeTupleOfMatchers<
       std::tuple<Args...>,
       std::tuple<Deriveds...>
     >>();

@@ -16,24 +16,24 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_DRMOCK_MOCK_DETAIL_WRAPINSHAREDEQUAL_H
-#define DRMOCK_SRC_DRMOCK_MOCK_DETAIL_WRAPINSHAREDEQUAL_H
+#ifndef DRMOCK_SRC_DRMOCK_MOCK_DETAIL_MAKETUPLEOFMATCHERS_H
+#define DRMOCK_SRC_DRMOCK_MOCK_DETAIL_MAKETUPLEOFMATCHERS_H
 
 #include <memory>
 #include <tuple>
 #include <type_traits>
 
-#include <DrMock/mock/detail/IWrapInSharedEqual.h>
+#include <DrMock/mock/detail/IMakeTupleOfMatchers.h>
 #include <DrMock/mock/Equal.h>
 #include <DrMock/mock/IMatcher.h>
 
 namespace drmock { namespace detail {
 
 template<typename Base, typename Derived = Base>
-struct WrapInSharedEqual;
+struct MakeTupleOfMatchers;
 
 template<typename... Bases, typename... Deriveds>
-struct WrapInSharedEqual<std::tuple<Bases...>, std::tuple<Deriveds...>> : public IWrapInSharedEqual<Bases...>
+struct MakeTupleOfMatchers<std::tuple<Bases...>, std::tuple<Deriveds...>> : public IMakeTupleOfMatchers<Bases...>
 {
   static_assert(sizeof...(Bases) == sizeof...(Deriveds));
 
@@ -61,4 +61,4 @@ private:
 
 }} // namespace drmock::detail
 
-#endif /* DRMOCK_SRC_DRMOCK_MOCK_DETAIL_WRAPINSHAREDEQUAL_H */
+#endif /* DRMOCK_SRC_DRMOCK_MOCK_DETAIL_MAKETUPLEOFMATCHERS_H */

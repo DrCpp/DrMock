@@ -25,7 +25,7 @@
 #include <variant>
 
 #include <DrMock/mock/detail/MatchPack.h>
-#include <DrMock/mock/detail/IWrapInSharedEqual.h>
+#include <DrMock/mock/detail/IMakeTupleOfMatchers.h>
 #include <DrMock/mock/AbstractSignal.h>
 
 namespace drmock {
@@ -64,7 +64,7 @@ public:
                    >;
 
   Behavior();
-  Behavior(std::shared_ptr<detail::IWrapInSharedEqual<Args...>>);
+  Behavior(std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>>);
 
   // Expect any argument.
   template<typename T = std::tuple<Args...>>
@@ -118,7 +118,7 @@ private:
   unsigned int times_max_ = 1;
   unsigned int num_calls_ = 0;  // Number of productions made.
   bool persists_ = false;
-  std::shared_ptr<detail::IWrapInSharedEqual<Args...>> wrap_in_shared_equal_{};
+  std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>> wrap_in_shared_equal_{};
   detail::MatchPack<std::tuple<Args...>> match_pack_{};
 };
 

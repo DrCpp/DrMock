@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_DRMOCK_MOCK_DETAIIL_IWRAPINSHAREDEQUAL_H
-#define DRMOCK_SRC_DRMOCK_MOCK_DETAIIL_IWRAPINSHAREDEQUAL_H
+#ifndef DRMOCK_SRC_DRMOCK_MOCK_DETAIIL_IMAKETUPLEOFMATCHERS_H
+#define DRMOCK_SRC_DRMOCK_MOCK_DETAIIL_IMAKETUPLEOFMATCHERS_H
 
 #include <memory>
 #include <tuple>
@@ -32,14 +32,14 @@ template<typename T>
 using expect_t = Variant<T, std::shared_ptr<IMatcher<T>>>;
 
 template<typename... Bases>
-class IWrapInSharedEqual
+class IMakeTupleOfMatchers
 {
 public:
-  virtual ~IWrapInSharedEqual() = default;
+  virtual ~IMakeTupleOfMatchers() = default;
   virtual std::tuple<std::shared_ptr<IMatcher<Bases>>...>
   wrap(expect_t<Bases>&&... pack) = 0;
 };
 
 }} // namespace drmock::detail
 
-#endif /* DRMOCK_SRC_DRMOCK_MOCK_DETAIIL_IWRAPINSHAREDEQUAL_H */
+#endif /* DRMOCK_SRC_DRMOCK_MOCK_DETAIIL_IMAKETUPLEOFMATCHERS_H */

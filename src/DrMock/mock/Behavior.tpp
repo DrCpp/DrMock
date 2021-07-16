@@ -17,7 +17,7 @@
 */
 
 #include <DrMock/utility/detail/TypeInfo.h>
-#include <DrMock/mock/detail/WrapInSharedEqual.h>
+#include <DrMock/mock/detail/MakeTupleOfMatchers.h>
 #include <DrMock/mock/Signal.h>
 
 namespace drmock {
@@ -25,12 +25,12 @@ namespace drmock {
 template<typename Class, typename ReturnType, typename... Args>
 Behavior<Class, ReturnType, Args...>::Behavior()
 :
-  Behavior{std::make_shared<detail::WrapInSharedEqual<std::tuple<Args...>>>()}
+  Behavior{std::make_shared<detail::MakeTupleOfMatchers<std::tuple<Args...>>>()}
 {}
 
 template<typename Class, typename ReturnType, typename... Args>
 Behavior<Class, ReturnType, Args...>::Behavior(
-    std::shared_ptr<detail::IWrapInSharedEqual<Args...>> wrap_in_shared_equal
+    std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>> wrap_in_shared_equal
   )
 :
   wrap_in_shared_equal_{std::move(wrap_in_shared_equal)}
@@ -201,7 +201,7 @@ Behavior<Class, ReturnType, Args...>::polymorphic()
       drutility::detail::is_base_of_tuple_v<std::tuple<std::decay_t<Args>...>, std::tuple<std::decay_t<Deriveds>...>>,
       "Specified impossible polymorphic setting"
     );
-  wrap_in_shared_equal_ = std::make_shared<detail::WrapInSharedEqual<
+  wrap_in_shared_equal_ = std::make_shared<detail::MakeTupleOfMatchers<
       std::tuple<Args...>,
       std::tuple<Deriveds...>
     >>();

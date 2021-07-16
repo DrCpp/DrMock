@@ -24,7 +24,7 @@
 #include <memory>
 #include <variant>
 
-#include <DrMock/mock/detail/IWrapInSharedEqual.h>
+#include <DrMock/mock/detail/IMakeTupleOfMatchers.h>
 #include <DrMock/mock/AbstractBehavior.h>
 #include <DrMock/mock/detail/MatchPack.h>
 #include <DrMock/mock/StateObject.h>
@@ -113,7 +113,7 @@ public:
   StateBehavior(std::shared_ptr<StateObject>);
   StateBehavior(
       std::shared_ptr<StateObject>,
-      std::shared_ptr<detail::IWrapInSharedEqual<Args...>>
+      std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>>
     );
 
   // Add transition for default slot (resp. `slot`). Throws according to
@@ -206,7 +206,7 @@ private:
 
   // Implementation detail of public `transition` methods.
   StateBehavior& transition(
-      const std::shared_ptr<detail::IWrapInSharedEqual<Args...>>& wrap_in_shared_equal,
+      const std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>>& wrap_in_shared_equal,
       const std::string& slot,
       const std::string& current_state,
       std::string new_state,
@@ -214,7 +214,7 @@ private:
     );
 
   std::shared_ptr<StateObject> state_object_;
-  std::shared_ptr<detail::IWrapInSharedEqual<Args...>> wrap_in_shared_equal_{};
+  std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>> wrap_in_shared_equal_{};
   std::string slot_{};
   std::map<
       std::string,

@@ -24,7 +24,7 @@
 #include <variant>
 #include <vector>
 
-#include <DrMock/mock/detail/IWrapInSharedEqual.h>
+#include <DrMock/mock/detail/IMakeTupleOfMatchers.h>
 #include <DrMock/mock/AbstractBehavior.h>
 #include <DrMock/mock/Behavior.h>
 
@@ -64,7 +64,7 @@ class BehaviorQueue final : public AbstractBehavior<Class, ReturnType, Args...>
 
 public:
   BehaviorQueue();
-  BehaviorQueue(std::shared_ptr<detail::IWrapInSharedEqual<Args...>>);
+  BehaviorQueue(std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>>);
 
   Behavior<Class, ReturnType, Args...>& push();
   Behavior<Class, ReturnType, Args...>& back();
@@ -84,7 +84,7 @@ public:
   bool is_exhausted() const;
 
 private:
-  std::shared_ptr<detail::IWrapInSharedEqual<Args...>> wrap_in_shared_equal_{};
+  std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>> wrap_in_shared_equal_{};
   std::vector<Behavior<Class, ReturnType, Args...>> behaviors_{};
   bool enforce_order_ = true;
 };
