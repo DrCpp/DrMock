@@ -44,11 +44,11 @@ StateBehavior<Class, ReturnType, Args...>::StateBehavior(
 template<typename Class, typename ReturnType, typename... Args>
 StateBehavior<Class, ReturnType, Args...>::StateBehavior(
     std::shared_ptr<StateObject> state_object,
-    std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>> wrap_in_shared_equal
+    std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>> make_tuple_of_matchers
   )
 :
   state_object_{state_object},
-  wrap_in_shared_equal_{wrap_in_shared_equal}
+  make_tuple_of_matchers_{make_tuple_of_matchers}
 {}
 
 template<typename Class, typename ReturnType, typename... Args>
@@ -60,7 +60,7 @@ StateBehavior<Class, ReturnType, Args...>::transition(
   )
 {
   return transition(
-      wrap_in_shared_equal_,
+      make_tuple_of_matchers_,
       "",
       current_state,
       std::move(new_state),
@@ -78,7 +78,7 @@ StateBehavior<Class, ReturnType, Args...>::transition(
   )
 {
   return transition(
-      wrap_in_shared_equal_,
+      make_tuple_of_matchers_,
       slot,
       current_state,
       std::move(new_state),
@@ -135,7 +135,7 @@ StateBehavior<Class, ReturnType, Args...>::polymorphic()
       drutility::detail::is_base_of_tuple_v<std::tuple<std::decay_t<Args>...>, std::tuple<std::decay_t<Deriveds>...>>,
       "Specified impossible polymorphic setting"
     );
-  wrap_in_shared_equal_ = std::make_shared<detail::MakeTupleOfMatchers<
+  make_tuple_of_matchers_ = std::make_shared<detail::MakeTupleOfMatchers<
       std::tuple<Args...>,
       std::tuple<Deriveds...>
     >>();
@@ -405,7 +405,7 @@ StateBehavior<Class, ReturnType, Args...>::updateResultSlot(
 template<typename Class, typename ReturnType, typename... Args>
 StateBehavior<Class, ReturnType, Args...>&
 StateBehavior<Class, ReturnType, Args...>::transition(
-    const std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>>& wrap_in_shared_equal,
+    const std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>>& make_tuple_of_matchers,
     const std::string& slot,
     const std::string& current_state,
     std::string new_state,
@@ -438,7 +438,7 @@ StateBehavior<Class, ReturnType, Args...>::transition(
   // If all checks out, add the transition.
   vec.push_back(
       std::make_pair(
-          wrap_in_shared_equal->wrap(std::move(input)...),
+          make_tuple_of_matchers->wrap(std::move(input)...),
           std::move(new_state)
         )
     );

@@ -42,10 +42,10 @@ template<typename Class, typename ReturnType, typename... Args>
 Method<Class, ReturnType, Args...>::Method(std::string name, std::shared_ptr<StateObject> state_object)
 :
   name_{std::move(name)},
-  wrap_in_shared_equal_{std::make_shared<detail::MakeTupleOfMatchers<std::tuple<Args...>>>()},
+  make_tuple_of_matchers_{std::make_shared<detail::MakeTupleOfMatchers<std::tuple<Args...>>>()},
   state_object_{std::move(state_object)},
   state_behavior_{},
-  behavior_queue_{std::make_shared<BehaviorQueue<Class, ReturnType, Args...>>(wrap_in_shared_equal_)},
+  behavior_queue_{std::make_shared<BehaviorQueue<Class, ReturnType, Args...>>(make_tuple_of_matchers_)},
   behavior_{behavior_queue_}
 {}
 
@@ -55,7 +55,7 @@ Method<Class, ReturnType, Args...>::io()
 {
   if (not behavior_queue_)
   {
-    behavior_queue_ = std::make_shared<BehaviorQueue<Class, ReturnType, Args...>>(wrap_in_shared_equal_);
+    behavior_queue_ = std::make_shared<BehaviorQueue<Class, ReturnType, Args...>>(make_tuple_of_matchers_);
   }
   behavior_ = behavior_queue_;
   return *behavior_queue_;
@@ -83,7 +83,7 @@ Method<Class, ReturnType, Args...>::state()
   {
     state_behavior_ = std::make_shared<StateBehavior<Class, ReturnType, Args...>>(
         state_object_,
-        wrap_in_shared_equal_
+        make_tuple_of_matchers_
       );
   }
   behavior_ = state_behavior_;
@@ -95,7 +95,7 @@ template<typename... Deriveds>
 void
 Method<Class, ReturnType, Args...>::polymorphic()
 {
-  wrap_in_shared_equal_ = std::make_shared<detail::MakeTupleOfMatchers<
+  make_tuple_of_matchers_ = std::make_shared<detail::MakeTupleOfMatchers<
       std::tuple<Args...>,
       std::tuple<Deriveds...>
     >>();

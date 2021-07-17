@@ -45,13 +45,13 @@ struct MakeTupleOfMatchers<std::tuple<Bases...>, std::tuple<Deriveds...>>
   std::tuple<std::shared_ptr<IMatcher<Bases>>...>
   wrap(expect_t<Bases>&&... pack)
   {
-    return std::make_tuple(wrap_in_shared_equal<Bases, Deriveds>(std::forward<expect_t<Bases>>(pack))...);
+    return std::make_tuple(wrap_impl<Bases, Deriveds>(std::forward<expect_t<Bases>>(pack))...);
   }
 
 private:
   template<typename Base, typename Derived = Base>
   std::shared_ptr<IMatcher<Base>>
-  wrap_in_shared_equal(expect_t<Base>&& var)
+  wrap_impl(expect_t<Base>&& var)
   {
     if (var.template holds_alternative<Base>())
     {

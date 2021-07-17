@@ -26,17 +26,17 @@ BehaviorQueue<Class, ReturnType, Args...>::BehaviorQueue()
 
 template<typename Class, typename ReturnType, typename... Args>
 BehaviorQueue<Class, ReturnType, Args...>::BehaviorQueue(
-    std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>> wrap_in_shared_equal
+    std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>> make_tuple_of_matchers
   )
 :
-  wrap_in_shared_equal_{std::move(wrap_in_shared_equal)}
+  make_tuple_of_matchers_{std::move(make_tuple_of_matchers)}
 {}
 
 template<typename Class, typename ReturnType, typename... Args>
 Behavior<Class, ReturnType, Args...>&
 BehaviorQueue<Class, ReturnType, Args...>::push()
 {
-  behaviors_.emplace_back(wrap_in_shared_equal_);
+  behaviors_.emplace_back(make_tuple_of_matchers_);
   return behaviors_.back();
 }
 
@@ -59,7 +59,7 @@ template<typename... Deriveds>
 void
 BehaviorQueue<Class, ReturnType, Args...>::polymorphic()
 {
-  wrap_in_shared_equal_ = std::make_shared<detail::MakeTupleOfMatchers<
+  make_tuple_of_matchers_ = std::make_shared<detail::MakeTupleOfMatchers<
       std::tuple<Args...>,
       std::tuple<Deriveds...>
     >>();
