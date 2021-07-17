@@ -49,7 +49,7 @@ searched from front to back for a matching element.
   Behavior instance never leaves the queue. Instead, the _front_ of the
   queue is determined by the first element that still persists.
 
-* The sole purpose of `wrap_in_shared_equal_` is to be used as argument
+* The sole purpose of `make_tuple_of_matchers_` is to be used as argument
   of Behavior::setIsEqual whenever new elements are pushed onto the
   queue.
 */
@@ -70,7 +70,7 @@ public:
   Behavior<Class, ReturnType, Args...>& back();
   void enforce_order(bool);
 
-  // Set `wrap_in_shared_equal_` and call `setIsEqual` for *all* elements
+  // Set `make_tuple_of_matchers_` and call `setIsEqual` for *all* elements
   // of the queue.
   template<typename... Deriveds> void polymorphic();
 
@@ -84,7 +84,7 @@ public:
   bool is_exhausted() const;
 
 private:
-  std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>> wrap_in_shared_equal_{};
+  std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>> make_tuple_of_matchers_{};
   std::vector<Behavior<Class, ReturnType, Args...>> behaviors_{};
   bool enforce_order_ = true;
 };

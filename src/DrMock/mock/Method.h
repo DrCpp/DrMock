@@ -62,7 +62,7 @@ is returned. Otherwise, `std::abort()` is called.
 * The currently used AbstractBehavior (`state_behavior_` or
   `behavior_queue_`) is `behavior_`, while the other is a nullptr.
 
-* The sole purpose of `wrap_in_shared_equal_` is to be used as argument
+* The sole purpose of `make_tuple_of_matchers_` is to be used as argument
   of AbstractBehavior::setIsEqual whenever the AbstractBehavior changes.
 */
 
@@ -102,7 +102,7 @@ public:
 
 private:
   std::string name_{};
-  std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>> wrap_in_shared_equal_{};
+  std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>> make_tuple_of_matchers_{};
   std::shared_ptr<StateObject> state_object_{};
   std::shared_ptr<StateBehavior<Class, ReturnType, Args...>> state_behavior_{};
   std::shared_ptr<BehaviorQueue<Class, ReturnType, Args...>> behavior_queue_{};

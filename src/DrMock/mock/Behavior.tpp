@@ -30,10 +30,10 @@ Behavior<Class, ReturnType, Args...>::Behavior()
 
 template<typename Class, typename ReturnType, typename... Args>
 Behavior<Class, ReturnType, Args...>::Behavior(
-    std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>> wrap_in_shared_equal
+    std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>> make_tuple_of_matchers
   )
 :
-  wrap_in_shared_equal_{std::move(wrap_in_shared_equal)}
+  make_tuple_of_matchers_{std::move(make_tuple_of_matchers)}
 {}
 
 template<typename Class, typename ReturnType, typename... Args>
@@ -62,7 +62,7 @@ Behavior<Class, ReturnType, Args...>::expects(detail::expect_t<Args>... args)
         "Behavior object already configured. Please check your mock object configuration."
       };
   }
-  expect_ = wrap_in_shared_equal_->wrap(std::move(args)...);
+  expect_ = make_tuple_of_matchers_->wrap(std::move(args)...);
   return *this;
 }
 
@@ -201,7 +201,7 @@ Behavior<Class, ReturnType, Args...>::polymorphic()
       drutility::detail::is_base_of_tuple_v<std::tuple<std::decay_t<Args>...>, std::tuple<std::decay_t<Deriveds>...>>,
       "Specified impossible polymorphic setting"
     );
-  wrap_in_shared_equal_ = std::make_shared<detail::MakeTupleOfMatchers<
+  make_tuple_of_matchers_ = std::make_shared<detail::MakeTupleOfMatchers<
       std::tuple<Args...>,
       std::tuple<Deriveds...>
     >>();

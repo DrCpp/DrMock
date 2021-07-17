@@ -118,7 +118,7 @@ private:
   unsigned int times_max_ = 1;
   unsigned int num_calls_ = 0;  // Number of productions made.
   bool persists_ = false;
-  std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>> wrap_in_shared_equal_{};
+  std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>> make_tuple_of_matchers_{};
   detail::MatchPack<std::tuple<Args...>> match_pack_{};
 };
 

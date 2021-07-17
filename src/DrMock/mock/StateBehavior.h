@@ -208,7 +208,7 @@ private:
 
   // Implementation detail of public `transition` methods.
   StateBehavior& transition(
-      const std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>>& wrap_in_shared_equal,
+      const std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>>& make_tuple_of_matchers,
       const std::string& slot,
       const std::string& current_state,
       std::string new_state,
@@ -216,7 +216,7 @@ private:
     );
 
   std::shared_ptr<StateObject> state_object_;
-  std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>> wrap_in_shared_equal_{};
+  std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>> make_tuple_of_matchers_{};
   std::string slot_{};
   std::map<
       std::string,
