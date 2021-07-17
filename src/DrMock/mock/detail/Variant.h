@@ -18,7 +18,7 @@ class Variant
 public:
   Variant()
   :
-    var_{T1{}}
+    var_{}
   {}
 
   template<typename... Ts, typename = std::void_t<decltype(T1{std::declval<Ts>()...})>>
