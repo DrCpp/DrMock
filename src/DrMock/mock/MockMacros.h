@@ -21,10 +21,9 @@
 
 /* Mock-specific macros
  *
- * Beware! This header should _never_ be used in production code!
- * It is for use in mock code only (that is, for use by the
- * DrMockGenerator), and will be included in the source code of mock
- * objects.
+ * Beware! This header should _never_ be used in production code! It is
+ * for use in mock code only (that is, for use by drmock-generator), and
+ * will be included in the source code of mock objects.
  *
  * To apply macros _only_ in mock code, protect them using
  *
@@ -38,13 +37,12 @@
 // The macro DRMOCK is defined if and only if this header is included.
 #define DRMOCK
 
-// Create a trivial operator== for argument.
-//
-// Note: The entire namespace of the class must be specified.
+// Create a trivial operator== for `cls`. The entire namespace of the
+// class must be specified.
 #define DRMOCK_DUMMY(cls) \
 inline bool operator==(const cls&, const cls&) \
 { \
   return true; \
-} // Define trivial operator==.
+}
 
 #endif /* DRMOCK_SRC_DRMOCK_MOCK_MOCKMACROS_H */

@@ -50,7 +50,7 @@ private:
   T rel_tol_;
 };
 
-// Convenience function for quickly creating a shared object.
+// Convenience functions for quickly creating a shared object.
 template<typename T>
 std::shared_ptr<IMatcher<T>>
 almost_equal(T expected)

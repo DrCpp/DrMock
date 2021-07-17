@@ -33,10 +33,15 @@ template<typename Base, typename Derived = Base>
 struct MakeTupleOfMatchers;
 
 template<typename... Bases, typename... Deriveds>
-struct MakeTupleOfMatchers<std::tuple<Bases...>, std::tuple<Deriveds...>> : public IMakeTupleOfMatchers<Bases...>
+struct MakeTupleOfMatchers<std::tuple<Bases...>, std::tuple<Deriveds...>>
+:
+  public IMakeTupleOfMatchers<Bases...>
 {
   static_assert(sizeof...(Bases) == sizeof...(Deriveds));
 
+  // Transform a tuple of `Variant<Args, IMatcher<Args>>...` into a
+  // tuple of `std::shared_ptr<IMatcher<Args>>` by wrapping all "naked"
+  // `Args` into `IsEqual<Bases, Deriveds>`.
   std::tuple<std::shared_ptr<IMatcher<Bases>>...>
   wrap(expect_t<Bases>&&... pack)
   {

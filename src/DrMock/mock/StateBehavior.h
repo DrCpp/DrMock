@@ -130,7 +130,7 @@ public:
       detail::expect_t<Args>... input
     );
 
-  // Convenience function for one-time polymorphic specification.
+  // Convenience function for one-shot polymorphic specification.
   template<typename... Deriveds>
   StateBehavior& transition(
       const std::string& current_state,
@@ -170,7 +170,7 @@ public:
       E&& excp
     );
 
-  // Add emit command to result table - see above for details.
+  // Add Qt signal emit for default slot (resp. `slot`).
   template<typename... SigArgs> StateBehavior& emits(
       const std::string& state,
       void (Class::*)(SigArgs...),
@@ -183,7 +183,8 @@ public:
       SigArgs&&...
     );
 
-  // Setter for `wrap_in_shared_equal_`.
+  // Define what polymorhism is used when wrapping naked `Args...` into
+  // a matcher.
   template<typename... Deriveds> StateBehavior& polymorphic();
 
   virtual std::variant<

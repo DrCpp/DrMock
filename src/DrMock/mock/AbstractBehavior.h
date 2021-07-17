@@ -29,27 +29,15 @@
 
 namespace drmock {
 
-/* AbstractBehavior
-
-Abstract class template that represents a method's behavior. The
-`call(...)` method _produces_ an output of one of the following types:
-
-(1) std::monotstate (no output)
-
-(2) std::shared_ptr<std::decay_t<Result>> (return value)
-
-(3) std::exception_ptr (the method has thrown)
-
-The produced output is decided by matching the input with
-implementation specific data.
-*/
-
+// Abstract class template that represents a method's behavior.
 template<typename Class, typename Result, typename... Args>
 class AbstractBehavior
 {
 public:
   virtual ~AbstractBehavior() = default;
 
+  // The produced output is decided by matching the input with
+  // implementation specific data.
   virtual std::variant<
       std::monostate,
       std::pair<
@@ -60,6 +48,6 @@ public:
     > call(const Args&...) = 0;
 };
 
-} // namespace
+} // namespace drmock
 
 #endif /* DRMOCK_SRC_DRMOCK_MOCK_ABSTRACTBEHAVIOR_H */
