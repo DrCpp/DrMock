@@ -8,12 +8,17 @@
 namespace drmock { namespace detail {
 
 // Variant wrapper which allows implicit conversions for the first
-// alternative of two.
+// alternative. If both alternatives can be constructed from a value
+// passed to any of the constructors, the first alternative is
+// constructed. Only if the first alternative cannot be constructed from
+// the value, then the second alternative is constructed.
 template<typename T1, typename T2>
 class Variant
 {
 public:
-  Variant() : var_{T1{}}
+  Variant()
+  :
+    var_{T1{}}
   {}
 
   template<typename... Ts, typename = std::void_t<decltype(T1{std::declval<Ts>()...})>>
@@ -22,15 +27,20 @@ public:
     var_{T1{std::forward<Ts>(ts)...}}  // Need this indirection for implicit conversion.
   {}
 
-  Variant(T1 t) : var_{std::move(t)}
-  {
-  }
+  // For list initialization.
+  Variant(T1 t)
+  :
+    var_{std::move(t)}
+  {}
 
   template<typename T, typename = std::enable_if_t<not std::is_constructible_v<T1, T>>>
-  Variant(T t) : var_{std::move(t)}
-  {
-  }
+  Variant(T t)
+  :
+    var_{std::move(t)}
+  {}
 
+  // FIXME This does not behave like the ctors above. Currently, this op
+  // is not used, so this is fine.
   template<typename T>
   Variant&
   operator=(const T& rhs)
