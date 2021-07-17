@@ -73,7 +73,6 @@ public:
   // Set the expected arguments, return value, emit or thrown exception.
   // Note: Non-template overload is always prefered according to the C++
   // spec.
-
   Behavior& expects(detail::expect_t<Args>...);
   template<typename... Ts> Behavior& expects(detail::expect_t<Args>...);
   template<typename T> Behavior& returns(T&&);
@@ -105,6 +104,7 @@ public:
 
   // Check if the parameter pack matches the values stored in `expect_`.
   bool match(const Args&...) const;
+
   // Produce: return result_ or exception_. The default production
   // is nullptr (representing no production). exception_ is returned
   // if it is not null, otherwise result_ is returned.

@@ -47,7 +47,7 @@ currently selected behavior:
 
 (1) Any produced std::exception_ptr is re-thrown.
 
-(2) Any prodcued std::shared_ptr is returned.
+(2) Any produced std::shared_ptr is returned.
 
 (3) If the Method's return value is void, then a nullptr is returned.
 

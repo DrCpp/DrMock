@@ -29,6 +29,7 @@ struct MatchPack;
 template<typename... Bases>
 struct MatchPack<std::tuple<Bases...>>
 {
+  // Apply a tuple of matchers to a parameter pack componentwise.
   bool operator() (
       const std::tuple<std::shared_ptr<IMatcher<Bases>>...>& tuple,
       const Bases&... pack
