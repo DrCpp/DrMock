@@ -29,6 +29,12 @@ struct Const
 struct Volatile
 {};
 
+struct LValueRef
+{};
+
+struct RValueRef
+{};
+
 } // namespace drmock
 
 #endif /* DRMOCK_SRC_DRMOCK_MOCK_QUALIFIERS_H */
