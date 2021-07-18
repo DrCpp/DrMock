@@ -54,6 +54,36 @@ DRTEST_TEST(fails)
     verified = mock.mock.h().verify();
     DRTEST_ASSERT(not verified);
   }
+
+  {
+    QualifierMock mock{};
+    bool verified = mock.mock.template get<drmock::LValueRef>().verify();
+    DRTEST_ASSERT(verified);
+    mock.get();
+    DRTEST_ASSERT(not mock.mock.verify());
+    verified = mock.mock.template get<drmock::LValueRef>().verify();
+    DRTEST_ASSERT(not verified);
+  }
+
+  {
+    const QualifierMock mock{};
+    bool verified = mock.mock.template get<drmock::Const, drmock::LValueRef>().verify();
+    DRTEST_ASSERT(verified);
+    mock.get();
+    DRTEST_ASSERT(not mock.mock.verify());
+    verified = mock.mock.template get<drmock::Const, drmock::LValueRef>().verify();
+    DRTEST_ASSERT(not verified);
+  }
+
+  {
+    QualifierMock mock{};
+    bool verified = mock.mock.template get<drmock::RValueRef>().verify();
+    DRTEST_ASSERT(verified);
+    std::move(mock).get();
+    DRTEST_ASSERT(not mock.mock.verify());
+    verified = mock.mock.template get<drmock::RValueRef>().verify();
+    DRTEST_ASSERT(not verified);
+  }
 }
 
 DRTEST_TEST(success)
@@ -90,5 +120,50 @@ DRTEST_TEST(success)
     DRTEST_COMPARE(mock.h(a1, a2), r);
     DRTEST_ASSERT(mock.mock.verify());
     DRTEST_ASSERT(mock.mock.h().verify());
+  }
+
+  {
+    int value = 3;
+    int new_value = 5;
+    QualifierMock mock{};
+    mock.mock.template get<drmock::LValueRef>().push()
+        .returns(value)
+        .times(2);
+    int& result = mock.get();
+    DRTEST_ASSERT_EQ(result, value);
+    // Check that changing the result changes the mock!
+    result = new_value;
+    result = mock.get();
+    DRTEST_ASSERT_EQ(result, new_value);
+    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT((mock.mock.template get<drmock::LValueRef>().verify()));
+    DRTEST_ASSERT((mock.mock.template get<drmock::Const, drmock::LValueRef>().verify()));
+    DRTEST_ASSERT((mock.mock.template get<drmock::RValueRef>().verify()));
+  }
+
+  {
+    int value = 3;
+    const QualifierMock mock{};
+    mock.mock.template get<drmock::Const, drmock::LValueRef>().push()
+        .returns(value)
+        .times(1);
+    const int& result = mock.get();
+    DRTEST_ASSERT_EQ(result, value);
+    DRTEST_ASSERT(mock.mock.verify());
+    auto verified = mock.mock.template get<drmock::Const, drmock::LValueRef>().verify();
+    DRTEST_ASSERT(verified);
+  }
+
+  {
+    int value = 3;
+    QualifierMock mock{};
+    mock.mock.template get<drmock::RValueRef>().push()
+        .returns(value)
+        .times(1);
+    auto&& result = std::move(mock).get();
+    DRTEST_ASSERT_EQ(result, value);
+    DRTEST_ASSERT(mock.mock.verify());
+    auto verified = mock.mock.template get<drmock::RValueRef>().verify();
+    DRTEST_ASSERT(verified);
   }
 }

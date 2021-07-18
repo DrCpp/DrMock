@@ -29,6 +29,9 @@ public:
   virtual void f() const = 0;
   virtual int g() const noexcept = 0;
   virtual int h(float, double) const = 0;
+  virtual int& get() & = 0;
+  virtual const int& get() const& = 0;
+  virtual int&& get() && = 0;
 };
 
 }} // namespace outer::inner
