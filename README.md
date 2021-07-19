@@ -96,7 +96,7 @@ See [BUILD.md] for instructions.
 
 * [Cookbook](docs/cookbook.md), a collection of common design patterns for **DrMock**
 
-* [Specification](docs/drmock.md)
+* [Specification](docs/spec.md)
 
 
 ## Contributing to **DrMock**
