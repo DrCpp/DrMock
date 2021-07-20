@@ -61,9 +61,17 @@ Indicate Requirement Levels](https://www.ietf.org/rfc/rfc2119.txt).
 
 ## User Input
 
-other stuff from drmock-generator
-mock namespace; let's say it's `ns`
+The following input data is specified by the user:
 
+- A relative or absolute filesystem path to a file which contains the
+  input class
+- A relative or absolute filesystem path to the output .h file
+- The name of the interface class
+- A set of _target access specifiers_ (only methods with these access
+  specifiers will be mocked)
+- A name for the mock implementation (see
+  [Mock Implementation] for details)
+- A global or relative _enclosing namespace for mocking_
 
 
 ## The Interface
@@ -73,8 +81,8 @@ The _input class_ or _interface_ is subject to a few conditions that it
 will result in undefined behavior.
 
 Let `file.h` be a C++ header file which contains a class declaration
-`Interface` (_the declaration_). Let `Ns0::...::NSn` be the enclosing
-namespace of the interface. Then `Interface` is mockable if:
+`Interface` (_the declaration_).
+Then `Interface` is mockable if:
 
 - The interface's name **must not** contain the substring `DRMOCK`
 - `Interface` **must not** be declared `final`
@@ -90,7 +98,9 @@ namespace of the interface. Then `Interface` is mockable if:
   substring `DRMOCK`
 - The declaration **must not** have volatile-qualified methods
 - The interface **must not** be contained in the global namespace
-- `NSn` does not contain a namespace `NSn::drmock`
+- The enclosing namespace for mocking **must not** contain a member
+  with the name `DRMOCK_Object{interface name}` (i.e.
+  `DRMOCK_ObjectInterface`) or the name of the mock implementation
 
 Note the distinction between `Interface` and _the declaration_. For
 example, a parent of `Interface` may implement a conversion operator.
@@ -115,6 +125,7 @@ Furthermore, the following assumptions are made:
 
 - The namespace `drmock::` is reserved for the C++ implementation of the
   **DrMock** specification and **must not** contain any user code
+- No member of the enclosing 
 
 | Symbol | Designator     | Symbol     | Designator          |
 | :----- | :------------- | :--------- | :------------------ |
@@ -145,25 +156,43 @@ Furthermore, the following assumptions are made:
 
 Let 
 
-
-- The name of the mock object **must** start with the prefix `DRMOCK_`;
-  the generator must create a unique
+- The name of the mock object starts is
+  `DRMOCK_Object{name of interface}`
 - Declares the mock implementation
+
+
 
 
 ## The Mock Implementation
 
 The _mock implementation_ is the output of the mocking process. Let
-`NS0::...::NSn::Interface` be as in [The Interface][] and `NS0::...::NSn::ns::DRMOCK_MockObject`.
+`NS0::...::NSn` be the  enclosing namespace for mocking (see [User Input]).
 Then the mock implementation is a class with following properties:
 
 - The enclosing namespace of the mock implementation **must be**
-  `NS0::...::NSn::ns`
+  the enclosing namespace for mocking
 - The name of the mock implementation is chosen by the user (for
   demonstration purposes, we call the class `MockImplementation`)
-- The mock implementation is a public subclass of the interface
-- The mock implementation contains a mutable public member `mock` of
-  type _(the mock object of the interface)_ (see [The Mock Object])
+- The mock implementation **must** be a public subclass of the interface
+- The mock implementation **must** implement a forwarding constructor
+  which forwards its arguments to the constructor of the interface and
+  and initializes each of mock object's `Method` objects parent with
+  `this`
+- The mock implementation **must** contain a mutable public member
+  `mock` of type _(the mock object of the interface)_ (see [The Mock
+  Object])
+
+Furthermore, the _virtual_ methods of the interface are over-ridden by
+the mock implementation as follows:
+
+```
+T f(Ts... ts) override {
+  mock.template f<Ts...>().call(std::move(ts)...);
+}
+```
+
+- references are passed by reference to the `call` method
+- lvalues are moved to the `call` method
 
 
 ## Matching
@@ -194,3 +223,8 @@ public:
 
 };
 ```
+
+- Show example mock object and implementation
+
+Note that, for example, the _dispatch_ methods of the mock object are an
+implementation detail
