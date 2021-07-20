@@ -21,6 +21,10 @@ along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 Released 2021/xx/xx
 
+* Clean up `MethodCollection` error logging
+
+* Place data funcs in `DRTEST_NAMESPACE`
+
 * Reorganize project structure along the lines of
   [vector-of-bool/pitchfork](gi thub.com/vector-of-bool/pitchfork)
 
