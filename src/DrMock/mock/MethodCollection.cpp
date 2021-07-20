@@ -41,17 +41,22 @@ MethodCollection::verify() const
 std::string
 MethodCollection::makeFormattedErrorString() const
 {
-  std::string err = "";
+  std::string result = "";
   for (std::size_t i = 0; i < methods_.size(); ++i)
   {
-    err += methods_[i]->makeFormattedErrorString();
+    auto err = methods_[i]->makeFormattedErrorString();
+    if (err == "")
+    {
+      continue;
+    }
+    result += err;
 
     if (i != methods_.size() - 1)
     {
-      err += "\n";
+      result += "\n";
     }
   }
-  return err;
+  return result;
 }
 
 } // namespace drmock

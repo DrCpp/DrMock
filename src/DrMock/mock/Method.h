@@ -94,6 +94,8 @@ public:
   // `false`.
   bool verify() const override;
   const std::vector<std::vector<std::string>>& error_msgs() const;
+
+  // Return collected error messages, if present.
   std::string makeFormattedErrorString() const override;
 
   std::shared_ptr<DecayedReturnType> call(const Args&...);
