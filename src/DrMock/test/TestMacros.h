@@ -32,11 +32,11 @@
 Type name{drutility::Singleton<drtest::detail::Global>::get()->fetchData<Type>(#name)}
 
 #define DRTEST_DATA(name) \
-void name##Data(); \
-namespace drtest { namespace detail { \
-FunctionInvoker name##_data_pusher{[] () { drutility::Singleton<Global>::get()->addDataFunc(#name, &name##Data); }}; \
-}} \
-void name##Data()
+void name##DRTEST_Data(); \
+namespace DRTEST_NAMESPACE { \
+drtest::detail::FunctionInvoker name##_data_pusher{[] () { drutility::Singleton<drtest::detail::Global>::get()->addDataFunc(#name, &name##DRTEST_Data); }}; \
+} \
+void name##DRTEST_Data()
 
 #define DRTEST_TEST(name) \
 namespace DRTEST_NAMESPACE { \
