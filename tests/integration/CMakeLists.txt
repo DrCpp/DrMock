@@ -108,7 +108,7 @@ if (${Qt5_FOUND})
             INotAQtObject.h
         QTMODULES
             Qt5::Core Qt5::Test
-        OPTIONS -fPIC
+        FLAGS -fPIC
     )
     target_compile_options(
         ${PROJECT_NAME}QtMock

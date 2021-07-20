@@ -160,7 +160,7 @@ function(drmock_library)
         ARGS
         ""
         "TARGET;IFILE;MOCKFILE;ICLASS;MOCKCLASS"
-        "HEADERS;LIBS;QTMODULES;INCLUDE;FRAMEWORKS;OPTIONS"
+        "HEADERS;LIBS;QTMODULES;INCLUDE;FRAMEWORKS;OPTIONS;FLAGS"
         ${ARGN}
     )
     _drmock_required_param(ARGS_TARGET
@@ -209,7 +209,8 @@ function(drmock_library)
                     QTMODULES ${ARGS_QTMODULES}
                     INCLUDE ${ARGS_INCLUDE}
                     FRAMEWORKS ${ARGS_FRAMEWORKS}
-                    OPTIONS ${ARGS_OPTIONS})
+                    OPTIONS ${ARGS_OPTIONS}
+                    FLAGS ${ARGS_FLAGS})
 endfunction()
 
 
@@ -366,10 +367,11 @@ function(drmock_library2)
         list(APPEND command --input-class \"${input_class}\")
         list(APPEND command --output-class \"${output_class}\")
         list(APPEND command --clang-library-file ${DRMOCK_LIBCLANG_PATH})
+        list(APPEND command ${OPTIONS})
         # Note: Compiler flags _must_ follow the ``--flags`` argument!
         list(APPEND command --flags)
         list(APPEND command "--std=c++${CMAKE_CXX_STANDARD}")
-        list(APPEND command ${ARGS_OPTIONS})
+        list(APPEND command ${ARGS_FLAGS})
         list(APPEND command ${generator_option_include_directory})
         list(APPEND command ${generator_option_iframework})
         add_custom_command(

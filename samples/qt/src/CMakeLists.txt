@@ -23,6 +23,6 @@ drmock_library(
     Qt5::Widgets
   HEADERS
     IFoo.h
-  OPTIONS
+  FLAGS
     -fPIC
 )
