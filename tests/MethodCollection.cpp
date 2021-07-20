@@ -23,15 +23,32 @@
 using namespace drmock;
 using namespace drtest;
 
-class MMethod final : public IMethod
+class MockMethod final : public IMethod
 {
 public:
-  MMethod(bool v): v_{v} {}
-  bool verify() const override { return v_; }
-  std::string makeFormattedErrorString() const override { return ""; }
+  MockMethod(bool v)
+  :
+    MockMethod{v, ""}
+  {}
+
+  MockMethod(bool v, std::string err)
+  :
+    v_{v}, err_{std::move(err)}
+  {}
+
+  bool verify() const override
+  {
+    return v_;
+  }
+
+  std::string makeFormattedErrorString() const override
+  {
+    return err_;
+  }
 
 private:
   bool v_ = false;
+  std::string err_ = "";
 };
 
 DRTEST_DATA(mainTest)
@@ -41,17 +58,17 @@ DRTEST_DATA(mainTest)
 
   addRow("true",
       std::vector<std::shared_ptr<IMethod>>{
-          std::make_shared<MMethod>(true),
-          std::make_shared<MMethod>(true),
-          std::make_shared<MMethod>(true),
+          std::make_shared<MockMethod>(true),
+          std::make_shared<MockMethod>(true),
+          std::make_shared<MockMethod>(true),
         },
       true
     );
   addRow("false",
       std::vector<std::shared_ptr<IMethod>>{
-          std::make_shared<MMethod>(true),
-          std::make_shared<MMethod>(false),
-          std::make_shared<MMethod>(true),
+          std::make_shared<MockMethod>(true),
+          std::make_shared<MockMethod>(false),
+          std::make_shared<MockMethod>(true),
         },
       false
     );
@@ -64,4 +81,17 @@ DRTEST_TEST(mainTest)
 
   MethodCollection collection{std::move(input)};
   DRTEST_COMPARE(collection.verify(), result);
+}
+
+DRTEST_TEST(makeFormattedErrorString)
+{
+  MethodCollection collection{
+      {
+          std::make_shared<MockMethod>(false, "foo"),
+          std::make_shared<MockMethod>(true, ""),
+          std::make_shared<MockMethod>(false, "bar"),
+      }
+    };
+  auto err = collection.makeFormattedErrorString();
+  DRTEST_ASSERT_EQ(err, "foo\nbar");
 }
