@@ -253,7 +253,7 @@ function(drmock_library2)
         ARGS
         ""
         "TARGET"
-        "HEADERS;MOCK_HEADER_PATHS;MOCK_SOURCE_PATHS;INPUT_CLASSES;OUTPUT_CLASSES;LIBS;QTMODULES;INCLUDE;FRAMEWORKS;OPTIONS"
+        "HEADERS;MOCK_HEADER_PATHS;MOCK_SOURCE_PATHS;INPUT_CLASSES;OUTPUT_CLASSES;LIBS;QTMODULES;INCLUDE;FRAMEWORKS;OPTIONS;FLAGS"
         ${ARGN}
     )
     _drmock_required_param(ARGS_TARGET
@@ -367,7 +367,7 @@ function(drmock_library2)
         list(APPEND command --input-class \"${input_class}\")
         list(APPEND command --output-class \"${output_class}\")
         list(APPEND command --clang-library-file ${DRMOCK_LIBCLANG_PATH})
-        list(APPEND command ${OPTIONS})
+        list(APPEND command ${ARGS_OPTIONS})
         # Note: Compiler flags _must_ follow the ``--flags`` argument!
         list(APPEND command --flags)
         list(APPEND command "--std=c++${CMAKE_CXX_STANDARD}")
