@@ -23,15 +23,15 @@ include_directories(${CMAKE_SOURCE_DIR}/src)
 drmock_test(TESTS
     Behavior.cpp
     BehaviorQueue.cpp
+    Controller.cpp
+    MakeTupleOfMatchers.cpp
     MatchPack.cpp
     IsEqual.cpp
     Method.cpp
-    MethodCollection.cpp
     StateBehavior.cpp
     StateObject.cpp
     Test.cpp
     TypeTraits.cpp
-    MakeTupleOfMatchers.cpp
 )
 
 # Test Signal.

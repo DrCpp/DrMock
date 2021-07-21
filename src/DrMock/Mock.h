@@ -17,10 +17,10 @@
 */
 
 #include <DrMock/mock/AlmostEqual.h>
+#include <DrMock/mock/Controller.h>
 #include <DrMock/mock/Equal.h>
 #include <DrMock/mock/IMatcher.h>
 #include <DrMock/mock/Method.h>
-#include <DrMock/mock/MethodCollection.h>
 #include <DrMock/mock/MockMacros.h>
 #include <DrMock/mock/Qualifiers.h>
 #include <DrMock/mock/Util.h>

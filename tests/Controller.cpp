@@ -17,7 +17,7 @@
 */
 
 #include <DrMock/Test.h>
-#include <DrMock/mock/MethodCollection.h>
+#include <DrMock/mock/Controller.h>
 #include <DrMock/mock/IMethod.h>
 
 using namespace drmock;
@@ -79,13 +79,13 @@ DRTEST_TEST(mainTest)
   DRTEST_FETCH(std::vector<std::shared_ptr<IMethod>>, input);
   DRTEST_FETCH(bool, result);
 
-  MethodCollection collection{std::move(input)};
+  Controller collection{std::move(input)};
   DRTEST_COMPARE(collection.verify(), result);
 }
 
 DRTEST_TEST(makeFormattedErrorString)
 {
-  MethodCollection collection{
+  Controller collection{
       {
           std::make_shared<MockMethod>(false, "foo"),
           std::make_shared<MockMethod>(true, ""),
