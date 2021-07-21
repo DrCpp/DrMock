@@ -62,10 +62,10 @@ drmock_library(
         subdir/ISubdir.h
 )
 drmock_library(
-    TARGET ${PROJECT_NAME}MockNamespace
-    HEADERS INamespace.h
-    OPTIONS --namespace ns
-    FLAGS -fPIC
+    TARGET ${PROJECT_NAME}MockArgs
+    HEADERS IArgs.h
+    OPTIONS --namespace ns --controller ctrl
+    FLAGS -Wall -Werror -g -fPIC -pedantic -O0
 )  # Need a separate library to test OPTIONS and FLAGS keyword
 target_compile_options(
     ${PROJECT_NAME}Mock
@@ -74,10 +74,10 @@ target_compile_options(
 drmock_test(
     LIBS
         ${PROJECT_NAME}Mock
-        ${PROJECT_NAME}MockNamespace
+        ${PROJECT_NAME}MockArgs
     TESTS ${regularTests}
         VoidFuncTest.cpp
-        NamespaceTest.cpp
+        ArgsTest.cpp
         FuncTest.cpp
         FuncNotAbstractTest.cpp
         NoDefaultCtorTest.cpp
