@@ -28,7 +28,7 @@ DRTEST_TEST(fails)
   DRTEST_ASSERT(verified);
   Foo foo{};
   mock.f(foo);
-  DRTEST_ASSERT(not mock.mock.verify());
+  DRTEST_ASSERT(not mock.mock.control.verify());
   verified = mock.mock.f().verify();
   DRTEST_ASSERT(not verified);
 }
@@ -42,6 +42,6 @@ DRTEST_TEST(success)
       .expects(foo1)
       .times(1);
   mock.f(foo2);  // Trivial operator== must always return `true`.
-  DRTEST_ASSERT(mock.mock.verify());
+  DRTEST_ASSERT(mock.mock.control.verify());
   DRTEST_ASSERT(mock.mock.f().verify());
 }

@@ -35,7 +35,7 @@ public:
   Controller(std::vector<std::shared_ptr<IMethod>>, std::shared_ptr<StateObject>);
   bool verify() const;
   bool verifyState(const std::string& state) const;
-  bool verifyState(const std::string& state, const std::string& slot) const;
+  bool verifyState(const std::string& slot, const std::string& state) const;
   std::string makeFormattedErrorString() const;
 
 private:

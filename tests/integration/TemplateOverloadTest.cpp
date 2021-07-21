@@ -28,7 +28,7 @@ DRTEST_TEST(fails)
     bool verified = mock.mock.funcTemplateParameters<int, int>().verify();
     DRTEST_ASSERT(verified);
     mock.funcTemplateParameters(int{}, int{});
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.funcTemplateParameters<int, int>().verify();
     DRTEST_ASSERT(not verified);
   }
@@ -38,7 +38,7 @@ DRTEST_TEST(fails)
     bool verified = mock.mock.funcTemplateParameters<float&&, double&&>().verify();
     DRTEST_ASSERT(verified);
     mock.funcTemplateParameters(float{}, double{});
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.funcTemplateParameters<float&&, double&&>().verify();
     DRTEST_ASSERT(not verified);
   }
@@ -48,7 +48,7 @@ DRTEST_TEST(fails)
     bool verified = mock.mock.funcTemplateParameters<const int&, float&&, double&&>().verify();
     DRTEST_ASSERT(verified);
     mock.funcTemplateParameters(int{}, float{}, double{});
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.funcTemplateParameters<const int&, float&&, double&&>().verify();
     DRTEST_ASSERT(not verified);
   }
@@ -60,7 +60,7 @@ DRTEST_TEST(fails)
       >().verify();
     DRTEST_ASSERT(verified);
     mock.funcTemplateParameters(int{}, int{}, float{}, double{});
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.funcTemplateParameters<
         int&&, const int&, float&&, double&&
       >().verify();
@@ -78,7 +78,7 @@ DRTEST_TEST(success)
         .expects(a1, a2)
         .times(1);
     mock.funcTemplateParameters(a1, a2);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     bool verified = mock.mock.funcTemplateParameters<int, int>().verify();
     DRTEST_ASSERT(verified);
   }
@@ -90,7 +90,7 @@ DRTEST_TEST(success)
     mock.mock.funcTemplateParameters<float&&, double&&>().push()
         .expects(a1, a2);
     mock.funcTemplateParameters(std::move(a1), std::move(a2));
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     bool verified = mock.mock.funcTemplateParameters<float&&, double&&>().verify();
     DRTEST_ASSERT(verified);
   }
@@ -105,7 +105,7 @@ DRTEST_TEST(success)
         .returns(10)
         .times(1);
     mock.funcTemplateParameters(a1, std::move(a2), std::move(a3));
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     bool verified = mock.mock.funcTemplateParameters<const int&, float&&, double&&>().verify();
     DRTEST_ASSERT(verified);
   }
@@ -122,7 +122,7 @@ DRTEST_TEST(success)
           .expects(a1, a2, a3, a4)
           .times(1);
     mock.funcTemplateParameters(std::move(a1), a2, std::move(a3), std::move(a4));
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     bool verified = mock.mock.funcTemplateParameters<
         int&&, const int&, float&&, double&&
       >().verify();

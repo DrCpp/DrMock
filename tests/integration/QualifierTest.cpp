@@ -28,7 +28,7 @@ DRTEST_TEST(fails)
     bool verified = mock.mock.f().verify();
     DRTEST_ASSERT(verified);
     mock.f();
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.f().verify();
     DRTEST_ASSERT(not verified);
   }
@@ -38,7 +38,7 @@ DRTEST_TEST(fails)
     bool verified = mock.mock.g().verify();
     DRTEST_ASSERT(verified);
     mock.g();
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.g().verify();
     DRTEST_ASSERT(not verified);
   }
@@ -50,7 +50,7 @@ DRTEST_TEST(fails)
     float a1{};
     double a2{};
     mock.h(a1, a2);
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.h().verify();
     DRTEST_ASSERT(not verified);
   }
@@ -60,7 +60,7 @@ DRTEST_TEST(fails)
     bool verified = mock.mock.template get<drmock::LValueRef>().verify();
     DRTEST_ASSERT(verified);
     mock.get();
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.template get<drmock::LValueRef>().verify();
     DRTEST_ASSERT(not verified);
   }
@@ -70,7 +70,7 @@ DRTEST_TEST(fails)
     bool verified = mock.mock.template get<drmock::Const, drmock::LValueRef>().verify();
     DRTEST_ASSERT(verified);
     mock.get();
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.template get<drmock::Const, drmock::LValueRef>().verify();
     DRTEST_ASSERT(not verified);
   }
@@ -80,7 +80,7 @@ DRTEST_TEST(fails)
     bool verified = mock.mock.template get<drmock::RValueRef>().verify();
     DRTEST_ASSERT(verified);
     std::move(mock).get();
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.template get<drmock::RValueRef>().verify();
     DRTEST_ASSERT(not verified);
   }
@@ -93,7 +93,7 @@ DRTEST_TEST(success)
     mock.mock.f().push()
         .times(1);
     mock.f();
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(mock.mock.f().verify());
   }
 
@@ -104,7 +104,7 @@ DRTEST_TEST(success)
         .returns(a)
         .times(1);
     DRTEST_COMPARE(mock.g(), a);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(mock.mock.g().verify());
   }
 
@@ -118,7 +118,7 @@ DRTEST_TEST(success)
         .returns(r)
         .times(1);
     DRTEST_COMPARE(mock.h(a1, a2), r);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(mock.mock.h().verify());
   }
 
@@ -135,7 +135,7 @@ DRTEST_TEST(success)
     result = new_value;
     result = mock.get();
     DRTEST_ASSERT_EQ(result, new_value);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT((mock.mock.template get<drmock::LValueRef>().verify()));
     DRTEST_ASSERT((mock.mock.template get<drmock::Const, drmock::LValueRef>().verify()));
     DRTEST_ASSERT((mock.mock.template get<drmock::RValueRef>().verify()));
@@ -149,7 +149,7 @@ DRTEST_TEST(success)
         .times(1);
     const int& result = mock.get();
     DRTEST_ASSERT_EQ(result, value);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     auto verified = mock.mock.template get<drmock::Const, drmock::LValueRef>().verify();
     DRTEST_ASSERT(verified);
   }
@@ -162,7 +162,7 @@ DRTEST_TEST(success)
         .times(1);
     auto&& result = std::move(mock).get();
     DRTEST_ASSERT_EQ(result, value);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     auto verified = mock.mock.template get<drmock::RValueRef>().verify();
     DRTEST_ASSERT(verified);
   }

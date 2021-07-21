@@ -50,11 +50,11 @@ Controller::verify() const
 bool
 Controller::verifyState(const std::string& state) const
 {
-  return verifyState(state, "");
+  return verifyState("", state);
 }
 
 bool
-Controller::verifyState(const std::string& state, const std::string& slot) const
+Controller::verifyState(const std::string& slot, const std::string& state) const
 {
   return (state_object_->get(slot) == state);
 }

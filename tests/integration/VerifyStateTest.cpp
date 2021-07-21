@@ -35,7 +35,7 @@ DRTEST_TEST(singleSlot)
   foo.set2(false);
   foo.set1(true);
   foo.set2(false);
-  DRTEST_ASSERT(foo.mock.verifyState("off"));
+  DRTEST_ASSERT(foo.mock.control.verifyState("off"));
 }
 
 DRTEST_TEST(multipleSlots)
@@ -50,6 +50,6 @@ DRTEST_TEST(multipleSlots)
   // Make some random calls.
   foo.set1(false);
   foo.set2(true);
-  DRTEST_ASSERT(foo.mock.verifyState("slot1", "off"));
-  DRTEST_ASSERT(foo.mock.verifyState("slot2", "on"));
+  DRTEST_ASSERT(foo.mock.control.verifyState("slot1", "off"));
+  DRTEST_ASSERT(foo.mock.control.verifyState("slot2", "on"));
 }

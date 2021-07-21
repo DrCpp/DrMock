@@ -31,7 +31,7 @@ DRTEST_TEST(callSlot)
     SignalsMock mock{};
     DRTEST_ASSERT(mock.mock.f().verify());
     mock.f();
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.f().verify());
   }
 
@@ -39,7 +39,7 @@ DRTEST_TEST(callSlot)
     NotAQtObjectMock mock{};
     DRTEST_ASSERT(mock.mock.foo().verify());
     mock.foo();
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.foo().verify());
   }
 }
@@ -48,25 +48,25 @@ DRTEST_TEST(succeeds)
 {
   {
     SignalsMock mock{};
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
 
     mock.mock.f().push()
         .expects()
         .times(1);
     mock.f();
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(mock.mock.f().verify());
   }
 
   {
     NotAQtObjectMock mock{};
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
 
     mock.mock.foo().push()
         .expects()
         .times(1);
     mock.foo();
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(mock.mock.foo().verify());
   }
 }

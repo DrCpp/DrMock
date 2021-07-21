@@ -98,9 +98,9 @@ do { \
 
 #define DRTEST_VERIFY_MOCK(m) \
 do { \
-  if (not m.verify()) \
+  if (not m.control.verify()) \
   { \
-    throw drtest::detail::TestFailure{__LINE__, m.makeFormattedErrorString()}; \
+    throw drtest::detail::TestFailure{__LINE__, m.control.makeFormattedErrorString()}; \
   } \
 } while (false)
 
