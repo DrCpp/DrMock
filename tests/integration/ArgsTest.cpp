@@ -16,19 +16,34 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_TESTS_INTEGRATION_INAMESPACE_H
-#define DRMOCK_TESTS_INTEGRATION_INAMESPACE_H
+#include <DrMock/Test.h>
+#include "mock/ArgsMock.h"
 
-namespace outer { namespace inner {
-
-class INamespace
+DRTEST_TEST(fails)
 {
-public:
-  virtual ~INamespace() = default;
+  {
+    outer::inner::ns::ArgsMock mock{};
+    DRTEST_ASSERT(mock.mock.ctrl.verify());
+  }
 
-  virtual void f() = 0;
-};
+  {
+    outer::inner::ns::ArgsMock mock{};
+    DRTEST_ASSERT(mock.mock.f().verify());
+    mock.f();
+    DRTEST_ASSERT(not mock.mock.ctrl.verify());
+    DRTEST_ASSERT(not mock.mock.f().verify());
+  }
+}
 
-}} // namespace outer::inner
+DRTEST_TEST(succeeds)
+{
+  outer::inner::ns::ArgsMock mock{};
+  DRTEST_ASSERT(mock.mock.ctrl.verify());
 
-#endif /* DRMOCK_TESTS_INTEGRATION_INAMESPACE_H */
+  mock.mock.f().push()
+      .expects()
+      .times(1);
+  mock.f();
+  DRTEST_ASSERT(mock.mock.ctrl.verify());
+  DRTEST_ASSERT(mock.mock.f().verify());
+}
