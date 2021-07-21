@@ -45,5 +45,5 @@ DRTEST_TEST(signalsAndSlots)
       .times(1);  // Optional.
   foo->theSlot("bar");
 
-  DRTEST_ASSERT(bar->mock.verify());
+  DRTEST_ASSERT(bar->mock.control.verify());
 }

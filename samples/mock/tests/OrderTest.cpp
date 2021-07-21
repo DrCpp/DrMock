@@ -35,7 +35,7 @@ DRTEST_TEST(success)
 
   order.fill(warehouse);
   // Check that `remove` was called with the correct arguments.
-  DRTEST_ASSERT(warehouse->mock.verify());
+  DRTEST_ASSERT(warehouse->mock.control.verify());
   // Check that the return value of `filled` is correct.
   DRTEST_ASSERT(order.filled());
 }
@@ -55,7 +55,7 @@ DRTEST_TEST(failure)
 
   order.fill(warehouse);
   // Check that `remove` was called with the correct arguments.
-  DRTEST_ASSERT(warehouse->mock.verify());
+  DRTEST_ASSERT(warehouse->mock.control.verify());
   // Check that the return value of `filled` is correct.
   DRTEST_ASSERT(not order.filled());
 }
