@@ -16,7 +16,7 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "MethodCollection.h"
+#include "Controller.h"
 
 #include <algorithm>
 
@@ -24,13 +24,13 @@
 
 namespace drmock {
 
-MethodCollection::MethodCollection(std::vector<std::shared_ptr<IMethod>> methods)
+Controller::Controller(std::vector<std::shared_ptr<IMethod>> methods)
 :
   methods_{std::move(methods)}
 {}
 
 bool
-MethodCollection::verify() const
+Controller::verify() const
 {
   return std::all_of(
       methods_.begin(), methods_.end(),
@@ -39,7 +39,7 @@ MethodCollection::verify() const
 }
 
 std::string
-MethodCollection::makeFormattedErrorString() const
+Controller::makeFormattedErrorString() const
 {
   std::string result = "";
   for (std::size_t i = 0; i < methods_.size(); ++i)

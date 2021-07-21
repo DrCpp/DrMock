@@ -16,26 +16,20 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef DRMOCK_SRC_DRMOCK_MOCK_METHODCOLLECTION_H
-#define DRMOCK_SRC_DRMOCK_MOCK_METHODCOLLECTION_H
+#ifndef DRMOCK_SRC_DRMOCK_MOCK_CONTROLLER_H
+#define DRMOCK_SRC_DRMOCK_MOCK_CONTROLLER_H
 
 #include <memory>
 #include <vector>
-
-/* MethodCollection
-
-Contained for std::shared_ptr<IMethod>. Has a method that verifies all
-contained objects.
-*/
 
 namespace drmock {
 
 class IMethod;
 
-class MethodCollection
+class Controller
 {
 public:
-  MethodCollection(std::vector<std::shared_ptr<IMethod>>);
+  Controller(std::vector<std::shared_ptr<IMethod>>);
   bool verify() const;
   std::string makeFormattedErrorString() const;
 
@@ -45,4 +39,4 @@ private:
 
 } // namespace drmock
 
-#endif /* DRMOCK_SRC_DRMOCK_MOCK_METHODCOLLECTION_H */
+#endif /* DRMOCK_SRC_DRMOCK_MOCK_CONTROLLER_H */

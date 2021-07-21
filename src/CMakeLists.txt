@@ -16,7 +16,7 @@
 # along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 add_library(${PROJECT_NAME} SHARED
-    DrMock/mock/MethodCollection.cpp
+    DrMock/mock/Controller.cpp
     DrMock/mock/StateObject.cpp
     DrMock/test/FunctionInvoker.cpp
     DrMock/test/Global.cpp
