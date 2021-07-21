@@ -26,7 +26,16 @@ namespace drmock {
 
 Controller::Controller(std::vector<std::shared_ptr<IMethod>> methods)
 :
-  methods_{std::move(methods)}
+  Controller{std::move(methods), {}}
+{}
+
+Controller::Controller(
+    std::vector<std::shared_ptr<IMethod>> methods,
+    std::shared_ptr<StateObject> state_object
+  )
+:
+  methods_{std::move(methods)},
+  state_object_{std::move(state_object)}
 {}
 
 bool
@@ -36,6 +45,18 @@ Controller::verify() const
       methods_.begin(), methods_.end(),
       [] (const auto& method) { return method->verify(); }
     );
+}
+
+bool
+Controller::verifyState(const std::string& state) const
+{
+  return verifyState(state, "");
+}
+
+bool
+Controller::verifyState(const std::string& state, const std::string& slot) const
+{
+  return (state_object_->get(slot) == state);
 }
 
 std::string
