@@ -32,14 +32,14 @@ DRTEST_TEST(fails)
 {
   {
     IncludeMock mock{};
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
   }
 
   {
     IncludeMock mock{};
     DRTEST_ASSERT(mock.mock.f().verify());
     mock.f();
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.f().verify());
   }
 }
@@ -47,12 +47,12 @@ DRTEST_TEST(fails)
 DRTEST_TEST(succeeds)
 {
   IncludeMock mock{};
-  DRTEST_ASSERT(mock.mock.verify());
+  DRTEST_ASSERT(mock.mock.control.verify());
 
   mock.mock.f().push()
       .expects()
       .times(1);
   mock.f();
-  DRTEST_ASSERT(mock.mock.verify());
+  DRTEST_ASSERT(mock.mock.control.verify());
   DRTEST_ASSERT(mock.mock.f().verify());
 }

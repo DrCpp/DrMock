@@ -25,14 +25,14 @@ DRTEST_TEST(fails)
 {
   {
     ExampleMock<int, float, double> mock{};
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
   }
 
   {
     ExampleMock<int, float, double> mock{};
     DRTEST_ASSERT(mock.mock.funcVoid0().verify());
     mock.funcVoid0();
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.funcVoid0().verify());
   }
 
@@ -40,7 +40,7 @@ DRTEST_TEST(fails)
     ExampleMock<int, float, double> mock{};
     DRTEST_ASSERT(mock.mock.funcVoid0Const().verify());
     mock.funcVoid0Const();
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.funcVoid0Const().verify());
   }
 
@@ -48,7 +48,7 @@ DRTEST_TEST(fails)
     ExampleMock<int, float, double> mock{};
     DRTEST_ASSERT(mock.mock.funcVoid0Noexcept().verify());
     mock.funcVoid0Noexcept();
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.funcVoid0Noexcept().verify());
   }
 
@@ -56,7 +56,7 @@ DRTEST_TEST(fails)
     ExampleMock<int, float, double> mock{};
     DRTEST_ASSERT(mock.mock.funcVoid0ConstNoexcept().verify());
     mock.funcVoid0ConstNoexcept();
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.funcVoid0ConstNoexcept().verify());
   }
 
@@ -64,7 +64,7 @@ DRTEST_TEST(fails)
     ExampleMock<int, float, double> mock{};
     DRTEST_ASSERT(mock.mock.funcNonVoid0().verify());
     mock.funcNonVoid0();
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.funcNonVoid0().verify());
   }
 
@@ -72,7 +72,7 @@ DRTEST_TEST(fails)
     ExampleMock<int, float, double> mock{};
     DRTEST_ASSERT(mock.mock.funcOverloadConst<>().verify());
     mock.funcOverloadConst();
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.funcOverloadConst<>().verify());
   }
 
@@ -80,7 +80,7 @@ DRTEST_TEST(fails)
     ExampleMock<int, float, double> mock{};
     DRTEST_ASSERT(mock.mock.funcOverloadConst<drmock::Const>().verify());
     const_cast<const ExampleMock<int, float, double>&>(mock).funcOverloadConst();
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.funcOverloadConst<drmock::Const>().verify());
   }
 
@@ -88,7 +88,7 @@ DRTEST_TEST(fails)
     ExampleMock<int, float, double> mock{};
     DRTEST_ASSERT(mock.mock.funcOverloadConstDifferentReturn<>().verify());
     mock.funcOverloadConstDifferentReturn();
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.funcOverloadConstDifferentReturn<>().verify());
   }
 
@@ -98,7 +98,7 @@ DRTEST_TEST(fails)
         mock.mock.funcOverloadConstDifferentReturn<drmock::Const>().verify()
       );
     const_cast<const ExampleMock<int, float, double>&>(mock).funcOverloadConstDifferentReturn();
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(
         not mock.mock.funcOverloadConstDifferentReturn<drmock::Const>().verify()
       );
@@ -109,7 +109,7 @@ DRTEST_TEST(fails)
     bool verified = mock.mock.funcOverloadParameters().verify();
     DRTEST_ASSERT(verified);
     mock.funcOverloadParameters();
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.funcOverloadParameters().verify();
     DRTEST_ASSERT(not verified);
   }
@@ -124,7 +124,7 @@ DRTEST_TEST(fails)
     std::unordered_map<int, std::string> a1{};
     const float a2{};
     mock.funcOverloadParameters(a1, a2);
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.funcOverloadParameters<
         std::unordered_map<int, std::string>,
         const float
@@ -140,7 +140,7 @@ DRTEST_TEST(fails)
     DRTEST_ASSERT(verified);
     std::shared_ptr<std::unordered_map<int, std::string>> a1{};
     mock.funcOverloadParameters(a1);
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.funcOverloadParameters<
         const std::shared_ptr<std::unordered_map<int, std::string>>&
       >().verify();
@@ -152,7 +152,7 @@ DRTEST_TEST(fails)
     bool verified = mock.mock.funcTemplateParameters<int, int>().verify();
     DRTEST_ASSERT(verified);
     mock.funcTemplateParameters(int{}, int{});
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.funcTemplateParameters<int, int>().verify();
     DRTEST_ASSERT(not verified);
   }
@@ -162,7 +162,7 @@ DRTEST_TEST(fails)
     bool verified = mock.mock.funcTemplateParameters<float&&, double&&>().verify();
     DRTEST_ASSERT(verified);
     mock.funcTemplateParameters(float{}, double{});
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.funcTemplateParameters<float&&, double&&>().verify();
     DRTEST_ASSERT(not verified);
   }
@@ -172,7 +172,7 @@ DRTEST_TEST(fails)
     bool verified = mock.mock.funcTemplateParameters<const int&, float&&, double&&>().verify();
     DRTEST_ASSERT(verified);
     mock.funcTemplateParameters(int{}, float{}, double{});
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.funcTemplateParameters<const int&, float&&, double&&>().verify();
     DRTEST_ASSERT(not verified);
   }
@@ -184,7 +184,7 @@ DRTEST_TEST(fails)
       >().verify();
     DRTEST_ASSERT(verified);
     mock.funcTemplateParameters(int{}, int{}, float{}, double{});
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.funcTemplateParameters<
         int&&, const int&, float&&, double&&
       >().verify();
@@ -195,7 +195,7 @@ DRTEST_TEST(fails)
     ExampleMock<int, float, double> mock{};
     DRTEST_ASSERT(mock.mock.funcUsingParameter().verify());
     mock.funcUsingParameter({});
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.funcUsingParameter().verify());
   }
 
@@ -203,7 +203,7 @@ DRTEST_TEST(fails)
     ExampleMock<int, float, double> mock{};
     DRTEST_ASSERT(mock.mock.operatorGreater().verify());
     mock.operator>({});
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.operatorGreater().verify());
   }
 
@@ -211,7 +211,7 @@ DRTEST_TEST(fails)
     ExampleMock<int, float, double> mock{};
     DRTEST_ASSERT(mock.mock.operatorEqual().verify());
     mock.operator==({});
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.operatorEqual().verify());
   }
 
@@ -219,7 +219,7 @@ DRTEST_TEST(fails)
     ExampleMock<int, float, double> mock{};
     DRTEST_ASSERT(mock.mock.operatorPlus().verify());
     mock.operator+({});
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.operatorPlus().verify());
   }
 
@@ -230,7 +230,7 @@ DRTEST_TEST(fails)
       );
     const std::string a1{};
     mock.funcOverloadLvalueRvalueAndConst(a1);
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(
         not mock.mock.funcOverloadLvalueRvalueAndConst<const std::string&>().verify()
       );
@@ -241,7 +241,7 @@ DRTEST_TEST(fails)
     DRTEST_ASSERT(mock.mock.funcOverloadLvalueRvalueAndConst<std::string&>().verify());
     std::string a1{};
     mock.funcOverloadLvalueRvalueAndConst(a1);
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.funcOverloadLvalueRvalueAndConst<std::string&>().verify());
   }
 
@@ -252,7 +252,7 @@ DRTEST_TEST(fails)
       );
     const std::string a1{};
     mock.funcOverloadLvalueRvalueAndConst(std::move(a1));
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(
         not mock.mock.funcOverloadLvalueRvalueAndConst<const std::string&&>().verify()
       );
@@ -263,7 +263,7 @@ DRTEST_TEST(fails)
     DRTEST_ASSERT(mock.mock.funcOverloadLvalueRvalueAndConst<std::string&&>().verify());
     std::string a1{};
     mock.funcOverloadLvalueRvalueAndConst(std::move(a1));
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.funcOverloadLvalueRvalueAndConst<std::string&&>().verify());
   }
 
@@ -272,7 +272,7 @@ DRTEST_TEST(fails)
     DRTEST_ASSERT(mock.mock.funcOddParameters<const int* const>().verify());
     const int* const a1{};
     mock.funcOddParameters(a1);
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.funcOddParameters<const int* const>().verify());
   }
 
@@ -281,7 +281,7 @@ DRTEST_TEST(fails)
     DRTEST_ASSERT(mock.mock.funcOddParameters<const int* const* const&&>().verify());
     const int* const* const a1{};
     mock.funcOddParameters(std::move(a1));
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.funcOddParameters<const int* const* const&&>().verify());
   }
 
@@ -289,7 +289,7 @@ DRTEST_TEST(fails)
     ExampleMock<int, float, double> mock{};
     DRTEST_ASSERT(mock.mock.funcNonCopyableArg().verify());
     mock.funcNonCopyableArg({});
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.funcNonCopyableArg().verify());
   }
 
@@ -297,7 +297,7 @@ DRTEST_TEST(fails)
     ExampleMock<int, float, double> mock{};
     DRTEST_ASSERT(mock.mock.funcNonCopyableResult().verify());
     mock.funcNonCopyableResult();
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.funcNonCopyableResult().verify());
   }
 
@@ -305,7 +305,7 @@ DRTEST_TEST(fails)
     ExampleMock<int, float, double> mock{};
     DRTEST_ASSERT(mock.mock.funcNonCopyableResultAsReference().verify());
     mock.funcNonCopyableResultAsReference();
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.funcNonCopyableResultAsReference().verify());
   }
 }
@@ -313,34 +313,34 @@ DRTEST_TEST(fails)
 DRTEST_TEST(succeeds)
 {
   ExampleMock<int, float, double> mock{};
-  DRTEST_ASSERT(mock.mock.verify());
+  DRTEST_ASSERT(mock.mock.control.verify());
 
   mock.mock.funcVoid0().push()
       .expects()
       .times(1);
   mock.funcVoid0();
-  DRTEST_ASSERT(mock.mock.verify());
+  DRTEST_ASSERT(mock.mock.control.verify());
   DRTEST_ASSERT(mock.mock.funcVoid0().verify());
 
   mock.mock.funcVoid0Const().push()
       .expects()
       .times(1);
   mock.funcVoid0Const();
-  DRTEST_ASSERT(mock.mock.verify());
+  DRTEST_ASSERT(mock.mock.control.verify());
   DRTEST_ASSERT(mock.mock.funcVoid0Const().verify());
 
   mock.mock.funcVoid0Noexcept().push()
       .expects()
       .times(1);
   mock.funcVoid0Noexcept();
-  DRTEST_ASSERT(mock.mock.verify());
+  DRTEST_ASSERT(mock.mock.control.verify());
   DRTEST_ASSERT(mock.mock.funcVoid0Noexcept().verify());
 
   mock.mock.funcVoid0ConstNoexcept().push()
       .expects()
       .times(1);
   mock.funcVoid0ConstNoexcept();
-  DRTEST_ASSERT(mock.mock.verify());
+  DRTEST_ASSERT(mock.mock.control.verify());
   DRTEST_ASSERT(mock.mock.funcVoid0ConstNoexcept().verify());
 
   mock.mock.funcNonVoid0().push()
@@ -348,21 +348,21 @@ DRTEST_TEST(succeeds)
       .returns(123)
       .times(1);
   DRTEST_COMPARE(mock.funcNonVoid0(), 123);
-  DRTEST_ASSERT(mock.mock.verify());
+  DRTEST_ASSERT(mock.mock.control.verify());
   DRTEST_ASSERT(mock.mock.funcNonVoid0().verify());
 
   mock.mock.funcOverloadConst().push()
       .expects()
       .times(1);
   mock.funcOverloadConst();
-  DRTEST_ASSERT(mock.mock.verify());
+  DRTEST_ASSERT(mock.mock.control.verify());
   DRTEST_ASSERT(mock.mock.funcOverloadConst<>().verify());
 
   mock.mock.funcOverloadConst<drmock::Const>().push()
       .expects()
       .times(1);
   const_cast<const ExampleMock<int, float, double>&>(mock).funcOverloadConst();
-  DRTEST_ASSERT(mock.mock.verify());
+  DRTEST_ASSERT(mock.mock.control.verify());
   DRTEST_ASSERT(mock.mock.funcOverloadConst<drmock::Const>().verify());
 
   {
@@ -372,7 +372,7 @@ DRTEST_TEST(succeeds)
         .returns(r)
         .times(1);
     DRTEST_ASSERT(mock.funcOverloadConstDifferentReturn() == r);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(mock.mock.funcOverloadConstDifferentReturn<>().verify());
   }
 
@@ -386,7 +386,7 @@ DRTEST_TEST(succeeds)
         const ExampleMock<int, float, double>&
       >(mock).funcOverloadConstDifferentReturn();
     DRTEST_ASSERT(result == r);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(
         mock.mock.funcOverloadConstDifferentReturn<drmock::Const>().verify()
       );
@@ -397,7 +397,7 @@ DRTEST_TEST(succeeds)
           .expects()
           .times(1);
     mock.funcOverloadParameters();
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     bool verified = mock.mock.funcOverloadParameters().verify();
     DRTEST_ASSERT(verified);
   }
@@ -412,7 +412,7 @@ DRTEST_TEST(succeeds)
           .expects(a1, a2)
           .times(1);
     mock.funcOverloadParameters(a1, a2);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     bool verified = mock.mock.funcOverloadParameters<
         std::unordered_map<int, std::string>,
         const float
@@ -429,7 +429,7 @@ DRTEST_TEST(succeeds)
           .expects(a1)
           .times(1);
     mock.funcOverloadParameters(a1);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     bool verified = mock.mock.funcOverloadParameters<
         const std::shared_ptr<std::unordered_map<int, std::string>>&
       >().verify();
@@ -443,7 +443,7 @@ DRTEST_TEST(succeeds)
         .expects(a1, a2)
         .times(1);
     mock.funcTemplateParameters(a1, a2);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     bool verified = mock.mock.funcTemplateParameters<int, int>().verify();
     DRTEST_ASSERT(verified);
   }
@@ -454,7 +454,7 @@ DRTEST_TEST(succeeds)
     mock.mock.funcTemplateParameters<float&&, double&&>().push()
         .expects(a1, a2);
     mock.funcTemplateParameters(std::move(a1), std::move(a2));
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     bool verified = mock.mock.funcTemplateParameters<float&&, double&&>().verify();
     DRTEST_ASSERT(verified);
   }
@@ -471,7 +471,7 @@ DRTEST_TEST(succeeds)
         mock.funcTemplateParameters(a1, std::move(a2), std::move(a3)),
         true
       );
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     bool verified = mock.mock.funcTemplateParameters<const int&, float&&, double&&>().verify();
     DRTEST_ASSERT(verified);
   }
@@ -487,7 +487,7 @@ DRTEST_TEST(succeeds)
           .expects(a1, a2, a3, a4)
           .times(1);
     mock.funcTemplateParameters(std::move(a1), a2, std::move(a3), std::move(a4));
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     bool verified = mock.mock.funcTemplateParameters<
         int&&, const int&, float&&, double&&
       >().verify();
@@ -502,7 +502,7 @@ DRTEST_TEST(succeeds)
         .returns(r)
         .times(1);
     DRTEST_ASSERT(mock.funcUsingParameter(a1) == r);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(mock.mock.funcUsingParameter().verify());
   }
 
@@ -512,7 +512,7 @@ DRTEST_TEST(succeeds)
         .expects(a1)
         .times(1);
     mock.operator>(a1);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(mock.mock.operatorGreater().verify());
   }
 
@@ -522,7 +522,7 @@ DRTEST_TEST(succeeds)
         .expects(a1)
         .times(1);
     mock.operator==(a1);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(mock.mock.operatorEqual().verify());
   }
 
@@ -532,7 +532,7 @@ DRTEST_TEST(succeeds)
         .expects(a1)
         .times(1);
     mock.operator+(a1);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(mock.mock.operatorPlus().verify());
   }
 
@@ -542,7 +542,7 @@ DRTEST_TEST(succeeds)
         .expects(a1)
         .times(1);
     mock.funcOverloadLvalueRvalueAndConst(a1);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(
         mock.mock.funcOverloadLvalueRvalueAndConst<const std::string&>().verify()
       );
@@ -554,7 +554,7 @@ DRTEST_TEST(succeeds)
         .expects(a1)
         .times(1);
     mock.funcOverloadLvalueRvalueAndConst(a1);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(mock.mock.funcOverloadLvalueRvalueAndConst<std::string&>().verify());
   }
 
@@ -564,7 +564,7 @@ DRTEST_TEST(succeeds)
         .expects(a1)
         .times(1);
     mock.funcOverloadLvalueRvalueAndConst(std::move(a1));
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(
         mock.mock.funcOverloadLvalueRvalueAndConst<const std::string&&>().verify()
       );
@@ -576,7 +576,7 @@ DRTEST_TEST(succeeds)
         .expects(a1)
         .times(1);
     mock.funcOverloadLvalueRvalueAndConst(std::move(a1));
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(mock.mock.funcOverloadLvalueRvalueAndConst<std::string&&>().verify());
   }
 
@@ -587,7 +587,7 @@ DRTEST_TEST(succeeds)
         .times(1);
     const int* const a1 = new int{123};
     mock.funcOddParameters(a1);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(mock.mock.funcOddParameters<const int* const>().verify());
     delete a1;
     delete expects;
@@ -600,7 +600,7 @@ DRTEST_TEST(succeeds)
         .times(1);
     const int* const* a1 = new int*{new int{123}};
     mock.funcOddParameters(std::move(a1));
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(mock.mock.funcOddParameters<const int* const* const&&>().verify());
     delete *a1;
     delete a1;
@@ -615,7 +615,7 @@ DRTEST_TEST(succeeds)
         .times(1);
     a1 = std::make_unique<int>(12);
     mock.funcNonCopyableArg(std::move(a1));
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(mock.mock.funcNonCopyableArg().verify());
   }
 
@@ -625,7 +625,7 @@ DRTEST_TEST(succeeds)
         .expects()
         .returns(std::move(r));
     DRTEST_COMPARE(*mock.funcNonCopyableResult(), 12);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(mock.mock.funcNonCopyableResult().verify());
   }
 
@@ -635,7 +635,7 @@ DRTEST_TEST(succeeds)
         .expects()
         .returns(std::move(r));
     DRTEST_COMPARE(*mock.funcNonCopyableResult(), 12);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(mock.mock.funcNonCopyableResult().verify());
   }
 }

@@ -30,7 +30,7 @@ DRTEST_TEST(fails)
     int a1{3};
     std::vector<float> a2{};
     mock.fParameters(a1, a2);
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.fParameters().verify();
     DRTEST_ASSERT(not verified);
   }
@@ -43,7 +43,7 @@ DRTEST_TEST(fails)
     float a2{3};
     std::string a3{};
     mock.gParameters(a1, a2, a3);
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.gParameters().verify();
     DRTEST_ASSERT(not verified);
   }
@@ -52,7 +52,7 @@ DRTEST_TEST(fails)
     FuncNotAbstractMock mock{};
     DRTEST_ASSERT(mock.mock.virtualMethodNotPure().verify());
     mock.virtualMethodNotPure();
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.virtualMethodNotPure().verify());
   }
 }
@@ -67,7 +67,7 @@ DRTEST_TEST(success)
         .expects(a1, a2)
         .times(1);
     mock.fParameters(a1, a2);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(mock.mock.fParameters().verify());
   }
 
@@ -83,7 +83,7 @@ DRTEST_TEST(success)
         .returns(r)
         .times(1);
     DRTEST_ASSERT(mock.gParameters(a1, a2, a3) == r);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(mock.mock.gParameters().verify());
   }
 
@@ -92,7 +92,7 @@ DRTEST_TEST(success)
     auto value = 34;
     mock.mock.virtualMethodNotPure().push().returns(value).times(1);
     DRTEST_ASSERT(mock.virtualMethodNotPure() == value);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(mock.mock.virtualMethodNotPure().verify());
   }
 
@@ -100,7 +100,7 @@ DRTEST_TEST(success)
   {
     FuncNotAbstractMock mock{};
     DRTEST_ASSERT(mock.notVirtual() == 12);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
   }
 }
 

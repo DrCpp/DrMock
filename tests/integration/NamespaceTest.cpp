@@ -23,14 +23,14 @@ DRTEST_TEST(fails)
 {
   {
     outer::inner::ns::NamespaceMock mock{};
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
   }
 
   {
     outer::inner::ns::NamespaceMock mock{};
     DRTEST_ASSERT(mock.mock.f().verify());
     mock.f();
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.f().verify());
   }
 }
@@ -38,12 +38,12 @@ DRTEST_TEST(fails)
 DRTEST_TEST(succeeds)
 {
   outer::inner::ns::NamespaceMock mock{};
-  DRTEST_ASSERT(mock.mock.verify());
+  DRTEST_ASSERT(mock.mock.control.verify());
 
   mock.mock.f().push()
       .expects()
       .times(1);
   mock.f();
-  DRTEST_ASSERT(mock.mock.verify());
+  DRTEST_ASSERT(mock.mock.control.verify());
   DRTEST_ASSERT(mock.mock.f().verify());
 }

@@ -41,5 +41,5 @@ DRTEST_TEST(eventLoop)
   QEventLoop event_loop{};
   event_loop.processEvents();
 
-  DRTEST_ASSERT(bar->mock.verify());
+  DRTEST_ASSERT(bar->mock.control.verify());
 }

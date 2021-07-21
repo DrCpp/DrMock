@@ -30,7 +30,7 @@ DRTEST_TEST(fails)
       );
     const std::string a1{};
     mock.funcOverloadLvalueRvalueAndConst(a1);
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(
         not mock.mock.funcOverloadLvalueRvalueAndConst<const std::string&>().verify()
       );
@@ -41,7 +41,7 @@ DRTEST_TEST(fails)
     DRTEST_ASSERT(mock.mock.funcOverloadLvalueRvalueAndConst<std::string&>().verify());
     std::string a1{};
     mock.funcOverloadLvalueRvalueAndConst(a1);
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.funcOverloadLvalueRvalueAndConst<std::string&>().verify());
   }
 
@@ -52,7 +52,7 @@ DRTEST_TEST(fails)
       );
     const std::string a1{};
     mock.funcOverloadLvalueRvalueAndConst(std::move(a1));
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(
         not mock.mock.funcOverloadLvalueRvalueAndConst<const std::string&&>().verify()
       );
@@ -63,7 +63,7 @@ DRTEST_TEST(fails)
     DRTEST_ASSERT(mock.mock.funcOverloadLvalueRvalueAndConst<std::string&&>().verify());
     std::string a1{};
     mock.funcOverloadLvalueRvalueAndConst(std::move(a1));
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.funcOverloadLvalueRvalueAndConst<std::string&&>().verify());
   }
 }
@@ -77,7 +77,7 @@ DRTEST_TEST(success)
         .expects(a1)
         .times(1);
     mock.funcOverloadLvalueRvalueAndConst(a1);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(
         mock.mock.funcOverloadLvalueRvalueAndConst<const std::string&>().verify()
       );
@@ -90,7 +90,7 @@ DRTEST_TEST(success)
         .expects(a1)
         .times(1);
     mock.funcOverloadLvalueRvalueAndConst(a1);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(mock.mock.funcOverloadLvalueRvalueAndConst<std::string&>().verify());
   }
 
@@ -106,7 +106,7 @@ DRTEST_TEST(success)
         mock.funcOverloadLvalueRvalueAndConst(std::move(a1)),
         r
       );
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(
         mock.mock.funcOverloadLvalueRvalueAndConst<const std::string&&>().verify()
       );
@@ -124,7 +124,7 @@ DRTEST_TEST(success)
         mock.funcOverloadLvalueRvalueAndConst(std::move(a1)),
         r
       );
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(mock.mock.funcOverloadLvalueRvalueAndConst<std::string&&>().verify());
   }
 }

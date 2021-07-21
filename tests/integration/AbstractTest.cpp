@@ -60,7 +60,7 @@ DRTEST_TEST(fails)
         .times(1);
     auto ptr = mock.f(std::make_shared<Foo>(2));
     DRTEST_ASSERT(not ptr);
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     DRTEST_ASSERT(not mock.mock.f().verify());
   }
 }
@@ -77,7 +77,7 @@ DRTEST_TEST(success)
     auto lhs = mock.f(std::make_shared<Foo>(0));
     auto lhs_cast = std::dynamic_pointer_cast<Foo>(lhs);
     DRTEST_ASSERT(*lhs_cast == Foo{1});
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(mock.mock.f().verify());
   }
 }

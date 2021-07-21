@@ -28,7 +28,7 @@ DRTEST_TEST(fails)
     bool verified = mock.mock.func<>().verify();
     DRTEST_ASSERT(verified);
     mock.func();
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.func<>().verify();
     DRTEST_ASSERT(not verified);
   }
@@ -39,7 +39,7 @@ DRTEST_TEST(fails)
     DRTEST_ASSERT(verified);
     int a{};
     mock.func(a);
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.func<int>().verify();
     DRTEST_ASSERT(not verified);
   }
@@ -52,7 +52,7 @@ DRTEST_TEST(fails)
     float a2{};
     auto a3 = std::make_tuple<float, int>(12.3f, 456);
     mock.func(a1, a2, a3);
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.func<int, float, std::tuple<float, int>>().verify();
     DRTEST_ASSERT(not verified);
   }
@@ -65,7 +65,7 @@ DRTEST_TEST(success)
     mock.mock.func<>().push()
         .times(1);
     mock.func();
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(mock.mock.func<>().verify());
   }
 
@@ -76,7 +76,7 @@ DRTEST_TEST(success)
         .expects(a)
         .times(1);
     mock.func(a);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(mock.mock.func<int>().verify());
   }
 
@@ -89,7 +89,7 @@ DRTEST_TEST(success)
         .expects(a1, a2, a3)
         .times(1);
     mock.func(a1, a2, a3);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     DRTEST_ASSERT(
         (mock.mock.func<int, float, std::tuple<float, int>>().verify())
       );

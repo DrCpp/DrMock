@@ -28,7 +28,7 @@ DRTEST_TEST(fails)
     bool verified = mock.mock.fTemplate().verify();
     DRTEST_ASSERT(verified);
     mock.fTemplate(float{}, double{});
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.fTemplate().verify();
     DRTEST_ASSERT(not verified);
   }
@@ -38,7 +38,7 @@ DRTEST_TEST(fails)
     bool verified = mock.mock.gTemplate().verify();
     DRTEST_ASSERT(verified);
     mock.gTemplate(int{}, float{}, double{});
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.gTemplate().verify();
     DRTEST_ASSERT(not verified);
   }
@@ -52,7 +52,7 @@ DRTEST_TEST(fails)
     float* const a3 = new float{123};
     double* const a4 = new double{123};
     mock.hTemplate(std::move(a1), a2, a3, a4);
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.hTemplate().verify();
     DRTEST_ASSERT(not verified);
   }
@@ -68,7 +68,7 @@ DRTEST_TEST(succeeds)
         .expects(a1, a2)
         .times(1);
     mock.fTemplate(a1, a2);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     bool verified = mock.mock.fTemplate().verify();
     DRTEST_ASSERT(verified);
   }
@@ -86,7 +86,7 @@ DRTEST_TEST(succeeds)
         mock.gTemplate(std::move(a0), std::move(a1), std::move(a2)),
         r
       );
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     bool verified = mock.mock.gTemplate().verify();
     DRTEST_ASSERT(verified);
   }
@@ -107,7 +107,7 @@ DRTEST_TEST(succeeds)
     DRTEST_COMPARE(std::get<1>(r), std::get<1>(s));
     DRTEST_COMPARE(std::get<2>(r), std::get<2>(s));
     DRTEST_COMPARE(std::get<3>(r), std::get<3>(s));
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     bool verified = mock.mock.hTemplate().verify();
     DRTEST_ASSERT(verified);
   }

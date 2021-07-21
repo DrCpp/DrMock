@@ -28,7 +28,7 @@ DRTEST_TEST(fails)
     bool verified = mock.mock.operatorEqual().verify();
     DRTEST_ASSERT(verified);
     (void)(mock == int{});  // Call the operator, mark result as unused!
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.operatorEqual().verify();
     DRTEST_ASSERT(not verified);
   }
@@ -39,7 +39,7 @@ DRTEST_TEST(fails)
     DRTEST_ASSERT(verified);
     std::vector<int> a{};
     mock + a;  // Call the operator.
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.operatorPlus().verify();
     DRTEST_ASSERT(not verified);
   }
@@ -52,7 +52,7 @@ DRTEST_TEST(fails)
     float a2{};
     double* const a3 = new double{123};
     mock(a1, a2, a3);  // Call the operator.
-    DRTEST_ASSERT(not mock.mock.verify());
+    DRTEST_ASSERT(not mock.mock.control.verify());
     verified = mock.mock.operatorCall().verify();
     DRTEST_ASSERT(not verified);
   }
@@ -69,7 +69,7 @@ DRTEST_TEST(succeeds)
         .returns(r)
         .times(1);
     DRTEST_COMPARE((mock == a1), r);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     bool verified = mock.mock.operatorEqual().verify();
     DRTEST_ASSERT(verified);
   }
@@ -80,7 +80,7 @@ DRTEST_TEST(succeeds)
     mock.mock.operatorPlus().push()
         .expects(a0);
     mock + a0;  // Call the operator.
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     bool verified = mock.mock.operatorPlus().verify();
     DRTEST_ASSERT(verified);
   }
@@ -96,7 +96,7 @@ DRTEST_TEST(succeeds)
         .returns(r)
         .times(1);
     DRTEST_COMPARE(mock(a1, a2, a3), r);
-    DRTEST_ASSERT(mock.mock.verify());
+    DRTEST_ASSERT(mock.mock.control.verify());
     bool verified = mock.mock.operatorCall().verify();
     DRTEST_ASSERT(verified);
   }
