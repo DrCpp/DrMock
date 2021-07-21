@@ -26,7 +26,7 @@ DRTEST_TEST(voidNoExpect)
   auto foo = std::make_shared<FooMock>();
 
   foo->h();
-  DRTEST_ASSERT(not foo->mock.verify());
+  DRTEST_ASSERT(not foo->mock.control.verify());
 }
 
 DRTEST_TEST(voidExpect)
@@ -35,7 +35,7 @@ DRTEST_TEST(voidExpect)
 
   foo->mock.h().push().expects();
   foo->h();
-  DRTEST_ASSERT(foo->mock.verify());
+  DRTEST_ASSERT(foo->mock.control.verify());
 }
 
 DRTEST_TEST(missingReturn)
@@ -45,7 +45,7 @@ DRTEST_TEST(missingReturn)
 
   foo->mock.g().push().expects();
   x = foo->g();
-  DRTEST_ASSERT(not foo->mock.verify());
+  DRTEST_ASSERT(not foo->mock.control.verify());
   DRTEST_ASSERT_LE(x, 0.0001f);
 }
 
@@ -60,26 +60,26 @@ DRTEST_TEST(timesRange)
       .returns(5);
 
   // 0
-  DRTEST_ASSERT(not foo->mock.verify());
+  DRTEST_ASSERT(not foo->mock.control.verify());
 
   // 1
   x = foo->f("foo", 123);
-  DRTEST_ASSERT(foo->mock.verify());
+  DRTEST_ASSERT(foo->mock.control.verify());
   DRTEST_ASSERT_EQ(x, 5);
 
   // 2
   x = foo->f("foo", 123);
-  DRTEST_ASSERT(foo->mock.verify());
+  DRTEST_ASSERT(foo->mock.control.verify());
   DRTEST_ASSERT_EQ(x, 5);
 
   // 3
   x = foo->f("foo", 123);
-  DRTEST_ASSERT(foo->mock.verify());
+  DRTEST_ASSERT(foo->mock.control.verify());
   DRTEST_ASSERT_EQ(x, 5);
 
   // 4
   x = foo->f("foo", 123);
-  DRTEST_ASSERT(not foo->mock.verify());
+  DRTEST_ASSERT(not foo->mock.control.verify());
   DRTEST_ASSERT_EQ(x, 0);
 }
 
@@ -94,21 +94,21 @@ DRTEST_TEST(timesExact)
       .returns(5);
 
   // 0
-  DRTEST_ASSERT(not foo->mock.verify());
+  DRTEST_ASSERT(not foo->mock.control.verify());
 
   // 1
   x = foo->f("foo", 123);
-  DRTEST_ASSERT(not foo->mock.verify());
+  DRTEST_ASSERT(not foo->mock.control.verify());
   DRTEST_ASSERT_EQ(x, 5);
 
   // 2
   x = foo->f("foo", 123);
-  DRTEST_ASSERT(foo->mock.verify());
+  DRTEST_ASSERT(foo->mock.control.verify());
   DRTEST_ASSERT_EQ(x, 5);
 
   // 3
   x = foo->f("foo", 123);
-  DRTEST_ASSERT(not foo->mock.verify());
+  DRTEST_ASSERT(not foo->mock.control.verify());
   DRTEST_ASSERT_EQ(x, 0);
 }
 
@@ -128,7 +128,7 @@ DRTEST_TEST(enforceOrder)
   int x = foo->f("bar", 456);
   int y = foo->f("foo", 123);
 
-  DRTEST_ASSERT(not foo->mock.verify());
+  DRTEST_ASSERT(not foo->mock.control.verify());
 
   // Out of turn call results in default value return.
   DRTEST_ASSERT_EQ(x, 0);
