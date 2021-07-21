@@ -22,6 +22,8 @@
 #include <memory>
 #include <vector>
 
+#include <DrMock/mock/StateObject.h>
+
 namespace drmock {
 
 class IMethod;
@@ -30,11 +32,15 @@ class Controller
 {
 public:
   Controller(std::vector<std::shared_ptr<IMethod>>);
+  Controller(std::vector<std::shared_ptr<IMethod>>, std::shared_ptr<StateObject>);
   bool verify() const;
+  bool verifyState(const std::string& state) const;
+  bool verifyState(const std::string& state, const std::string& slot) const;
   std::string makeFormattedErrorString() const;
 
 private:
   std::vector<std::shared_ptr<IMethod>> methods_{};
+  std::shared_ptr<StateObject> state_object_{};
 };
 
 } // namespace drmock
