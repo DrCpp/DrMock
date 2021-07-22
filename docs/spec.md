@@ -169,19 +169,27 @@ mockable interface. The _mock object_ of this interface is a C++ class
 with the following properties:
 
 - The mock object's name is as specified by the user
-- The mock object's 
-- The mock object has a member of type `::drmock::Controller` (the
-  controller) whose name is specified by the user (`control` for
+- The mock object's namespace is specified by the user
+- The mock object has a member of type `::drmock::Controller` ("the
+  controller") whose name is specified by the user (`control` for
   purposes of demonstration)
 - The mock object is declared a `friend` of the mock implementation of
   the interface
+- The mock object has a member of type
+  `std::shared_ptr<::drmock::StateObject>` ("the state object")
 
-Furthermore, the mock object **must** define an instance of
-`std::shared_ptr<::drmock::Method<Instance, T, Ts...>>` for every mockable method
-`T Instance::func(Ts...)`, one for each overload. This smart pointer is
-called the smart pointer _associated with_ `T func(Ts...)`. (The `Method` object
-simulates the behavior of the implementation of `func` in the mock
-implementation.)
+Furthermore, the mock object **must** define one member variable of type
+`std::shared_ptr<::drmock::Method<Instance, T, Ts...>>` for every
+mockable method `T Instance::func(Ts...)`, one for each overload. Each
+must be initialized with the name of the associated function and the state object,
+e.g. `{"func", DRMOCK_STATE_OBJECT_}`.
+
+These smart pointers are called the smart pointers _associated with_ `T
+func(Ts...)`. (The `Method` object simulates the behavior of the
+implementation of `func` in the mock implementation.) The controller
+**must** be initialized with an instance of
+`std::vector<std::shared_ptr<IMethod>>` which contains all smart
+pointers.
 
 Finally, the mock object **must** define a set of methods called
 _getters_:
@@ -191,6 +199,7 @@ _getters_:
   the mock object **must** define a public method `auto& func()` (no
   qualifiers) which returns a reference to the smart pointer associated
   with `T func(Ts...)`.
+
 - For every set of overloaded mockable methods (collectively, "the set"), say `Interface::func`,
   the mock object **must** declare a public method
   `template<typename... Us> auto& func()` and, for every overload of the
@@ -242,6 +251,10 @@ _getters_:
       returns the smart pointer associated with `T func(Ts...) const&`
     - `MockObject::func<Ts..., ::drmock::Const, ::drmock::RValueRef>()`
       returns the smart pointer associated with `T func(Ts...) const&&`
+
+    (Note that `T` denotes potentially varying return types between these
+    overloads. Mind the correct order of `::drmock::Const` and
+    `::drmock*ValueRef`!)
 
 
 ### The Controller
