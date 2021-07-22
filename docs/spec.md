@@ -21,13 +21,13 @@ along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 ## Table of contents
 
-- [Informal Introduction][]
-- [Terminology][]
-- + [Keywords][]
-- [The Interface][]
-- [The Mock Implementation][]
-- [The Mock Object][]
-- [Matching][]
+- [Informal Introduction]
+- [Terminology]
+  + [Keywords]
+- [The Interface]
+- [The Mock Implementation]
+- [The Mock Object]
+- [Matching]
 
 
 ## Informal Introduction
@@ -75,14 +75,14 @@ The following input data is specified by the user:
 - A name for the _controller_ member variable of the mock object
 
 
-## The Interface
+## Interface
 
 The _input class_ or _interface_ is subject to a few conditions that it
 **must** satisfy in order to be _mockable_. A non-mockable input class
 will result in undefined behavior.
 
 Let `file.h` be a C++ header file which contains a class declaration
-`Interface` (_the declaration_).
+`Interface` ("the declaration").
 Then `Interface` is mockable if:
 
 - The interface's name **must not** contain the substring `DRMOCK`
@@ -162,7 +162,7 @@ it satisfies the following properties:
 
 
 
-## The Mock Object
+## Mock Object
 
 Let `NS0::...::NSn::Interface` ("the interface") be a
 mockable interface. The _mock object_ of this interface is a C++ class
@@ -257,11 +257,11 @@ _getters_:
     `::drmock*ValueRef`!)
 
 
-### The Controller
+### Controller
 
 
 
-## The Mock Implementation
+## Mock Implementation
 
 The _mock implementation_ is the output of the mocking process. Let
 `NS0::...::NSn` be the  enclosing namespace for mocking (see [User Input]).
@@ -309,6 +309,8 @@ properties:
 
 **must** be contained 
 
+[Mock Implementation]
+[Mock Object]
 
 ## Example
 
