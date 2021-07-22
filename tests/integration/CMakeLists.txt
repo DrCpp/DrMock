@@ -55,6 +55,7 @@ drmock_library(
         IMultipleClasses.h
         IInclude.h
         IDerived.h
+        ICopyAndMove.h
         ISharedState.h
         IVerifyState.h
         IExample.h
@@ -98,6 +99,7 @@ drmock_test(
         IncludeTest.cpp
         SubdirTest.cpp
         DerivedTest.cpp
+        CopyAndMoveTest.cpp
         SharedStateTest.cpp
         VerifyStateTest.cpp
         ExampleMockTest.cpp
