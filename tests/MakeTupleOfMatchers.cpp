@@ -29,7 +29,7 @@ DRTEST_TEST(wrap_builtin)
   auto match_pack = detail::MatchPack<std::tuple<int, float, std::string>>{};
   auto eq1 = wrapper.wrap(123, 1.23f, "foo");
   auto eq2 = wrapper.wrap(std::get<0>(eq1), std::get<1>(eq1), std::get<2>(eq1));  // Rewrap.
-  auto eq3 = wrapper.wrap(123, std::make_shared<Equal<float>>(1.23), "foo");  // Mixed.
+  auto eq3 = wrapper.wrap(123, std::make_shared<Equal<float>>(1.23f), "foo");  // Mixed.
   DRTEST_ASSERT(match_pack(eq1, 123, 1.23f, "foo"));
   DRTEST_ASSERT(match_pack(eq2, 123, 1.23f, "foo"));
   DRTEST_ASSERT(match_pack(eq3, 123, 1.23f, "foo"));
