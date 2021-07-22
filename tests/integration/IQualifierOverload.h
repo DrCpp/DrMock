@@ -38,6 +38,14 @@ public:
   virtual const std::vector<std::string>& funcOverloadMultipleConstReturns() const = 0;
   virtual std::string& funcOverloadMultipleConstReturns(int) = 0;
   virtual const std::string& funcOverloadMultipleConstReturns(int) const = 0;
+  virtual const std::string& funcOverloadMultipleConstReturns(int, float) const = 0;
+
+  virtual void onlyConst(int) const {};
+  virtual void onlyConst(float) const {};
+  virtual void onlyRef(int) & {};
+  virtual void onlyRef(float) & {};
+  virtual void mixed(int) const& {};
+  virtual void mixed(int) const&& {};
 };
 
 }} // namespace outer::inner
