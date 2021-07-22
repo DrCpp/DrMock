@@ -72,6 +72,7 @@ The following input data is specified by the user:
 - A name for the mock implementation (see
   [Mock Implementation] for details)
 - A global or relative _enclosing namespace for mocking_
+- A name for the _controller_ member variable of the mock object
 
 
 ## The Interface
@@ -96,11 +97,13 @@ Then `Interface` is mockable if:
 - `Interface::` **must not** have a member called `mock`
 - `Interface::` **must not** have a member whose name contains the
   substring `DRMOCK`
-- The declaration **must not** have volatile-qualified methods
+- The declaration **must not** have virtual volatile-qualified methods
 - The interface **must not** be contained in the global namespace
 - The enclosing namespace for mocking **must not** contain a member
   with the name `DRMOCK_Object{interface name}` (i.e.
   `DRMOCK_ObjectInterface`) or the name of the mock implementation
+- `Interface::` **must not** have a virtual method whose name is equal
+  to the name of the controller of the mock object (see [User Data])
 
 Note the distinction between `Interface` and _the declaration_. For
 example, a parent of `Interface` may implement a conversion operator.
@@ -116,7 +119,8 @@ mockable class:
 - The declaration **may** contain const-qualified and ref-qualified
   methods
 - The declaration **may** contain `noexcept` methods
-- Parents of `Interface` **may** contain volatile-qualified methods
+- The declaration **may** contain non-virtual volatile-qualified methods
+- Parents of `Interface` **may** contain virtual volatile-qualified methods
 - Parents of `Interface` **may** contain conversion operators
 - The declarations of parents of `Interface` **may** contain type
   references that are not declared with their full enclosing namespace
@@ -125,7 +129,13 @@ Furthermore, the following assumptions are made:
 
 - The namespace `drmock::` is reserved for the C++ implementation of the
   **DrMock** specification and **must not** contain any user code
-- No member of the enclosing 
+
+A method _f_ (each overload is counted as seperate method) is _mockable_ if
+it satisfies the following properties:
+
+- _f_ is delcared `virtual` (in particular, _f_ is not delcared `static`)
+- _f_ is not declared `volatile`
+- _f_ is not a conversion operator
 
 | Symbol | Designator     | Symbol     | Designator          |
 | :----- | :------------- | :--------- | :------------------ |
@@ -154,12 +164,87 @@ Furthermore, the following assumptions are made:
 
 ## The Mock Object
 
-Let 
+Let `NS0::...::NSn::Interface` ("the interface") be a
+mockable interface. The _mock object_ of this interface is a C++ class
+with the following properties:
 
-- The name of the mock object starts is
-  `DRMOCK_Object{name of interface}`
-- Declares the mock implementation
+- The mock object's name is as specified by the user
+- The mock object's 
+- The mock object has a member of type `::drmock::Controller` (the
+  controller) whose name is specified by the user (`control` for
+  purposes of demonstration)
+- The mock object is declared a `friend` of the mock implementation of
+  the interface
 
+Furthermore, the mock object **must** define an instance of
+`std::shared_ptr<::drmock::Method<Instance, T, Ts...>>` for every mockable method
+`T Instance::func(Ts...)`, one for each overload. This smart pointer is
+called the smart pointer _associated with_ `T func(Ts...)`. (The `Method` object
+simulates the behavior of the implementation of `func` in the mock
+implementation.)
+
+Finally, the mock object **must** define a set of methods called
+_getters_:
+
+- For every _non-overloaded_ mockable method, say
+  `T Interface::func(Ts...) [...]`,
+  the mock object **must** define a public method `auto& func()` (no
+  qualifiers) which returns a reference to the smart pointer associated
+  with `T func(Ts...)`.
+- For every set of overloaded mockable methods (collectively, "the set"), say `Interface::func`,
+  the mock object **must** declare a public method
+  `template<typename... Us> auto& func()` and, for every overload of the
+  set, define a specialization which returns the smart pointer
+  associated with said overload;
+  the template parameters
+  are used to specify the parameters and cv/reference-qualifiers of the
+  requested overload.
+  Their behavior is defined as follows, depending on the template
+  arguments:
+
+  + If all members of the set have the same parameters `Ts...` (but different
+    const/reference qualifiers), then...
+    - `MockObject::func<>()` returns the smart pointer associated with
+      `T func(Ts...)`
+    - `MockObject::func<::drmock::LValueRef>` returns the smart pointer
+      associated with `T func(Ts...)&`
+    - `MockObject::func<::drmock::RValueRef>` returns the smart pointer
+      associated with `T func(Ts...)&&`
+    - `MockObject::func<::drmock::Const>()` returns the smart pointer
+      associated with `T func(Ts...) const`
+    - `MockObject::func<::drmock::Const, ::drmock::LValueRef>()`
+      returns the smart pointer associated with `T func(Ts...) const&`
+    - `MockObject::func<::drmock::Const, ::drmock::RValueRef>()`
+      returns the smart pointer associated with `T func(Ts...) const&&`
+
+    (Note that `T` denotes potentially varying return types between these
+    overloads. Mind the correct order of `::drmock::Const` and
+    `::drmock*ValueRef`!)
+
+  + If all members of the set have the same cv/reference-qualifiers
+    `[...]`, then `MockObject::func<Ts...>()` return the smart pointer
+    associated with `T func(Ts...)`.
+
+    (This means that `::drmock::Const` need not be specified if all
+    overloads are const, for example.)
+
+  + If neither parameters or cv/reference-qualifiers match for all
+    members of the set, then...
+    - `MockObject::func<Ts...>()` returns the smart pointer associated with
+      `T func(Ts...)`
+    - `MockObject::func<Ts..., ::drmock::LValueRef>` returns the smart pointer
+      associated with `T func(Ts...)&`
+    - `MockObject::func<Ts..., ::drmock::RValueRef>` returns the smart pointer
+      associated with `T func(Ts...)&&`
+    - `MockObject::func<Ts..., ::drmock::Const>()` returns the smart pointer
+      associated with `T func(Ts...) const`
+    - `MockObject::func<Ts..., ::drmock::Const, ::drmock::LValueRef>()`
+      returns the smart pointer associated with `T func(Ts...) const&`
+    - `MockObject::func<Ts..., ::drmock::Const, ::drmock::RValueRef>()`
+      returns the smart pointer associated with `T func(Ts...) const&&`
+
+
+### The Controller
 
 
 
