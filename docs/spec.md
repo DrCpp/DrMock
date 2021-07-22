@@ -24,9 +24,9 @@ along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 - [Informal Introduction]
 - [Terminology]
   + [Keywords]
-- [The Interface]
-- [The Mock Implementation]
-- [The Mock Object]
+- [Interface]
+- [Mock Implementation]
+- [Mock Object]
 - [Matching]
 
 
@@ -99,9 +99,8 @@ Then `Interface` is mockable if:
   substring `DRMOCK`
 - The declaration **must not** have virtual volatile-qualified methods
 - The interface **must not** be contained in the global namespace
-- The enclosing namespace for mocking **must not** contain a member
-  with the name `DRMOCK_Object{interface name}` (i.e.
-  `DRMOCK_ObjectInterface`) or the name of the mock implementation
+- The enclosing namespace for mocking **must not** contain a member with
+  the name of the mock object or the name of the mock implementation
 - `Interface::` **must not** have a virtual method whose name is equal
   to the name of the controller of the mock object (see [User Data])
 
@@ -137,6 +136,9 @@ it satisfies the following properties:
 - _f_ is not declared `volatile`
 - _f_ is not a conversion operator
 
+The rules above say, among other things, that every pure virtual method
+must be mockable.
+
 | Symbol | Designator     | Symbol     | Designator          |
 | :----- | :------------- | :--------- | :------------------ |
 | `+`    | `Plus`         | `\|=`      | `PipeAssign`        |
@@ -169,7 +171,8 @@ mockable interface. The _mock object_ of this interface is a C++ class
 with the following properties:
 
 - The mock object's name is as specified by the user
-- The mock object's namespace is specified by the user
+- The enclosing namespace of the mock object **must be**
+  the enclosing namespace for mocking
 - The mock object has a member of type `::drmock::Controller` ("the
   controller") whose name is specified by the user (`control` for
   purposes of demonstration)
@@ -257,35 +260,32 @@ _getters_:
     `::drmock*ValueRef`!)
 
 
-### Controller
-
-
-
 ## Mock Implementation
 
 The _mock implementation_ is the output of the mocking process. Let
 `NS0::...::NSn` be the  enclosing namespace for mocking (see [User Input]).
 Then the mock implementation is a class with following properties:
 
-- The enclosing namespace of the mock implementation **must be**
-  the enclosing namespace for mocking
 - The name of the mock implementation is chosen by the user (for
   demonstration purposes, we call the class `MockImplementation`)
+- The enclosing namespace of the mock implementation **must be**
+  the enclosing namespace for mocking
 - The mock implementation **must** be a public subclass of the interface
 - The mock implementation **must** implement a forwarding constructor
   which forwards its arguments to the constructor of the interface and
-  and initializes each of mock object's `Method` objects parent with
-  `this`
+  calls each of mock object's `std::shared_ptr<IMethod>` objects
+  `parent` method with `this`
 - The mock implementation **must** contain a mutable public member
   `mock` of type _(the mock object of the interface)_ (see [The Mock
   Object])
 
-Furthermore, the _virtual_ methods of the interface are over-ridden by
-the mock implementation as follows:
+Furthermore, the mock implementation **must** implement every mockable
+method `T func(Ts...) [qualifiers]`
+from the interface
 
 ```
-T f(Ts... ts) override {
-  mock.template f<Ts...>().call(std::move(ts)...);
+T f(Ts... ts) [qualifiers] override {
+  mock.template f<Ts...>().call((ts)...);
 }
 ```
 
@@ -302,15 +302,12 @@ If a naked argument `arg` is passed, it is automatically placed in a matcher
 which matches _equality_, and **must** therefore satisfy the following
 properties:
 
-1. `Arg` is not abstract
+1. `Arg` is not abstract and implements `bool operator==(const Arg&) const`
 2. `Arg` is the same as `std::shared_ptr<T>` or `std::unique_ptr<T>`
   where `T` is a type that satisfies 1., 2., or 3. or is abstract
 3. `Arg` is the same as `std::tuple<Ts...>` where `Ts...` satisfy 1., 2. or 3.
 
 **must** be contained 
-
-[Mock Implementation]
-[Mock Object]
 
 ## Example
 
@@ -328,3 +325,11 @@ public:
 
 Note that, for example, the _dispatch_ methods of the mock object are an
 implementation detail
+
+[Informal Introduction]: #informal-introduction
+[Keywords]: #keywords
+[Interface]: #interface
+[Mock Object]: #mock-object
+[Mock Implementation]: #mock-implementation
+[Terminology]: #terminology
+[Matching]: #matching
