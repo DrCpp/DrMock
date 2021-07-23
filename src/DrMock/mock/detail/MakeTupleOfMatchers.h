@@ -53,7 +53,7 @@ private:
   std::shared_ptr<IMatcher<Base>>
   wrap_impl(expect_t<Base>&& var)
   {
-    if (var.template holds_alternative<Base>())
+    if (var.template holdsAlternative<Base>())
     {
       return std::make_shared<Equal<Base, Derived>>(std::forward<expect_t<Base>>(var).template get<Base>());
     }
