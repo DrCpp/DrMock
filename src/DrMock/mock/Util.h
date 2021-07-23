@@ -27,7 +27,7 @@ template<typename... Ts>
 struct TypeContainer {};
 
 template<typename T>
-auto&& moveIfNotCopyConstructible(T&& t)
+auto&& move_if_not_copy_constructible(T&& t)
 {
   if constexpr(std::is_copy_constructible_v<T>)
   {
