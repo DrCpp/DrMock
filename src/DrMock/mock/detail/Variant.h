@@ -57,7 +57,7 @@ public:
 
   template<typename T>
   bool
-  holds_alternative() const
+  holdsAlternative() const
   {
     return std::holds_alternative<T>(var_);
   }
