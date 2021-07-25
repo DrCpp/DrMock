@@ -4,11 +4,12 @@
 #include <DrMock/Mock.h>
 #include "/Users/malte/drmock/docs/example.h"
 
-extern template class ::drmock::Method<ns::Interface, void, int, std :: vector < float >>;
-extern template class ::drmock::Method<ns::Interface, void, std :: string>;
-extern template class ::drmock::Method<ns::Interface, float, float>;
 extern template class ::drmock::Method<ns::Interface, int, foo :: Foo>;
+extern template class ::drmock::Method<ns::Interface, float, float>;
+extern template class ::drmock::Method<ns::Interface, void, int, std :: vector < float >>;
 extern template class ::drmock::Method<ns::Interface, void, int, std :: unordered_map < std :: string , std :: shared_ptr < double >>>;
+extern template class ::drmock::Method<ns::Interface, void, std :: string>;
+extern template class ::drmock::Method<ns::Interface, void, std :: string>;
 namespace ns { namespace mock {
 
 class DRMOCK_OBJECTInterface
