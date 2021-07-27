@@ -15,20 +15,20 @@ jobs:
   linux:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-      - uses: jurplel/install-qt-action@v2
-      - uses: lukka/get-cmake@latest
-      - name: Install libclang
-        run: |
-          sudo apt-get update
-          sudo apt-get install libclang-7-dev
-      - name: Install drmock-generator
-        run: pip install drmock-generator
-      - name: Compile drmock
-        run: |
-          cmake . -DCMAKE_INSTALL_PREFIX=install -DCMAKE_PREFIX_PATH=$Qt5_Dir
-          make
-          ctest --output-on-failure
-        env:
-          DRMOCK_QT_PATH: $Qt5_Dir
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+    - uses: jurplel/install-qt-action@v2
+    - uses: lukka/get-cmake@latest
+    - name: Install libclang
+      run: |
+        sudo apt-get update
+        sudo apt-get install libclang-7-dev
+    - name: Install drmock-generator
+      run: pip install drmock-generator
+    - name: Compile drmock
+      run: |
+        cmake . -DCMAKE_INSTALL_PREFIX=install -DCMAKE_PREFIX_PATH=$Qt5_Dir
+        make
+        ctest --output-on-failure
+      env:
+        DRMOCK_QT_PATH: $Qt5_Dir
