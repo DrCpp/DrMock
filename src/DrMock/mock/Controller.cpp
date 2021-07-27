@@ -21,6 +21,7 @@
 #include <algorithm>
 
 #include <DrMock/mock/IMethod.h>
+#include <DrMock/mock/StateObject.h>
 
 namespace drmock {
 
