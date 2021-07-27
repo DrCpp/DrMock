@@ -1,6 +1,7 @@
 #ifndef DRMOCK_MOCK_IMPLEMENTATIONSInterface
 #define DRMOCK_MOCK_IMPLEMENTATIONSInterface
 
+#define DRMOCK
 #include <DrMock/Mock.h>
 #include "/Users/malte/drmock/docs/example.h"
 

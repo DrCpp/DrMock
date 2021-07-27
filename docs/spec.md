@@ -274,6 +274,8 @@ mock implementation is a class with following properties:
 - The mock implementation **must** contain a mutable public member
   `mock` of type _(the mock object of the interface)_ 
   (see [Mock Object])
+- The mock implementation **must** `#define DRMOCK` before including any
+  other headers
 
 Furthermore, the mock implementation **must** implement every mockable
 method `T func(Ts...) [qualifiers]`
