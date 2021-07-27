@@ -34,9 +34,6 @@
  * This way, header files can be treated differently depending
  * on whether a mock object or an object proper is created. */
 
-// The macro DRMOCK is defined if and only if this header is included.
-#define DRMOCK
-
 // Create a trivial operator== for `cls`. The entire namespace of the
 // class must be specified.
 #define DRMOCK_DUMMY(cls) \
