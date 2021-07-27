@@ -22,11 +22,10 @@
 #include <memory>
 #include <vector>
 
-#include <DrMock/mock/StateObject.h>
-
 namespace drmock {
 
 class IMethod;
+class StateObject;
 
 class Controller
 {
