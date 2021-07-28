@@ -31,7 +31,7 @@ namespace drmock {
  * (such a pair is called _comparable_):
  *
  * 1. `Base` and `Derived` are not abstract and `Derived` implements
- *    `bool operator==(const Base&) const`
+ *    `bool operator==(const Derived&) const`
  * 2. `Base` is a `shared_ptr<T>` (or `unique_ptr<T>`) and `Derived` is a
  *    `shared_ptr<U>` (or `unique_ptr<U>`), and `(T, U)` satisfies 1., 2. or 3.
  * 3. `Base` is a `tuple<Ts...>` and `Derived` is `tuple<Us...>` of the
