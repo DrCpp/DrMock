@@ -24,6 +24,11 @@
 
 namespace drmock {
 
+/**
+ * For matching elements using equality.
+ *
+ *
+ */
 template<typename Base, typename Derived = Base>
 class Equal : public IMatcher<Base>
 {
@@ -49,7 +54,7 @@ private:
   Base expected_;
 };
 
-template<typename Base, typename Derived>
+template<typename Base, typename Derived = Base>
 std::shared_ptr<Equal<Base, Derived>>
 equal(Base expected)
 {
