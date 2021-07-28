@@ -27,7 +27,16 @@ namespace drmock {
 /**
  * For matching elements using equality.
  *
+ * `(Base, Derived)` **must** satisfy one of the following requirements
+ * (such a pair is called _comparable_):
  *
+ * 1. `Base` and `Derived` are not abstract and `Derived` implements
+ *    `bool operator==(const Base&) const`
+ * 2. `Base` is a `shared_ptr<T>` (or `unique_ptr<T>`) and `Derived` is a
+ *    `shared_ptr<U>` (or `unique_ptr<U>`), and `(T, U)` satisfies 1., 2. or 3.
+ * 3. `Base` is a `tuple<Ts...>` and `Derived` is `tuple<Us...>` of the
+ *    same length `n` so that for all `i=0, ..., n-1`,
+ *    `(Ts[i], Us[i])` satisfies 1., 2. or 3.
  */
 template<typename Base, typename Derived = Base>
 class Equal : public IMatcher<Base>
@@ -43,6 +52,18 @@ public:
     expected_{std::move(expected)}
   {}
 
+  /**
+   * Check if `actual` is equal to `expected_`.
+   *
+   * In detail, this returns the following:
+   *
+   * 1. If `Base` and `Derived` are pointer types, then return `true` if
+   *    `*expected_` and `*actual` are recursively equal as instances of
+   *    the pointee type of `Derived`, otherwise `false`.
+   * 2. If `Base` is an `std::tuple<Ts...>`, then return if `expected_`
+   *    and `actual` are componentwise equal.
+   * 3. Otherwise, return `expected_ == actual`.
+   */
   bool
   match(const Base& actual) const override
   {
@@ -51,9 +72,12 @@ public:
   }
 
 private:
-  Base expected_;
+  Base expected_;  /**< The element to match against */
 };
 
+/**
+ * Conveniently create a shared `Equal` object.
+ */
 template<typename Base, typename Derived = Base>
 std::shared_ptr<Equal<Base, Derived>>
 equal(Base expected)
