@@ -26,31 +26,71 @@
 
 namespace drmock {
 
+/**
+ * For matching floating-point numbers.
+ *
+ * `T` must be a floating-point type, in other words:
+ * `std::is_floating_point_v<T>` must be true.
+ *
+ * The actual input matches the expected value if the following is true
+ * (vertical bars denote absolute value):
+ *
+ * ```
+ * |actual - expected_| <= abs_tol + rel_tol*|expected_|
+ * ```
+ */
 template<typename T>
 class AlmostEqual : public IMatcher<T>
 {
 public:
+  /**
+   * Specify the expected floating-point number.
+   *
+   * The absolute and relative tolerance are the `DRTEST_*_TOL` default
+   * values.
+   */
   AlmostEqual(T expected)
   :
-    AlmostEqual(expected, DRTEST_ABS_TOL, DRTEST_REL_TOL)
+    AlmostEqual{expected, DRTEST_ABS_TOL, DRTEST_REL_TOL}
   {}
+
+  /**
+   * Specify the expected floating-point number, and the absolute and
+   * relative tolerance.
+   */
   AlmostEqual(T expected, T abs_tol, T rel_tol)
   :
     expected_{expected}, abs_tol_{abs_tol}, rel_tol_{rel_tol}
   {}
 
+  /**
+   * Check if the following holds:
+   *
+   * ```
+   * |actual - expected_| <= abs_tol + rel_tol*|expected_|
+   * ```
+   */
   bool match(const T& actual) const override
   {
     return drutility::almost_equal(actual, expected_, abs_tol_, rel_tol_);
   }
 
 private:
-  T expected_;
-  T abs_tol_;
-  T rel_tol_;
+  T expected_;  /**< The expected result */
+  T abs_tol_;  /**< The absolute tolerance */
+  T rel_tol_;  /**< The relative tolerance */
 };
 
-// Convenience functions for quickly creating a shared object.
+/**
+ * Convenience functions for quickly creating a shared `AlmostEqual`
+ * object.
+ *
+ * `T` must be a floating-point type, in other words:
+ * `std::is_floating_point_v<T>` must be true.
+ *
+ * The absolute and relative tolerance are the `DRTEST_*_TOL` default
+ * values.
+ */
 template<typename T>
 std::shared_ptr<IMatcher<T>>
 almost_equal(T expected)
@@ -58,6 +98,13 @@ almost_equal(T expected)
   return std::make_shared<AlmostEqual<T>>(expected);
 }
 
+/**
+ * Convenience functions for quickly creating a shared `AlmostEqual`
+ * object.
+ *
+ * `T` must be a floating-point type, in other words:
+ * `std::is_floating_point_v<T>` must be true.
+ */
 template<typename T>
 std::shared_ptr<IMatcher<T>>
 almost_equal(T expected, T abs_tol, T rel_tol)
