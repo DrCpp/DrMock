@@ -28,84 +28,169 @@
 
 namespace drmock {
 
-/* Behavior
-
-Class template that represents a method's behavior.
-
-+ A Behavior has a parent (Class, the object whose behavior is
-  specified) return type (ReturnType) and parameter types (Args...).
-
-+ A Behavior can _expect_ a certain _input_ (a set of arguments that
-  match the parameter types).
-
-+ A Behavior can _produce_ either a pair (first: shared pointer to an
-  instance of its return type, second: shared_ptr to an `AbstractSignal`
-  object), or an std::exception_ptr.
-
-+ A Behavior has a life span. After a set number of productions
-  (which may be infinite), the Behavior object no longer _persists_.
-
-+ The results of the production and the life span must be configured by
-  the user.
-
-Making conflicting configuration calls, such as `returns` followed by
-`throws` will raise an error.
-*/
-
+/**
+ * The smallest unit of a method's behavior in **DrMock**.
+ *
+ * See `AbstractBehavior` for details on template parameters. Note that
+ * `Behavior` does not inherit from `AbstractBehavior`; `Behavior`
+ * objects are used as smallest unit of behaviors in `BehaviorQueue`
+ * objects.
+ *
+ * Every `Behavior` object can _expect_ a call with a specified _input_
+ * (a set of arguments that match the parameter types), and _produce_ a
+ * result: Return a value of type `ReturnType` and/or emit a Qt signal,
+ * _or_ an exception pointer (simulating a thrown exception). Returning
+ * a value and emitting a signal may both occur, but exceptions are
+ * exclusive.
+ *
+ * Furthermore, every `Behavior` object has a _life span_, which
+ * means that it can only `produce()` a fixed number (but possibly
+ * infinite) number of times. Afterwards, the `Behavior` objects no
+ * longer _persists_.
+ *
+ * Making conflicting configurations calls (such as `returns` followed
+ * by `throws`) will result in an error.
+ *
+ * Every `Behavior` has a member of type
+ * `std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>>`.  The job of
+ * this _matching handler_ is to wrap expected values passed to the
+ * behavior via `expects` in `std::shared_ptr<IMatcher<Args>>...`
+ * objects, which are used to check if . By default, they are wrapped in
+ * `std::shared_ptr<Equal<Args>>...` objects.
+ *
+ * If `polymorphic<Deriveds...>()` is called, a new handler is created
+ * which wraps expected values in
+ * `std::shared_ptr<Equal<Args, Deriveds>>...` objects. This means that
+ * when polymorphic objects are used in `call`, then they are matched
+ * against the expected behaviors by comparing them as `Deriveds...`,
+ * not as base types.
+ */
 template<typename Class, typename ReturnType, typename... Args>
 class Behavior
 {
-public:
   using Result = std::pair<
       std::shared_ptr<std::decay_t<ReturnType>>,
       std::shared_ptr<AbstractSignal<Class>>
     >;
 
+public:
   Behavior();
-  Behavior(std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>>);
+  /**
+   * @param make_tuple_of_matchers The matching handler
+   */
+  Behavior(std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>> make_tuple_of_matchers);
 
-  // Expect any argument.
+  /**
+   * Expect _any_ input.
+   */
   template<typename T = std::tuple<Args...>>
   std::enable_if_t<(std::tuple_size_v<T> > 0), Behavior&> expects();
 
-  // Set the expected arguments, return value, emit or thrown exception.
-  // Note: Non-template overload is always prefered according to the C++
-  // spec.
+  /**
+   * @param args... The expected arguments or matchers
+   *
+   * For every `i=0, ..., sizeof...(Args)`, the ith component of
+   * `args...` may be of type `Args[i]` (a _raw expected value_) or
+   * `std::shared_ptr<IMatcher<Args[i]>>` (a matcher). Raw expected
+   * values are wrapped in an
+   * `std::shared_ptr<Equal<Args[i], Deriveds[i]>>` by the matching
+   * handler. This allows the consumer to use custom matchers alongside
+   * the standard equality matcher `Equal`.
+   *
+   * The result will be stored in the `expect_` member, a tuple of
+   * matchers. When `match` is called, the input `args...` is matched
+   * componentwise against the stored matchers.
+   *
+   * (The `Deriveds` parameter pack depends on the matching handler. It
+   * may be set using the `polymorphic` template method.)
+   *
+   */
   Behavior& expects(detail::expect_t<Args>...);
-  template<typename... Ts> Behavior& expects(detail::expect_t<Args>...);
-  template<typename T> Behavior& returns(T&&);
+
+  /**
+   * Call `polymorphic<Deriveds...>()` followed by `expects(args...)`.
+   *
+   * @tparam Deriveds... The expected polymorphic type of the expected
+   *   values
+   * @param args... The expected arguments or matchers
+   *
+   * See `polymorphic` and `expects` for details.
+   */
+  template<typename... Deriveds> Behavior& expects(detail::expect_t<Args>... args);
+
+  /**
+   * Configure `this` to return `result` on productions.
+   */
+  template<typename T> Behavior& returns(T&& result);
+
+  /**
+   * Configure `this` to return an `std::exception_ptr<E>` to
+   * `exception`.
+   */
   template<typename E> Behavior& throws(E&&);
+
+  /**
+   * Configure `this` to emit `signal` with `args...` as arguments.
+   */
   template<typename... SigArgs> Behavior& emits(
-      void (Class::*)(SigArgs...),
-      SigArgs&&...
+      void (Class::*signal)(SigArgs...),
+      SigArgs&&... args
     );
 
-  // Set the exact number or a range of expected productions.
-  //
-  // @example: b.times(2, 4)  // Expect 2, 3 or 4 productions.
+  /**
+   * Set the exact number of expected productions.
+   */
   Behavior& times(unsigned int);
-  Behavior& times(unsigned int, unsigned int);
 
-  // Configure this to be persistent/immortal. This overrides any
-  // previous or future `times` calls.
+  /**
+   * Set a range of expected productions.
+   *
+   * @param min The minimum number of productions expected
+   * @param max The maximum number of productions expected
+   */
+  Behavior& times(unsigned int min, unsigned int max);
+
+  /**
+   * Define `this` to be persistent.
+   *
+   * Note that this will override any _previous and future_ calls of
+   * `times`.
+   */
   Behavior& persists();
 
-  // Setters for is_tuple_pack_equal_.
+  /**
+   * Replace the matching handler with a new
+   * `std::shared_ptr<detail::MakeTupleOfMatchers<std::tuple<Args...>, std::tuple<Deriveds...>>>`.
+   *
+   * Note that this means that the previous `polymorphic` configuration
+   * is overwritten.
+   */
   template<typename... Deriveds> Behavior& polymorphic();
 
-  // Check if this is persistent (i.e. still has productions left or
-  // persists).
+  /**
+   * Check if `this` is persistent.
+   */
   bool is_persistent() const;
-  // Check if this persists or the expected number of productions has
-  // been met.
+
+  /**
+   * Check if `this` is persistent or the expected number of productions
+   * has been achieved.
+   */
   bool is_exhausted() const;
 
-  // Check if the parameter pack matches the values stored in `expect_`.
-  bool match(const Args&...) const;
+  /**
+   * Match `args...` against the stored matchers.
+   *
+   * The matching is done componentwise (see `expects` for details). If
+   * no matchers are stored, always return `true`.
+   */
+  bool match(const Args&... args) const;
 
-  // Produce: return result_ or exception_. The default production
-  // is nullptr (representing no production). exception_ is returned
-  // if it is not null, otherwise result_ is returned.
+  /**
+   * Produce a return value, Qt signal emit or exception pointer.
+   *
+   * The default production is `nullptr` (representing no value).
+   */
   std::variant<Result, std::exception_ptr> produce();
 
 private:
