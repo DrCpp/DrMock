@@ -59,9 +59,9 @@ class Behavior
 {
 public:
   using Result = std::pair<
-                     std::shared_ptr<std::decay_t<ReturnType>>,
-                     std::shared_ptr<AbstractSignal<Class>>
-                   >;
+      std::shared_ptr<std::decay_t<ReturnType>>,
+      std::shared_ptr<AbstractSignal<Class>>
+    >;
 
   Behavior();
   Behavior(std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>>);

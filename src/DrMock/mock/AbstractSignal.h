@@ -21,20 +21,28 @@
 
 namespace drmock {
 
-/* AbstractSignal
-
-Class template that represents a Qt signal emit (in fact, a method
-call). The `invoke(Parent* parent)` method invokes/executes the emit on
-the QObject `parent`.
-*/
-
+/**
+ * Class template that represents a Qt signal emit.
+ *
+ * @param Parent The class of the object from which the signal is
+ *   emitted
+ *
+ * (There's probably no need for implementations of `AbstractSignal`
+ * other than `Signal`, but we need the indirection to hide the
+ * `Args...` template parameter of `Signal` from consumers.)
+ */
 template<typename Parent>
 class AbstractSignal
 {
 public:
   virtual ~AbstractSignal() = default;
 
-  virtual void invoke(Parent*) = 0;
+  /*
+   * Emit the signal.
+   *
+   * @param parent A pointer to the object from which to emit the signal
+   */
+  virtual void invoke(Parent* parent) = 0;
 };
 
 } // namespace drmock

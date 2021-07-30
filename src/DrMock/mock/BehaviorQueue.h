@@ -30,63 +30,77 @@
 
 namespace drmock {
 
-/* BehaviorQueue
-
-(See also: AbstractBehavior.) A container of Behavior objects that acts
-as AbstractBehavior.
-
-When `call(args...)` is called, the BehaviorQueue checks if the _front_
-element of the queue (see implementation details below) matches
-`args...`. If yes, the front behavior produces and the output is
-forwarded. Otherwise, std::monotstate (no output) is returned.
-
-If `enforce_order` is set to `false`, then the entire queue is instead
-searched from front to back for a matching element.
-
-*** Implementation details: ***
-
-* The queue is implemented as std::vector, and, once pushed/enqueued, a
-  Behavior instance never leaves the queue. Instead, the _front_ of the
-  queue is determined by the first element that still persists.
-
-* The sole purpose of `make_tuple_of_matchers_` is to be used as argument
-  of Behavior::setIsEqual whenever new elements are pushed onto the
-  queue.
-*/
-
+/**
+ * A container of `Behavior` objects that serves as standard
+ * implementation of `AbstractBehavior`.
+ */
 template<typename Class, typename ReturnType, typename... Args>
 class BehaviorQueue final : public AbstractBehavior<Class, ReturnType, Args...>
 {
   using Result = std::pair<
-                     std::shared_ptr<std::decay_t<ReturnType>>,
-                     std::shared_ptr<AbstractSignal<Class>>
-                   >;
+      std::shared_ptr<std::decay_t<ReturnType>>,
+      std::shared_ptr<AbstractSignal<Class>>
+    >;
 
 public:
   BehaviorQueue();
-  BehaviorQueue(std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>>);
+  /**
+   * @params make_tuple_of_matchers The tuple handler
+   */
+  BehaviorQueue(std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>> make_tuple_of_matchers);
 
+  /**
+   * Push a new `Behavior` onto the queue and return a reference.
+   */
   Behavior<Class, ReturnType, Args...>& push();
+
+  /**
+   * Access the last element pushed onto the queue.
+   */
   Behavior<Class, ReturnType, Args...>& back();
+
+  /**
+   * Expect the behaviors on the queue to occur in order.
+   */
   void enforce_order(bool);
 
-  // Set `make_tuple_of_matchers_` and call `setIsEqual` for *all* elements
-  // of the queue.
+  /**
+   * Set the tuple handler of all future behaviors _and_ all behaviors
+   * already enqueued to the default, with the specified polymorphic
+   * type.
+   *
+   * @param Deriveds... The derived types for the default matcher
+   */
   template<typename... Deriveds> void polymorphic();
 
+  /**
+   * See `AbstractBehavior::call`.
+   *
+   * Checks if the first element `b` of the queue matches `args...`. If
+   * so, return the value of `b.produce()`. Otherwise, return
+   * `std::monotstate`.
+   * 
+   * If `enforce_order` is set to `false`, then the entire queue is
+   * instead searched from front to back for a matching element.
+   */
   virtual std::variant<
       std::monostate,
       Result,
       std::exception_ptr
-    > call(const Args&...) override;
+    > call(const Args&... args) override;
 
-  // Check if all elements of the container are exhausted.
+  /**
+   * Check if all elements of the container are exhausted.
+   */
   bool is_exhausted() const;
 
 private:
-  std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>> make_tuple_of_matchers_{};
-  std::vector<Behavior<Class, ReturnType, Args...>> behaviors_{};
-  bool enforce_order_ = true;
+  std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>> make_tuple_of_matchers_{};  /**> The tuple handler object */
+  // The queue is implemented as `std::vector`. Exhausted behaviors
+  // remain in the vector. The "first" element of the queue is the first
+  // persistent element.
+  std::vector<Behavior<Class, ReturnType, Args...>> behaviors_{};  /**> The queue of behaviors */
+  bool enforce_order_ = true;  /**> Expect the behaviors of the queue to occur in order */
 };
 
 } // namespace drmock
