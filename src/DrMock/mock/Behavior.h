@@ -104,7 +104,7 @@ public:
    * componentwise against the stored matchers.
    *
    * (The `Deriveds` parameter pack depends on the matching handler. It
-   * may be set using the `polymorphic` template method.)
+   * may be set using the `Behavior::polymorphic` template method.)
    *
    */
   Behavior& expects(detail::expect_t<Args>...);
@@ -116,7 +116,7 @@ public:
    *   values
    * @param args... The expected arguments or matchers
    *
-   * See `polymorphic` and `expects` for details.
+   * See `Behavior::polymorphic` and `Behavior::expects` for details.
    */
   template<typename... Deriveds> Behavior& expects(detail::expect_t<Args>... args);
 
@@ -156,7 +156,7 @@ public:
    * Define `this` to be persistent.
    *
    * Note that this will override any _previous and future_ calls of
-   * `times`.
+   * `Behavior::times`.
    */
   Behavior& persists();
 
@@ -164,7 +164,7 @@ public:
    * Replace the matching handler with a new
    * `std::shared_ptr<detail::MakeTupleOfMatchers<std::tuple<Args...>, std::tuple<Deriveds...>>>`.
    *
-   * Note that this means that the previous `polymorphic` configuration
+   * Note that this means that the previous `Behavior::polymorphic` configuration
    * is overwritten.
    */
   template<typename... Deriveds> Behavior& polymorphic();
@@ -183,7 +183,7 @@ public:
   /**
    * Match `args...` against the stored matchers.
    *
-   * The matching is done componentwise (see `expects` for details). If
+   * The matching is done componentwise (see `Behavior::expects` for details). If
    * no matchers are stored, always return `true`.
    */
   bool match(const Args&... args) const;
