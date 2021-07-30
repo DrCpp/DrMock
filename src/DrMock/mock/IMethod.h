@@ -23,6 +23,9 @@
 
 namespace drmock {
 
+/**
+ * Interface for method objects. We only need this for testing.
+ */
 class IMethod
 {
 public:

@@ -32,40 +32,39 @@
 
 namespace drmock {
 
-/* Method
-
-A mocked C++ method. Has a _name_ (with no current effect on behavior),
-can be called and verified. The effect of the call is determined by an
-AbstractBehavior, which must be configured prior to the call.
-
-Per default, the AbstractBehavior is a BehaviorQueue. But using io() and
-state(), the AbstractBehavior can be switched between the queue and a
-StateBehavior.
-
-When the Method is called with `args...`, the call is forwarded to the
-currently selected behavior:
-
-(1) Any produced std::exception_ptr is re-thrown.
-
-(2) Any produced std::shared_ptr is returned.
-
-(3) If the Method's return value is void, then a nullptr is returned.
-
-If none of those occur, the call is considered to have _failed_. Any
-future call of verify() will now return `false` (per default, it returns
-`true`). An error message is printed, and then, If the return value of
-Method is default constructible or void, then the default or a nullptr
-is returned. Otherwise, `std::abort()` is called.
-
-*** Implementation details: ***
-
-* The currently used AbstractBehavior (`state_behavior_` or
-  `behavior_queue_`) is `behavior_`, while the other is a nullptr.
-
-* The sole purpose of `make_tuple_of_matchers_` is to be used as argument
-  of AbstractBehavior::setIsEqual whenever the AbstractBehavior changes.
-*/
-
+/**
+ * Simulates the behavior of a C++ method.
+ *
+ * @tparam Class The class that owns the simulated method
+ * @tparam ReturnType The return type of the simulated method
+ * @tparam Args... The parameter types of the simulated method
+ *
+ * The `Method` object can be called and verified (check if any
+ * unexpected calls have occured in the past). The effect of calling a
+ * `Method` is controlled by an instance of `AbstractBehavior`. By
+ * default, this `AbstractBehavior` is a `BehaviorQueue`.
+ *
+ * Changing the behavior type from `BehaviorQueue` to `StateBehavior` or
+ * back will not overwrite any previously recorded behavior.
+ * Nevertheless, there is no reason to change the behavior type more
+ * than once.
+ *
+ * The `Method` class shared an object of type
+ * `std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>>` with its
+ * behaviors. The job of this _matching handler_ is to wrap expected
+ * values passed to the behaviors during configuration in
+ * `std::shared_ptr<IMatcher<Args>>...` objects. By default, they are
+ * wrapped in `std::shared_ptr<Equal<Args>>...` objects.
+ *
+ * If `polymorphic<Deriveds...>()` is called, a new handler is created
+ * which wraps expected values in
+ * `std::shared_ptr<Equal<Args, Deriveds>>...` objects. This means that
+ * when polymorphic objects are used in `call`, then they are matched
+ * against the expected behaviors by comparing them as `Deriveds...`,
+ * not as base types.
+ *
+ * See `Behavior`, `BehaviorQueue` or `StateBehavior` for details.
+ */
 template<typename Class, typename ReturnType, typename... Args>
 class Method final : public IMethod
 {
@@ -73,46 +72,107 @@ class Method final : public IMethod
 
 public:
   Method();
-  Method(std::string);
-  Method(std::shared_ptr<StateObject>);
-  Method(std::string, std::shared_ptr<StateObject>);
+  /**
+   * @param name The name of the method
+   */
+  Method(std::string name);
+  /**
+   * @param state_object The state_object shared with internal state behavior
+   *
+   * The `state_object` parameter is for dependency injection only and
+   * should not be used by a consumer.
+   */
+  Method(std::shared_ptr<StateObject> state_object);
+  /**
+   * @param name The name of the method
+   * @param state_object The state_object shared with internal state behavior
+   *
+   * The `state_object` parameter is for dependency injection only and
+   * should not be used by a consumer.
+   */
+  Method(std::string name, std::shared_ptr<StateObject> state_object);
 
-  // Set the comparison method of `behavior_queue_` or `state_behavior_`
-  // (depending on which is active) to `IsEqual<tuple<Args...>, tuple<Deriveds...>>`.
+  /**
+   * Replace the matching handler with a new
+   * `std::shared_ptr<detail::MakeTupleOfMatchers<std::tuple<Args...>, std::tuple<Deriveds...>>>`.
+   *
+   * See the general section of `Method` for what this means in detail.
+   */
   template<typename... Deriveds> void polymorphic();
 
-  // Enable BehaviorQueue usage and return a reference to the queue.
+  /**
+   * Enable `BehaviorQueue` usage and return a reference.
+   */
   BehaviorQueue<Class, ReturnType, Args...>& io();
+
+  /**
+   * Convenience method; calls `push()` on the internal behavior queue
+   * (even if `BehaviorQueue` is not active).
+   */
   Behavior<Class, ReturnType, Args...>& push();
+
+  /**
+   * Convenience method; calls `enforce_order()` on the internal
+   * behavior queue (even if `BehaviorQueue` is not active).
+   */
   void enforce_order(bool);
 
-  // Enable StateBehavior usage and return a reference to the state
-  // behavior.
+  /**
+   * Enable `StateBehavior` usage and return a reference.
+   */
   StateBehavior<Class, ReturnType, Args...>& state();
 
-  // Per default, return `true`. If an error occured (see above), return
-  // `false`.
+  /**
+   * Check if any calls have failed.
+   */
   bool verify() const override;
+
+  /**
+   * Return error messages for failed calls.
+   *
+   * @returns A row-major matrix, rows are failed calls, columns contain
+   *   the arguments of these calls.
+   */
   const std::vector<std::vector<std::string>>& error_msgs() const;
 
-  // Return collected error messages, if present.
+  /**
+   * Return a printable version of the error messages.
+   */
   std::string makeFormattedErrorString() const override;
 
+  /**
+   * When the Method is called with `args...`, the call is forwarded to the
+   * currently selected behavior:
+   * 
+   * - Any produced std::exception_ptr is re-thrown.
+   * - Any produced std::shared_ptr is returned.
+   * - If the Method's return value is void, then a nullptr is returned.
+   * 
+   * If none of those occur, the call is considered to have _failed_. Any
+   * future call of verify() will now return `false` (per default, it returns
+   * `true`). An error message is printed, and then, If the return value of
+   * Method is default constructible or void, then the default or a nullptr
+   * is returned. Otherwise, `std::abort()` is called.
+   */
   std::shared_ptr<DecayedReturnType> call(const Args&...);
 
-  void parent(Class* parent);
+  /**
+   * Set the object that owns the method.
+   */
+  void parent(Class*);
 
 private:
   std::string name_{};
   std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>> make_tuple_of_matchers_{};
-  std::shared_ptr<StateObject> state_object_{};
+  std::shared_ptr<StateObject> state_object_{};  /**> Internal state object. Only used for dependency injection. */
+  // The currently used AbstractBehavior (`state_behavior_` or
+  // `behavior_queue_`) is `behavior_`, while the other is a nullptr.
   std::shared_ptr<StateBehavior<Class, ReturnType, Args...>> state_behavior_{};
   std::shared_ptr<BehaviorQueue<Class, ReturnType, Args...>> behavior_queue_{};
   std::shared_ptr<AbstractBehavior<Class, ReturnType, Args...>> behavior_{};
-  bool has_failed_ = false;
+  bool has_failed_ = false;  /**> `true` if `call` encountered unexpected args. */
   std::vector<std::vector<std::string>> error_msgs_{};
-
-  Class* parent_;
+  Class* parent_;  /**> Pointer to the owner of the method. */
 };
 
 } // namespace drmock
