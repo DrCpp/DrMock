@@ -49,7 +49,7 @@ namespace drmock {
  * Nevertheless, there is no reason to change the behavior type more
  * than once.
  *
- * The `Method` class shared an object of type
+ * The `Method` class shares an object of type
  * `std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>>` with its
  * behaviors. The job of this _matching handler_ is to wrap expected
  * values passed to the behaviors during configuration in
@@ -93,8 +93,11 @@ public:
   Method(std::string name, std::shared_ptr<StateObject> state_object);
 
   /**
-   * Replace the matching handler with a new
+   * Replace the matching handler of all behaviors with a new
    * `std::shared_ptr<detail::MakeTupleOfMatchers<std::tuple<Args...>, std::tuple<Deriveds...>>>`.
+   *
+   * Note that this means that the previous `polymorphic` configurations
+   * of the state and queue behaviors are overwritten.
    *
    * See the general section of `Method` for what this means in detail.
    */
