@@ -29,14 +29,13 @@ namespace drmock {
 /**
  * For matching floating-point numbers.
  *
- * `T` must be a floating-point type, in other words:
- * `std::is_floating_point_v<T>` must be true.
+ * @tparam T The type of floating-point number to compare
  *
  * The actual input matches the expected value if the following is true
  * (vertical bars denote absolute value):
  *
  * ```
- * |actual - expected_| <= abs_tol + rel_tol*|expected_|
+ * |actual - expected| <= abs_tol + rel_tol*|expected|
  * ```
  */
 template<typename T>
@@ -45,6 +44,8 @@ class AlmostEqual : public IMatcher<T>
 public:
   /**
    * Specify the expected floating-point number.
+   *
+   * @param expected The value to match against
    *
    * The absolute and relative tolerance are the `DRTEST_*_TOL` default
    * values.
@@ -57,6 +58,10 @@ public:
   /**
    * Specify the expected floating-point number, and the absolute and
    * relative tolerance.
+   *
+   * @param expected The value to match against
+   * @param abs_tol The absolute tolerance
+   * @param rel_tol The relative tolerance
    */
   AlmostEqual(T expected, T abs_tol, T rel_tol)
   :
@@ -76,20 +81,16 @@ public:
   }
 
 private:
-  T expected_;  /**< The expected result */
-  T abs_tol_;  /**< The absolute tolerance */
-  T rel_tol_;  /**< The relative tolerance */
+  T expected_;
+  T abs_tol_;
+  T rel_tol_;
 };
 
 /**
  * Convenience functions for quickly creating a shared `AlmostEqual`
  * object.
  *
- * `T` must be a floating-point type, in other words:
- * `std::is_floating_point_v<T>` must be true.
- *
- * The absolute and relative tolerance are the `DRTEST_*_TOL` default
- * values.
+ * See `AlmostEqual::AlmostEqual` for details.
  */
 template<typename T>
 std::shared_ptr<IMatcher<T>>
@@ -102,8 +103,7 @@ almost_equal(T expected)
  * Convenience functions for quickly creating a shared `AlmostEqual`
  * object.
  *
- * `T` must be a floating-point type, in other words:
- * `std::is_floating_point_v<T>` must be true.
+ * See `AlmostEqual::AlmostEqual` for details.
  */
 template<typename T>
 std::shared_ptr<IMatcher<T>>

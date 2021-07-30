@@ -105,9 +105,9 @@ class StateBehavior final : public AbstractBehavior<Class, ReturnType, Args...>
 {
 public:
   using Result = std::pair<
-                     std::shared_ptr<std::decay_t<ReturnType>>,
-                     std::shared_ptr<AbstractSignal<Class>>
-                   >;
+      std::shared_ptr<std::decay_t<ReturnType>>,
+      std::shared_ptr<AbstractSignal<Class>>
+    >;
 
   StateBehavior();
   StateBehavior(std::shared_ptr<StateObject>);

@@ -24,26 +24,40 @@
 
 namespace drmock {
 
-// Stores _slots_ (by name) and their _state_. Slots that are stored in
-// the StateObject are called _registered_. Upon construction, only the
-// default slot `""` (empty string) is registered with state `""`.
+/**
+ * Stores _slots_ and their _state_.
+ *
+ * Every slot has a _name_ (type `std::string`) and a state (type
+ * `std::string`). Slots that are stored in the StateObject are called
+ * _registered_. During construction, the _default slot_ `""` is
+ * registered with state `""`.
+ */.
 class StateObject
 {
 public:
-  // Get the state of `slot` (resp. the default slot).
-  //
-  // If `slot` is not registered yet, it is registered with state `""`
-  // before returning `""`.
+  /**
+   * Get the state of `slot`.
+   * 
+   * If `slot` is not registered yet, it is registered with state `""`
+   * before returning `""`.
+   */
   std::string get(const std::string& slot);
+  /**
+   * Get the state of the default slot.
+   */
   std::string get();
 
-  // Set the state of `slot` (resp. the default slot) to `state`.
+  /**
+   * Set the state of `slot` to `state`.
+   */
   void set(const std::string& slot, std::string state);
+  /**
+   * Set the state of the default slot to `state`.
+   */
   void set(std::string state);
 
 private:
-  /* map: slot -> state */
-  std::unordered_map<std::string, std::string> slots_{};
+  std::unordered_map<std::string, std::string> slots_{};  // map: slot -> state
 };
 
 } // namespace drmock

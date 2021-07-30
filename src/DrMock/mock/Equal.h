@@ -27,6 +27,10 @@ namespace drmock {
 /**
  * For matching elements using equality.
  *
+ * @tparam Base Base type of matched elements
+ * @tparam Derived Derived type of matched elements (matters only for
+ *   pointer types)
+ *
  * `(Base, Derived)` **must** satisfy one of the following requirements
  * (such a pair is called _comparable_):
  *
@@ -77,6 +81,8 @@ private:
 
 /**
  * Conveniently create a shared `Equal` object.
+ *
+ * See `Equal::Equal` for details.
  */
 template<typename Base, typename Derived = Base>
 std::shared_ptr<Equal<Base, Derived>>

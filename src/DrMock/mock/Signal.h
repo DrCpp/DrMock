@@ -23,23 +23,25 @@
 
 namespace drmock {
 
-/* Signal
-
-Class template that represents a Qt signal emit (in fact, a method call).
-
-The signal is ctor'ed from a member function pointer to the signal and
-the arguments of the emit. Note the lack of any reference to the
-invoking QObject.
-
-The invoking QObject occurs only in the `invoke` method call, which will
-invoke/execute the `emit`.
-*/
-
+/**
+ * Standard implementation of `AbstractSignal`.
+ *
+ * @tparam Parent The type of the object that emits the signal
+ * @tparam Args... The function parameters of the signal
+ */
 template<typename Parent, typename... Args>
 class Signal final : public AbstractSignal<Parent>
 {
 public:
-  Signal(void (Parent::*)(Args...), Args...);
+  /**
+   * @param signal A pointer to the signal
+   * @param args The argument with which the signal is emitted
+   */
+  Signal(void (Parent::*signal)(Args...), Args... args);
+
+  /**
+   * See `AbstractSignal::invoke`.
+   */
   void invoke(Parent*) override;
 
 private:

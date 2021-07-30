@@ -29,8 +29,14 @@
 
 namespace drmock {
 
-// Abstract class template that represents a method's behavior.
-template<typename Class, typename Result, typename... Args>
+/**
+ * Abstract class template that represents some method's behavior.
+ *
+ * @tparam Class The class that the method belongs to
+ * @tparam ReturnType The return type of the method
+ * @tparam Args... The parameter types of the method
+ */
+template<typename Class, typename ReturnType, typename... Args>
 class AbstractBehavior
 {
 public:
@@ -38,14 +44,21 @@ public:
 
   // The produced output is decided by matching the input with
   // implementation specific data.
+  /**
+   * Simulates the method's behavior when called with `args...`.
+   *
+   * @returns `std::monostate` (no return value), a pair containing the
+   * return value and/or a Qt signal emit, or an exception pointer (to
+   * the exception the method is supposed to raise)
+   */
   virtual std::variant<
       std::monostate,
       std::pair<
-          std::shared_ptr<typename std::decay<Result>::type>,
+          std::shared_ptr<typename std::decay<ReturnType>::type>,
           std::shared_ptr<AbstractSignal<Class>>
         >,
       std::exception_ptr
-    > call(const Args&...) = 0;
+    > call(const Args&... args) = 0;
 };
 
 } // namespace drmock

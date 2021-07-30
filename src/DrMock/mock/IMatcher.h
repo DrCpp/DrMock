@@ -21,6 +21,12 @@
 
 namespace drmock {
 
+/**
+ * Matches objects of type `Base` against some pattern.
+ *
+ * See `Equal` (matches by equality) and `AlmostEqual` (approximate
+ * equality of floating-point numbers)for sample implementations.
+ */
 template<typename Base>
 class IMatcher
 {
