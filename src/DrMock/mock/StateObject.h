@@ -31,7 +31,7 @@ namespace drmock {
  * `std::string`). Slots that are stored in the StateObject are called
  * _registered_. During construction, the _default slot_ `""` is
  * registered with state `""`.
- */.
+ */
 class StateObject
 {
 public:
