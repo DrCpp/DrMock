@@ -54,10 +54,11 @@ namespace drmock {
  * by `throws`) will result in an error.
  *
  * Every `Behavior` has a member of type
- * `std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>>`.  The job of
+ * `std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>>`. The job of
  * this _matching handler_ is to wrap expected values passed to the
  * behavior via `expects` in `std::shared_ptr<IMatcher<Args>>...`
- * objects, which are used to check if . By default, they are wrapped in
+ * objects, which are used to check if an input matches the behaviors
+ * expected input. By default, they are wrapped in
  * `std::shared_ptr<Equal<Args>>...` objects.
  *
  * If `polymorphic<Deriveds...>()` is called, a new handler is created
@@ -65,7 +66,9 @@ namespace drmock {
  * `std::shared_ptr<Equal<Args, Deriveds>>...` objects. This means that
  * when polymorphic objects are used in `call`, then they are matched
  * against the expected behaviors by comparing them as `Deriveds...`,
- * not as base types.
+ * not as base types. Note that `polymorphic<Deriveds...>()` must be
+ * called _before_ calling `expects(input...)` in order to have an
+ * effect.
  */
 template<typename Class, typename ReturnType, typename... Args>
 class Behavior
@@ -164,8 +167,8 @@ public:
    * Replace the matching handler with a new
    * `std::shared_ptr<detail::MakeTupleOfMatchers<std::tuple<Args...>, std::tuple<Deriveds...>>>`.
    *
-   * Note that this means that the previous `Behavior::polymorphic` configuration
-   * is overwritten.
+   * This call will not change the expected value. Only the effect of future calls to
+   * `Behavior::expect` is changed.
    */
   template<typename... Deriveds> Behavior& polymorphic();
 
