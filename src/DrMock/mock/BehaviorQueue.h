@@ -84,6 +84,9 @@ public:
    * type.
    *
    * @param Deriveds... The derived types for the default matcher
+   *
+   * See the general description of `Behavior` or
+   * `Behavior::polymorphic` for details.
    */
   template<typename... Deriveds> void polymorphic();
 
