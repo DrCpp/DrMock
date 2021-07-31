@@ -31,8 +31,22 @@
 namespace drmock {
 
 /**
- * A container of `Behavior` objects that serves as standard
- * implementation of `AbstractBehavior`.
+ * A queue of `Behavior` objects that serves as standard implementation
+ * of `AbstractBehavior`.
+ *
+ * See `AbstractBehavior` for details on template parameters.
+ *
+ * By default, if `BehaviorQueue::call` is called, then the input is
+ * matched against the `Behavior` object `b` at the front of the queue.
+ * If the input matches, then the return value of `b.produce()` is
+ * returned. Otherwise, nothing is returned. The element at the front of
+ * the queue remains in the queue as long as it persists. When this is
+ * no longer the case, it is popped off the queue.
+ *
+ * `BehaviorQueue` has a member of type
+ * `std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>>`. This
+ * _matching handler_ is shared with _all_ `Behavior` objects in the
+ * queue. See `Behavior` for details.
  */
 template<typename Class, typename ReturnType, typename... Args>
 class BehaviorQueue final : public AbstractBehavior<Class, ReturnType, Args...>
