@@ -31,7 +31,6 @@
 
 namespace drmock {
 
-
 /**
  * State machine implementation of `AbstractBehavior`.
  *
@@ -70,10 +69,11 @@ namespace drmock {
  * (slot, current_state, matcher, new_state)
  * ```
  * 
- * "On `call(input...)`, if `matcher->match(input)` and `old_state`
- * matches the state of `slot`, then transition `slot` to `new_state`."
- * If this occurs, we say that the `(old_state, input...)` matches the
- * entry of the transition table.
+ * This means: When `call(input...)` is callen, then if
+ * `matcher->match(input)` and `current_state` matches the state of
+ * `slot`, then transition `slot` to `new_state`." If this occurs, we
+ * say that the `(current_state, input...)` matches the entry of the
+ * transition table.
  * 
  * Two states _match_ if they are equal as strings or if one of them is
  * `"*"` (the catch-all state).
@@ -111,7 +111,7 @@ public:
    *
    * @param current_state The state to transition from
    * @param new_state The state to transition to
-   * @param input... The expected input or matchers of the transition
+   * @param input The expected input or matchers of the transition
    *
    * Is equivalent to
    * `transition("", current_state, new_state, * input...);`. See the
@@ -130,7 +130,7 @@ public:
    * @param slot The slot for which the transition holds
    * @param current_state The state to transition from
    * @param new_state The state to transition to
-   * @param input... The expected input or matchers of the transition
+   * @param input The expected input or matchers of the transition
    *
    * For every `i=0, ..., sizeof...(Args)`, the ith component of
    * `args...` may be of type `Args[i]` (a _raw expected value_) or
@@ -251,7 +251,7 @@ public:
    *
    * @param state The state to emit on
    * @param signal The signal to emit
-   * @param args... The arguments passed to the signal
+   * @param args The arguments passed to the signal
    *
    * On the first call (of any overload of `StateBehavior::returns`),
    * the result slot is set to `""`.
@@ -261,7 +261,7 @@ public:
   template<typename... SigArgs> StateBehavior& emits(
       const std::string& state,
       void (Class::*signal)(SigArgs...),
-      SigArgs&&...
+      SigArgs&&... args
     );
   /**
    * Add a Qt signal emit for the default slot.
@@ -269,7 +269,7 @@ public:
    * @param slot The result slot
    * @param state The state to emit on
    * @param signal The signal to emit
-   * @param args... The arguments passed to the signal
+   * @param args The arguments passed to the signal
    *
    * On the first call (of any overload of `StateBehavior::returns`),
    * the result slot is set to `slot`.
@@ -277,8 +277,8 @@ public:
   template<typename... SigArgs> StateBehavior& emits(
       const std::string& state,
       const std::string& slot,
-      void (Class::*)(SigArgs...),
-      SigArgs&&...
+      void (Class::*signal)(SigArgs...),
+      SigArgs&&... args
     );
 
   /**
@@ -319,7 +319,7 @@ public:
       std::monostate,
       Result,
       std::exception_ptr
-    > call(const Args&...) override;
+    > call(const Args&... args) override;
 
 private:
   // Set the result slot if not already set. Throw if the result slot is

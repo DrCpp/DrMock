@@ -56,10 +56,10 @@ namespace drmock {
  * `std::shared_ptr<IMatcher<Args>>...` objects. By default, they are
  * wrapped in `std::shared_ptr<Equal<Args>>...` objects.
  *
- * If `polymorphic<Deriveds...>()` is called, a new handler is created
+ * If `Method::polymorphic<Deriveds...>()` is called, a new handler is created
  * which wraps expected values in
  * `std::shared_ptr<Equal<Args, Deriveds>>...` objects. This means that
- * when polymorphic objects are used in `call`, then they are matched
+ * when polymorphic objects are used in `Method::call`, then they are matched
  * against the expected behaviors by comparing them as `Deriveds...`,
  * not as base types.
  *

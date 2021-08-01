@@ -48,8 +48,8 @@ namespace drmock {
  * infinite) number of times. Afterwards, the `Behavior` objects no
  * longer _persists_.
  *
- * Making conflicting configurations calls (such as `returns` followed
- * by `throws`) will result in an error.
+ * Making conflicting configurations calls (such as `Behavior::returns` followed
+ * by `Behavior::throws`) will result in an error.
  *
  * Every `Behavior` has a member of type
  * `std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>>`. The job of
@@ -59,12 +59,12 @@ namespace drmock {
  * expected input. By default, they are wrapped in
  * `std::shared_ptr<Equal<Args>>...` objects.
  *
- * If `polymorphic<Deriveds...>()` is called, a new handler is created
+ * If `Behavior::polymorphic<Deriveds...>()` is called, a new handler is created
  * which wraps expected values in
  * `std::shared_ptr<Equal<Args, Deriveds>>...` objects. This means that
  * when polymorphic objects are used in `call`, then they are matched
  * against the expected behaviors by comparing them as `Deriveds...`,
- * not as base types. Note that `polymorphic<Deriveds...>()` must be
+ * not as base types. Note that `Behavior::polymorphic<Deriveds...>()` must be
  * called _before_ calling `expects(input...)` in order to have an
  * effect.
  */
