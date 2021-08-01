@@ -31,10 +31,11 @@ namespace drmock {
  * @tparam Derived Derived type of matched elements (matters only for
  *   pointer types)
  *
- * `(Base, Derived)` **must** satisfy one of the following requirements
- * (such a pair is called _comparable_):
+ * `Derived` need not derive from `Base`. Instead, `(Base, Derived)`
+ * **must** satisfy one of the following requirements (such a pair is
+ * called _comparable_):
  *
- * 1. `Base` and `Derived` are not abstract and `Derived` implements
+ * 1. `Derived` is not abstract, inherits from `Base` and implements
  *    `bool operator==(const Derived&) const`
  * 2. `Base` is a `shared_ptr<T>` (or `unique_ptr<T>`) and `Derived` is a
  *    `shared_ptr<U>` (or `unique_ptr<U>`), and `(T, U)` satisfies 1., 2. or 3.

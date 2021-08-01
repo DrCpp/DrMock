@@ -24,7 +24,7 @@ namespace drmock {
 /**
  * Class template that represents a Qt signal emit.
  *
- * @param Parent The class of the object from which the signal is
+ * @tparam Parent The class of the object from which the signal is
  *   emitted
  *
  * (There's probably no need for implementations of `AbstractSignal`
