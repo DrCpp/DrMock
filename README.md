@@ -26,11 +26,6 @@ Copyright 2019 Ole Kliemann, Malte Kliemann
 ![macOS](https://github.com/DrCpp/drmock-generator/actions/workflows/macos.yml/badge.svg)
 
 
-## Table of Contents
-
-[Introduction to **DrMock**](introduction-to-drmock)
-
-
 ## Introduction to **DrMock**
 
 **DrMock** is a C++17 testing and mocking framework for Windows, Linux
@@ -85,23 +80,27 @@ implementation in mind.
 See [BUILD.md] for instructions.
 
 
-## Getting started
+## Documentation
 
-* [A brief introduction](BRIEF.md)
+* Tutorials:
+  - [1. Basic testing](samples/basic.md)
+  - [2. Basic mocking](samples/mock.md)
+  - [3. State-machine mocking](samples/states.md)
+  - [4. Using **DrMock** with Qt5](samples/qt.md)
+  - [5. Experimental: Death testing](samples/death.md)
 
-* [Tutorial](docs/tutorial.md)
+* The **DrMock** API is documented in [src/DrMock];
+  the docs are doxygen-compliant, but you must specify the Doxyfile
+  yourself
 
+* [Specification]
 
-### Documentation
-
-* [Cookbook](docs/cookbook.md), a collection of common design patterns for **DrMock**
-
-* [Specification](docs/spec.md)
+* [Cookbook], a collection of common design patterns for **DrMock**
 
 
 ## Contributing to **DrMock**
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+See [CONTRIBUTING.md].
 
 
 ## Acknowledgments
@@ -117,5 +116,17 @@ greatly from the following sources:
 * [DrAutomaton](https://github.com/DrCpp/DrAutomaton), Qt5-based cellular automaton library
 
 
+<!-- Links -->
+
+[Introduction to **DrMock**]: #introduction-to-drmock
+[Building **DrMock**]: #building-drmock
+[Documentation]: #documentation
+[Contributing to **DrMock**]: #contributing-to-drmock
+[Acknowledgments]: #acknowledgments
+
 [BUILD.md]: BUILD.md
-[BRIEF.md]: BRIEF.md
+[Tutorial]: docs/tutorial.md
+[src/DrMock]: src/DrMock
+[Specification]: docs/spec.md
+[CONTRIBUTING.md]: CONTRIBUTING.md
+[Cookbook]: docs/cookbook.md
