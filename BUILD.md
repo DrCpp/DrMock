@@ -35,7 +35,7 @@ along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 Go through the following steps to ensure that all dependencies are satisfied:
 
-1. Install `cmake` (minimum `3.17`):
+1. Install `cmake` (minimum 3.17):
 
 ```
 choco install cmake          (Windows)
@@ -43,7 +43,7 @@ sudo apt-get install cmake   (Linux)
 brew install cmake           (macOS)
 ```
 
-2. Install `libclang` (minimum `6.0.0`):
+2. Install `libclang` (minimum 6.0.0):
 
 ```
 choco install llvm                      (Windows)
@@ -155,5 +155,5 @@ sudo apt-get install libgl-dev
 On many systems, `python` will still point to Python 2.7.x, which has
 reached the end of its life on 01/01/2020 (as of January 2020, macOS
 Catalina and Ubuntu 18.04 are examples of this).
-Using this configuration **DrMock** requires `python` to point to Python >= 3.7.0.
+Using this configuration **DrMock** requires `python` to point to Python (minimum 3.7.0).
 We recommend using [pyenv](https://github.com/pyenv/pyenv) for this.
