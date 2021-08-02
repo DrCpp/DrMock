@@ -647,8 +647,15 @@ Furthermore, duplicate row names are not allowed.
 ### Implicit conversions of number types
 
 Beware of implicit conversions when using the macros! For example, use
-`DRTEST_ASSERT_ALMOST_EQUAL(0.9, 1.0)` instead of
-`DRTEST_ASSERT_ALMOST_EQUAL(0.9, 1)`. Otherwise, you might end up with an error similar to this one:
+```cpp
+DRTEST_ASSERT_ALMOST_EQUAL(0.9, 1.0)
+```
+instead of
+```cpp
+DRTEST_ASSERT_ALMOST_EQUAL(0.9, 1)
+```
+
+Otherwise, you might end up with an error similar to this one:
 
 ```shell
 /Users/malte/drmock/tests/Test.cpp:347:3: error: no matching function for call to 'almostEqual'
