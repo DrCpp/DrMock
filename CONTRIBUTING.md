@@ -28,7 +28,7 @@ Make a pull request if you wish to fix a bug or implement a new feature.
 
 When making a pull request, please ensure the code is properly unit
 tested, and that all tests pass.
-_
+
 ### Licensing
 
 All contributions will be issued under the GPL 3.0 license. All new
