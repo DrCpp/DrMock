@@ -35,15 +35,18 @@ set(CMAKE_CXX_STANDARD 17)
 #######################################
 
 # Find libclang.
-find_library(
-    LIBCLANG_PATH
-    NAMES clang clang-6.0 clang-7.0 clang-8.0
-    PATH_SUFFIXES lib
-    HINTS
-        /Library/Developer/CommandLineTools/usr
-        /usr/lib/llvm-7/lib
-        C:\\Program Files\\LLVM\\bin
-)
+if (DEFINED ENV{CLANG_LIBRARY_FILE})
+    set(LIBCLANG_PATH $ENV{CLANG_LIBRARY_FILE})
+else()
+    find_library(
+        LIBCLANG_PATH
+        NAMES clang clang-6.0 clang-7.0 clang-8.0 libclang
+        PATH_SUFFIXES lib
+        PATHS
+            /Library/Developer/CommandLineTools/usr
+            /usr/lib/llvm-7/lib
+    )
+endif()
 message(STATUS LIBCLANG_PATH=${LIBCLANG_PATH})
 if (NOT LIBCLANG_PATH)
     message(FATAL_ERROR "libclang not found.")
