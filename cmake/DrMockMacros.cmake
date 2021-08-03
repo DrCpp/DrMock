@@ -343,9 +343,6 @@ function(drmock_library2)
     foreach (header mock_header_path mock_source_path input_class output_class
              IN ZIP_LISTS ARGS_HEADERS ARGS_MOCK_HEADER_PATHS ARGS_MOCK_SOURCE_PATHS
              ARGS_INPUT_CLASSES ARGS_OUTPUT_CLASSES)
-        ###################################
-        # Path computations.
-        ###################################
         get_filename_component(absolute_path_to_header ${header} ABSOLUTE)
 
         # Compute the path to the mock object's header and sourcfiles
@@ -355,11 +352,7 @@ function(drmock_library2)
             RESULT path_from_working_dir_to_output_header
             PATHS ${CMAKE_CURRENT_BINARY_DIR} ${mock_header_path})
 
-        ###################################
-        # Calling the generator.
-        ###################################
-
-        # Call the mocker command.
+        # Setup drmock-generator arguments.
         set(command)
         list(APPEND command drmock-generator)
         list(APPEND command ${absolute_path_to_header})
