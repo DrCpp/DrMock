@@ -19,13 +19,13 @@
 #ifndef DRMOCK_SRC_DRMOCK_TEST_DEATH_H
 #define DRMOCK_SRC_DRMOCK_TEST_DEATH_H
 
+// Death testing only available on UNIX systems.
+#if defined(__unix__) || defined(__APPLE__)
+
 #include <cassert>
 #include <csignal>
 #include <string.h>
-
-#if defined(__unix__) || defined(__APPLE__)
 #include <unistd.h>
-#endif
 
 #include <DrMock/test/TestFailure.h>
 
@@ -34,7 +34,6 @@ namespace drtest { namespace death {
 [[maybe_unused]] static int pipe_[2];
 volatile std::sig_atomic_t atomic_pipe_;  // Self-pipe write end; required due to https://en.cppreference.com/w/c/program/signal
 
-#if defined(__unix__) || defined(__APPLE__)
 static std::vector<int> signals_ = {  // POSIX signals, taken from https://man7.org/linux/man-pages/man7/signal.7.html
     SIGABRT,
     SIGALRM,
@@ -64,7 +63,6 @@ static std::vector<int> signals_ = {  // POSIX signals, taken from https://man7.
     SIGXCPU,
     SIGXFSZ
   };
-#endif
 
 // Signal handler requires external linkage according to https://en.cppreference.com/w/c/program/signal
 extern "C" {
@@ -128,5 +126,7 @@ do \
   close(drtest::death::pipe_[0]); \
   close(drtest::death::pipe_[1]); \
 } while(false)
+
+#endif /* defined(__unix__) || defined(__APPLE__) */
 
 #endif /* DRMOCK_SRC_DRMOCK_TEST_DEATH_H */
