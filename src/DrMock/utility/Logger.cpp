@@ -18,6 +18,7 @@
 
 #include "Logger.h"
 
+#include <algorithm>
 #include <iostream>
 
 namespace drutility {
@@ -46,7 +47,7 @@ Logger::logMessage(
   if (not category.empty())
   {
     out_stream_ << category.substr(0, 6)
-                << std::string(7 - std::min(category.size(), 6ul), ' ');
+                << std::string(7 - std::min(category.size(), std::size_t{6}), ' ');
     written = true;
   }
   if (not location.empty())
