@@ -203,6 +203,8 @@ DRTEST_TEST(streamIfStreamable)
   DRTEST_ASSERT_EQ(A{}, A{});
 }
 
+#if defined(__unix__) || defined(__APPLE__)
+
 DRTEST_TEST(death_success)
 {
   DRTEST_ASSERT_DEATH(raise(SIGSEGV), SIGSEGV);
@@ -220,6 +222,8 @@ DRTEST_TEST(death_failure_wrong_raise)
 {
   DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT_DEATH(raise(SIGXFSZ), SIGSEGV));
 }
+
+#endif /* defined(__unix__) || defined(__APPLE__) */
 
 // Test that a test may be called the same an a drtest interface
 // function; see issue #7 for details.
