@@ -506,7 +506,7 @@ function(_drmock_join_paths)
         endif()
         set(_result "${_result}/${path}")
     endforeach()
-    file(TO_NATIVE_PATH ${_result} _result)
+    # file(TO_NATIVE_PATH ${_result} _result)
 
     set(${ARGS_RESULT} ${_result} PARENT_SCOPE)
 endfunction()
