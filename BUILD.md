@@ -76,6 +76,11 @@ make install
 Add whatever `-DCMAKE` directives you wish. Don't forget to set
 `CMAKE_PREFIX_PATH` if necessary.
 
+On Windows, CMake may fail to detect the correct `libclang.dll`. If that
+is the case, you should set the `CLANG_LIBRARY_FILE` environment
+variable to the path of the `libclang.dll`. When using `choco`, then
+`C:\Program Files\LLVM\bin\libclang.dll` is usually correct.
+
 
 ### Using the Makefile
 
