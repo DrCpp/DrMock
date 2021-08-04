@@ -16,6 +16,10 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#ifdef _MSC_VER
+#define __PRETTY_FUNCTION__ __FUNCSIG__
+#endif /* _MSC_VER */
+
 #include <iostream>
 
 #define USING_DRTEST
