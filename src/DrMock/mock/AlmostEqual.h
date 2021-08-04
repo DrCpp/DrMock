@@ -52,7 +52,7 @@ public:
    */
   AlmostEqual(T expected)
   :
-    AlmostEqual{expected, DRTEST_ABS_TOL, DRTEST_REL_TOL}
+    AlmostEqual{expected, static_cast<T>(DRTEST_ABS_TOL), static_cast<T>(DRTEST_REL_TOL)}
   {}
 
   /**

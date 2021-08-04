@@ -42,7 +42,7 @@ DRTEST_TEST(succeeds)
 
   // Call both methods.
   foo.f(1);
-  foo.g(1.23, 4.56);
+  foo.g(1.23f, 4.56);
 
   DRTEST_VERIFY_MOCK(foo.mock);
 }

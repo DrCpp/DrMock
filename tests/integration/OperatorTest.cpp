@@ -88,7 +88,7 @@ DRTEST_TEST(succeeds)
   {
     OperatorMock mock{};
     int a1 = 12;
-    float a2 = 3.45;
+    float a2 = 3.45f;
     double* const a3 = new double{1.4};
     int r = 9;
     mock.mock.operatorCall().push()

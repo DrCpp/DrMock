@@ -89,7 +89,7 @@ do { \
   { \
     p; \
   } \
-  catch(const drtest::detail::TestFailure& e) \
+  catch(const drtest::detail::TestFailure&) \
   { \
     break; \
   } \
