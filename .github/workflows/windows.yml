@@ -30,8 +30,8 @@ jobs:
     #   run: pip install drmock-generator
     - name: Compile drmock
       run: |
-        cmake . -DCMAKE_INSTALL_PREFIX=install -DCMAKE_PREFIX_PATH=%Qt5_Dir%
-        ctest --output-on-failure
+        cmake . # -DCMAKE_INSTALL_PREFIX=install -DCMAKE_PREFIX_PATH=%Qt5_Dir%
+        # ctest --output-on-failure
       env:
-        DRMOCK_QT_PATH: D:/a/DrMock/Qt/5.15.2/msvc2019_64/
+        # DRMOCK_QT_PATH: D:/a/DrMock/Qt/5.15.2/msvc2019_64/
         CLANG_LIBRARY_PATH: C:/a/DrMock/Program Files/LLVM/bin/libclang.dll
