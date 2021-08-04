@@ -86,7 +86,7 @@ TestObject::runOneTest(const std::string& row, bool verbose_logging)
   {
     test_func_();
   }
-  catch(const SkipTest& e)
+  catch(const SkipTest&)
   {
     log("SKIP", name_, row, -1, {});
     return;
