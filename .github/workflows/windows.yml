@@ -5,6 +5,7 @@ on:
     - master
     - develop
     - rc-0.6
+    - win32
   pull_request:
     branches:
     - master
@@ -34,4 +35,4 @@ jobs:
         ctest --output-on-failure
       env:
         DRMOCK_QT_PATH: D:/a/DrMock/Qt/5.15.2/msvc2019_64/
-        CLANG_LIBRARY_PATH: C:/Program Files/LLVM/bin/libclang.dll
+        CLANG_LIBRARY_PATH: C:a/DrMock/Program Files/LLVM/bin/libclang.dll
