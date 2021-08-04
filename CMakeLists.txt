@@ -36,8 +36,10 @@ set(CMAKE_CXX_STANDARD 17)
 
 # Find libclang.
 if (DEFINED ENV{CLANG_LIBRARY_FILE})
+    message(FATAL_ERROR "ififififififf")
     set(LIBCLANG_PATH $ENV{CLANG_LIBRARY_FILE})
 else()
+    message(FATAL_ERROR "elseelselselsl")
     find_library(
         LIBCLANG_PATH
         NAMES clang clang-6.0 clang-7.0 clang-8.0 libclang
