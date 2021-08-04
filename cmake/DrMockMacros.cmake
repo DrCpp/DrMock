@@ -34,9 +34,7 @@ endmacro()
 # Create a test executable from every element of TESTS and link it
 # against all element of LIBS.
 #
-# Each executable is build with compile options OPTIONS; if OPTIONS is
-# undefined, then the following options are used: `-Wall`, `-Werror`,
-# `-g`, `-fPIC`, `-pedantic`, `-O0`.
+# Each executable is build with compile options OPTIONS.
 #
 # The RESOURCES parameter may be used to include other source files
 # `res1`, etc. in the executable.
@@ -66,8 +64,6 @@ function(drmock_test)
         )
         add_test(NAME ${name} COMMAND ${name})
         if (NOT ARGS_OPTIONS)
-            target_compile_options(${name} PRIVATE -Wall -Werror -g -fPIC -pedantic -O0)
-        else()
             target_compile_options(${name} PRIVATE ${ARGS_OPTIONS})
         endif()
     endforeach()
