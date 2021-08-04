@@ -19,6 +19,10 @@
 #ifndef DRMOCK_SRC_DRMOCK_MOCK_DETAIL_ISEQUAL_H
 #define DRMOCK_SRC_DRMOCK_MOCK_DETAIL_ISEQUAL_H
 
+#ifdef _MSC_VER
+#include <ciso646>
+#endif /* _MSC_VER */
+
 #include <memory>
 #include <type_traits>
 
