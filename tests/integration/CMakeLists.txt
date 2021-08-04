@@ -62,16 +62,23 @@ drmock_library(
         IVerifyAll.h
         subdir/ISubdir.h
 )
+
+# No fPIC for Windows!
+set(flags -Wall -Werror -g -pedantic -O0)
+if (NOT WIN32)
+    set(flags ${flags} -fPIC)
+endif()
 drmock_library(
     TARGET ${PROJECT_NAME}MockArgs
     HEADERS IArgs.h
     OPTIONS --namespace ns --controller ctrl
-    FLAGS -Wall -Werror -g -fPIC -pedantic -O0
+    FLAGS ${flags}
 )  # Need a separate library to test OPTIONS and FLAGS keyword
 target_compile_options(
     ${PROJECT_NAME}Mock
     PRIVATE -Wall -Werror -g -fPIC -pedantic -O0
 )
+
 drmock_test(
     LIBS
         ${PROJECT_NAME}Mock
@@ -107,6 +114,11 @@ drmock_test(
 )
 
 if (${Qt5_FOUND})
+    if (WIN32)
+        set(flags)
+    else()
+        set(flags -fPIC)
+    endif()
     drmock_library(
         TARGET ${PROJECT_NAME}QtMock
         HEADERS
@@ -119,7 +131,7 @@ if (${Qt5_FOUND})
             INotAQtObject.h
         QTMODULES
             Qt5::Core Qt5::Test
-        FLAGS -fPIC
+        FLAGS ${flags}
     )
     target_compile_options(
         ${PROJECT_NAME}QtMock
