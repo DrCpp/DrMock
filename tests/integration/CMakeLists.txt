@@ -74,16 +74,18 @@ drmock_library(
     OPTIONS --namespace ns --controller ctrl
     FLAGS ${flags}
 )  # Need a separate library to test OPTIONS and FLAGS keyword
-target_compile_options(
-    ${PROJECT_NAME}Mock
-    PRIVATE -Wall -Werror -g -fPIC -pedantic -O0
-)
+if (CMAKE_COMPILER_IS_GNUCXX)
+    target_compile_options(
+        ${PROJECT_NAME}Mock
+        PRIVATE ${flags}
+    )
+endif()
 
 drmock_test(
     LIBS
         ${PROJECT_NAME}Mock
         ${PROJECT_NAME}MockArgs
-    TESTS ${regularTests}
+    TESTS
         VoidFuncTest.cpp
         ArgsTest.cpp
         FuncTest.cpp
@@ -135,7 +137,7 @@ if (${Qt5_FOUND})
     )
     target_compile_options(
         ${PROJECT_NAME}QtMock
-        PRIVATE -Wall -Werror -g -fPIC -pedantic -O0
+        PRIVATE ${flags}
     )
     drmock_test(
         LIBS
