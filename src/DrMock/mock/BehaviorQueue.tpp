@@ -16,6 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include <algorithm>
+
 namespace drmock {
 
 template<typename Class, typename ReturnType, typename... Args>

@@ -20,6 +20,7 @@
 #define DRMOCK_SRC_DRMOCK_MOCK_CONTROLLER_H
 
 #include <memory>
+#include <string>
 #include <vector>
 
 namespace drmock {

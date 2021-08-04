@@ -19,6 +19,10 @@
 #ifndef DRMOCK_SRC_DRMOCK_UTILITY_DETAIL_DIAGNOSTICS_H
 #define DRMOCK_SRC_DRMOCK_UTILITY_DETAIL_DIAGNOSTICS_H
 
+#ifdef _MSC_VER
+#include <ciso646>
+#endif /* _MSC_VER */
+
 #include <iostream>
 #include <sstream>
 #include <string>

@@ -18,6 +18,10 @@
 
 #include "Logger.h"
 
+#ifdef _MSC_VER
+#include <ciso646>
+#endif /* _MSC_VER */
+
 #include <algorithm>
 #include <iostream>
 
