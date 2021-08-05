@@ -38,10 +38,9 @@ target_include_directories(
     PRIVATE ${CMAKE_SOURCE_DIR}/src
 )
 
-if (CMAKE_COMPILER_IS_GNUCXX)
+if (NOT WIN32)
     target_compile_options(
         ${PROJECT_NAME}
-        PRIVATE
-            -Wall -Werror -fPIC -pedantic -O2 -fdiagnostics-color=always
+        PRIVATE -Wall -Werror -fPIC -pedantic -O2 -fdiagnostics-color=always
     )
 endif()

@@ -63,23 +63,17 @@ drmock_library(
         subdir/ISubdir.h
 )
 
-# No fPIC for Windows!
-set(flags -Wall -Werror -g -pedantic -O0)
 if (NOT WIN32)
-    set(flags ${flags} -fPIC)
+    set(flags -Werror -g -pedantic -O0 -fPIC)
+    target_compile_options(${PROJECT_NAME}Mock PRIVATE ${flags})
 endif()
+# No fPIC for Windows!
 drmock_library(
     TARGET ${PROJECT_NAME}MockArgs
     HEADERS IArgs.h
     OPTIONS --namespace ns --controller ctrl
     FLAGS ${flags}
 )  # Need a separate library to test OPTIONS and FLAGS keyword
-if (CMAKE_COMPILER_IS_GNUCXX)
-    target_compile_options(
-        ${PROJECT_NAME}Mock
-        PRIVATE ${flags}
-    )
-endif()
 
 drmock_test(
     LIBS
@@ -116,11 +110,6 @@ drmock_test(
 )
 
 if (${Qt5_FOUND})
-    if (WIN32)
-        set(flags)
-    else()
-        set(flags -fPIC)
-    endif()
     drmock_library(
         TARGET ${PROJECT_NAME}QtMock
         HEADERS
@@ -135,10 +124,9 @@ if (${Qt5_FOUND})
             Qt5::Core Qt5::Test
         FLAGS ${flags}
     )
-    target_compile_options(
-        ${PROJECT_NAME}QtMock
-        PRIVATE ${flags}
-    )
+    if (NOT WIN32)
+        target_compile_options(${PROJECT_NAME}QtMock PRIVATE ${flags})
+    endif()
     drmock_test(
         LIBS
             ${PROJECT_NAME}QtMock
