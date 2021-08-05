@@ -19,8 +19,6 @@ along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 # DrMock
 
-Copyright 2019 Ole Kliemann, Malte Kliemann
-
 ![Windows](https://github.com/DrCpp/drmock-generator/actions/workflows/windows.yml/badge.svg)
 ![Linux](https://github.com/DrCpp/drmock-generator/actions/workflows/linux.yml/badge.svg)
 ![macOS](https://github.com/DrCpp/drmock-generator/actions/workflows/macos.yml/badge.svg)
