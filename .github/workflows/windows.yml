@@ -19,6 +19,7 @@ jobs:
     - uses: actions/setup-python@v2
     - uses: jurplel/install-qt-action@v2
     - uses: lukka/get-cmake@latest
+    - uses: ilammy/msvc-dev-cmd@v1
     - uses: crazy-max/ghaction-chocolatey@v1
       with:
         args: -h
@@ -31,10 +32,14 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake .. -DCMAKE_INSTALL_PREFIX=install -DCMAKE_PREFIX_PATH=%Qt5_Dir%
-        make
+        cmake .. -G "NMake Makefiles"
+        nmake
+        # No idea why nmake doesn't put these in the right dir
+        # automatically...
+        copy src/DrMock.dll tests/DrMock.dll
+        copy src/DrMock.dll tests/integration/DrMock.dll
         ctest --output-on-failure
       env:
-        DRMOCK_QT_PATH: D:/a/DrMock/Qt/5.15.2/msvc2019_64/
+        # DRMOCK_QT_PATH: D:/a/DrMock/Qt/5.15.2/msvc2019_64/
         CLANG_LIBRARY_FILE: C:\Program Files\LLVM\bin\libclang.dll
 
