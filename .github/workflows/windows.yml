@@ -32,7 +32,7 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake .. -G "NMake Makefiles"
+        cmake .. -G "NMake Makefiles" # -DCMAKE_PREFIX_PATH=%DRMOCK_QT_PATH%
         nmake
         # No idea why nmake doesn't put these in the right dir
         # automatically...
