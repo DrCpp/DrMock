@@ -72,6 +72,8 @@ if (DEFINED ENV{DRMOCK_QT_PATH})
             "DRMOCK_QT_PATH environment variable is set, but Qt5 was not found."
         )
     endif()
+else()
+    message(STATUS DRMOCK_QT_PATH=undefined)
 endif()
 
 
