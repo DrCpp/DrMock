@@ -173,9 +173,10 @@ private:
   std::shared_ptr<StateBehavior<Class, ReturnType, Args...>> state_behavior_{};
   std::shared_ptr<BehaviorQueue<Class, ReturnType, Args...>> behavior_queue_{};
   std::shared_ptr<AbstractBehavior<Class, ReturnType, Args...>> behavior_{};
-  bool has_failed_ = false;  /**> `true` if `call` encountered unexpected args. */
+  bool has_failed_ = false;  /**> `true` if `call` encountered unexpected args */
   std::vector<std::vector<std::string>> error_msgs_{};
-  Class* parent_;  /**> Pointer to the owner of the method. */
+  Class* parent_;  /**> Pointer to the owner of the method */
+  std::shared_ptr<DecayedReturnType> panic_value_{}; /**> Used to store default return value */
 };
 
 } // namespace drmock
