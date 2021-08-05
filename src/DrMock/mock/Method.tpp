@@ -159,7 +159,11 @@ Method<Class, ReturnType, Args...>::call(const Args&... args)
 
   if constexpr (std::is_default_constructible_v<DecayedReturnType>)
   {
-    return std::make_shared<DecayedReturnType>();
+    if (not panic_value_)
+    {
+      panic_value_ = std::make_shared<DecayedReturnType>();
+    }
+    return panic_value_;
   }
   else if constexpr(std::is_same_v<DecayedReturnType, void>)
   {
