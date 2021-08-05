@@ -35,7 +35,7 @@ DRTEST_TEST(succeedsWithArgs)
       &mock, &IEmit::slot
     );
   std::string foo = "bar";
-  std::vector<float> x = {1.2, 3.4, 5.6};
+  std::vector<float> x = {1.2f, 3.4f, 5.6f};
   mock.mock.go().push().emits<int, std::string&, const std::vector<float>&>(
       &IEmit::signal,
       123, foo, x
@@ -54,7 +54,7 @@ DRTEST_TEST(failsWithArgs)
       &mock, &IEmit::slot
     );
   std::string foo = "bar";
-  std::vector<float> x = {1.2, 3.4, 5.6};
+  std::vector<float> x = {1.2f, 3.4f, 5.6f};
   mock.mock.go().push().emits<int, std::string&, const std::vector<float>&>(
       &IEmit::signal,
       123, foo, x
