@@ -70,18 +70,17 @@ find_package(DrMock)
 ```
 
 This will fail if `DrMock::DrMock` cannot be found in the
-`CMAKE_PREFIX_PATH`. Make sure that **DrMock** is installed there, or set the
-prefix in the `Makefile` (see below).
+`CMAKE_PREFIX_PATH`. Make sure that **DrMock** is installed there, set
+the prefix in the `Makefile` (see below) or call `cmake` yourself with
+the `-DCMAKE_PREFIX_PATH` directive.
 
 Finding the **DrMock** package
-automatically import the macro `DrMockTest`, which may be used to
+automatically imports the macro `DrMockTest`, which may be used to
 register tests.
 
 ```cmake
 enable_testing()
-DrMockTest(TESTS
-  basicTest.cpp
-)
+DrMockTest(TESTS basicTest.cpp)
 ```
 
 You could add further tests by providing addition arguments to the
@@ -89,9 +88,9 @@ macro, like so:
 
 ```cmake
 DrMockTest(TESTS
-  test0.cpp
-  test1.cpp
-  # ...
+    test0.cpp
+    test1.cpp
+    # ...
 )
 ```
 
@@ -99,7 +98,7 @@ Now lets take a look at the `Makefile`:
 
 ```makefile
 default:
-  mkdir -p build && cd build && cmake .. -DCMAKE_PREFIX_PATH=../../prefix
+  mkdir -p build && cd build && cmake .. -DCMAKE_PREFIX_PATH=../../build/install
   cd build && make -j$(num_threads) && ctest --output-on-failure
 ```
 
@@ -108,7 +107,7 @@ Nothing fancy here. Note the ctest call after building.
 If you haven't already, set the `CMAKE_PREFIX_PATH` environment variable
 to the installation directory of the **DrMock** package. If you've done
 `make && make install` in the **DrMock** source folder and haven't moved
-`prefix`, the default `CMAKE_PREFIX_PATH` set in the `Makefile` is
+`build/install`, the default `CMAKE_PREFIX_PATH` set in the `Makefile` is
 referencing the correct directory.
 
 ## Source code
@@ -587,11 +586,11 @@ following default options are used: `-Wall`, `-Werror`, `-g`, `-fPIC`,
 `-Werror`, do
 ```cmake
 DrMockTest(
-  TESTS
-    test.cpp
-  OPTIONS
-    -Wall
-    -Werror
+    TESTS
+        test.cpp
+    OPTIONS
+        -Wall
+        -Werror
 )
 ```
 
@@ -600,13 +599,13 @@ the `LIBS` parameter (also described in the [next section](mock.md)).
 For example, to link the test above against `pthread`, do
 ```cmake
 DrMockTest(
-  TESTS
-    test.cpp
-  LIBS
-    pthread
-  OPTIONS
-    -Wall
-    -Werror
+    TESTS
+        test.cpp
+    LIBS
+        pthread
+    OPTIONS
+        -Wall
+        -Werror
 )
 ```
 
@@ -614,10 +613,10 @@ The `RESOURCE` parameter may be used to add source files to the test
 executable:
 ```cmake
 DrMockTest(
-  TESTS
-    test.cpp
-  RESOURCES
-    symbols.cpp
+    TESTS
+        test.cpp
+    RESOURCES
+        symbols.cpp
 )
 ```
 Maybe `symbols.cpp` contains symbols required by a header included in
