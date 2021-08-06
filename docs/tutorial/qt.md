@@ -93,7 +93,7 @@ DrMockModule(
 ```
 
 Furthermore, in order to use `DrMockModule` with Qt, the `$DRMOCK_QT_PATH`
-environment variable must be set (see [Building DrMock](../build.md) for
+environment variable must be set (see [Building DrMock](../../BUILD.md) for
 details).
 
 The `DrMockTest` call requires no changes for the use of Qt.
