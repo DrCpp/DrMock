@@ -28,7 +28,7 @@ This sample demonstrates the basic testing capabilities of **DrMock**.
   + [Assert and compare](#assert-and-compare)<br/>
   + [Exceptions](#exceptions)<br/>
   + [Test tables](#test-tables)<br/>
-  + [`USING_DRTEST`](#using-drtest)
+  + [`USING_DRTEST`](#using_drtest)
 * [Running the tests](#running-the-tests)<br/>
 * [Caveats](#caveats)<br/>
   + [Commas in macro arguments](#commas-in-macro-arguments)<br/>
