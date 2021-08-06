@@ -21,29 +21,34 @@ along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 Released 2021/xx/xx
 
-* Clean up `MethodCollection` error logging
-
-* Place data funcs in `DRTEST_NAMESPACE`
-
 * Reorganize project structure along the lines of
   [vector-of-bool/pitchfork](gi thub.com/vector-of-bool/pitchfork)
 
 * Move utility methods that are used in `mock/` and `test/` to
   `utility/`
 
-* Convert all CMake functions/macros from camelCase to snake_case
-
-* Clean up cmake/DrMockMacros.cmake
-
-* Introduce `drmock_library2` function for list-based mock object code
-  creation
-
-* Remove `QObject` dependency from `Signal`
-
 * Remove python component from this repository (`drmock-gen`, as it is
   now called, will be installed using pip in the future)
 
 * Remove broken (and superfluous) pkgconfig
+
+* Add `USING_DRTEST` macro for removing `DRTEST_` prefix from test
+  macros
+
+* Place data funcs in `DRTEST_NAMESPACE`
+
+* Clean up cmake/DrMockMacros.cmake
+
+* Convert all CMake functions/macros from camelCase to snake_case
+
+* Introduce `drmock_library2` function for list-based mock object code
+  creation
+
+* Clean up `MethodCollection` error logging
+
+* Remove `QObject` dependency from `Signal`
+
+* Remove need for `DRMOCK_USE_QT` macro
 
 * Remove Qt includes from `Method.h`
 
@@ -53,8 +58,6 @@ Released 2021/xx/xx
 * Allow mocking non-abstract classes. In particular, users are no longer
   required to seperate interface and implementation into multiple
   classes
-
-* Remove need for `DRMOCK_USE_QT` macro
 
 
 # DrMock 0.5.0
