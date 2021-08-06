@@ -76,19 +76,19 @@ the prefix in the `Makefile` (see below) or call `cmake` yourself with
 the `-DCMAKE_PREFIX_PATH` directive.
 
 Finding the **DrMock** package
-automatically imports the macro `DrMockTest`, which may be used to
+automatically imports the macro `drmock_test`, which may be used to
 register tests.
 
 ```cmake
 enable_testing()
-DrMockTest(TESTS basicTest.cpp)
+drmock_test(TESTS basicTest.cpp)
 ```
 
 You could add further tests by providing addition arguments to the
 macro, like so:
 
 ```cmake
-DrMockTest(TESTS
+drmock_test(TESTS
     test0.cpp
     test1.cpp
     # ...
@@ -602,12 +602,12 @@ will raise such an error, as the fourth column's type is defined as
 ### Compile options, linking test executables and resource files
 
 You may set the compile options of the test executables using the
-`OPTIONS` parameter of `DrMockTest`. If `OPTIONS` is left undefined, the
+`OPTIONS` parameter of `drmock_test`. If `OPTIONS` is left undefined, the
 following default options are used: `-Wall`, `-Werror`, `-g`, `-fPIC`,
 `-pedantic`, `-O0`. For example, to compile only with `-Wall` and
 `-Werror`, do
 ```cmake
-DrMockTest(
+drmock_test(
     TESTS
         test.cpp
     OPTIONS
@@ -620,7 +620,7 @@ To link the test executables against any number of target library, use
 the `LIBS` parameter (also described in the [next section](mock.md)).
 For example, to link the test above against `pthread`, do
 ```cmake
-DrMockTest(
+drmock_test(
     TESTS
         test.cpp
     LIBS
@@ -634,7 +634,7 @@ DrMockTest(
 The `RESOURCE` parameter may be used to add source files to the test
 executable:
 ```cmake
-DrMockTest(
+drmock_test(
     TESTS
         test.cpp
     RESOURCES
