@@ -135,10 +135,7 @@ DRTEST_TEST(someTest)
 }
 ```
 
-To compare objects of some type `T`, the following `DRTEST_ASSERT_[...]`
-macros may be used if `T` implements
-`std::ostream& operator<<(ostream& os, const T&)`,
-as done in the next test.
+To compare objects, use `DRTEST_ASSERT_[...]`:
 ```cpp
 DRTEST_TEST(anotherTest)
 {
@@ -155,9 +152,7 @@ DRTEST_TEST(anotherTest)
 }
 ```
 These macros will print the left- and right-hand side of the comparison
-in case of failure.
-If the compared type `T` doesn't provide a streaming operator, use
-`DRTEST_ASSERT(lhs > rhs)`, etc. instead.
+in case of failure (if possible).
 
 ### Exceptions
 
