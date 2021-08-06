@@ -28,6 +28,7 @@ This sample demonstrates the basic testing capabilities of **DrMock**.
   + [Assert and compare](#assert-and-compare)<br/>
   + [Exceptions](#exceptions)<br/>
   + [Test tables](#test-tables)<br/>
+  + [`USING_DRTEST`](#using-drtest)
 * [Running the tests](#running-the-tests)<br/>
 * [Caveats](#caveats)<br/>
   + [Commas in macro arguments](#commas-in-macro-arguments)<br/>
@@ -319,6 +320,31 @@ DRTEST_TEST(someTestWithTable)
 The first of these tests will check `3 + 4 == 7`, `1593 + 2478 == 4071`
 and `2 + 2 == 5`. In case of failure, each of these will be displayed as
 individual tests.
+
+### `USING_DRTEST`
+
+If long macro names like `DRTEST_ASSERT_EQ` are impractical and you're
+certain that no collisions will result from this, you can `#define
+USING_DRTEST` to remove the `DRTEST_` prefix from all `DRTEST_*` macros.
+
+The following macros are impacted:
+`DRTEST_FETCH`,
+`DRTEST_DATA`,
+`DRTEST_TEST`,
+`DRTEST_ASSERT`,
+`DRTEST_ASSERT_EQ`,
+`DRTEST_ASSERT_NE`,
+`DRTEST_ASSERT_LE`,
+`DRTEST_ASSERT_LT`,
+`DRTEST_ASSERT_GE`,
+`DRTEST_ASSERT_GT`,
+`DRTEST_ASSERT_THROW`,
+`DRTEST_ASSERT_TEST_FAIL`,
+`DRTEST_VERIFY_MOCK`,
+`DRTEST_ASSERT_ALMOST_EQUAL`.
+
+Like other `using namespace ...` directives, please use this one with
+caution!
 
 ## Running the tests
 
