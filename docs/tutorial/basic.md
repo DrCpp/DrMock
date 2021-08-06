@@ -60,13 +60,13 @@ requirement for C++17, do
 set(CMAKE_CXX_STANDARD 17)
 ```
 
-Next, find the package `DrMock::Core`.
+Next, find the package `DrMock::DrMock`.
 
 ```cmake
-find_package(DrMock COMPONENTS Core REQUIRED)
+find_package(DrMock)
 ```
 
-This will fail if `DrMock::Core` cannot be found in the
+This will fail if `DrMock::DrMock` cannot be found in the
 `CMAKE_PREFIX_PATH`. Make sure that **DrMock** is installed there, or set the
 prefix in the `Makefile` (see below).
 
