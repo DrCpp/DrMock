@@ -644,13 +644,13 @@ Furthermore, duplicate row names are not allowed.
 
 ### Implicit conversions of number types
 
-Beware of implicit conversions when using the macros! For example, use
-```cpp
-DRTEST_ASSERT_ALMOST_EQUAL(0.9, 1.0)
-```
-instead of
+Beware of implicit conversions when using the macros! For example, instead of
 ```cpp
 DRTEST_ASSERT_ALMOST_EQUAL(0.9, 1)
+```
+use
+```cpp
+DRTEST_ASSERT_ALMOST_EQUAL(0.9, 1.0)
 ```
 
 Otherwise, you might end up with an error similar to this one:
