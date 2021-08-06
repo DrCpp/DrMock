@@ -178,8 +178,8 @@ If you wish, you can check multiple statements at once:
 ```cpp
 DRTEST_ASSERT_THROW(
     std::string str = "foo";
-    throw std::runtime_error{str};
-    (void)str,  // Mark `str` as used.
+    str = "bar";
+    throw std::runtime_error{str},
     std::runtime_error
   );
 ```
