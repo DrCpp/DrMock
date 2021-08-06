@@ -39,7 +39,7 @@ This sample demonstrates the basics of **DrMock**'s mock features.
   + [Operators](#operators)
   + [Changing nomenclature templates](#changing-nomenclature-templates)
   + [Ignore order of behaviors](#ignore-order-of-behaviors)
-  + [DrMockModule documentation](#drmockmodule-documentation)
+  + [drmock_library documentation](#drmockmodule-documentation)
   + [Macros](#marcos)
 * [Fine print: Interface](#fine-print-interface)
 * [Bibliography](#bibliography)
@@ -156,7 +156,7 @@ the commodity from the warehouse and set `filled_` accordingly.
 ## Setup
 
 To use **DrMock** to create source code for a mock of `IWarehouse`, the
-macro `DrMockModule` is used.
+macro `drmock_library` is used.
 ```cmake
 # src/CMakeLists.txt
 
@@ -169,7 +169,7 @@ file(TO_CMAKE_PATH
   ${CMAKE_SOURCE_DIR}/../../python/DrMockGenerator
   pathToMocker
 )
-DrMockModule(
+drmock_library(
   TARGET DrMockSampleMockMocked
   GENERATOR ${pathToMocker}
   HEADERS
@@ -182,18 +182,18 @@ generate the source code of respective mock object and compile them into
 a library, `DrMockSampleMockMocked` (if you think that's silly, then by
 all means, change the libraries name using the `TARGET` parameter).
 
-What's the `GENERATOR` parameter for? Per default, `DrMockModule`
+What's the `GENERATOR` parameter for? Per default, `drmock_library`
 expects the `DrMockGenerator` python script to be installed somewhere in
 `PATH`. If that is not the case, the path to the script must be
 specified by the user. If you've already installed `DrMockGenerator`,
 try removing the `GENERATOR` argument.
 
-A detailed documentation may be found in [DrMockModule documentation](#drmockmodule-documentation).
+A detailed documentation may be found in [drmock_library documentation](#drmockmodule-documentation).
 
 Let's now see how mock objects are used in tests. First, take a look at
 `tests/CMakeLists.txt`.
 ```cmake
-DrMockTest(
+drmock_test(
   LIBS
     DrMockSampleMock
     DrMockSampleMockMocked
@@ -201,7 +201,7 @@ DrMockTest(
     OrderTest.cpp
 )
 ```
-The call of `DrMockTest` has changed as we've added the parameter
+The call of `drmock_test` has changed as we've added the parameter
 `LIBS`. This parameter tells **DrMock** which libraries to link the
 tests (i.e. the executables compiled from `TESTS`) against. In this
 case, the test `OrderTest.cpp` requires the class `Order` from
@@ -221,7 +221,7 @@ the mock class `FooMock` is defined. You must strictly follow this
 template: The class and filename of every interface must begin with an
 `I`, and the mock object will be named accordingly.  (You can change
 these nomenclature templates, but more of that later) The path is
-_relative to the current CMake source dir_. Thus, calling `DrMockModule`
+_relative to the current CMake source dir_. Thus, calling `drmock_library`
 from anywhere but `src/CMakeLists.txt` is bound to result in odd include
 paths.
 
@@ -308,7 +308,7 @@ Total Test time (real) =   0.01 sec
 
 ## The structure and use of **DrMock** mock objects
 
-We've already been mentioned that the `DrMockModule` CMake macro
+We've already been mentioned that the `drmock_library` CMake macro
 produces a class `FooMock` from every specified interface `IFoo`, that
 `FooMock` implements `IFoo` and that `FooMock` has a public member
 `mock` of type `DRMOCK_Object_Foo`, the _internal mock object_, whose
@@ -953,7 +953,7 @@ name followed by `Mock`. For example, `VectorMock`. The same template is
 applied to the header and source filenames.
 
 If you don't wish to follow this template, you must change the call to
-`DrMockModule`. The arguments of `IFILE` and `ICLASS` must be regular
+`drmock_library`. The arguments of `IFILE` and `ICLASS` must be regular
 expression with exactly one capture group, those of `MOCKFILE` and
 `MOCKCLASS` must contain a single subexpression `\1` (beware the CMake
 excape rules!).
@@ -964,7 +964,7 @@ example, the following configures **DrMock** to expect interfaces of the
 form `interface_vector`, etc. and to return mock objects called
 `vector_mock`, etc.:
 ```cmake
-DrMockModule(
+drmock_library(
   TARGET MyLibMocked
   IFILE
     "interface_([a-zA-Z0-9].*)"
@@ -993,9 +993,9 @@ If `enforce_order` is disabled, and the mocked method is called, the
 first `Behavior` on the `BehaviorQueue` that matches the method call is
 triggered.
 
-### DrMockModule documentation
+### drmock_library documentation
 ```cmake
-DrMockModule(
+drmock_library(
   TARGET
   HEADERS header1 [header2 [header3 ...]]
   [IFILE]
@@ -1060,7 +1060,7 @@ DrMockModule(
   are automatically added to this list.
 
   The default value contains ${CMAKE_CURRENT_SOURCE_DIR} (the
-  directory that `DrMockModule` is called from) and the current
+  directory that `drmock_library` is called from) and the current
   directory's include path.
 
 ##### FRAMEWORKS
@@ -1224,7 +1224,7 @@ error message like this:
 ## Fine print: Interface
 
 Here's the definition of the notion of _interface_ in the context of a
-call of `DrMockModule`:
+call of `drmock_library`:
 
 * The file's name with its file extension<sup>1</sup> removed shall
   match `IFILE`.

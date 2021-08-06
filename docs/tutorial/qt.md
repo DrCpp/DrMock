@@ -96,7 +96,7 @@ Furthermore, in order to use `DrMockModule` with Qt, the `$DRMOCK_QT_PATH`
 environment variable must be set (see [Building DrMock](../../BUILD.md) for
 details).
 
-The `DrMockTest` call requires no changes for the use of Qt.
+The `drmock_test` call requires no changes for the use of Qt.
 
 ## Mocking a QObject
 
