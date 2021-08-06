@@ -243,6 +243,7 @@ DRTEST_DATA(someTestWithTable)
 
   // ...
 }
+```
 
 After adding the columns, the `drtest::addRow` function may then be used
 to populate the table:
@@ -287,7 +288,7 @@ DRTEST_DATA(someTestWithTable)
 Thus, the test table for `someTestWithTable` is initialized and
 populated. To access the table in the test, use
 ```cpp
-DRTEST(Type, column_name)
+DRTEST_FETCH(Type, column_name)
 ```
 Note the lack of double quote in `column_name`!
 
