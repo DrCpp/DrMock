@@ -81,11 +81,11 @@ See [BUILD.md] for instructions.
 ## Documentation
 
 * Tutorials:
-  - [1. Basic testing](samples/basic.md)
-  - [2. Basic mocking](samples/mock.md)
-  - [3. State-machine mocking](samples/states.md)
-  - [4. Using **DrMock** with Qt5](samples/qt.md)
-  - [5. Experimental: Death testing](samples/death.md)
+  - [1. Basic testing](docs/tutorial/basic.md)
+  - [2. Basic mocking](docs/tutorial/mock.md)
+  - [3. State-machine mocking](docs/tutorial/states.md)
+  - [4. Using **DrMock** with Qt5](docs/tutorial/qt.md)
+  - [5. Experimental: Death testing](docs/tutorial/death.md)
 
 * The **DrMock** API is documented in [src/DrMock];
   the docs are doxygen-compliant, but you must specify the Doxyfile
