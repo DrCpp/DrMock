@@ -163,7 +163,7 @@ DRMOCK_ASSERT(bar->mock.verify());
 ```
 
 The `emit foo->theSignal("foo");` looks a bit off. That's how we had to
-do it prior to `DrMock<v0.3.0`. In `DrMock>=0.3.0`  the `emits`
+do it prior to `DrMock<0.3.0`. In `DrMock>=0.3.0`  the `emits`
 configuration call is added to `Behavior` and `StateBehavior`. It can be
 used to instruct a mock object to `emit` a signal:
 
