@@ -43,6 +43,13 @@ samples/death
 │   deathTest.cpp
 ```
 
+### Requirements
+
+This project requires an installation of **DrMock** in `build/install/`
+or a path container in the `CMAKE_PREFIX_PATH` variable. If your
+installation of **DrMock** is located elsewhere, you must change the
+value of `CMAKE_PREFIX_PATH`.
+
 ## Source code
 
 Open `deathTest.cpp`!

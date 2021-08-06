@@ -47,10 +47,14 @@ samples/qt
 
 ### Requirements
 
-This project requires an installation of **DrMock** in `prefix/` or the
-`CMAKE_PREFIX_PATH` environment variable. If your installation of
-**DrMock** is located elsewhere, you must change the value of
-`CMAKE_PREFIX_PATH`.
+This project requires an installation of **DrMock** in `build/install/`
+or a path container in the `CMAKE_PREFIX_PATH` variable. If your
+installation of **DrMock** is located elsewhere, you must change the
+value of `CMAKE_PREFIX_PATH`.
+
+Furthermore, unless you wish to call cmake directly, it is required that
+you define the environment variable `DRMOCK_QT_PATH` to contain the path
+to an installation of Qt5.
 
 ## Setup
 
