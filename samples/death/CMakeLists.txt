@@ -20,7 +20,7 @@ cmake_minimum_required(VERSION 3.10)
 project(DrMockSampleDeath)
 set(CMAKE_CXX_STANDARD 17)
 
-find_package(DrMock COMPONENTS Core REQUIRED)
+find_package(DrMock)
 
 enable_testing()
 drmock_test(TESTS deathTest.cpp)
