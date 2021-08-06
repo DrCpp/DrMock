@@ -33,6 +33,7 @@ This sample demonstrates the death testing capabilities of **DrMock**.
 * [Details](#details)
   + [Supported signals](#supported-signals)
   + [clone, fork, signal, multi-threading](#clone-fork-signal-multi-threading)
+  + [Log messages](#log-messages)
 
 ### Project structure
 

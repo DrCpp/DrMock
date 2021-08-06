@@ -27,7 +27,6 @@ This sample demonstrates how to use **DrMock** to mock an interface
 * [Mocking a QObject](#mocking-a-qobject)
 * [Running the tests](#running-the-tests)
 * [Event loops and the `DRTEST_USE_QT` macro](#event-loops-and-the-drtest_use_qt-macro)
-* [The QObject-Interface-Implementation pattern](#the-qobject-interface-implementation-pattern)
 
 ### Project structure
 

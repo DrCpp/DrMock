@@ -33,6 +33,9 @@ This sample demonstrates the basic testing capabilities of **DrMock**.
   + [Commas in macro arguments](#commas-in-macro-arguments)<br/>
   + [Implicit conversion in test tables](#implicit-conversion-in-test-tables)
   + [Compile options, linking test executables and resource files](#compile-options-linking-test-executables-and-resource-files)
+  + [Test names](#test-names)
+  + [Row names](#row-names)
+  + [Implicit conversions of number types](#implicit-conversions-of-number-types)
 
 ### Project structure
 

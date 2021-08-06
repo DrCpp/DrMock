@@ -32,6 +32,7 @@ for state verification.
   + [transition](#transition)
   + [returns](#returns)
   + [throws](#throws)
+  + [emits](#emits)
   + [polymorphic](#polymorphic)
 * [State verification](#state-verification)
 * [Bibliography](#bibliography)
