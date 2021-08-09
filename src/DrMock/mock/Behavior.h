@@ -38,10 +38,10 @@ namespace drmock {
  *
  * Every `Behavior` object can _expect_ a call with a specified _input_
  * (a set of arguments that match the parameter types), and _produce_ a
- * result: Return a value of type `ReturnType` and/or emit a Qt signal,
- * _or_ an exception pointer (simulating a thrown exception). Returning
- * a value and emitting a signal may both occur, but exceptions are
- * exclusive.
+ * result on a call: Return a value of type `ReturnType` and/or emit a
+ * Qt signal, _or_ an exception pointer (simulating a thrown exception).
+ * Returning a value and emitting a signal may both occur, but
+ * exceptions are exclusive.
  *
  * Furthermore, every `Behavior` object has a _life span_, which
  * means that it can only `produce()` a fixed number (but possibly

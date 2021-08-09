@@ -21,7 +21,7 @@
 
 using namespace drmock::samples;
 
-DRTEST_TEST(overload)
+DRTEST_TEST(params_and_qualifiers)
 {
   auto bar = std::make_shared<BarMock>();
   bar->mock.f<>().push()
@@ -33,8 +33,8 @@ DRTEST_TEST(overload)
   bar->mock.f<int>().push()
       .expects(3)
       .returns(3);
-  bar->mock.f<float, std::vector<int>, drmock::Const>().push()
-      .expects(0.0f, {1, 2, 3})
+  bar->mock.f<float, const std::vector<int>&, drmock::Const>().push()
+      .expects(1.2f, {1, 2, 3})
       .returns(4);
 
   DRTEST_ASSERT_EQ(
@@ -50,7 +50,48 @@ DRTEST_TEST(overload)
       3
     );
   DRTEST_ASSERT_EQ(
-      bar->f(0.0f, {1, 2, 3}),
+      bar->f(1.2f, {1, 2, 3}),
       4
+    );
+}
+
+DRTEST_TEST(qualifiers_only)
+{
+  auto bar = std::make_shared<BarMock>();
+  bar->mock.g<>().push()
+      .expects({0, 1})
+      .returns(5);
+  bar->mock.g<drmock::Const>().push()
+      .expects({0, 1})
+      .returns(6);
+  std::vector<int> vec{0, 1};
+
+  DRTEST_ASSERT_EQ(
+      bar->g(vec),
+      5
+    );
+  DRTEST_ASSERT_EQ(
+      std::const_pointer_cast<const BarMock>(bar)->g(vec),
+      6
+    );
+}
+
+DRTEST_TEST(params_only)
+{
+  auto bar = std::make_shared<BarMock>();
+  bar->mock.h<>().push()
+      .expects()
+      .returns(1.2f);
+  bar->mock.h<int, float>().push()
+      .expects(0, 1.2f)
+      .returns(3.4f);
+
+  DRTEST_ASSERT_EQ(
+      bar->h(),
+      1.2f
+    );
+  DRTEST_ASSERT_EQ(
+      bar->h(0, 1.2f),
+      3.4f
     );
 }

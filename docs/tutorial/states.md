@@ -19,8 +19,7 @@ along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 # samples/states
 
-This sample demonstrates **DrMock**'s state calculus and how to use it
-for state verification.
+This sample demonstrates how to use **DrMock** for state verification.
 
 # Table of contents
 
@@ -64,8 +63,8 @@ value of `CMAKE_PREFIX_PATH`.
 
 ## Introduction
 
-Mocks are usually used to test objects against their implementation. For
-example, in [samples/mock](#samplesmock), expecting the behavior
+Mocks are usually used to test _specific_ implementations of an interface.
+For example, in [samples/mock](#samplesmock), expecting the behavior
 ```cpp
 warehouse->mock.remove().push()
     .expect("foo", 2)
@@ -76,8 +75,9 @@ only makes sense if `remove` is used in the implementation of `Order`.
 This type of testing is called _behavior verification_ and is dependent
 on the implementation of the system under test [1].
 
-To make tests less dependent on the implementation, **DrMock**'s state
-calculus may be used. Consider the interface `IRocket`:
+To make tests less dependent on the implementation, **DrMock**'s
+state-machine mock objects may be used. Consider the interface
+`IRocket`:
 ```cpp
 // IRocket.h
 
@@ -108,20 +108,27 @@ private:
   std::shared_ptr<IRocket> rocket_;
 };
 ```
-Thus, one would expect the implementation of `LaunchPad::launch()` to
-be:
+What would you expect the implementation of `LaunchPad::launch()` to be?
+Should the `LaunchPad` enable only one thruster (which one?), or both.
+But this is still fine, as we could verify if at least one thruster was
+activated. But what about the following:
 ```cpp
 void
 LaunchPad::launch()
 {
   rocket_->toggleLeftThruster(true);
+  rocket_->toggleLeftThruster(false);
+  rocket_->toggleLeftThruster(true);
   rocket_->launch();
 }
 ```
+This is a questionable, but correct implementation of `launch()`. But
+this cannot be tested without tracking the _state_ of the thrusters.
 
-But let's say the control room is full of frantic apes randomly bashing
-the buttons, before (luckily!) enabling a thruster and then pressing
-`rocket->launch()`:
+It could be even worse.
+For the sake of demonstration, let's say the control room is full of
+frantic apes randomly bashing the buttons, before (luckily!) enabling a
+thruster and then pressing `rocket->launch()`:
 ```cpp
 void
 LaunchPad::launch()
@@ -142,61 +149,70 @@ LaunchPad::launch()
 }
 ```
 There is no way to predict the behavior of `LaunchPad::launch()`. Yet,
-the result should be testable. This is where **DrMock**'s state calculus
+the result should be testable. This is where **DrMock**'s state behavior
 enters the stage!
 
-## State calculus
 
-Every mock object admits a private `StateObject`, which manages an
+## State behavior
+
+The controller of every mock objects
+admits a private `StateObject` (the "state object"), which manages an
 arbitrary number of _slots_, each of which has a _current state_. This
 state object is shared between all methods of the mock object, but, per
-default, it is not used. To enable a method `func` to use the shared
-state object, do
+default, it is not used.
+
+To disable the `BehaviorQueue` of the mock object and enable the
+`StateBehavior` (the "state behavior") which makes use of the
+state object, run
 ```cpp
 foo->mock.func().state()
 ```
-This call returns an instance of `StateBehavior`, which can be
-configured in the same fashion as `Behavior`.
+This call returns a `StateBehavior&`, which can be
+configured in similar fashion to `BehaviorQueue`.
 
-Every slot of the `StateObject` is designated using an `std::string`, as
-is every state. Upon execution of the test, the state of every slot is
+Every slot of the state object is designated using an `std::string`, as
+is every state. The default state after initialization of every slot is
 the _default state_ `""`.
 
 The primary method of controlling the state object is by defining
 _transitions_. To add a transition to a method, do
 ```cpp
-rocket->mock.launch().state().transition(
-    "main",
-    "leftThrusterOn",
-    "liftOff"
-  );
+rocket->mock.launch().state()
+    .transition(
+        "main",
+        "leftThrusterOn",
+        "liftOff"
+      );
 ```
 This informs the state object to transition the slot `"main"` from the
 state `"leftThrusterOn"` to `"liftOff"` when `launch()` is called.
 If no slot is specified, as in
 ```cpp
-rocket->mock.launch().state().transition(
-    "leftThrusterOn",
-    "liftOff"
-  );
+rocket->mock.launch().state()
+    .transition(
+        "leftThrusterOn",
+        "liftOff"
+      );
 ```
 then the _default slot_ `""` is used.
 
-**Note.** There is no need to add slots to the state object prior to
+*Note.* There is no need to add slots to the state object prior to
 calling `transition`. This is done automatically.
 
-Now, `launch` doesn't take any arguments. If the underlying methods
-takes arguments, the `transition` call requires an input. For example, 
+If the underlying methods takes arguments, the `transition` call
+requires an input. For example, 
 ```cpp
-rocket->mock.toggleLeftThruster().state().transition(
-    "leftThrusterOn",
-    "",
-    false
-  );
+rocket->mock.toggleLeftThruster().state()
+    .transition(
+        "leftThrusterOn",
+        "",
+        false
+      );
 ```
 instructs the state object to transition the default slot from the state
 `"leftThrusterOn"` to the default state `""` if
-`toggleLeftThruster(false)` is called.
+`toggleLeftThruster(false)` is called. We will describe the API of
+`transition()` in detail below.
 
 The wildcard symbol `"*"` may be used as catch-all/fallthrough symbol
 for the current state. Pushing regular transitions before or after a
@@ -215,22 +231,22 @@ from any state except the default state, which transitions to
 As usual, the mock's behavior is configured at the start of the test:
 Liftoff can only succeed if at least one thruster is on.
 ```cpp
-  auto rocket = std::make_shared<drmock::samples::RocketMock>();
+auto rocket = std::make_shared<drmock::samples::RocketMock>();
 
-  // Define rocket's state behavior.
-  rocket->mock.toggleLeftThruster().state()
-      .transition("", "leftThrusterOn", true)
-      .transition("leftThrusterOn", "", false)
-      .transition("rightThrusterOn", "allThrustersOn", true)
-      .transition("allThrustersOn", "rightThrusterOn", false);
-  rocket->mock.toggleRightThruster().state()
-      .transition("", "rightThrusterOn", true)
-      .transition("rightThrusterOn", "", false)
-      .transition("leftThrusterOn", "allThrustersOn", true)
-      .transition("allThrustersOn", "leftThrusterOn", false);
-  rocket->mock.launch().state()
-      .transition("", "failure")
-      .transition("*", "liftOff");
+// Define rocket's state behavior.
+rocket->mock.toggleLeftThruster().state()
+    .transition("", "leftThrusterOn", true)
+    .transition("leftThrusterOn", "", false)
+    .transition("rightThrusterOn", "allThrustersOn", true)
+    .transition("allThrustersOn", "rightThrusterOn", false);
+rocket->mock.toggleRightThruster().state()
+    .transition("", "rightThrusterOn", true)
+    .transition("rightThrusterOn", "", false)
+    .transition("leftThrusterOn", "allThrustersOn", true)
+    .transition("allThrustersOn", "leftThrusterOn", false);
+rocket->mock.launch().state()
+    .transition("", "failure")
+    .transition("*", "liftOff");
 ```
 Recall that the state of every new slot is the default state `""`,
 which, in this example, is used to model the `"allThrustersOff"` state.
@@ -241,9 +257,10 @@ equal to `liftOff`:
 ```cpp
 DRTEST_ASSERT(rocket->mock.verifyState("liftOff");
 ```
+
 (The method
-`bool verifyState([const std::string& slot,] const std::string& state);`
-simply checks if the current state of `slot` is `state`.)
+`bool verifyState([const std::string& slot,] const std::string& state)`
+checks if the current state of `slot` is `state`.)
 
 Thus, except for the configuration calls and the singular call to
 `verifyState`, no access or knowledge of the implementation was required
@@ -266,135 +283,103 @@ Feel free to rerun this test until you're convinced that the random
 numbers generated in the implementation of `LaunchPad::launch()` have no
 effect.
 
-## Configuring state behavior
+## `StateBehavior` API
+
+Before going into detail, you should be familiar with the
+`Behavior`/`BehaviorQueue` API from the previous chapter.
+
+Unlinke `Behavior` objects, a `StateBehavior` does not expect any input.
+Instead, it reacts to calls by changing ("transitioning") the states of
+the state object. You've already seen examples of this:
+```cpp
+rocket->mock.toggleLeftThruster().state()
+    .transition(
+        "leftThrusterOn",
+        "",
+        false
+      );
+```
+(Switching off the left thruster when the state is "leftThrusterOn"
+returns the default slot to the default state, `""`.)
+
+To handle returns, throws and emits, the state behavoir declares one of
+the slots the _result slot_. How the result slot is selected is detailed
+below. Once set, the result slot cannot be changed.
 
 With the exception of `polymorphic`, the configuration methods take the
 slot as optional first parameter. The default value is the default slot
-`""`.
-
-The parameters `Result` and `Args...` are designators for the underlying
-method's return value and parameters.
-
-Using the wildcard state `"*"` for the `current_state` parameter results
-in the configuration serving as catch-all (or fallthru), to which other
-configuration calls act as exceptions (as described above).
-
-**Note.** The rules from [samples/mock](mock.md) regarding the
-combination of configuration calls apply here. In other words, `returns`
-and `emits` may be combined (and everything may be combined with
-multiple calls to `transition`, of course), and an error if raised if
-any of the configuration calls below are used to create double binds.
-For example:
-```cpp
-bhv.returns("state1", 123)
-   .emits("state1", &Dummy::f, 456)  // Ok, returns and emits are parallel.
-   .throws("state2", std::runtime_error{""})  // Ok, different state.
-   .throws("state1", std::logic_error{""})  // Fails, overriding previous state1 behavior.
-   .returns("state2", 456)  // Ok, different slot.
-   .returns("state2", 789)  // Not ok, raises error.
-```
-
-Furthermore, creating conflicting transition tables will result in an
-error. For example:
-```cpp
-bhv.transition("state1", "state2", 2)
-   .transition("state1", "state3", 3)  // Ok, different input.
-   .transition("state1", "state4", 2)  // Not ok, will raise.
-```
-
-### transition
+`""`. A comprehensive summary of the `StateBehavior` API (optional
+parameters marked with `[]` plus default value) follows:
 
 ```cpp
 StateBehavior& transition(
-   [const std::string& slot,]
-    std::string current_state,
+    [const std::string& slot = "",]
+    const std::string& current_state,
     std::string new_state,
-    Args... input
-  );
+    detail::Expect<Args>... input
+  )
 ```
-Instruct the `StateBehavior` to transition the slot `slot` from the state
-`current_state` to `new_state` when the method is called with the
-arguments `input...`.
 
-### returns
+Add a transition: _If `slot` has current state `current_state` and the
+method is called with `input...`, then change the state of `slot` to
+`new_state`_. As in the case of `Behavior`, each element of `input...`
+may be specified as raw input or as matcher.
 
 ```cpp
-StateBehavior& returns(
-   [const std::string& slot,]
+template<typename T = ReturnType> StateBehavior& returns(
+    [const std::string& slot = "",]
     const std::string& state,
-    const Result& value
-  );
-StateBehavior& returns(
-   [const std::string& slot,]
-    const std::string& state,
-    Result&& value
+    std::enable_if_t<not std::is_same_v<ReturnType, void>, T>&& value
   );
 ```
-Instruct the `StateBehavior` to return `value` if the state of `slot` is
-`state`. `"*"` may not be used as catch-all in the `returns` method.
 
-Example:
+Set a return value for a slot/state combination.
+
+`slot` must be the result slot. If no result slot is set when `returns`
+is called, `slot` is defined as the result slot.
+
 ```cpp
-// ILever.h
-
-class ILever
-{
-public:
-  virtual void set(bool) = 0;
-  virtual bool get() = 0;
-};
-
-// Some test...
-
-DRTEST_TEST(...)
-{
-  auto lever = std::shared_ptr<LeverMock>();
-  lever->mock.toggle().state()
-      .transition("", "on", true)
-      .transition("on", "", false);
-  lever->mock.get().state()
-      .returns("", false)
-      .returns("on", true);
-}
+template<typename E> StateBehavior& throws(
+    [const std::string& slot = "",]
+    const std::string& state,
+    E&& excp
+  );
 ```
-
-### emits
+Throw on the provided slot/state combination.
+`slot` must be the result slot. If no result slot is set when `throws`
+is called, `slot` is defined as the result slot.
 
 ```cpp
 template<typename... SigArgs> StateBehavior& emits(
-   [const std::string& state,]
+    const std::string& state,
     const std::string& slot,
     void (Class::*signal)(SigArgs...),
     SigArgs&&... args
   );
 ```
-Instruct the `StateBehavior` to emit the Qt signal `signal` with
-arguments `args` if the state of `slot` is `state` before returning.
-Using `emits` outside of a Qt context (in other words, if
-`DRMOCK_USE_QT` is not set) will raise an error when the method is
-called.
-
-### throws
+Emit a Qt signal on the provided slot/state combination.
+`slot` must be the result slot. If no result slot is set when `emits`
+is called, `slot` is defined as the result slot.
 
 ```cpp
-template<typename E> StateBehavior& throws(
-   [const std::string& slot,]
-    const std::string& state,
-    E&& exception
-  )
+template<typename Deriveds...> StateBehavior& polymorphic()
 ```
-Instruct the `StateBehavior` to throw `exception` if the state of `slot`
-is `state`.
+Change the derived type of the matching handler.
 
-### polymorphic
+Using the wildcard state `"*"` for the `current_state` parameter results
+in the configuration serving as catch-all (or fallthru), to which other
+configuration calls act as exceptions (as described above).
 
-```cpp
-template<typename... Deriveds> StateBehavior& polymorphic();
-```
-Instruct the `StateBehavior` to expect as argument
-`std::shared_ptr<Deriveds>...` or `std::unique_ptr<Deriveds>...`.
+When the underlying method (i.e. the `Method` object) is called, then
+the state behavior _first_ transitions _all_ of its slots according the
+transitions recorded by the user. _Then_ it returns the result (return
+and/or emit _or_ throw), which is executed by the method.
 
-See also: [Polymorphism](#polymorphism).
+*Note.* Beware of inconsistencies in the transition table. It is
+possible that `(current_state, input...)` matches multiple entries of
+the transition table with the same slot (this depends on the `matcher`).
+If this is the case, the transition that is executed is undefined.
+
 
 ## State verification
 
