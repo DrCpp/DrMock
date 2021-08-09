@@ -282,7 +282,14 @@ method `T func(Ts...) [qualifiers]`
 from the interface equivalently to the following:
 
 ```
+// If `T` is not `void`:
 T func(Ts... ts) [qualifiers] override {
+  auto& result = mock.template func<Ts...>().call(std::forward<Ts>(ts)...);
+  return std::forward<T>(::drmock::move_if_not_copy_constructible(result));
+}
+
+// If `T` is `void`:
+void func(Ts... ts) [qualifiers] override {
   mock.template func<Ts...>().call(std::forward<Ts>(ts)...);
 }
 ```
