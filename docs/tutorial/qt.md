@@ -65,13 +65,13 @@ Let's take a look at the changes make to `CMakeLists.txt`.
 # ...
 
 find_package(DrMock COMPONENTS Core REQUIRED)
-DrMockEnableQt()
+drmock_enable_qt()
 find_package(Qt5 COMPONENTS Core REQUIRED)
 
 # ...
 ```
 
-To enable Qt for **DrMock**, the `DrMockEnableQt()` macro must be called
+To enable Qt for **DrMock**, the `drmock_enable_qt()` macro must be called
 after finding the **DrMock** package. This macro enables `CMAKE_AUTOMOC`
 and a CMake policy that allows mocking generated source code. Of course,
 one must also find the Qt5 package.
