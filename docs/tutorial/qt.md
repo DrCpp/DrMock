@@ -64,7 +64,7 @@ Let's take a look at the changes make to `CMakeLists.txt`.
 
 # ...
 
-find_package(DrMock COMPONENTS Core REQUIRED)
+find_package(DrMock)
 drmock_enable_qt()
 find_package(Qt5 COMPONENTS Core REQUIRED)
 
@@ -83,7 +83,6 @@ automatically link `TARGET` to the required libraries.
 ```cmake
 DrMockModule(
   TARGET DrMockSampleQtMocked
-  generator ${pathToMocker}
   QTMODULES
     Qt5::Widget
     # ...
@@ -179,11 +178,6 @@ foo->theSlot("bar");  // `emit foo->theSignal("foo")` happens here!
 `const T&` instead of relying on template deduction. Only calling
 `emits(&IFoo::theSignal, "foo")` will result in a
 `deduced conflicting types for parameter 'SigArgs'` error.
-
-**Note.** If you are using `DrMockGenerator` by hand (which we don't
-recommend), you must set the `--qt` flag when invoking the mocker.
-Otherwise, the `DRMOCK_USE_QT` macro will not be set, and emits will
-raise an error.
 
 ## Running the tests
 
