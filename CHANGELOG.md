@@ -27,8 +27,10 @@ Released 2021/xx/xx
 * Move utility methods that are used in `mock/` and `test/` to
   `utility/`
 
-* Remove python component from this repository (`drmock-gen`, as it is
-  now called, will be installed using pip in the future)
+* Remove python component from this repository (`drmock-generator`, as
+  it is now called, will be installed using pip in the future)
+
+* Clean up tutorials, add a specification for `drmock-generator`
 
 * Remove broken (and superfluous) pkgconfig
 
@@ -44,7 +46,12 @@ Released 2021/xx/xx
 * Introduce `drmock_library2` function for list-based mock object code
   creation
 
-* Clean up `MethodCollection` error logging
+* Update documentation for public `drmock::` classes
+
+* Replace `MethodCollection` with `Controller`, a composition of a
+  vector of `Method` objects and a `StateObject`
+
+* Clean up `Controller`/`MethodCollection` error logging
 
 * Remove `QObject` dependency from `Signal`
 
@@ -54,10 +61,6 @@ Released 2021/xx/xx
 
 * Add `Variant` class to revert interface change of `expects` and
   `transition` which made using initializer-lists impossible
-
-* Allow mocking non-abstract classes. In particular, users are no longer
-  required to seperate interface and implementation into multiple
-  classes
 
 
 # DrMock 0.5.0
