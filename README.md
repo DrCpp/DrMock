@@ -87,7 +87,7 @@ See [BUILD.md] for instructions.
   - [4. Using **DrMock** with Qt5](docs/tutorial/qt.md)
   - [5. Experimental: Death testing](docs/tutorial/death.md)
 
-* The **DrMock** API is documented in [src/DrMock];
+* The **DrMock** API is documented in [the source files](src/DrMock/mock);
   the docs are doxygen-compliant, but you must specify the Doxyfile
   yourself
 
@@ -124,7 +124,6 @@ greatly from the following sources:
 
 [BUILD.md]: BUILD.md
 [Tutorial]: docs/tutorial.md
-[src/DrMock]: src/DrMock
 [Specification]: docs/spec.md
 [CONTRIBUTING.md]: CONTRIBUTING.md
 [Cookbook]: docs/cookbook.md
