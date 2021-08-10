@@ -54,7 +54,7 @@ Behavior<Class, ReturnType, Args...>::expects()
 
 template<typename Class, typename ReturnType, typename... Args>
 Behavior<Class, ReturnType, Args...>&
-Behavior<Class, ReturnType, Args...>::expects(detail::expect_t<Args>... args)
+Behavior<Class, ReturnType, Args...>::expects(detail::Expect<Args>... args)
 {
   if (expect_.has_value())
   {
@@ -69,7 +69,7 @@ Behavior<Class, ReturnType, Args...>::expects(detail::expect_t<Args>... args)
 template<typename Class, typename ReturnType, typename...Args>
 template<typename... Ts>
 Behavior<Class, ReturnType, Args...>&
-Behavior<Class, ReturnType, Args...>::expects(detail::expect_t<Args>... args)
+Behavior<Class, ReturnType, Args...>::expects(detail::Expect<Args>... args)
 {
   polymorphic<Ts...>();
   return expects(std::move(args)...);

@@ -56,7 +56,7 @@ StateBehavior<Class, ReturnType, Args...>&
 StateBehavior<Class, ReturnType, Args...>::transition(
     const std::string& current_state,
     std::string new_state,
-    detail::expect_t<Args>... input
+    detail::Expect<Args>... input
   )
 {
   return transition(
@@ -74,7 +74,7 @@ StateBehavior<Class, ReturnType, Args...>::transition(
     const std::string& slot,
     const std::string& current_state,
     std::string new_state,
-    detail::expect_t<Args>... input
+    detail::Expect<Args>... input
   )
 {
   return transition(
@@ -92,7 +92,7 @@ StateBehavior<Class, ReturnType, Args...>&
 StateBehavior<Class, ReturnType, Args...>::transition(
     const std::string& current_state,
     std::string new_state,
-    detail::expect_t<Args>... input
+    detail::Expect<Args>... input
   )
 {
   return transition<Deriveds...>(
@@ -110,7 +110,7 @@ StateBehavior<Class, ReturnType, Args...>::transition(
     const std::string& slot,
     const std::string& current_state,
     std::string new_state,
-    detail::expect_t<Args>... input
+    detail::Expect<Args>... input
   )
 {
   static_assert(
@@ -409,7 +409,7 @@ StateBehavior<Class, ReturnType, Args...>::transition(
     const std::string& slot,
     const std::string& current_state,
     std::string new_state,
-    detail::expect_t<Args>... input
+    detail::Expect<Args>... input
   )
 {
   // Throw if the new_state is the wildcard symbol `"*"`.

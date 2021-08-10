@@ -116,13 +116,13 @@ public:
    * Is equivalent to
    * `transition("", current_state, new_state, * input...);`. See the
    * documentation of 
-   * `StateBehavior::transition(const std::string&, const std::string&, std::string, detail::expect_t<Args>...)`
+   * `StateBehavior::transition(const std::string&, const std::string&, std::string, detail::Expect<Args>...)`
    * for details.
    */
   StateBehavior& transition(
       const std::string& current_state,
       std::string new_state,
-      detail::expect_t<Args>... input
+      detail::Expect<Args>... input
     );
   /**
    * Add a transition.
@@ -148,32 +148,32 @@ public:
       const std::string& slot,
       const std::string& current_state,
       std::string new_state,
-      detail::expect_t<Args>... input
+      detail::Expect<Args>... input
     );
 
   /**
    * Convenience function which combines
-   * `StateBehavior::transition(const std::string&, std::string, detail::expect_t<Args>...)`
+   * `StateBehavior::transition(const std::string&, std::string, detail::Expect<Args>...)`
    * with a one-shot `polymorphic<Deriveds...>()` call.
    *
    * See `void polymorphic()` and
-   * `StateBehavior::transition(const std::string&, std::string, detail::expect_t<Args>...)`
+   * `StateBehavior::transition(const std::string&, std::string, detail::Expect<Args>...)`
    * for details.
    */
   template<typename... Deriveds>
   StateBehavior& transition(
       const std::string& current_state,
       std::string new_state,
-      detail::expect_t<Args>... input
+      detail::Expect<Args>... input
     );
 
   /**
    * Convenience function which combines
-   * `StateBehavior::transition(const std::string&, const std::string&, std::string, detail::expect_t<Args>...)`
+   * `StateBehavior::transition(const std::string&, const std::string&, std::string, detail::Expect<Args>...)`
    * with a one-shot `polymorphic<Deriveds...>()` call.
    *
    * See `void polymorphic()` and
-   * `StateBehavior::transition(const std::string&, const std::string&, std::string, detail::expect_t<Args>...)`
+   * `StateBehavior::transition(const std::string&, const std::string&, std::string, detail::Expect<Args>...)`
    * for details.
    */
   template<typename... Deriveds>
@@ -181,7 +181,7 @@ public:
       const std::string& slot,
       const std::string& current_state,
       std::string new_state,
-      detail::expect_t<Args>... input
+      detail::Expect<Args>... input
     );
 
   /**
@@ -340,7 +340,7 @@ private:
       const std::string& slot,
       const std::string& current_state,
       std::string new_state,
-      detail::expect_t<Args>... input
+      detail::Expect<Args>... input
     );
 
   std::shared_ptr<StateObject> state_object_;

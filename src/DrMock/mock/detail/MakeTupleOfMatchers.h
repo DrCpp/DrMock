@@ -43,23 +43,23 @@ struct MakeTupleOfMatchers<std::tuple<Bases...>, std::tuple<Deriveds...>>
   // tuple of `std::shared_ptr<IMatcher<Args>>` by wrapping all "naked"
   // `Args` into `IsEqual<Bases, Deriveds>`.
   std::tuple<std::shared_ptr<IMatcher<Bases>>...>
-  wrap(expect_t<Bases>&&... pack)
+  wrap(Expect<Bases>&&... pack)
   {
-    return std::make_tuple(wrap_impl<Bases, Deriveds>(std::forward<expect_t<Bases>>(pack))...);
+    return std::make_tuple(wrap_impl<Bases, Deriveds>(std::forward<Expect<Bases>>(pack))...);
   }
 
 private:
   template<typename Base, typename Derived = Base>
   std::shared_ptr<IMatcher<Base>>
-  wrap_impl(expect_t<Base>&& var)
+  wrap_impl(Expect<Base>&& var)
   {
     if (var.template holdsAlternative<Base>())
     {
-      return std::make_shared<Equal<Base, Derived>>(std::forward<expect_t<Base>>(var).template get<Base>());
+      return std::make_shared<Equal<Base, Derived>>(std::forward<Expect<Base>>(var).template get<Base>());
     }
     else
     {
-      return std::forward<expect_t<Base>>(var).template get<std::shared_ptr<IMatcher<Base>>>();
+      return std::forward<Expect<Base>>(var).template get<std::shared_ptr<IMatcher<Base>>>();
     }
   }
 };

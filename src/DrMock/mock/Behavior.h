@@ -110,7 +110,7 @@ public:
    * may be set using the `Behavior::polymorphic` template method.)
    *
    */
-  Behavior& expects(detail::expect_t<Args>...);
+  Behavior& expects(detail::Expect<Args>...);
 
   /**
    * Call `polymorphic<Deriveds...>()` followed by `expects(args...)`.
@@ -121,7 +121,7 @@ public:
    *
    * See `Behavior::polymorphic` and `Behavior::expects` for details.
    */
-  template<typename... Deriveds> Behavior& expects(detail::expect_t<Args>... args);
+  template<typename... Deriveds> Behavior& expects(detail::Expect<Args>... args);
 
   /**
    * Configure `this` to return `result` on productions.
