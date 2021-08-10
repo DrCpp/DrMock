@@ -92,6 +92,8 @@ public:
   std::enable_if_t<(std::tuple_size_v<T> > 0), Behavior&> expects();
 
   /**
+   * Expect `args` as input.
+   *
    * @param args... The expected arguments or matchers
    *
    * For every `i=0, ..., sizeof...(Args)`, the ith component of
@@ -108,7 +110,6 @@ public:
    *
    * (The `Deriveds` parameter pack depends on the matching handler. It
    * may be set using the `Behavior::polymorphic` template method.)
-   *
    */
   Behavior& expects(detail::Expect<Args>...);
 
