@@ -25,6 +25,7 @@
 #include <variant>
 
 #include <DrMock/mock/AbstractSignal.h>
+#include <DrMock/mock/Effect.h>
 #include <DrMock/mock/detail/IMakeTupleOfMatchers.h>
 
 namespace drmock {
@@ -51,14 +52,7 @@ public:
    * return value and/or a Qt signal emit, or an exception pointer (to
    * the exception the method is supposed to raise)
    */
-  virtual std::variant<
-      std::monostate,
-      std::pair<
-          std::shared_ptr<typename std::decay<ReturnType>::type>,
-          std::shared_ptr<AbstractSignal<Class>>
-        >,
-      std::exception_ptr
-    > call(const Args&... args) = 0;
+  virtual Effect call(const Args&... args) = 0;
 };
 
 } // namespace drmock
