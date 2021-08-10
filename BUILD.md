@@ -132,15 +132,6 @@ sudo apt-get install libssl-dev
 (or similar for other package managers).
 
 
-### libclang
-
-To satisfy the libclang dependency, do
-```
-sudo apt-get install libclang-6.0-dev
-```
-(or similar for other package managers);
-
-
 ### `libgl` missing
 
 You might encounter the following on Linux when linking against
