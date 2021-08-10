@@ -45,13 +45,13 @@ namespace drmock {
  * a value and emitting a signal may both occur, but exceptions are
  * exclusive.
  *
- * Furthermore, every `Behavior` object has a _life span_, which
- * means that it can only `produce()` a fixed number (but possibly
- * infinite) number of times. Afterwards, the `Behavior` objects no
- * longer _persists_.
+ * Furthermore, every `Behavior` object has a _life span_, which means
+ * that it can only `produce()` a fixed number of results (may be
+ * infinite). Once the fixed number of productions is reached, the
+ * behavior no longer _persists_.
  *
- * Making conflicting configurations calls (such as `Behavior::returns` followed
- * by `Behavior::throws`) will result in an error.
+ * Making conflicting configurations calls (such as `Behavior::returns`
+ * followed by `Behavior::throws`) will result in an error.
  *
  * Every `Behavior` has a member of type
  * `std::shared_ptr<detail::IMakeTupleOfMatchers<Args...>>`. The job of
