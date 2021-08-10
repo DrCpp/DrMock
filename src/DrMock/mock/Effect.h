@@ -36,9 +36,7 @@ public:
   Effect(std::exception_ptr);
 
   bool failed() const;
-  std::shared_ptr<ReturnType> return_value();
-  std::shared_ptr<AbstractSignal<T>> signal();
-  std::exception_ptr exception();
+  std::shared_ptr<ReturnType> deploy(T* parent);
 
 private:
   std::shared_ptr<ReturnType>> return_value_{};

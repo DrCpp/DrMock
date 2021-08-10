@@ -72,14 +72,7 @@ BehaviorQueue<Class, ReturnType, Args...>::polymorphic()
 }
 
 template<typename Class, typename ReturnType, typename... Args>
-std::variant<
-    std::monostate,
-    std::pair<
-        std::shared_ptr<typename std::decay<ReturnType>::type>,
-        std::shared_ptr<AbstractSignal<Class>>
-      >,
-    std::exception_ptr
-  >
+Effect<Class, ReturnType>
 BehaviorQueue<Class, ReturnType, Args...>::call(const Args&... args)
 {
   auto match = behaviors_.end();
@@ -111,19 +104,16 @@ BehaviorQueue<Class, ReturnType, Args...>::call(const Args&... args)
 
     if (std::holds_alternative<std::exception_ptr>(result))
     {
-      return std::get<std::exception_ptr>(result);
+      return Effect{std::get<std::exception_ptr>(result)};
     }
     else
     {
-      return std::get<std::pair<
-              std::shared_ptr<std::decay_t<ReturnType>>,
-              std::shared_ptr<AbstractSignal<Class>>
-        >>(result);
+      return Effect{
     }
   }
   else
   {
-    return std::monostate{};
+    return Effect{};
   }
 }
 

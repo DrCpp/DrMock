@@ -33,11 +33,11 @@ namespace drmock {
 /**
  * Abstract class template that represents some method's behavior.
  *
- * @tparam Class The class that the method belongs to
+ * @tparam T The class that the method belongs to
  * @tparam ReturnType The return type of the method
  * @tparam Args... The parameter types of the method
  */
-template<typename Class, typename ReturnType, typename... Args>
+template<typename T, typename ReturnType, typename... Args>
 class AbstractBehavior
 {
 public:
@@ -52,7 +52,7 @@ public:
    * return value and/or a Qt signal emit, or an exception pointer (to
    * the exception the method is supposed to raise)
    */
-  virtual Effect call(const Args&... args) = 0;
+  virtual Effect<T, ReturnType> call(const Args&... args) = 0;
 };
 
 } // namespace drmock

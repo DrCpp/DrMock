@@ -55,23 +55,17 @@ Effect<T, ReturnType>::failed(std::exception_ptr exception) const
 
 template<typename T, typename ReturnType>
 std::shared_ptr<ReturnType>
-Effect<T, ReturnType>::return_value()
+Effect<T, ReturnType>::deploy(T* parent)
 {
+  if (exception_)
+  {
+    std::rethrow_exception(exception_);
+  }
+  if (signal_)
+  {
+    signal_->invoke(parent);
+  }
   return return_value_;
-}
-
-template<typename T, typename ReturnType>
-std::shared_ptr<AbstractSignal<T>>
-Effect<T, ReturnType>::signal()
-{
-  return signal_;
-}
-
-template<typename T, typename ReturnType>
-std::exception_ptr
-Effect<T, ReturnType>::exception()
-{
-  return exception_;
 }
 
 }} // namespace drmock::detail

@@ -27,6 +27,7 @@
 #include <DrMock/mock/detail/IMakeTupleOfMatchers.h>
 #include <DrMock/mock/AbstractBehavior.h>
 #include <DrMock/mock/Behavior.h>
+#include <DrMock/mock/Effect.h>
 
 namespace drmock {
 
@@ -51,11 +52,6 @@ namespace drmock {
 template<typename Class, typename ReturnType, typename... Args>
 class BehaviorQueue final : public AbstractBehavior<Class, ReturnType, Args...>
 {
-  using Result = std::pair<
-      std::shared_ptr<std::decay_t<ReturnType>>,
-      std::shared_ptr<AbstractSignal<Class>>
-    >;
-
 public:
   BehaviorQueue();
   /**
@@ -100,11 +96,7 @@ public:
    * If `enforce_order` is set to `false`, then the entire queue is
    * instead searched from front to back for a matching element.
    */
-  virtual std::variant<
-      std::monostate,
-      Result,
-      std::exception_ptr
-    > call(const Args&... args) override;
+  virtual Effect<Class, ReturnType> call(const Args&... args) override;
 
   /**
    * Check if all elements of the container are exhausted.

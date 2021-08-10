@@ -133,24 +133,10 @@ template<typename Class, typename ReturnType, typename... Args>
 std::shared_ptr<typename std::decay<ReturnType>::type>
 Method<Class, ReturnType, Args...>::call(const Args&... args)
 {
-  auto result = behavior_->call(args...);
-  if (std::holds_alternative<std::exception_ptr>(result))
+  auto effect = behavior_->call(args...);
+  if (not effect.failed())
   {
-    std::rethrow_exception(std::get<std::exception_ptr>(result));
-  }
-  else if (std::holds_alternative<std::pair<std::shared_ptr<typename std::decay<ReturnType>::type>, std::shared_ptr<AbstractSignal<Class>>>>(result))
-  {
-    auto p = std::get<std::pair<std::shared_ptr<typename std::decay<ReturnType>::type>, std::shared_ptr<AbstractSignal<Class>>>>(result);
-    auto rv = p.first;
-    if (rv or std::is_same_v<DecayedReturnType, void>)
-    {
-      auto signal_name = p.second;
-      if (signal_name)
-      {
-        signal_name->invoke(parent_);
-      }
-      return rv;
-    }
+    return effect.deploy(parent*);
   }
 
   has_failed_ = true;
