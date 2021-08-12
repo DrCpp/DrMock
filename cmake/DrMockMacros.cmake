@@ -25,10 +25,11 @@ macro(drmock_enable_qt)
 endmacro()
 
 
-# drmock_test(TESTS test1 [test2 [test3 ...]]
-#             [LIBS lib1 [lib2 [lib3 ...]]]
-#             [OPTIONS opt1 [opt2 [opt3 ...]]]
-#             [RESOURCES res1 [res2 [res3 ...]]]
+# drmock_test(
+#     TESTS test1 [test2 [test3 ...]]
+#     [LIBS lib1 [lib2 [lib3 ...]]]
+#     [OPTIONS opt1 [opt2 [opt3 ...]]]
+#     [RESOURCES res1 [res2 [res3 ...]]]
 # )
 #
 # Create a test executable from every element of TESTS and link it
@@ -63,24 +64,27 @@ function(drmock_test)
             ${ARGS_LIBS}
         )
         add_test(NAME ${name} COMMAND ${name})
-        if (NOT ARGS_OPTIONS)
+        if (ARGS_OPTIONS)
             target_compile_options(${name} PRIVATE ${ARGS_OPTIONS})
         endif()
     endforeach()
 endfunction()
 
 
-# drmock_library(TARGET <target>
-#                HEADERS header1 [header2 ...]
-#                [IFILE <ifile>]
-#                [MOCKFILE <mock_file>]
-#                [ICLASS <iclass>]
-#                [MOCKCLASS <mockclass>]
-#                [LIBS lib1 [lib2 ...]]
-#                [QTMODULES module1 [module2 ...]]
-#                [INCLUDE include1 [include2 ...]]
-#                [FRAMEWORKS framework1 [framework2 ...]]
-#                [OPTIONS option1 [option2 ...]]
+# drmock_library(
+#     TARGET <target>
+#     HEADERS header1 [header2 ...]
+#     [IFILE <ifile>]
+#     [MOCKFILE <mock_file>]
+#     [ICLASS <iclass>]
+#     [MOCKCLASS <mockclass>]
+#     [LIBS lib1 [lib2 ...]]
+#     [QTMODULES module1 [module2 ...]]
+#     [INCLUDE include1 [include2 ...]]
+#     [FRAMEWORKS framework1 [framework2 ...]]
+#     [OPTIONS option1 [option2 ...]]
+#     [FLAGS flag1 [flag2 ...]]
+# )
 #
 # Create a library `target` that contains mock objects for the
 # specified header files.
@@ -149,7 +153,12 @@ endfunction()
 #     `HEADERS`. Default value is undefined (treated as empty list).
 #
 # OPTIONS
-#     A list of additional options passed to `drmock-generator`.
+#     A list of additional options passed to `drmock-generator`, except
+#     for `--flags`
+#
+# FLAGS
+#     A list of additional compiler flags for `TARGET`; the flags are
+#     also passed to `drmock-generator`
 
 function(drmock_library)
     cmake_parse_arguments(
@@ -210,17 +219,20 @@ function(drmock_library)
 endfunction()
 
 
-# drmock_library2(TARGET <target>
-#                 HEADERS header1 [header2 ...]
-#                 MOCK_HEADER_PATHS header_path1 [header_path2 ...]
-#                 MOCK_SOURCE_PATHS source_path1 [source_path2 ...]
-#                 [INPUT_CLASSES input_class1 [input_class2 ...]]
-#                 [OUTPUT_CLASSES output_class1 [output_class2 ...]]
-#                 [LIBS lib1 [lib2 ...]]
-#                 [QTMODULES module1 [module2 ...]]
-#                 [INCLUDE include1 [include2 ...]]
-#                 [FRAMEWORKS framework1 [framework2 ...]]
-#                 [OPTIONS option1 [option2 ...]]
+# drmock_library2(
+#     TARGET <target>
+#     HEADERS header1 [header2 ...]
+#     MOCK_HEADER_PATHS header_path1 [header_path2 ...]
+#     MOCK_SOURCE_PATHS source_path1 [source_path2 ...]
+#     [INPUT_CLASSES input_class1 [input_class2 ...]]
+#     [OUTPUT_CLASSES output_class1 [output_class2 ...]]
+#     [LIBS lib1 [lib2 ...]]
+#     [QTMODULES module1 [module2 ...]]
+#     [INCLUDE include1 [include2 ...]]
+#     [FRAMEWORKS framework1 [framework2 ...]]
+#     [OPTIONS option1 [option2 ...]]
+#     [FLAGS flag1 [flag2 ...]]
+# )
 #
 # Create a library `target` that contains mock objects for the
 # specified header files.
@@ -383,6 +395,7 @@ function(drmock_library2)
                        PATHS ${CMAKE_CURRENT_BINARY_DIR} DrMock)  # Required later.
     target_include_directories(${ARGS_TARGET} PUBLIC ${drmock_directory})
     target_link_libraries(${ARGS_TARGET} DrMock::DrMock ${ARGS_LIBS})
+    target_compile_options(${ARGS_TARGET} PRIVATE ${ARGS_FLAGS})
 endfunction()
 
 
@@ -414,9 +427,11 @@ function(_drmock_get_qt5_module_include_dirs)
 endfunction()
 
 
-# _drmock_get_qt5_module_framework_path(MODULE <module>
-#                                       FRAMEWORK_PATH <framework_path>
-#                                       [QT_PATH <qt_path>])
+# _drmock_get_qt5_module_framework_path(
+#     MODULE <module>
+#     FRAMEWORK_PATH <framework_path>
+#     [QT_PATH <qt_path>]
+# )
 #
 # Write the framework path of the Qt5 module <module> to
 # <framework_path>.
@@ -501,11 +516,13 @@ function(_drmock_join_paths)
 endfunction()
 
 
-# _drmock_capture_filenames(HEADER <header>
-#                           IFILE <ifile>
-#                           MOCKFILE <mockfile>
-#                           OUTPUT_HEADER <output_header>
-#                           OUTPUT_SOURCE <output_source>)
+# _drmock_capture_filenames(
+#     HEADER <header>
+#     IFILE <ifile>
+#     MOCKFILE <mockfile>
+#     OUTPUT_HEADER <output_header>
+#     OUTPUT_SOURCE <output_source>
+# )
 #
 # Compute output header and output source filenames; write them to
 # <output_header> and <output_source>, resp.
@@ -558,9 +575,11 @@ function(_drmock_capture_filenames)
     set(${ARGS_OUTPUT_SOURCE} ${mock_source_filename} PARENT_SCOPE)
 endfunction()
 
-# _drmock_compute_path_from_filename(HEADER <header>
-#                                    FILENAME <filename>
-#                                    PATH <path>)
+# _drmock_compute_path_from_filename(
+#     HEADER <header>
+#     FILENAME <filename>
+#     PATH <path>
+# )
 #
 # Compute mock output path from filename and create a directory for the
 # mock files; write the path to <path>.
@@ -599,9 +618,11 @@ function(_drmock_compute_path_from_filename)
 endfunction()
 
 
-# _drmock_options_from_list(OPTION <option>
-#                           INPUT <input1>;<input2>;... 
-#                           RESULT <result>)
+# _drmock_options_from_list(
+#     OPTION <option>
+#     INPUT <input1>;<input2>;... 
+#     RESULT <result>
+# )
 #
 # Set `result` to "<option><input1>;<option><input2>;..."
 function(_drmock_options_from_list)
