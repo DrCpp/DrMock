@@ -19,7 +19,7 @@ along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 # DrMock 0.6.0
 
-Released 2021/xx/xx
+Released 2021/08/13
 
 * Reorganize project structure along the lines of
   [vector-of-bool/pitchfork](gi thub.com/vector-of-bool/pitchfork)
