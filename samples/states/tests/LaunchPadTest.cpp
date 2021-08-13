@@ -42,5 +42,5 @@ DRTEST_TEST(launch)
   // Run the test.
   drmock::samples::LaunchPad launch_pad{rocket};
   launch_pad.launch();
-  DRTEST_ASSERT(rocket->mock.verifyState("liftOff"));
+  DRTEST_ASSERT(rocket->mock.control.verifyState("liftOff"));
 }

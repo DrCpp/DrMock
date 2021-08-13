@@ -1,0 +1,31 @@
+name: macOS (install, test)
+on:
+  push:
+    branches:
+    - master
+    - develop
+  pull_request:
+    branches:
+    - master
+    - develop
+  workflow_dispatch:
+
+jobs:
+  macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+    - uses: jurplel/install-qt-action@v2
+      with:
+        version: '5.15.2'
+    - uses: lukka/get-cmake@latest
+    - name: Install drmock-generator
+      run: pip install drmock-generator
+    - name: Compile drmock
+      run: |
+        cmake . -DCMAKE_INSTALL_PREFIX=install -DCMAKE_PREFIX_PATH=$Qt5_Dir
+        make
+        ctest --output-on-failure
+      env:
+        DRMOCK_QT_PATH: /Users/runner/work/DrMock/Qt/5.15.2/clang_64  # For some reason, we have to kick macOS a little...

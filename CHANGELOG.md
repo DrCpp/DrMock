@@ -17,6 +17,52 @@ You should have received a copy of the GNU General Public License
 along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
+# DrMock 0.6.0
+
+Released 2021/xx/xx
+
+* Reorganize project structure along the lines of
+  [vector-of-bool/pitchfork](gi thub.com/vector-of-bool/pitchfork)
+
+* Move utility methods that are used in `mock/` and `test/` to
+  `utility/`
+
+* Remove python component from this repository (`drmock-generator`, as
+  it is now called, will be installed using pip in the future)
+
+* Clean up tutorials, add a specification for `drmock-generator`
+
+* Remove broken (and superfluous) pkgconfig
+
+* Add `USING_DRTEST` macro for removing `DRTEST_` prefix from test
+  macros
+
+* Place data funcs in `DRTEST_NAMESPACE`
+
+* Clean up cmake/DrMockMacros.cmake
+
+* Convert all CMake functions/macros from camelCase to snake_case
+
+* Introduce `drmock_library2` function for list-based mock object code
+  creation
+
+* Update documentation for public `drmock::` classes
+
+* Replace `MethodCollection` with `Controller`, a composition of a
+  vector of `Method` objects and a `StateObject`
+
+* Clean up `Controller`/`MethodCollection` error logging
+
+* Remove `QObject` dependency from `Signal`
+
+* Remove need for `DRMOCK_USE_QT` macro
+
+* Remove Qt includes from `Method.h`
+
+* Add `Variant` class to revert interface change of `expects` and
+  `transition` which made using initializer-lists impossible
+
+
 # DrMock 0.5.0
 
 Released 2021/06/20
@@ -84,7 +130,6 @@ Released 2020/08/16
 * Add `DRTEST_ASSERT_DEATH` macro for death testing
 
 
-
 # DrMock 0.3.0
 
 Released 2020/07/05
@@ -117,7 +162,6 @@ Released 2020/07/05
 * The wilcard state `"*"` is no longer ignored when other actions are
   defined, but rather serves as a catch-all (fallthru) state (the
   documentation regarding this has been clarified)
-
 
 
 # DrMock 0.2.0
@@ -177,7 +221,6 @@ Released 2020/05/15
   `QTMODULE` parameter but unset `DRMOCK_QT_PATH` environment variable.
 
 * Throw error message if `DrMockTest` can't find files specified in `TESTS`
-
 
 
 # DrMock 0.1.0

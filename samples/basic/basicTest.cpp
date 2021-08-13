@@ -58,7 +58,7 @@ DRTEST_TEST(exceptionTest)
   // raises.
   DRTEST_ASSERT_THROW(
       std::string str = "foo";
-      (void)str;  // Mark `str` as used.
+      str = "bar";
       throw std::runtime_error{str},
       std::runtime_error
     );

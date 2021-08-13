@@ -31,7 +31,13 @@ public:
   virtual int f() = 0;
   virtual int f() const = 0;
   virtual int f(int) = 0;
-  virtual int f(float, std::vector<int>) const = 0;
+  virtual int f(float, const std::vector<int>&) const = 0;
+
+  virtual int& g(std::vector<int>&) = 0;
+  virtual const int& g(std::vector<int>&) const = 0;
+
+  virtual float h() const = 0;
+  virtual float h(int, float) const = 0;
 };
 
 }} // namespace drmock::samples

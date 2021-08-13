@@ -1,0 +1,44 @@
+name: Windows (install, test)
+on:
+  push:
+    branches:
+    - master
+    - develop
+  pull_request:
+    branches:
+    - master
+    - develop
+  workflow_dispatch:
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+    - uses: jurplel/install-qt-action@v2
+    - uses: lukka/get-cmake@latest
+    - uses: ilammy/msvc-dev-cmd@v1
+    - uses: crazy-max/ghaction-chocolatey@v1
+      with:
+        args: -h
+    - name: Install libclang
+      run: |
+        choco install llvm
+    - name: Install drmock-generator
+      run: pip install drmock-generator
+    - name: Compile drmock
+      run: |
+        mkdir build
+        cd build
+        cmake .. -G "NMake Makefiles" # -DCMAKE_PREFIX_PATH=%DRMOCK_QT_PATH%
+        nmake
+        # No idea why nmake doesn't put these in the right dir
+        # automatically...
+        copy src/DrMock.dll tests/DrMock.dll
+        copy src/DrMock.dll tests/integration/DrMock.dll
+        ctest --output-on-failure
+      env:
+        # DRMOCK_QT_PATH: D:/a/DrMock/Qt/5.15.2/msvc2019_64/
+        CLANG_LIBRARY_FILE: C:\Program Files\LLVM\bin\libclang.dll
+

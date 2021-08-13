@@ -17,17 +17,12 @@
 
 cmake_minimum_required(VERSION 3.10)
 
-# Get the path to the mocker script.
-file(TO_CMAKE_PATH
-  ${CMAKE_SOURCE_DIR}/../../python/DrMockGenerator
-  pathToMocker
-)
-DrMockModule(
+drmock_library(
   TARGET DrMockSampleQtMocked
-  GENERATOR ${pathToMocker}
   QTMODULES
     Qt5::Widgets
   HEADERS
     IFoo.h
+  FLAGS
+    -fPIC
 )
-

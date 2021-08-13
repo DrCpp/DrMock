@@ -16,30 +16,31 @@
 # along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 add_library(${PROJECT_NAME} SHARED
-  mock/MethodCollection.cpp
-  mock/StateObject.cpp
-  test/FunctionInvoker.cpp
-  test/Global.cpp
-  test/Interface.cpp
-  test/SkipTest.cpp
-  test/TestFailure.cpp
-  test/TestObject.cpp
-  utility/ILogger.cpp
-  utility/Logger.cpp
+    DrMock/mock/Controller.cpp
+    DrMock/mock/StateObject.cpp
+    DrMock/test/FunctionInvoker.cpp
+    DrMock/test/Global.cpp
+    DrMock/test/Interface.cpp
+    DrMock/test/SkipTest.cpp
+    DrMock/test/TestFailure.cpp
+    DrMock/test/TestObject.cpp
+    DrMock/utility/Logger.cpp
+    DrMock/utility/ILogger.cpp
 )
 
 # This alias is required for the internal use of the `DrMock_module`
 # macro.
-add_library(${PROJECT_NAME}::Core ALIAS ${PROJECT_NAME})
+add_library(${PROJECT_NAME}::DrMock ALIAS ${PROJECT_NAME})
 
-target_include_directories(${PROJECT_NAME}
-  PUBLIC
-    $<INSTALL_INTERFACE:include>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-  PRIVATE
-    ${CMAKE_SOURCE_DIR}/src
+target_include_directories(
+    ${PROJECT_NAME}
+    PUBLIC $<INSTALL_INTERFACE:include>
+    PRIVATE ${CMAKE_SOURCE_DIR}/src
 )
 
-target_compile_options(${PROJECT_NAME} PRIVATE
-  -Wall -Werror -fPIC -pedantic -O2 -fdiagnostics-color=always
-)
+if (NOT WIN32)
+    target_compile_options(
+        ${PROJECT_NAME}
+        PRIVATE -Wall -Werror -fPIC -pedantic -O2 -fdiagnostics-color=always
+    )
+endif()

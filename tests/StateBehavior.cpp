@@ -18,8 +18,9 @@
 
 #include <string>
 
-#include "test/Test.h"
-#include "mock/StateBehavior.h"
+#include <DrMock/Test.h>
+#include <DrMock/mock/AlmostEqual.h>
+#include <DrMock/mock/StateBehavior.h>
 
 // FIXME Check that the correct arguments are forwarded to the signal in
 // the following tests:
@@ -676,4 +677,32 @@ DRTEST_TEST(convenienceTransitionPolymorphic)
   DRTEST_ASSERT(std::holds_alternative<Result<int>>(result));
   sp = std::get<Result<int>>(result).first;
   DRTEST_COMPARE(*sp, 3);
+}
+
+DRTEST_TEST(usingCustomMatcher)
+{
+  auto so = std::make_shared<StateObject>();
+  StateBehavior<Dummy, int, float> b{so};
+  b.transition("", "1", drmock::almost_equal(1.0f));
+  b.transition("1", "2", drmock::almost_equal(2.0f));
+  b.returns("1", 1);
+  b.returns("2", 2);
+
+  auto result = b.call(0.999'999f);
+  DRTEST_ASSERT(std::holds_alternative<Result<int>>(result));
+  auto sp = std::get<Result<int>>(result).first;
+  DRTEST_ASSERT(sp);
+  DRTEST_ASSERT_EQ(*sp, 1);
+
+  result = b.call(1.9f);
+  DRTEST_ASSERT(std::holds_alternative<Result<int>>(result));
+  sp = std::get<Result<int>>(result).first;
+  DRTEST_ASSERT(sp);
+  DRTEST_ASSERT_EQ(*sp, 1);
+
+  result = b.call(2.0f);
+  DRTEST_ASSERT(std::holds_alternative<Result<int>>(result));
+  sp = std::get<Result<int>>(result).first;
+  DRTEST_ASSERT(sp);
+  DRTEST_ASSERT_EQ(*sp, 2);
 }

@@ -29,13 +29,13 @@ DRTEST_TEST(success)
   // `"foo"` and should return `true` (indicating that those units are
   // available).
   warehouse->mock.remove().push()
-      .expects("foo", 2u)  // Expected arguments.
+      .expects("foo", 2)  // Expected arguments.
       .times(1)  // Expect **one** call only.
       .returns(true);  // Return value.
 
   order.fill(warehouse);
   // Check that `remove` was called with the correct arguments.
-  DRTEST_ASSERT(warehouse->mock.verify());
+  DRTEST_ASSERT(warehouse->mock.control.verify());
   // Check that the return value of `filled` is correct.
   DRTEST_ASSERT(order.filled());
 }
@@ -49,13 +49,13 @@ DRTEST_TEST(failure)
   // `"foo"` and should return `false` (indicating that those units are
   // not available).
   warehouse->mock.remove().push()
-      .expects("foo", 2u)  // Expected arguments.
+      .expects("foo", 2)  // Expected arguments.
       .times(1)  // Expect **one** call only.
       .returns(false);  // Return value.
 
   order.fill(warehouse);
   // Check that `remove` was called with the correct arguments.
-  DRTEST_ASSERT(warehouse->mock.verify());
+  DRTEST_ASSERT(warehouse->mock.control.verify());
   // Check that the return value of `filled` is correct.
   DRTEST_ASSERT(not order.filled());
 }

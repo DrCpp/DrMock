@@ -16,8 +16,8 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "test/Test.h"
-#include "mock/StateObject.h"
+#include <DrMock/Test.h>
+#include <DrMock/mock/StateObject.h>
 
 using namespace drmock;
 

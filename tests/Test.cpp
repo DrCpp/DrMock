@@ -16,9 +16,14 @@
  * along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "test/Test.h"
+#ifdef _MSC_VER
+#define __PRETTY_FUNCTION__ __FUNCSIG__
+#endif /* _MSC_VER */
 
 #include <iostream>
+
+#define USING_DRTEST
+#include <DrMock/Test.h>
 
 DRTEST_TEST(initTestCase)
 {
@@ -202,6 +207,8 @@ DRTEST_TEST(streamIfStreamable)
   DRTEST_ASSERT_EQ(A{}, A{});
 }
 
+#if defined(__unix__) || defined(__APPLE__)
+
 DRTEST_TEST(death_success)
 {
   DRTEST_ASSERT_DEATH(raise(SIGSEGV), SIGSEGV);
@@ -219,6 +226,8 @@ DRTEST_TEST(death_failure_wrong_raise)
 {
   DRTEST_ASSERT_TEST_FAIL(DRTEST_ASSERT_DEATH(raise(SIGXFSZ), SIGSEGV));
 }
+
+#endif /* defined(__unix__) || defined(__APPLE__) */
 
 // Test that a test may be called the same an a drtest interface
 // function; see issue #7 for details.
@@ -343,4 +352,26 @@ DRTEST_TEST(emptyRowName)
   drtest::detail::TestObject test{"test"};
   test.addColumn<int>("col");
   DRTEST_ASSERT_THROW(test.addRow<int>("", 1), std::logic_error);
+}
+
+DATA(usingMacro)
+{
+  drtest::addColumns<int, int, int>("lhs", "rhs", "expected");
+  drtest::addRow("row 1", 2, 2, 4);
+}
+
+TEST(usingMacro)
+{
+  FETCH(int, lhs);
+  FETCH(int, rhs);
+  FETCH(int, expected);
+  ASSERT(true);
+  ASSERT_EQ(lhs + rhs, expected);
+  ASSERT_LE(4, 5);
+  ASSERT_LT(4, 5);
+  ASSERT_GE(5, 4);
+  ASSERT_GT(5, 4);
+  ASSERT_THROW(throw std::runtime_error{""};, std::runtime_error);
+  ASSERT_TEST_FAIL(ASSERT_EQ(false, true));
+  ASSERT_ALMOST_EQUAL(0.999999, 1.0);
 }
