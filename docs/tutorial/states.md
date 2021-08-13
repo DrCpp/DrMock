@@ -24,15 +24,10 @@ This sample demonstrates how to use **DrMock** for state verification.
 # Table of contents
 
 * [Introduction](#introduction)
-* [State calculus](#state-calculus)
+* [State behavior](#state-behavior)
 * [Testing states](#testing-states)
 * [Running the tests](#running-the-tests)
-* [Configuring state behavior](#configuring-state-behavior)
-  + [transition](#transition)
-  + [returns](#returns)
-  + [throws](#throws)
-  + [emits](#emits)
-  + [polymorphic](#polymorphic)
+* [`StateBehavior` API](#statebehavior-api)
 * [State verification](#state-verification)
 * [Bibliography](#bibliography)
 
@@ -346,6 +341,7 @@ template<typename E> StateBehavior& throws(
   );
 ```
 Throw on the provided slot/state combination.
+
 `slot` must be the result slot. If no result slot is set when `throws`
 is called, `slot` is defined as the result slot.
 
@@ -358,6 +354,7 @@ template<typename... SigArgs> StateBehavior& emits(
   );
 ```
 Emit a Qt signal on the provided slot/state combination.
+
 `slot` must be the result slot. If no result slot is set when `emits`
 is called, `slot` is defined as the result slot.
 
