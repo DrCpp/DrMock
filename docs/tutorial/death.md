@@ -19,8 +19,8 @@ along with DrMock.  If not, see <https://www.gnu.org/licenses/>.
 
 # samples/death
 
-**DrMock** 0.4 introduces death tests. A _death test_ checks if a
-statement caused the process to raise a particular signal. This may be
+**DrMock** 0.4 introduces death tests. A _death test_ checks if a certain
+statement will cause the process to raise a certain signal. This may be
 used to assert that in certain unrecoverable situations, the program
 exits before causing further damage. *Death tests are currently not
 available on Windows.*

@@ -79,11 +79,10 @@ public:
   void enforce_order(bool);
 
   /**
-   * Set the tuple handler of all future behaviors _and_ all behaviors
-   * already enqueued to the default, with the specified polymorphic
-   * type.
+   * Set polymorphic type of the matching handler of all future
+   * behaviors _and_ all behaviors already enqueued.
    *
-   * @param Deriveds... The derived types for the default matcher
+   * @param Deriveds... The derived types for the matching handler
    *
    * See the general description of `Behavior` or
    * `Behavior::polymorphic` for details.
