@@ -93,11 +93,11 @@ rsync -a build/install/ /usr/local
 ```
 
 
-## Building with Qt
+## Building with Qt tests
 
-If you wish to mock `Q_OBJECT`s, set the environment variable
-`$DRMOCK_QT_PATH` equal to the location of the Qt library before
-following the steps above. Example:
+If you wish to run the tests for mocking `Q_OBJECT`s, set the
+environment variable `$DRMOCK_QT_PATH` equal to the location of the Qt
+library before following the steps above. Example:
 ```
 export DRMOCK_QT_PATH="$HOME/Qt/5.13.1/clang_64"
 ```
