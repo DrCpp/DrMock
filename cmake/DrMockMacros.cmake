@@ -25,11 +25,10 @@ macro(drmock_enable_qt)
 endmacro()
 
 
-# drmock_test(
-#     TESTS test1 [test2 [test3 ...]]
-#     [LIBS lib1 [lib2 [lib3 ...]]]
-#     [OPTIONS opt1 [opt2 [opt3 ...]]]
-#     [RESOURCES res1 [res2 [res3 ...]]]
+# drmock_test(TESTS test1 [test2 [test3 ...]]
+#             [LIBS lib1 [lib2 [lib3 ...]]]
+#             [OPTIONS opt1 [opt2 [opt3 ...]]]
+#             [RESOURCES res1 [res2 [res3 ...]]]
 # )
 #
 # Create a test executable from every element of TESTS and link it
@@ -48,8 +47,7 @@ function(drmock_test)
         ${ARGN}
     )
     _drmock_required_param(ARGS_TESTS
-        "drmock_test: TESTS parameter missing or empty"
-    )
+        "drmock_test: TESTS parameter missing or empty")
     foreach (path ${ARGS_TESTS})
         # Check if `path` exists, throw otherwise.
         get_filename_component(absolute_path ${path} ABSOLUTE)
@@ -65,27 +63,24 @@ function(drmock_test)
             ${ARGS_LIBS}
         )
         add_test(NAME ${name} COMMAND ${name})
-        if (ARGS_OPTIONS)
+        if (NOT ARGS_OPTIONS)
             target_compile_options(${name} PRIVATE ${ARGS_OPTIONS})
         endif()
     endforeach()
 endfunction()
 
 
-# drmock_library(
-#     TARGET <target>
-#     HEADERS header1 [header2 ...]
-#     [IFILE <ifile>]
-#     [MOCKFILE <mock_file>]
-#     [ICLASS <iclass>]
-#     [MOCKCLASS <mockclass>]
-#     [LIBS lib1 [lib2 ...]]
-#     [QTMODULES module1 [module2 ...]]
-#     [INCLUDE include1 [include2 ...]]
-#     [FRAMEWORKS framework1 [framework2 ...]]
-#     [OPTIONS option1 [option2 ...]]
-#     [FLAGS flag1 [flag2 ...]]
-# )
+# drmock_library(TARGET <target>
+#                HEADERS header1 [header2 ...]
+#                [IFILE <ifile>]
+#                [MOCKFILE <mock_file>]
+#                [ICLASS <iclass>]
+#                [MOCKCLASS <mockclass>]
+#                [LIBS lib1 [lib2 ...]]
+#                [QTMODULES module1 [module2 ...]]
+#                [INCLUDE include1 [include2 ...]]
+#                [FRAMEWORKS framework1 [framework2 ...]]
+#                [OPTIONS option1 [option2 ...]]
 #
 # Create a library `target` that contains mock objects for the
 # specified header files.
@@ -154,12 +149,7 @@ endfunction()
 #     `HEADERS`. Default value is undefined (treated as empty list).
 #
 # OPTIONS
-#     A list of additional options passed to `drmock-generator`, except
-#     for `--flags`
-#
-# FLAGS
-#     A list of additional compiler flags for `TARGET`; the flags are
-#     also passed to `drmock-generator`
+#     A list of additional options passed to `drmock-generator`.
 
 function(drmock_library)
     cmake_parse_arguments(
@@ -170,11 +160,9 @@ function(drmock_library)
         ${ARGN}
     )
     _drmock_required_param(ARGS_TARGET
-        "drmock_library: TARGET parameter missing"
-    )
+        "drmock_library: TARGET parameter missing")
     _drmock_required_param(ARGS_HEADERS
-        "drmock_library: HEADER parameter missing or empty"
-    )
+        "drmock_library: HEADER parameter missing or empty")
     _drmock_optional_param(ARGS_ICLASS ${_DRMOCK_FILE_REGEX_DEFAULT_INPUT})
     _drmock_optional_param(ARGS_MOCKCLASS ${_DRMOCK_FILE_REGEX_DEFAULT_OUTPUT})
     _drmock_optional_param(ARGS_IFILE "${ARGS_ICLASS}")
@@ -190,18 +178,15 @@ function(drmock_library)
             MOCKFILE ${ARGS_MOCKFILE}
             HEADER ${header}
             OUTPUT_HEADER mock_header_file
-            OUTPUT_SOURCE mock_source_file
-        )
+            OUTPUT_SOURCE mock_source_file)
         _drmock_compute_path_from_filename(
             HEADER ${header}
             FILENAME ${mock_header_file}
-            PATH mock_header_path
-        )
+            PATH mock_header_path)
         _drmock_compute_path_from_filename(
             HEADER ${header}
             FILENAME ${mock_source_file}
-            PATH mock_source_path
-        )
+            PATH mock_source_path)
         list(APPEND mock_header_paths ${mock_header_path})
         list(APPEND mock_source_paths ${mock_source_path})
         # We just put copies of the regex's into the input/output class
@@ -210,37 +195,32 @@ function(drmock_library)
         list(APPEND output_classes ${ARGS_MOCKCLASS})
     endforeach()
 
-    drmock_library2(
-        TARGET ${ARGS_TARGET}
-        HEADERS ${ARGS_HEADERS}
-        MOCK_HEADER_PATHS ${mock_header_paths}
-        MOCK_SOURCE_PATHS ${mock_source_paths}
-        INPUT_CLASSES ${input_classes}
-        OUTPUT_CLASSES ${output_classes}
-        LIBS ${ARGS_LIBS}
-        QTMODULES ${ARGS_QTMODULES}
-        INCLUDE ${ARGS_INCLUDE}
-        FRAMEWORKS ${ARGS_FRAMEWORKS}
-        OPTIONS ${ARGS_OPTIONS}
-        FLAGS ${ARGS_FLAGS}
-    )
+    drmock_library2(TARGET ${ARGS_TARGET}
+                    HEADERS ${ARGS_HEADERS}
+                    MOCK_HEADER_PATHS ${mock_header_paths}
+                    MOCK_SOURCE_PATHS ${mock_source_paths}
+                    INPUT_CLASSES ${input_classes}
+                    OUTPUT_CLASSES ${output_classes}
+                    LIBS ${ARGS_LIBS}
+                    QTMODULES ${ARGS_QTMODULES}
+                    INCLUDE ${ARGS_INCLUDE}
+                    FRAMEWORKS ${ARGS_FRAMEWORKS}
+                    OPTIONS ${ARGS_OPTIONS}
+                    FLAGS ${ARGS_FLAGS})
 endfunction()
 
 
-# drmock_library2(
-#     TARGET <target>
-#     HEADERS header1 [header2 ...]
-#     MOCK_HEADER_PATHS header_path1 [header_path2 ...]
-#     MOCK_SOURCE_PATHS source_path1 [source_path2 ...]
-#     [INPUT_CLASSES input_class1 [input_class2 ...]]
-#     [OUTPUT_CLASSES output_class1 [output_class2 ...]]
-#     [LIBS lib1 [lib2 ...]]
-#     [QTMODULES module1 [module2 ...]]
-#     [INCLUDE include1 [include2 ...]]
-#     [FRAMEWORKS framework1 [framework2 ...]]
-#     [OPTIONS option1 [option2 ...]]
-#     [FLAGS flag1 [flag2 ...]]
-# )
+# drmock_library2(TARGET <target>
+#                 HEADERS header1 [header2 ...]
+#                 MOCK_HEADER_PATHS header_path1 [header_path2 ...]
+#                 MOCK_SOURCE_PATHS source_path1 [source_path2 ...]
+#                 [INPUT_CLASSES input_class1 [input_class2 ...]]
+#                 [OUTPUT_CLASSES output_class1 [output_class2 ...]]
+#                 [LIBS lib1 [lib2 ...]]
+#                 [QTMODULES module1 [module2 ...]]
+#                 [INCLUDE include1 [include2 ...]]
+#                 [FRAMEWORKS framework1 [framework2 ...]]
+#                 [OPTIONS option1 [option2 ...]]
 #
 # Create a library `target` that contains mock objects for the
 # specified header files.
@@ -273,17 +253,14 @@ function(drmock_library2)
         ${ARGN}
     )
     _drmock_required_param(ARGS_TARGET
-        "drmock_library2: TARGET parameter missing"
-    )
+        "drmock_library2: TARGET parameter missing")
 
     # Verify that lengths are correct.
     list(LENGTH ARGS_HEADERS len_headers)
     list(LENGTH ARGS_MOCK_HEADER_PATHS len_mock_header_paths)
     list(LENGTH ARGS_MOCK_SOURCE_PATHS len_mock_source_paths)
-    if (
-        (NOT "${len_headers}" EQUAL "${len_mock_header_paths}")
-        OR (NOT "${len_headers}" EQUAL "${len_mock_source_paths}")
-    )
+    if ((NOT "${len_headers}" EQUAL "${len_mock_header_paths}")
+     OR (NOT "${len_headers}" EQUAL "${len_mock_source_paths}"))
         message(FATAL_ERROR "drmock_library2: HEADERS, MOCK_HEADER_PATHS, MOCK_SOURCE_PATHS lists are not the same length")
     endif()
 
@@ -322,8 +299,7 @@ function(drmock_library2)
 
     # Append the current CMake include path to the include path of the
     # mocker. Also, add CMAKE_CURRENT_SOURCE_DIR to this list.
-    get_property(
-        include_directories
+    get_property(include_directories
         DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         PROPERTY INCLUDE_DIRECTORIES
     )
@@ -360,11 +336,9 @@ function(drmock_library2)
         )
     endif()
 
-    foreach (
-        header mock_header_path mock_source_path input_class output_class
-        IN ZIP_LISTS ARGS_HEADERS ARGS_MOCK_HEADER_PATHS ARGS_MOCK_SOURCE_PATHS
-        ARGS_INPUT_CLASSES ARGS_OUTPUT_CLASSES
-    )
+    foreach (header mock_header_path mock_source_path input_class output_class
+             IN ZIP_LISTS ARGS_HEADERS ARGS_MOCK_HEADER_PATHS ARGS_MOCK_SOURCE_PATHS
+             ARGS_INPUT_CLASSES ARGS_OUTPUT_CLASSES)
         get_filename_component(absolute_path_to_header ${header} ABSOLUTE)
 
         # Compute the path to the mock object's header and sourcfiles
@@ -372,8 +346,7 @@ function(drmock_library2)
         # moment, this is cmake's current binary source directory.
         _drmock_join_paths(
             RESULT path_from_working_dir_to_output_header
-            PATHS ${CMAKE_CURRENT_BINARY_DIR} ${mock_header_path}
-        )
+            PATHS ${CMAKE_CURRENT_BINARY_DIR} ${mock_header_path})
 
         # Setup drmock-generator arguments.
         set(command)
@@ -406,13 +379,10 @@ function(drmock_library2)
     endforeach()
 
     add_library(${ARGS_TARGET} SHARED ${sources})
-    _drmock_join_paths(
-        RESULT drmock_directory
-        PATHS ${CMAKE_CURRENT_BINARY_DIR} DrMock
-    )  # Required later.
+    _drmock_join_paths(RESULT drmock_directory
+                       PATHS ${CMAKE_CURRENT_BINARY_DIR} DrMock)  # Required later.
     target_include_directories(${ARGS_TARGET} PUBLIC ${drmock_directory})
     target_link_libraries(${ARGS_TARGET} DrMock::DrMock ${ARGS_LIBS})
-    target_compile_options(${ARGS_TARGET} PRIVATE ${ARGS_FLAGS})
 endfunction()
 
 
@@ -430,11 +400,9 @@ function(_drmock_get_qt5_module_include_dirs)
         ${ARGN}
     )
     _drmock_required_param(ARGS_MODULE
-        "_drmock_get_qt5_module_include_dirs: MODULE parameter missing or empty"
-    )
+        "_drmock_get_qt5_module_include_dirs: MODULE parameter missing or empty")
     _drmock_required_param(ARGS_INCLUDE_DIRS
-        "_drmock_get_qt5_module_include_dirs: INCLUDE_DIRS parameter missing or empty"
-    )
+        "_drmock_get_qt5_module_include_dirs: INCLUDE_DIRS parameter missing or empty")
 
     STRING(REGEX REPLACE
         "::"
@@ -446,11 +414,9 @@ function(_drmock_get_qt5_module_include_dirs)
 endfunction()
 
 
-# _drmock_get_qt5_module_framework_path(
-#     MODULE <module>
-#     FRAMEWORK_PATH <framework_path>
-#     [QT_PATH <qt_path>]
-# )
+# _drmock_get_qt5_module_framework_path(MODULE <module>
+#                                       FRAMEWORK_PATH <framework_path>
+#                                       [QT_PATH <qt_path>])
 #
 # Write the framework path of the Qt5 module <module> to
 # <framework_path>.
@@ -467,11 +433,9 @@ function(_drmock_get_qt5_module_framework_path)
         ${ARGN}
     )
     _drmock_required_param(ARGS_MODULE
-        "_drmock_get_qt5_module_framework_path: MODULE parameter missing or empty"
-    )
+        "_drmock_get_qt5_module_framework_path: MODULE parameter missing or empty")
     _drmock_required_param(ARGS_FRAMEWORK_PATH
-        "_drmock_get_qt5_module_framework_path: FRAMEWORK_PATH parameter missing or empty"
-    )
+        "_drmock_get_qt5_module_framework_path: FRAMEWORK_PATH parameter missing or empty")
 
     if (NOT ARGS_QT_PATH)
         if (NOT DEFINED ENV{DRMOCK_QT_PATH})
@@ -519,11 +483,9 @@ function(_drmock_join_paths)
         ${ARGN}
     )
     _drmock_required_param(ARGS_RESULT
-        "_drmock_join_paths: RESULT parameter missing or empty"
-    )
+        "_drmock_join_paths: RESULT parameter missing or empty")
     _drmock_required_param(ARGS_PATHS
-        "_drmock_join_paths: PATHS parameter missing or empty"
-    )
+        "_drmock_join_paths: PATHS parameter missing or empty")
 
     foreach (path ${ARGS_PATHS})
         file(TO_CMAKE_PATH path ${path})
@@ -539,13 +501,11 @@ function(_drmock_join_paths)
 endfunction()
 
 
-# _drmock_capture_filenames(
-#     HEADER <header>
-#     IFILE <ifile>
-#     MOCKFILE <mockfile>
-#     OUTPUT_HEADER <output_header>
-#     OUTPUT_SOURCE <output_source>
-# )
+# _drmock_capture_filenames(HEADER <header>
+#                           IFILE <ifile>
+#                           MOCKFILE <mockfile>
+#                           OUTPUT_HEADER <output_header>
+#                           OUTPUT_SOURCE <output_source>)
 #
 # Compute output header and output source filenames; write them to
 # <output_header> and <output_source>, resp.
@@ -558,28 +518,21 @@ function(_drmock_capture_filenames)
         ${ARGN}
     )
     _drmock_required_param(ARGS_HEADER
-        "_drmock_capture_filenames: HEADER parameter missing or empty"
-    )
+        "_drmock_capture_filenames: HEADER parameter missing or empty")
     _drmock_required_param(ARGS_IFILE
-        "_drmock_capture_filenames: IFILE parameter missing or empty"
-    )
+        "_drmock_capture_filenames: IFILE parameter missing or empty")
     _drmock_required_param(ARGS_MOCKFILE
-        "_drmock_capture_filenames: MOCKFILE parameter missing or empty"
-    )
+        "_drmock_capture_filenames: MOCKFILE parameter missing or empty")
     _drmock_required_param(ARGS_OUTPUT_HEADER
-        "_drmock_capture_filenames: OUTPUT_HEADER parameter missing or empty"
-    )
+        "_drmock_capture_filenames: OUTPUT_HEADER parameter missing or empty")
     _drmock_required_param(ARGS_OUTPUT_SOURCE
-        "_drmock_capture_filenames: OUTPUT_SOURCE parameter missing or empty"
-    )
+        "_drmock_capture_filenames: OUTPUT_SOURCE parameter missing or empty")
 
     # Get the filename of `header`.
     get_filename_component(header_filename ${ARGS_HEADER} NAME)  # IExample.h
     # Remove the file extension.
-    _drmock_remove_file_extension(
-        STRING ${header_filename}
-        RESULT header_filename_without_extension
-    )  # IExample
+    _drmock_remove_file_extension(STRING ${header_filename}
+                                  RESULT header_filename_without_extension)  # IExample
     # Strip the interface cast from the file name.
     STRING(REGEX REPLACE
         ${ARGS_IFILE}
@@ -605,11 +558,9 @@ function(_drmock_capture_filenames)
     set(${ARGS_OUTPUT_SOURCE} ${mock_source_filename} PARENT_SCOPE)
 endfunction()
 
-# _drmock_compute_path_from_filename(
-#     HEADER <header>
-#     FILENAME <filename>
-#     PATH <path>
-# )
+# _drmock_compute_path_from_filename(HEADER <header>
+#                                    FILENAME <filename>
+#                                    PATH <path>)
 #
 # Compute mock output path from filename and create a directory for the
 # mock files; write the path to <path>.
@@ -622,43 +573,35 @@ function(_drmock_compute_path_from_filename)
         ${ARGN}
     )
     _drmock_required_param(ARGS_HEADER
-        "_drmock_compute_path_from_filename: HEADER parameter missing"
-    )
+        "_drmock_compute_path_from_filename: HEADER parameter missing")
     _drmock_required_param(ARGS_FILENAME
-        "_drmock_compute_path_from_filename: FILENAME parameter missing"
-    )
+        "_drmock_compute_path_from_filename: FILENAME parameter missing")
     _drmock_required_param(ARGS_PATH
-        "_drmock_compute_path_from_filename: PATH parameter missing"
-    )
+        "_drmock_compute_path_from_filename: PATH parameter missing")
 
     get_filename_component(absolute_path_to_header ${ARGS_HEADER} ABSOLUTE)  # /[...]/project/[DIRS]/IExample.h
     get_filename_component(absolute_directory_of_header ${absolute_path_to_header} DIRECTORY)  #/[...]/project/[DIRS]
     file(RELATIVE_PATH relative_path_from_source_dir_to_header ${CMAKE_CURRENT_SOURCE_DIR} ${absolute_directory_of_header})  # [DIRS]
 
     # Create a directory for the mock object's header and source files.
-    _drmock_join_paths(
-        RESULT path_to_mock_subdirectory
-        PATHS ${CMAKE_CURRENT_BINARY_DIR}
-              DrMock/mock
-              ${relative_path_from_source_dir_to_header}
-    )
+    _drmock_join_paths(RESULT path_to_mock_subdirectory
+                       PATHS ${CMAKE_CURRENT_BINARY_DIR}
+                             DrMock/mock
+                             ${relative_path_from_source_dir_to_header})
     file(MAKE_DIRECTORY ${path_to_mock_subdirectory})
     # Compute the path to the mock object's header and source files
     # relative to cmake's current binary source directory.
     _drmock_join_paths(
         RESULT _path
-        PATHS DrMock/mock ${relative_path_from_source_dir_to_header} ${ARGS_FILENAME}
-    )
+        PATHS DrMock/mock ${relative_path_from_source_dir_to_header} ${ARGS_FILENAME})
 
     set(${ARGS_PATH} ${_path} PARENT_SCOPE)
 endfunction()
 
 
-# _drmock_options_from_list(
-#     OPTION <option>
-#     INPUT <input1>;<input2>;... 
-#     RESULT <result>
-# )
+# _drmock_options_from_list(OPTION <option>
+#                           INPUT <input1>;<input2>;... 
+#                           RESULT <result>)
 #
 # Set `result` to "<option><input1>;<option><input2>;..."
 function(_drmock_options_from_list)
@@ -670,11 +613,9 @@ function(_drmock_options_from_list)
         ${ARGN}
     )
     _drmock_required_param(ARGS_OPTION
-        "_drmock_options_from_list: OPTION parameter missing"
-    )
+        "_drmock_options_from_list: OPTION parameter missing")
     _drmock_required_param(ARGS_RESULT
-        "_drmock_options_from_list: RESULT parameter missing"
-    )
+        "_drmock_options_from_list: RESULT parameter missing")
 
     set(_result)
     foreach (each ${ARGS_INPUT})
