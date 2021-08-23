@@ -215,9 +215,9 @@ _getters_:
     different const/reference qualifiers), then...
     - `MockObject::func<>()` returns the smart pointer associated with
       `T func(Ts...)`
-    - `MockObject::func<::drmock::LValueRef>` returns the smart pointer
+    - `MockObject::func<::drmock::LValueRef>()` returns the smart pointer
       associated with `T func(Ts...)&`
-    - `MockObject::func<::drmock::RValueRef>` returns the smart pointer
+    - `MockObject::func<::drmock::RValueRef>()` returns the smart pointer
       associated with `T func(Ts...)&&`
     - `MockObject::func<::drmock::Const>()` returns the smart pointer
       associated with `T func(Ts...) const`
@@ -241,9 +241,9 @@ _getters_:
     members of the set, then...
     - `MockObject::func<Ts...>()` returns the smart pointer associated
       with `T func(Ts...)`
-    - `MockObject::func<Ts..., ::drmock::LValueRef>` returns the smart
+    - `MockObject::func<Ts..., ::drmock::LValueRef>()` returns the smart
       pointer associated with `T func(Ts...)&`
-    - `MockObject::func<Ts..., ::drmock::RValueRef>` returns the smart
+    - `MockObject::func<Ts..., ::drmock::RValueRef>()` returns the smart
       pointer associated with `T func(Ts...)&&`
     - `MockObject::func<Ts..., ::drmock::Const>()` returns the smart
       pointer associated with `T func(Ts...) const`
